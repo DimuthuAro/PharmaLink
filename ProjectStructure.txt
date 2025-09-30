@@ -1,0 +1,228 @@
+# Pharmalink Project Structure
+
+Service Endpoints:
+API Gateway: http://localhost:3000
+Drug Interactions: http://localhost:3000/api/drug-interactions
+Advisory: http://localhost:3000/api/advisory
+Comparator: http://localhost:3000/api/comparator
+Prescription: http://localhost:3000/api/prescription
+
+## Backend - Express.js Microservices Architecture
+
+```
+Pharmalink/
+├── ProjectStructure.txt
+└── backend/
+    ├── package.json                     # Main backend package configuration
+    ├── server.js                        # API Gateway (Port 3000)
+    ├── .env                            # Environment configuration
+    ├── README.md                       # Backend documentation
+    │
+    ├── microservices/                  # Microservices Directory
+    │   ├── drug_interaction_microservice/      # Port 3001
+    │   │   ├── package.json
+    │   │   └── index.js                # Drug interaction logic, search, validation
+    │   │
+    │   ├── personalized_advisory_microservice/  # Port 3002
+    │   │   ├── package.json
+    │   │   └── index.js                # Personalized recommendations, adherence analysis
+    │   │
+    │   ├── crossbrand_comparator_microservice/  # Port 3003
+    │   │   ├── package.json
+    │   │   └── index.js                # Brand comparison, pricing, insurance coverage
+    │   │
+    │   └── prescription_interpreter_microservice/ # Port 3004
+    │       ├── package.json
+    │       └── index.js                # OCR, prescription analysis, validation
+    │
+    ├── shared_infrastructure/          # Shared Services
+    │   ├── cache/
+    │   │   └── index.js               # Redis cache service
+    │   ├── message_queue/
+    │   │   └── index.js               # RabbitMQ message queue service
+    │   ├── file_store/
+    │   │   └── index.js               # File upload and storage service
+    │   └── logger.js                  # Winston logging service
+    │
+    ├── config/
+    │   └── database.js                # MongoDB connection configuration
+    │
+    ├── scripts/
+    │   ├── setup-infrastructure.js    # Infrastructure setup script
+    │   └── start-dev.js              # Development startup script
+    │
+    └── logs/                          # Log files (created at runtime)
+        ├── combined.log
+        └── error.log
+```
+
+## Services Overview
+
+### API Gateway (Port 3000)
+- **Purpose**: Central entry point, request routing, load balancing
+- **Features**: CORS, Rate limiting, Request logging, Error handling
+- **Endpoints**: 
+  - `/health` - Health check
+  - `/api/drug-interactions/*` - Route to Drug Interaction Service
+  - `/api/advisory/*` - Route to Advisory Service
+  - `/api/comparator/*` - Route to Comparator Service  
+  - `/api/prescription/*` - Route to Prescription Service
+
+### Drug Interaction Microservice (Port 3001)
+- **Purpose**: Drug interaction checking and drug information
+- **Features**: 
+  - Check drug-drug interactions
+  - Drug information lookup
+  - Drug search functionality
+  - Interaction severity assessment
+- **Key Endpoints**:
+  - `POST /check-interactions` - Check interactions between drugs
+  - `GET /drug/:drugId` - Get detailed drug information
+  - `GET /search` - Search for drugs
+
+### Personalized Advisory Microservice (Port 3002)
+- **Purpose**: AI-driven personalized healthcare recommendations
+- **Features**:
+  - Patient-specific medication recommendations
+  - Medication adherence analysis
+  - Lifestyle recommendations
+  - Drug alternatives suggestion
+- **Key Endpoints**:
+  - `POST /recommendations` - Get personalized recommendations
+  - `POST /adherence` - Analyze medication adherence
+  - `POST /lifestyle` - Get lifestyle recommendations
+  - `POST /alternatives` - Find drug alternatives
+
+### Cross-Brand Comparator Microservice (Port 3003)
+- **Purpose**: Drug pricing and brand comparison
+- **Features**:
+  - Multi-brand price comparison
+  - Insurance coverage analysis
+  - Pharmacy-specific pricing
+  - Price history tracking
+- **Key Endpoints**:
+  - `POST /compare` - Compare drug brands and prices
+  - `GET /price-history/:brandName` - Get price history
+  - `POST /cheapest` - Find cheapest options
+  - `POST /insurance-coverage` - Compare insurance coverage
+
+### Prescription Interpreter Microservice (Port 3004)
+- **Purpose**: Prescription image processing and interpretation
+- **Features**:
+  - OCR for prescription images
+  - Prescription text analysis
+  - Data extraction and validation
+  - Prescription summarization
+- **Key Endpoints**:
+  - `POST /interpret` - Upload and interpret prescription image
+  - `POST /analyze-text` - Analyze prescription text
+  - `POST /validate` - Validate prescription format
+  - `POST /extract` - Extract structured data
+  - `POST /summarize` - Generate prescription summary
+
+## Shared Infrastructure
+
+### Cache Service (Redis)
+- **Purpose**: High-performance caching for frequently accessed data
+- **Features**: TTL support, JSON serialization, connection pooling
+- **Use Cases**: Drug information caching, API response caching
+
+### Message Queue Service (RabbitMQ)
+- **Purpose**: Asynchronous communication between microservices
+- **Features**: Topic exchanges, durable queues, message persistence
+- **Use Cases**: Audit logging, notification dispatch, analytics
+
+### File Store Service
+- **Purpose**: File upload and management
+- **Features**: Multi-type file support, automatic directory creation
+- **Supported Types**: 
+  - Prescription images (JPG, PNG, PDF)
+  - Drug images (JPG, PNG)
+  - Reports (PDF, DOC, TXT)
+
+### Logger Service (Winston)
+- **Purpose**: Centralized logging across all services
+- **Features**: Multiple transport support, log levels, file rotation
+- **Outputs**: Console, files (combined.log, error.log)
+
+## Database Schema (MongoDB)
+
+### Collections (Planned):
+- `users` - User profiles and authentication
+- `drugs` - Drug information and metadata
+- `interactions` - Drug interaction data
+- `prescriptions` - Prescription records
+- `recommendations` - User recommendations history
+- `audit_logs` - System audit trail
+
+## Development Workflow
+
+### Setup Commands:
+```bash
+npm run install:all      # Install all dependencies
+npm run setup           # Full setup including infrastructure
+npm run start:dev       # Start all services in development mode
+npm test               # Run all tests
+```
+
+### Individual Service Commands:
+```bash
+npm run dev:drug-interaction  # Start drug interaction service
+npm run dev:advisory         # Start advisory service  
+npm run dev:comparator      # Start comparator service
+npm run dev:interpreter     # Start prescription interpreter
+```
+
+## Technology Stack
+
+- **Runtime**: Node.js 16+
+- **Framework**: Express.js
+- **Database**: MongoDB with Mongoose ODM
+- **Cache**: Redis
+- **Message Queue**: RabbitMQ (AMQP)
+- **File Processing**: Multer, Sharp
+- **Logging**: Winston
+- **Security**: Helmet, CORS, Rate Limiting
+- **Validation**: Joi
+- **Authentication**: JWT (configured)
+- **Development**: Nodemon, Concurrently
+
+## Environment Configuration
+
+### Required Services for Full Functionality:
+- MongoDB (localhost:27017) - Primary database
+- Redis (localhost:6379) - Caching (optional)
+- RabbitMQ (localhost:5672) - Message queuing (optional)
+
+### Development vs Production:
+- **Development**: Single PC setup, all services on localhost
+- **Production**: Distributed services, load balancers, proper security
+
+## Security Features
+
+- Helmet.js security headers
+- CORS configuration  
+- Rate limiting per IP
+- File upload restrictions
+- Request size limits
+- Input validation with Joi
+- Environment-based configuration
+
+## Monitoring & Health Checks
+
+Each service provides:
+- `/health` endpoint for monitoring
+- Structured logging
+- Error tracking
+- Performance metrics (planned)
+
+## Future Enhancements
+
+- API authentication and authorization
+- Database connection pooling
+- Container deployment (Docker)
+- API documentation (Swagger)
+- Unit and integration tests
+- Performance monitoring
+- Error reporting service
+- CI/CD pipeline
