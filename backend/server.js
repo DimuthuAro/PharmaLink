@@ -12,6 +12,8 @@ const connectDB = require('./config/database');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const test = 10;
+console.log(test);
 
 // Security middleware
 app.use(helmet());
