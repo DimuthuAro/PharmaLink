@@ -106,8 +106,8 @@ const Dashboard = () => {
   const quickActions = useMemo(() => [
     {
       id: 1,
-      title: 'Drug Interaction Check',
-      description: 'Check for potential drug interactions and allergies',
+      title: 'Drug & Food Interaction Check',
+      description: 'Check for potential interactions quickly',
       icon: ShieldCheck,
       path: '/interaction-check',
       color: 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100',
