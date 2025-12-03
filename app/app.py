@@ -230,6 +230,10 @@ def recommend_safe_foods(drug_index: int, top_n: int = 10):
     moderate = []
     
     for _, row in food_subset.iterrows():
+
+        if int(row.get("is_alcohol", 0)) == 1:
+            continue  # skip alcoholic foods
+
         r = check_food_drug_interaction(drug_index, row, base_risk=base_risk)
 
         if r == 0:
@@ -357,4 +361,5 @@ def safe_foods(drug_index: int, top_n: int = 10):
         raise HTTPException(status_code=404, detail="Drug index out of range")
 
     safe_list = recommend_safe_foods(drug_index, top_n=top_n)
+
     return {"drug": drug_clean.loc[drug_index, "Name"], "foods": safe_list}
