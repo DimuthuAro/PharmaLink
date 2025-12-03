@@ -114,15 +114,21 @@ def predict_drug_risk(index: int) -> int:
     return int(pred)
 
 
-def check_food_drug_interaction(drug_index: int, food_row: pd.Series) -> int:
-    # --- drug info ---
+def check_food_drug_interaction(
+    drug_index: int,
+    food_row: pd.Series,
+    base_risk: int | None = None,   # new optional parameter
+) -> int:
+    # drug info
     drug_contains = str(drug_clean.loc[drug_index, "Contains"]).lower()
     drug_text = str(drug_clean.loc[drug_index, "combined_text"]).lower()
 
-    # base risk from ML model
-    risk = predict_drug_risk(drug_index)
+    # base risk from model (only call model if not provided)
+    if base_risk is None:
+        base_risk = predict_drug_risk(drug_index)
+    risk = base_risk
 
-    # --- food info ---
+    # food info
     calcium = float(food_row.get("calcium", 0.0))
     iron = float(food_row.get("iron", 0.0))
     fat = float(food_row.get("fat", 0.0))
@@ -218,22 +224,33 @@ def explain_food_drug_interaction(drug_index: int, food_name: str):
 
 
 def recommend_safe_foods(drug_index: int, top_n: int = 10):
-    # base risk for the drug from ML model
     base_risk = predict_drug_risk(drug_index)
 
-    rows = []
+    safe = []
+    moderate = []
+    
     for _, row in food_subset.iterrows():
-        r = check_food_drug_interaction(drug_index, row)
-        # keep foods that DO NOT increase risk level
-        if r == base_risk:
-            rows.append(row)
+        r = check_food_drug_interaction(drug_index, row, base_risk=base_risk)
 
-    if not rows:
+        if r == 0:
+            safe.append(row)
+        elif r == 1:
+            moderate.append(row)
+
+        # stop early if we have enough "perfect safe" foods
+        if len(safe) >= top_n:
+            break
+
+    # Prefer safe → fall back to moderate
+    selected = safe if safe else moderate[:top_n]
+
+    if not selected:
         return []
 
-    safe_df = pd.DataFrame(rows)
+    df = pd.DataFrame(selected)
     cols_show = ["Food", "energy", "protein", "fat", "carbs", "fiber"]
-    return safe_df[cols_show].head(top_n).to_dict(orient="records")
+    return df[cols_show].to_dict(orient="records")
+
 
 # ---------------------------------------------------------
 # Pydantic models for requests / responses
