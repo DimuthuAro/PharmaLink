@@ -266,7 +266,7 @@ const Dashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <div className="flex-shrink-0 flex items-center cursor-pointer" onClick={() => handleNavigation('/')}>
+              <div className="shrink-0 flex items-center cursor-pointer" onClick={() => handleNavigation('/')}>
                 <Activity className="h-8 w-8 text-blue-600" />
                 <span className="ml-2 text-xl font-bold text-gray-900">Pharmalink</span>
               </div>
@@ -498,7 +498,7 @@ const Dashboard = () => {
                   <div key={activity.id} className={`flex items-start space-x-3 p-3 rounded-lg transition-colors duration-200 ${
                     activity.actionable ? 'hover:bg-gray-50 cursor-pointer' : ''
                   }`}>
-                    <div className="flex-shrink-0">
+                    <div className="shrink-0">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
                         activity.status === 'success' ? 'bg-green-100' : 
                         activity.status === 'warning' ? 'bg-amber-100' : 'bg-red-100'
@@ -521,7 +521,7 @@ const Dashboard = () => {
                       <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
                     </div>
                     {activity.actionable && (
-                      <ChevronRightIcon className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                      <ChevronRightIcon className="h-4 w-4 text-gray-400 shrink-0" />
                     )}
                   </div>
                 ))
@@ -580,9 +580,9 @@ const Dashboard = () => {
         </div>
 
         {/* Enhanced Emergency Alert */}
-        <div className="mt-8 bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-xl p-4 sm:p-6 shadow-sm">
+        <div className="mt-8 bg-linear-to-br from-red-50 to-orange-50 border border-red-200 rounded-xl p-4 sm:p-6 shadow-sm">
           <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
               <ExclamationTriangleIcon className="h-6 w-6 text-red-500" />
             </div>
             <div className="flex-1">
