@@ -253,8 +253,14 @@ const handleSelectFood = (name) => {
       );
       setResult(res);
 
-      const safe = await fetchSafeFoods(selectedDrugIndex, 5);
-      setSafeFoods(safe.foods || []);
+      const safe = await fetchSafeFoods(selectedDrugIndex, 20);
+      //setSafeFoods(safe.foods || []);
+
+      const nonAlcoholic = (safe.foods || []).filter(
+        (f) => f.is_alcohol !== 1 && f.is_alcohol !== true
+      );
+
+      setSafeFoods(nonAlcoholic.slice(0, 5));
 
       if (user?.email) {
         const updated = addHistoryEntry(user.email, {
