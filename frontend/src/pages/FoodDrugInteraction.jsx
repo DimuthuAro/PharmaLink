@@ -1,236 +1,449 @@
 // src/pages/FoodDrugInteraction.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
+import { useNavigate ,useLocation} from "react-router-dom";
+import { useAuth } from "../auth/auth.jsx";
 import {
-  PlusIcon,
+
   ShieldCheckIcon,
+  ClockIcon,
+  ArrowPathIcon,
   ExclamationTriangleIcon,
-  SparklesIcon,
+  CheckCircleIcon,
+  MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 
-const FoodDrugInteraction = () => {
-  const [drug, setDrug] = useState("");
-  const [foods, setFoods] = useState([""]);
-  const [isChecking, setIsChecking] = useState(false);
-  const [result, setResult] = useState(null);
+import {
+  fetchDrugs,
+  fetchFoods,
+  checkFoodDrugRisk,
+  fetchSafeFoods,
+} from "../utils/api.js";
+import {
+  loadHistory,
+  addHistoryEntry,
+} from "../utils/historyUtils.js";
 
-  const canSubmit =
-    drug.trim().length > 0 && foods.some((f) => f.trim().length > 0);
+const riskColors = {
+  0: "bg-green-50 text-green-800 border-green-200",
+  1: "bg-amber-50 text-amber-800 border-amber-200",
+  2: "bg-red-50 text-red-800 border-red-200",
+};
 
-  const handleFoodChange = (index, value) => {
-    const copy = [...foods];
-    copy[index] = value;
-    setFoods(copy);
-  };
+const riskLabel = (r) =>
+  r === 0 ? "Safe" : r === 1 ? "Moderate" : "High";
 
-  const handleAddFood = () => {
-    if (foods.length >= 4) return; // limit
-    setFoods((prev) => [...prev, ""]);
-  };
 
-  // purely MOCK logic – replace with real API later
-  const handleCheck = async (e) => {
-    e.preventDefault();
-    if (!canSubmit) return;
+// ⬇️ ONE SINGLE AutoComplete component
+const AutoComplete = ({ label, placeholder, fetcher, onSelect, value }) => {
+  const [query, setQuery] = useState(value || "");
+  const [options, setOptions] = useState([]);
+  const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-    setIsChecking(true);
-    setResult(null);
+  // when parent changes value (eg. from History) update local text
+  useEffect(() => {
+    setQuery(value || "");
+  }, [value]);
 
-    await new Promise((res) => setTimeout(res, 700)); // fake delay
+  const handleSearch = async (val) => {
+    setQuery(val);
 
-    const cleanDrug = drug.trim().toLowerCase();
-    const cleanFoods = foods
-      .map((f) => f.trim())
-      .filter(Boolean)
-      .map((f) => f.toLowerCase());
-
-    let risk = "safe";
-    let message = "No harmful interaction detected.";
-    let color = "emerald";
-
-    if (
-      cleanDrug.includes("warfarin") &&
-      cleanFoods.some((f) => f.includes("spinach"))
-    ) {
-      risk = "harmful";
-      message = "High-risk interaction – avoid this combination.";
-      color = "red";
-    } else if (
-      cleanDrug.includes("paracetamol") &&
-      cleanFoods.some((f) => f.includes("alcohol"))
-    ) {
-      risk = "caution";
-      message =
-        "Use with caution: monitor liver function and overall patient status.";
-      color = "amber";
+    if (val.trim().length === 0) {
+      setOptions([]);
+      setShow(false);
+      return;
     }
 
-    setResult({
-      risk,
-      message,
-      color,
-      drug: drug.trim(),
-      foods: cleanFoods.map(
-        (f) => f.charAt(0).toUpperCase() + f.slice(1).toLowerCase()
-      ),
-    });
+    setShow(true);
 
-    setIsChecking(false);
+    try {
+      setLoading(true);
+      const res = await fetcher(val);
+      setOptions(res);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSelect = (item) => {
+    const labelText = item.name || item.Food;
+    setQuery(labelText);
+    setShow(false);
+    setOptions([]);
+    onSelect(item);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-sky-50 via-sky-50 to-sky-100 flex items-center justify-center px-4 py-10">
-      <div className="max-w-5xl w-full">
-        {/* small logo / title strip */}
-        <div className="flex items-center mb-4">
-          <div className="text-xl font-semibold text-sky-700 tracking-tight">
-            PharmaLink
-          </div>
-        </div>
+    <div className="relative">
+      <label className="block text-sm font-medium text-gray-700 mb-2">
+        {label}
+      </label>
 
-        {/* main card */}
-        <div className="bg-white/95 rounded-3xl shadow-xl border border-sky-100 grid md:grid-cols-[1.4fr,1fr] overflow-hidden">
-          {/* LEFT: form */}
-          <div className="px-6 sm:px-10 py-8 sm:py-10">
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1">
-              Food & Drug Interaction Checker
-            </h1>
-            <p className="text-sm text-slate-600 mb-6">
-              Enter a medication and one or more foods / beverages to screen for
-              potential interactions.
-            </p>
+      <div className="relative">
+        <MagnifyingGlassIcon className="h-4 w-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+        <input
+          value={query}
+          onChange={(e) => handleSearch(e.target.value)}
+          placeholder={placeholder}
+          className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          onBlur={() => setTimeout(() => setShow(false), 150)}
+          onFocus={() => {
+            if (options.length > 0) setShow(true);
+          }}
+        />
+      </div>
 
-            <form className="space-y-4" onSubmit={handleCheck}>
-              {/* drug */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">
-                  Drug
-                </label>
-                <input
-                  type="text"
-                  value={drug}
-                  onChange={(e) => setDrug(e.target.value)}
-                  placeholder="e.g. Warfarin, Paracetamol"
-                  className="w-full h-11 rounded-lg border border-slate-200 bg-slate-50/70 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
-                />
-              </div>
-
-              {/* food fields */}
-              {foods.map((food, index) => (
-                <div key={index}>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">
-                    {index === 0 ? "Food / drink" : `Additional food ${index + 1}`}
-                  </label>
-                  <input
-                    type="text"
-                    value={food}
-                    onChange={(e) => handleFoodChange(index, e.target.value)}
-                    placeholder={
-                      index === 0
-                        ? "e.g. Spinach, Rice, Curd"
-                        : "e.g. Grapefruit juice"
-                    }
-                    className="w-full h-11 rounded-lg border border-slate-200 bg-slate-50/70 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
-                  />
-                </div>
-              ))}
-
-              {/* add another */}
-              <button
-                type="button"
-                onClick={handleAddFood}
-                disabled={foods.length >= 4}
-                className="mt-1 inline-flex items-center justify-between w-full h-11 rounded-lg border border-slate-200 bg-slate-50 text-sm text-slate-600 px-3 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <span>Add another food</span>
-                <PlusIcon className="h-4 w-4" />
-              </button>
-
-              {/* check button */}
-              <button
-                type="submit"
-                disabled={!canSubmit || isChecking}
-                className={`mt-3 w-full h-11 rounded-lg text-sm font-semibold text-white flex items-center justify-center
-                transition-all duration-150 ${
-                  canSubmit && !isChecking
-                    ? "bg-sky-600 hover:bg-sky-700 shadow-sm"
-                    : "bg-sky-200 cursor-not-allowed"
-                }`}
-              >
-                {isChecking ? "Checking…" : "Check Interaction"}
-              </button>
-
-              <p className="text-[11px] text-slate-400 pt-1">
-                This is a prototype UI. When your backend is ready, connect this
-                form to your API endpoint.
-              </p>
-            </form>
-          </div>
-
-          {/* RIGHT: nice visual & short text */}
-          <div className="relative bg-gradient-to-b from-sky-100 via-sky-50 to-sky-100 flex flex-col items-center justify-center px-6 py-8">
-            {/* pill stack imitation */}
-            <div className="flex flex-col items-center space-y-2 mb-5">
-              <div className="w-16 h-16 bg-gradient-to-br from-sky-400 to-sky-600 rounded-full shadow-lg opacity-90" />
-              <div className="w-14 h-6 bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full shadow-md" />
-              <div className="w-12 h-6 bg-gradient-to-r from-amber-300 to-amber-500 rounded-full shadow-md" />
-              <div className="w-10 h-6 bg-gradient-to-r from-rose-300 to-rose-500 rounded-full shadow-md" />
-              <div className="w-8 h-6 bg-gradient-to-r from-slate-300 to-slate-500 rounded-full shadow-md" />
-            </div>
-
-            <div className="text-center space-y-2">
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/80 border border-sky-100 text-[11px] font-medium text-sky-700 mb-1">
-                <SparklesIcon className="h-4 w-4 mr-1" />
-                Smart interaction screening
-              </div>
-              <p className="text-sm font-semibold text-slate-800">
-                Reduce risk before it reaches your patients.
-              </p>
-              <p className="text-xs text-slate-500">
-                Pharmalink can combine drug labels, food composition data, and
-                clinical rules to highlight potential issues in seconds.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Result panel under the main card */}
-        <div className="mt-5">
-          {result ? (
-            <div
-              className={`rounded-2xl border px-5 py-4 bg-${result.color}-50 border-${result.color}-200 text-sm flex items-start space-x-3`}
-            >
-              {result.risk === "harmful" ? (
-                <ExclamationTriangleIcon
-                  className={`h-5 w-5 text-${result.color}-600 mt-0.5`}
-                />
-              ) : (
-                <ShieldCheckIcon
-                  className={`h-5 w-5 text-${result.color}-600 mt-0.5`}
-                />
-              )}
-              <div>
-                <p className="font-semibold text-slate-900 mb-1">
-                  {result.drug} + {result.foods.join(", ")}
-                </p>
-                <p className="text-slate-700 mb-1">{result.message}</p>
-                <span
-                  className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-medium bg-${result.color}-100 text-${result.color}-800`}
-                >
-                  {result.risk === "safe"
-                    ? "Safe"
-                    : result.risk === "caution"
-                    ? "Use with caution"
-                    : "Harmful interaction"}
-                </span>
-              </div>
-            </div>
+      {show && options.length > 0 && (
+        <div className="absolute z-20 mt-1 w-full bg-white shadow-lg rounded-lg border border-gray-200 max-h-56 overflow-auto">
+          {loading ? (
+            <div className="p-3 text-sm text-gray-500">Searching…</div>
           ) : (
-            <div className="text-xs text-slate-500 text-center">
-              Results will appear here after you run a check.
-            </div>
+            options.map((item) => (
+              <button
+                key={item.index || item.name}
+                type="button"
+                className="w-full text-left px-3 py-2 text-sm hover:bg-blue-50"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => handleSelect(item)}
+              >
+                <span className="font-medium">{item.name || item.Food}</span>
+
+                {item.contains && (
+                  <span className="block text-xs text-gray-500">
+                    {item.contains}
+                  </span>
+                )}
+
+                {item.is_alcohol === 1 && (
+                  <span className="ml-2 text-xs text-red-500">Alcohol</span>
+                )}
+              </button>
+            ))
           )}
         </div>
+      )}
+    </div>
+  );
+};
+
+
+const FoodDrugInteraction = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuth();
+  const location = useLocation();
+
+  const [drugSearch, setDrugSearch] = useState("");
+  const [foodSearch, setFoodSearch] = useState("");
+  const [drugOptions, setDrugOptions] = useState([]);
+  const [foodOptions, setFoodOptions] = useState([]);
+  const [selectedDrugIndex, setSelectedDrugIndex] = useState(null);
+  const [selectedDrugName, setSelectedDrugName] = useState("");
+  const [selectedFoodName, setSelectedFoodName] = useState("");
+  const [result, setResult] = useState(null);
+  const [safeFoods, setSafeFoods] = useState([]);
+  const [history, setHistory] = useState([]);
+  const [loadingCheck, setLoadingCheck] = useState(false);
+  const [loadingLists, setLoadingLists] = useState(false);
+  const [error, setError] = useState("");
+
+  // redirect if user not logged in (extra safety)
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    const state = location.state;
+    if (state?.fromHistory) {
+      const {drugIndex, drugName, foodName} = state;
+
+      if (typeof drugIndex === "number") {
+        setSelectedDrugIndex(drugIndex);
+      }
+      if (drugName) {
+        setSelectedDrugName(drugName);
+        //setDrugSearch(drugName);
+      }
+      if (foodName) {
+        setSelectedFoodName(foodName);
+        //setFoodSearch(foodName);
+    }
+
+    //navigate("/interaction-check", { replace: true, state: {}});
+    }
+  }, [location.state, navigate]);
+
+  // load initial drugs + foods + history
+  useEffect(() => {
+    const init = async () => {
+      try {
+        setLoadingLists(true);
+        const [drugs, foods] = await Promise.all([
+          fetchDrugs(""),
+          fetchFoods(""),
+        ]);
+        setDrugOptions(drugs);
+        setFoodOptions(foods);
+      } catch (e) {
+        console.error(e);
+        setError("Unable to load drug/food lists. Check backend.");
+      } finally {
+        setLoadingLists(false);
+      }
+    };
+    init();
+  }, []);
+
+  useEffect(() => {
+    if (user?.email) {
+      setHistory(loadHistory(user.email));
+    }
+  }, [user?.email]);
+
+const handleSelectDrug = (idx, name) => {
+  setSelectedDrugIndex(idx);
+  setSelectedDrugName(name);
+  setDrugSearch(name);   // 👈 show in drug input
+  setResult(null);
+  setSafeFoods([]);
+};
+
+
+const handleSelectFood = (name) => {
+  setSelectedFoodName(name);
+  setFoodSearch(name);   // 👈 show in food input
+  setResult(null);
+};
+
+
+  const handleSearchDrug = async (e) => {
+    const q = e.target.value;
+    setDrugSearch(q);
+    try {
+      const drugs = await fetchDrugs(q);
+      setDrugOptions(drugs);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSearchFood = async (e) => {
+    const q = e.target.value;
+    setFoodSearch(q);
+    try {
+      const foods = await fetchFoods(q);
+      setFoodOptions(foods);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleCheck = async () => {
+    if (selectedDrugIndex == null || !selectedFoodName) {
+      setError("Please select both a drug and a food item.");
+      return;
+    }
+    setError("");
+    setLoadingCheck(true);
+    try {
+      const res = await checkFoodDrugRisk(
+        selectedDrugIndex,
+        selectedFoodName
+      );
+      setResult(res);
+
+      const safe = await fetchSafeFoods(selectedDrugIndex, 5);
+      setSafeFoods(safe.foods || []);
+
+      if (user?.email) {
+        const updated = addHistoryEntry(user.email, {
+          timestamp: new Date().toISOString(),
+          drugIndex: selectedDrugIndex,
+          drug: res.drug,
+          food: res.food,
+          risk: res.risk,
+          message: res.message,
+        });
+        setHistory(updated);
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Error checking interaction. Please try again.");
+    } finally {
+      setLoadingCheck(false);
+    }
+  };
+
+  const formattedHistory = useMemo(
+    () =>
+      history.map((h) => ({
+        ...h,
+        time: new Date(h.timestamp).toLocaleString(),
+      })),
+    [history]
+  );
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* simple header bar */}
+      <header className="bg-white border-b border-gray-200">
+  <div className="max-w-6xl mx-auto px-4 py-4">
+    <div className="flex items-center justify-between">
+      <div className="flex items-center space-x-3">
+        <ShieldCheckIcon className="h-7 w-7 text-blue-600" />
+        <div>
+          <h1 className="text-lg font-bold text-gray-900">
+            Food–Drug Interaction Check
+          </h1>
+          <p className="text-xs text-gray-500">
+            Logged in as {user?.name || "User"}
+          </p>
+        </div>
       </div>
+
+      <div className="flex items-center space-x-6">
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="text-sm text-blue-600 hover:text-blue-700"
+        >
+          ← Back to dashboard
+        </button>
+
+        <button
+          onClick={() => navigate("/history")}
+          className="text-sm text-blue-600 hover:text-blue-700"
+        >
+          View history →
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+      <main className="max-w-6xl mx-auto px-4 py-8 grid gap-6 lg:grid-cols-3">
+        {/* LEFT: form + result */}
+        <section className="lg:col-span-2 space-y-6">
+          {/* selectors */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+            <h2 className="text-base md:text-lg font-semibold text-gray-900 mb-4">
+              Select Drug and Food
+            </h2>
+
+            {error && (
+              <div className="mb-4 flex items-start space-x-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                <ExclamationTriangleIcon className="h-5 w-5 mt-0.5" />
+                <span>{error}</span>
+              </div>
+            )}
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <AutoComplete
+                label="Drug"
+                placeholder="Type drug name…"
+                fetcher={(q) => fetchDrugs(q)}
+                value={selectedDrugName}   
+                onSelect={(d) => {
+                setSelectedDrugIndex(d.index);
+                setSelectedDrugName(d.name);
+                setResult(null);
+                setSafeFoods([]);
+                }}
+              />
+
+              <AutoComplete
+                label="Food"
+                placeholder="Type food name…"
+                fetcher={(q) => fetchFoods(q)}
+                value={selectedFoodName} 
+                onSelect={(f) => {
+                 setSelectedFoodName(f.name);
+                 setResult(null);
+                }}
+              />
+            </div>
+
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={handleCheck}
+                disabled={loadingCheck}
+                className="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400"
+              >
+                {loadingCheck ? (
+                  <>
+                    <ArrowPathIcon className="h-4 w-4 mr-2 animate-spin" />
+                    Checking…
+                  </>
+                ) : (
+                  <>
+                    <ShieldCheckIcon className="h-4 w-4 mr-2" />
+                    Check interaction
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* result card */}
+          {result && (
+            <div
+              className={`rounded-xl border px-4 py-4 md:px-6 md:py-5 shadow-sm ${riskColors[result.risk]}`}
+            >
+              <div className="flex items-start space-x-3">
+                {result.risk === 0 ? (
+                  <CheckCircleIcon className="h-6 w-6 mt-0.5 text-green-600" />
+                ) : (
+                  <ExclamationTriangleIcon className="h-6 w-6 mt-0.5 text-red-600" />
+                )}
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-wide">
+                    {riskLabel(result.risk)} risk
+                  </p>
+                  <h3 className="font-semibold text-sm md:text-base mt-1">
+                    {result.drug} + {result.food}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed">
+                    {result.message}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+       </section>
+       {/* RIGHT: safe foods instead of history */}
+  <aside className="space-y-4">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+      <h2 className="text-sm font-semibold text-gray-900 mb-3">
+        Suggested safer foods
+      </h2>
+
+      {safeFoods.length === 0 ? (
+        <p className="text-sm text-gray-500">
+          After you check an interaction, safer alternative foods for
+          the selected drug will appear here.
+        </p>
+      ) : (
+        <div className="grid gap-3">
+          {safeFoods.map((f) => (
+            <div
+              key={f.Food || f.food || f.name}
+              className="border border-gray-200 rounded-lg p-3 text-sm bg-gray-50"
+            >
+              <p className="font-medium text-gray-900">
+                {f.Food || f.food || f.name}
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                Energy: {f.energy} kcal · Protein: {f.protein} g · Carbs:{" "}
+                {f.carbs} g
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </aside>
+      </main>
     </div>
   );
 };
