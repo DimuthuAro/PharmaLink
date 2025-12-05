@@ -59,7 +59,7 @@ const History = () => {
 
   const handleRecheck = (entry) => {
     // Go back to interaction page with pre-selected values
-    navigate("/interaction-check", {
+    navigate("/advisory", {
       state: {
         fromHistory: true,
         drugIndex: entry.drugIndex,
@@ -121,7 +121,7 @@ const History = () => {
                 here automatically.
               </p>
               <button
-                onClick={() => navigate("/interaction-check")}
+                onClick={() => navigate("/advisory")}
                 className="mt-4 inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
               >
                 Go to interaction checker
