@@ -2,10 +2,11 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate ,useLocation} from "react-router-dom";
 import { useAuth } from "../auth/auth.jsx";
+import BrandLogo from "../components/brandLogo.jsx";
 import {
 
   ShieldCheckIcon,
-  ClockIcon,
+  LightBulbIcon,
   ArrowPathIcon,
   ExclamationTriangleIcon,
   CheckCircleIcon,
@@ -291,13 +292,13 @@ const handleSelectFood = (name) => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* simple header bar */}
       <header className="bg-white border-b border-gray-200">
   <div className="max-w-6xl mx-auto px-4 py-4">
     <div className="flex items-center justify-between">
       <div className="flex items-center space-x-3">
-        <ShieldCheckIcon className="h-7 w-7 text-blue-600" />
+        <LightBulbIcon className="h-7 w-7 text-blue-600" />
         <div>
           <h1 className="text-lg font-bold text-gray-900">
             Food–Drug Interaction Check
@@ -311,16 +312,21 @@ const handleSelectFood = (name) => {
       <div className="flex items-center space-x-6">
         <button
           onClick={() => navigate("/dashboard")}
-          className="text-sm text-blue-600 hover:text-blue-700"
+          className="inline-flex items-center rounded-md px-3 py-1.5 text-sm text-blue-600 hover:text-blue-700 hover:bg-gray-100 transition cursor-pointer"
         >
-          ← Back to dashboard
+        Dashboard
         </button>
-
+       <button
+          onClick={() => navigate("/meal-plan")}
+          className="inline-flex items-center rounded-md px-3 py-1.5 text-sm text-blue-600 hover:text-blue-700 hover:bg-gray-100 transition cursor-pointer"
+        >
+         Meal Plan 
+        </button>
         <button
           onClick={() => navigate("/history")}
-          className="text-sm text-blue-600 hover:text-blue-700"
+          className="inline-flex items-center rounded-md px-3 py-1.5 text-sm text-blue-600 hover:text-blue-700 hover:bg-gray-100 transition cursor-pointer"
         >
-          View history →
+          History 
         </button>
       </div>
     </div>
@@ -328,7 +334,7 @@ const handleSelectFood = (name) => {
 </header>
 
 
-      <main className="max-w-6xl mx-auto px-4 py-8 grid gap-6 lg:grid-cols-3">
+      <main className="flex-1 max-w-6xl mx-auto px-4 py-8 grid gap-6 lg:grid-cols-3">
         {/* LEFT: form + result */}
         <section className="lg:col-span-2 space-y-6">
           {/* selectors */}
@@ -449,7 +455,13 @@ const handleSelectFood = (name) => {
       )}
     </div>
   </aside>
+  
       </main>
+      <footer className="mt-10 mb-4 text-[11px] text-slate-500 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-3 max-w-6xl mx-auto px-4 w-full">
+  <span>© {new Date().getFullYear()} PharmaLink. For academic/research use.</span>
+  <span>Always consult a qualified healthcare professional.</span>
+</footer>
+
     </div>
   );
 };
