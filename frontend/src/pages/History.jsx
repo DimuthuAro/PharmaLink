@@ -85,15 +85,15 @@ const History = () => {
           </div>
           <div className="flex items-center space-x-3">
             <button
-              onClick={() => navigate("/interaction-check")}
-              className="text-sm text-blue-600 hover:text-blue-700"
+              onClick={() => navigate("/advisory")}
+              className="text-sm text-blue-600 hover:text-blue-700 cursor-pointer"
             >
-              ← Back to interaction checker
+              Food-Drug Interaction Check
             </button>
             {history.length > 0 && (
               <button
                 onClick={handleClear}
-                className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50"
+                className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50 cursor-pointer"
               >
                 <ArrowPathIcon className="h-4 w-4 mr-1" />
                 Clear history
@@ -166,6 +166,11 @@ const History = () => {
             </div>
           )}
         </div>
+        {/* Tiny footer */}
+        <footer className="mt-10 mb-4 text-[11px] text-slate-500 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-3">
+          <span>© {new Date().getFullYear()} PharmaLink. For academic/research use.</span>
+          <span>Always consult a qualified healthcare professional.</span>
+        </footer>
       </main>
     </div>
   );
