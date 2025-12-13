@@ -43,3 +43,8 @@ export const fetchSafeFoods = async (drugIndex, topN = 10) => {
   });
   return res.data;
 };
+
+export const generateMealPlan = async (payload) => {
+  const res = await api.post("/meal-plan", payload);
+  return res.data;
+};
