@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/auth.jsx';
+import BrandLogo from '../components/brandLogo.jsx';
 import { 
   ShieldCheckIcon as ShieldCheck, 
   LightBulbIcon as LightBulb, 
@@ -267,10 +268,9 @@ const Dashboard = () => {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <div className="shrink-0 flex items-center cursor-pointer" onClick={() => handleNavigation('/')}>
-                <Activity className="h-8 w-8 text-blue-600" />
-                <span className="ml-2 text-xl font-bold text-gray-900">Pharmalink</span>
+                <BrandLogo/>
               </div>
-              <nav className="hidden md:ml-8 md:flex md:space-x-8" role="navigation" aria-label="Main navigation">
+              <nav className="hidden md:flex items-center gap-2 ml-6" role="navigation" aria-label="Main navigation">
                 {['Overview', 'Analytics', 'Patients', 'Settings'].map((item) => (
                   <button
                     key={item}
@@ -288,7 +288,7 @@ const Dashboard = () => {
               </nav>
             </div>
             
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center gap-3">
               <div className="relative hidden sm:block">
                 <Search className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
                 <input
@@ -296,7 +296,7 @@ const Dashboard = () => {
                   placeholder="Search medications, patients..."
                   value={searchQuery}
                   onChange={handleSearch}
-                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64 transition-all duration-200"
+                  className="pl-10 pr-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-72 transition placeholder-gray-300 "
                   aria-label="Search medications and patients"
                 />
               </div>
@@ -618,6 +618,10 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+        <footer className="mt-10 mb-4 text-[11px] text-slate-500 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-3">
+          <span>© {new Date().getFullYear()} PharmaLink. For academic/research use.</span>
+          <span>Always consult a qualified healthcare professional.</span>
+        </footer>
       </main>
     </div>
   );
