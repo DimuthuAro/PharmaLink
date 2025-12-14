@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, Suspense, use } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/auth.jsx';
 import BrandLogo from '../components/brandLogo.jsx';
@@ -92,16 +92,23 @@ const Dashboard = () => {
   }, [logout, navigate]);
 
   // Close user menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = () => {
-      setShowUserMenu(false);
-    };
-    
-    if (showUserMenu) {
-      document.addEventListener('click', handleClickOutside);
-      return () => document.removeEventListener('click', handleClickOutside);
-    }
-  }, [showUserMenu]);
+useEffect(() => {
+  if (!showUserMenu) return;
+
+  const onKeyDown = (e) => {
+    if (e.key === "Escape") setShowUserMenu(false);
+  };
+
+  const onClick = () => setShowUserMenu(false);
+
+  window.addEventListener("keydown", onKeyDown);
+  window.addEventListener("click", onClick);
+
+  return () => {
+    window.removeEventListener("keydown", onKeyDown);
+    window.removeEventListener("click", onClick);
+  };
+}, [showUserMenu]);
 
   // Memoized quick actions data for performance
   const quickActions = useMemo(() => [
@@ -260,6 +267,21 @@ const Dashboard = () => {
     }
   ], [stats]);
 
+  const initials = useMemo(() => {
+    const name = user?.name?.trim() || "User";
+    return name
+      .split("")
+      .slice(0, 2)
+      .map((p) => p[0]?.toUpperCase())
+      .join("");
+  }, [user?.name]);
+
+  const roleLabel = useMemo(() => {
+    const r = (user?.role || "").toLowerCase();
+    if (!r) return "Healthcare Professional";
+    return r.charAt(0).toUpperCase() + r.slice(1);
+  }, [user?.role]);
+  
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Enhanced Header */}
@@ -309,62 +331,123 @@ const Dashboard = () => {
               </button>
               {/* User Menu */}
               <div className="relative">
-                <button 
-                  className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                {/* Trigger */}
+                <button
+                  type="button"
+                  className="flex items-center gap-3 rounded-xl px-2 py-1.5 hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-200"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setShowUserMenu(!showUserMenu);
+                    setShowUserMenu((s) => !s);
                   }}
-                  aria-label="User menu"
+                  aria-haspopup="menu"
+                  aria-expanded={showUserMenu}
                 >
-                  <UserCircle className="h-8 w-8 text-gray-400" />
-                  <div className="hidden sm:block text-left">
-                    <div className="text-sm font-medium text-gray-700">{user?.name || 'User'}</div>
-                    <div className="text-xs text-gray-500">{user?.role || 'Healthcare Professional'}</div>
+                  {/* Avatar */}
+                  <div className="h-9 w-9 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center">
+                    <span className="text-blue-700 font-bold text-sm">{initials}</span>
                   </div>
-                  <ChevronRightIcon className={`h-4 w-4 text-gray-400 transition-transform ${
-                    showUserMenu ? 'rotate-90' : ''
-                  }`} />
+              
+                  {/* Name + role */}
+                  <div className="hidden sm:flex flex-col items-start leading-tight">
+                    <span className="text-sm font-semibold text-slate-900">{user?.name || "User"}</span>
+                    <span className="text-xs text-slate-500">{roleLabel}</span>
+                  </div>
+              
+                  {/* Chevron */}
+                  <svg
+                    className={`hidden sm:block h-4 w-4 text-slate-400 transition-transform ${
+                      showUserMenu ? "rotate-180" : ""
+                    }`}
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
                 </button>
-
-                {/* User Dropdown Menu */}
+              
+                {/* Dropdown */}
                 {showUserMenu && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-                    <div className="p-4 border-b border-gray-100">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                          <span className="text-blue-600 font-semibold text-lg">
-                            {user?.name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
-                          </span>
+                  <div
+                    className="absolute right-0 mt-3 w-[320px] rounded-2xl bg-white shadow-xl border border-slate-200 overflow-hidden z-50"
+                    role="menu"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {/* Little caret */}
+                    <div className="absolute -top-2 right-6 h-4 w-4 rotate-45 bg-white border-l border-t border-slate-200" />
+              
+                    {/* Header */}
+                    <div className="p-4 bg-slate-50/70 border-b border-slate-200">
+                      <div className="flex items-center gap-3">
+                        <div className="h-12 w-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-extrabold">
+                          {initials}
                         </div>
-                        <div>
-                          <div className="font-medium text-gray-900">{user?.name || 'User'}</div>
-                          <div className="text-sm text-gray-500">{user?.email || 'user@example.com'}</div>
+              
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="font-bold text-slate-900 truncate">{user?.name || "User"}</p>
+                            <span className="inline-flex items-center rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
+                              <ShieldCheck className="h-3.5 w-3.5 mr-1" />
+                              Secure
+                            </span>
+                          </div>
+                          <p className="text-sm text-slate-600 truncate">{user?.email || "user@example.com"}</p>
+                          <p className="text-xs text-slate-500 mt-0.5">{roleLabel}</p>
                         </div>
                       </div>
                     </div>
-                    <div className="py-2">
-                      <button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                        <UserCircle className="h-4 w-4 mr-3" />
-                        Profile Settings
-                      </button>
-                      <button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                        <Cog6ToothIcon className="h-4 w-4 mr-3" />
-                        Account Settings
-                      </button>
-                    </div>
-                    <div className="border-t border-gray-100 py-2">
-                      <button 
-                        onClick={handleLogout}
-                        className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+              
+                    {/* Menu items */}
+                    <div className="p-2">
+                      <button
+                        type="button"
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition"
+                        onClick={() => {
+                          setShowUserMenu(false);
+                          handleNavigation("/profile"); // change route if needed
+                        }}
+                        role="menuitem"
                       >
-                        <ArrowRightOnRectangleIcon className="h-4 w-4 mr-3" />
+                        <UserCircle className="h-5 w-5 text-slate-400" />
+                        Profile
+                      </button>
+              
+                      <button
+                        type="button"
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition"
+                        onClick={() => {
+                          setShowUserMenu(false);
+                          handleNavigation("/settings"); // change route if needed
+                        }}
+                        role="menuitem"
+                      >
+                        <Cog6ToothIcon className="h-5 w-5 text-slate-400" />
+                        Account settings
+                      </button>
+              
+                      <div className="my-2 h-px bg-slate-200" />
+              
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowUserMenu(false);
+                          handleLogout();
+                        }}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 transition"
+                        role="menuitem"
+                      >
+                        <ArrowRightOnRectangleIcon className="h-5 w-5" />
                         Sign out
                       </button>
                     </div>
                   </div>
                 )}
               </div>
+              
             </div>
           </div>
         </div>
