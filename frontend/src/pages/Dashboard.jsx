@@ -88,7 +88,7 @@ const Dashboard = () => {
   // Logout handler
   const handleLogout = useCallback(() => {
     logout();
-    navigate('/login');
+    navigate('/');
   }, [logout, navigate]);
 
   // Close user menu when clicking outside
