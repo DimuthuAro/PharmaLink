@@ -364,7 +364,7 @@ const History = () => {
 
                             <div className="min-w-0">
                               <div className="flex flex-wrap items-center gap-2">
-                                <h3 className="font-extrabold text-slate-900 text-sm md:text-base wrap-break-words">
+                                <h3 className="font-bold  text-sm md:text-base wrap-break-words">
                                   {entry.drug} + {entry.food}
                                 </h3>
                                 <span
