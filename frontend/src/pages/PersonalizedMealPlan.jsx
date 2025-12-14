@@ -2,6 +2,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/auth.jsx";
+import BrandLogo from "../components/brandLogo.jsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
@@ -12,6 +13,9 @@ import {
   CheckCircleIcon,
   ChevronDownIcon,
   ArrowDownTrayIcon,
+  UserCircleIcon,
+  Cog6ToothIcon,
+  ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 
 import { fetchDrugs, generateMealPlan } from "../utils/api.js";
@@ -19,7 +23,12 @@ import AutoComplete from "../components/AutoComplete.jsx";
 
 const PersonalizedMealPlan = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, logout, isAuthenticated } = useAuth();
+
+  // ----------------- AUTH GUARD -----------------
+  useEffect(() => {
+    if (isAuthenticated === false) navigate("/login");
+  }, [isAuthenticated, navigate]);
 
   // ----------------- STATE -----------------
   const [selectedDrugs, setSelectedDrugs] = useState([]); // [{index, name}]
@@ -41,16 +50,63 @@ const PersonalizedMealPlan = () => {
   // Day selector (-1 = All days)
   const [activeDay, setActiveDay] = useState(-1);
 
-  // ✅ Export dropdown UI state
+  // Export dropdown UI state
   const [exportOpen, setExportOpen] = useState(false);
 
-  // close export dropdown on outside click
+  // User menu dropdown UI state
+  const [showUserMenu, setShowUserMenu] = useState(false);
+
+  // Close export dropdown on outside click
   useEffect(() => {
     if (!exportOpen) return;
     const onDocClick = () => setExportOpen(false);
     document.addEventListener("click", onDocClick);
     return () => document.removeEventListener("click", onDocClick);
   }, [exportOpen]);
+
+  // Close user menu on outside click + ESC
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") setShowUserMenu(false);
+    };
+
+    const onClickOutside = (e) => {
+      if (!e.target.closest("#user-menu-wrapper")) setShowUserMenu(false);
+    };
+
+    if (showUserMenu) {
+      document.addEventListener("keydown", onKeyDown);
+      document.addEventListener("mousedown", onClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("mousedown", onClickOutside);
+    };
+  }, [showUserMenu]);
+
+  // ----------------- HEADER HELPERS -----------------
+  const initials = useMemo(() => {
+    const name = user?.name?.trim() || "User";
+    const parts = name.split(" ").filter(Boolean);
+    const first = parts[0]?.[0] || "U";
+    const second = parts[1]?.[0] || (parts[0]?.[1] || "");
+    return (first + second).toUpperCase();
+  }, [user?.name]);
+
+  const roleLabel = useMemo(() => {
+    const r = (user?.role || "").toLowerCase();
+    if (!r) return "Healthcare Professional";
+    return r.charAt(0).toUpperCase() + r.slice(1);
+  }, [user?.role]);
+
+  const handleLogout = () => {
+    try {
+      logout?.();
+    } finally {
+      navigate("/");
+    }
+  };
 
   // ----------------- HELPERS -----------------
   const handleAddDrug = () => {
@@ -256,53 +312,193 @@ const PersonalizedMealPlan = () => {
   // ----------------- RENDER -----------------
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
-      {/* Top bar */}
-      <header className="bg-white border-b border-slate-200">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <ShieldCheckIcon className="h-7 w-7 text-blue-600" />
-            <div>
-              <h1 className="text-lg font-bold text-gray-900">
-                Generate New Meal Plan
-              </h1>
-              <p className="text-xs text-gray-500">
-                Logged in as {user?.name || "Dr. Sarah Smith"}
-              </p>
-            </div>
+      {/* HEADER (matches FoodDrugInteraction style) */}
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center">
+          {/* Left: brand */}
+          <div className="flex items-center gap-3">
+            <BrandLogo className="h-7 w-7" />
           </div>
 
-          <div className="flex items-center space-x-6">
-            <button
-              onClick={() => navigate("/dashboard")}
-              className="inline-flex items-center rounded-md px-3 py-1.5 text-sm text-blue-600 hover:text-blue-700 hover:bg-gray-100 transition cursor-pointer"
-            >
-              Dashboard
-            </button>
-            <button
-              onClick={() => navigate("/advisory")}
-              className="inline-flex items-center rounded-md px-3 py-1.5 text-sm text-blue-600 hover:text-blue-700 hover:bg-gray-100 transition cursor-pointer"
-            >
-              Food-Drug Interactions Check
-            </button>
+          {/* Spacer */}
+          <div className="flex-1" />
+
+          {/* Right: nav + user */}
+          <div className="flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-2">
+              <button
+                onClick={() => navigate("/dashboard")}
+                className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
+              >
+                Dashboard
+              </button>
+              <button
+                onClick={() => navigate("/advisory")}
+                className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
+              >
+                Food–Drug Check
+              </button>
+            </div>
+
+            {/* User menu */}
+            <div id="user-menu-wrapper" className="relative">
+              <button
+                type="button"
+                onClick={() => setShowUserMenu((s) => !s)}
+                className="flex items-center gap-3 rounded-xl px-2 py-1.5 hover:bg-slate-50 transition border border-transparent hover:border-slate-200 cursor-pointer"
+                aria-haspopup="menu"
+                aria-expanded={showUserMenu}
+              >
+                <div className="h-9 w-9 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center">
+                  <span className="text-blue-700 font-bold text-sm">
+                    {initials}
+                  </span>
+                </div>
+
+                <div className="hidden sm:flex flex-col items-start leading-tight">
+                  <span className="text-sm font-semibold text-slate-900">
+                    {user?.name || "User"}
+                  </span>
+                  <span className="text-xs text-slate-500">{roleLabel}</span>
+                </div>
+
+                <svg
+                  className={`hidden sm:block h-4 w-4 text-slate-400 transition-transform ${
+                    showUserMenu ? "rotate-180" : ""
+                  }`}
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+
+              {showUserMenu && (
+                <div
+                  className="absolute right-0 mt-3 w-[320px] rounded-2xl bg-white shadow-xl border border-slate-200 overflow-hidden z-50"
+                  role="menu"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* caret */}
+                  <div className="absolute -top-2 right-6 h-4 w-4 rotate-45 bg-white border-l border-t border-slate-200" />
+
+                  {/* header */}
+                  <div className="p-4 bg-slate-50/70 border-b border-slate-200">
+                    <div className="flex items-center gap-3">
+                      <div className="h-12 w-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-extrabold">
+                        {initials}
+                      </div>
+
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p className="font-bold text-slate-900 truncate">
+                            {user?.name || "User"}
+                          </p>
+                          <span className="inline-flex items-center rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
+                            <ShieldCheckIcon className="h-3.5 w-3.5 mr-1" />
+                            Secure
+                          </span>
+                        </div>
+                        <p className="text-sm text-slate-600 truncate">
+                          {user?.email || "user@example.com"}
+                        </p>
+                        <p className="text-xs text-slate-500 mt-0.5">
+                          {roleLabel}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* items */}
+                  <div className="p-2">
+                    <button
+                      type="button"
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition cursor-pointer"
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        navigate("/profile");
+                      }}
+                      role="menuitem"
+                    >
+                      <UserCircleIcon className="h-5 w-5 text-slate-400" />
+                      Profile
+                    </button>
+
+                    <button
+                      type="button"
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition cursor-pointer"
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        navigate("/settings");
+                      }}
+                      role="menuitem"
+                    >
+                      <Cog6ToothIcon className="h-5 w-5 text-slate-400" />
+                      Account settings
+                    </button>
+
+                    <div className="my-2 h-px bg-slate-200" />
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        handleLogout();
+                      }}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 transition cursor-pointer"
+                      role="menuitem"
+                    >
+                      <ArrowRightOnRectangleIcon className="h-5 w-5" />
+                      Sign out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>
+
+      {/* PAGE TITLE (clean + professional) */}
+      <div className="bg-blue-50 border-b border-blue-100">
+        <div className="max-w-6xl mx-auto px-4 py-7">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-sm">
+              <ShieldCheckIcon className="h-5 w-5" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+                Generate New Meal Plan
+              </h1>
+              <p className="text-sm text-slate-600 mt-1">
+                Create interaction-aware meals based on active medications,
+                calories, and preferences.
+              </p>
+            </div>
+          </div>
+          
+        </div>
+      </div>
 
       <main className="max-w-6xl mx-auto px-4 py-8 grid gap-8 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,2fr)]">
         {/* LEFT COLUMN – FORM */}
         <section className="space-y-5">
           {/* Active medications */}
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
             <h2 className="text-sm font-semibold tracking-wide text-slate-900 mb-1">
               Step 1 — Active medications
             </h2>
             <p className="text-[11px] text-slate-500 mb-3">
-              Your personalized meal plan will respect food–drug interactions
-              for these medicines.
+              Your meal plan respects food–drug interactions for these medicines.
             </p>
 
             {error && (
-              <div className="mb-3 flex items-start space-x-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+              <div className="mb-3 flex items-start space-x-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
                 <ExclamationTriangleIcon className="h-4 w-4 mt-0.5" />
                 <span>{error}</span>
               </div>
@@ -318,7 +514,7 @@ const PersonalizedMealPlan = () => {
 
             <button
               onClick={handleAddDrug}
-              className="mt-2 inline-flex items-center px-3 py-1.5 rounded-full bg-slate-100 text-xs font-medium text-slate-800 hover:bg-slate-200"
+              className="mt-2 inline-flex items-center px-3 py-1.5 rounded-full bg-slate-100 text-xs font-medium text-slate-800 hover:bg-slate-200 cursor-pointer"
             >
               + Add to list
             </button>
@@ -336,7 +532,7 @@ const PersonalizedMealPlan = () => {
                 >
                   <span className="truncate">{d.name}</span>
                   <button
-                    className="text-[11px] text-red-500 hover:underline"
+                    className="text-[11px] text-red-500 hover:underline cursor-pointer"
                     onClick={() => handleRemoveDrug(d.index)}
                   >
                     remove
@@ -347,8 +543,8 @@ const PersonalizedMealPlan = () => {
           </div>
 
           {/* Calories + prefs */}
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-            <h2 className="text-sm font-semibold text-slate-900">Calories</h2>
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+            <h2 className="text-sm font-semibold text-slate-900">Step 2 — Calories</h2>
             <p className="text-[11px] text-slate-500 mb-2">
               Target calories per day for this plan.
             </p>
@@ -358,7 +554,7 @@ const PersonalizedMealPlan = () => {
               min={100}
               value={caloriesPerDay}
               onChange={(e) => setCaloriesPerDay(Number(e.target.value) || 0)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm mb-4"
+              className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm mb-4"
             />
 
             <div className="border-t border-slate-200 pt-3 mt-1">
@@ -367,7 +563,7 @@ const PersonalizedMealPlan = () => {
               </h3>
 
               <div className="space-y-2 text-xs">
-                <label className="flex items-center gap-2">
+                <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={globalRestrictions.noAlcohol}
@@ -380,7 +576,7 @@ const PersonalizedMealPlan = () => {
                   />
                   <span>No alcohol</span>
                 </label>
-                <label className="flex items-center gap-2">
+                <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={globalRestrictions.vegetarian}
@@ -397,14 +593,14 @@ const PersonalizedMealPlan = () => {
 
               <div className="mt-3 flex gap-3 text-xs">
                 <div>
-                  <label className="block text-slate-600 mb-1">Days</label>
+                  <label className="block text-slate-600 mb-1 ">Days</label>
                   <input
                     type="number"
                     min={1}
                     max={7}
                     value={days}
                     onChange={(e) => setDays(Number(e.target.value) || 1)}
-                    className="w-16 rounded-md border border-slate-300 px-2 py-1"
+                    className="w-16 rounded-md border border-slate-300 px-2 py-1 cursor-pointer"
                   />
                 </div>
                 <div>
@@ -415,7 +611,7 @@ const PersonalizedMealPlan = () => {
                     max={5}
                     value={mealsPerDay}
                     onChange={(e) => setMealsPerDay(Number(e.target.value) || 3)}
-                    className="w-16 rounded-md border border-slate-300 px-2 py-1"
+                    className="w-16 rounded-md border border-slate-300 px-2 py-1 cursor-pointer"
                   />
                 </div>
               </div>
@@ -424,19 +620,18 @@ const PersonalizedMealPlan = () => {
             <button
               onClick={handleGenerate}
               disabled={loading}
-              className="mt-4 w-full inline-flex items-center justify-center rounded-full bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-600 disabled:bg-slate-400"
+              className="mt-4 w-full inline-flex items-center justify-center rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:bg-slate-400 cursor-pointer"
             >
               {loading ? (
                 "Generating meal plan..."
               ) : (
                 <>
                   Generate Meal Plan
-                  <ArrowRightIcon className="h-4 w-4 ml-1" />
                 </>
               )}
             </button>
 
-            {/*Export dropdown */}
+            {/* Export dropdown */}
             {mealPlan && (
               <div className="mt-2 relative">
                 <button
@@ -445,11 +640,15 @@ const PersonalizedMealPlan = () => {
                     e.stopPropagation();
                     setExportOpen((s) => !s);
                   }}
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50"
+                  className="cursor-pointer w-full inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50"
                 >
                   <ArrowDownTrayIcon className="h-4 w-4" />
                   Export as…
-                  <ChevronDownIcon className={`h-4 w-4 transition ${exportOpen ? "rotate-180" : ""}`} />
+                  <ChevronDownIcon
+                    className={`h-4 w-4 transition ${
+                      exportOpen ? "rotate-180" : ""
+                    }`}
+                  />
                 </button>
 
                 {exportOpen && (
@@ -459,7 +658,7 @@ const PersonalizedMealPlan = () => {
                   >
                     <button
                       type="button"
-                      className="w-full text-left px-4 py-2.5 text-xs hover:bg-slate-50"
+                      className="cursor-pointer w-full text-left px-4 py-2.5 text-xs hover:bg-slate-50"
                       onClick={() => {
                         exportJSON();
                         setExportOpen(false);
@@ -469,7 +668,7 @@ const PersonalizedMealPlan = () => {
                     </button>
                     <button
                       type="button"
-                      className="w-full text-left px-4 py-2.5 text-xs hover:bg-slate-50"
+                      className="cursor-pointer w-full text-left px-4 py-2.5 text-xs hover:bg-slate-50"
                       onClick={() => {
                         exportCSV();
                         setExportOpen(false);
@@ -479,7 +678,7 @@ const PersonalizedMealPlan = () => {
                     </button>
                     <button
                       type="button"
-                      className="w-full text-left px-4 py-2.5 text-xs hover:bg-slate-50"
+                      className="cursor-pointer w-full text-left px-4 py-2.5 text-xs hover:bg-slate-50"
                       onClick={() => {
                         exportPDF();
                         setExportOpen(false);
@@ -513,7 +712,7 @@ const PersonalizedMealPlan = () => {
                     <button
                       type="button"
                       onClick={() => setActiveDay(-1)}
-                      className={`text-[11px] font-semibold px-3 py-1 rounded-full border transition ${
+                      className={`text-[11px] font-semibold px-3 py-1 rounded-full border transition cursor-pointer${
                         activeDay === -1
                           ? "bg-blue-600 text-white border-blue-600"
                           : "bg-white text-slate-700 border-slate-300 hover:bg-slate-50"
@@ -529,7 +728,7 @@ const PersonalizedMealPlan = () => {
                         key={d.day}
                         type="button"
                         onClick={() => setActiveDay(d.day)}
-                        className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition ${
+                        className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition cursor-pointer ${
                           activeDay === d.day
                             ? "bg-emerald-600 text-white border-emerald-600"
                             : "bg-white text-slate-700 border-slate-300 hover:bg-slate-50"
@@ -555,12 +754,6 @@ const PersonalizedMealPlan = () => {
                         <h3 className="text-xl font-extrabold tracking-tight text-slate-900">
                           DAY {day.day}
                         </h3>
-                        <button
-                          type="button"
-                          className="hidden sm:inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-semibold text-emerald-700"
-                        >
-                          Swap out this day
-                        </button>
                       </div>
                       <span className="inline-flex items-center text-[11px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
                         <CheckCircleIcon className="h-3.5 w-3.5 mr-1" />
@@ -612,12 +805,6 @@ const PersonalizedMealPlan = () => {
                               <h4 className="text-lg font-extrabold text-slate-900 uppercase tracking-wide">
                                 {meal.name}
                               </h4>
-                              <button
-                                type="button"
-                                className="hidden sm:inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold text-slate-800"
-                              >
-                                Swap out this meal
-                              </button>
                             </div>
 
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-3 text-xs">
@@ -666,10 +853,10 @@ const PersonalizedMealPlan = () => {
                                       {item.food}
                                     </p>
                                     <p className="text-[11px] text-slate-500 mt-0.5">
-                                      {item.energy.toFixed(0)} kcal ·{" "}
-                                      {item.protein.toFixed(1)}g protein ·{" "}
-                                      {item.fat?.toFixed ? item.fat.toFixed(1) : "0.0"}g fat ·{" "}
-                                      {item.carbs.toFixed(1)}g carbs
+                                      {Number(item.energy ?? 0).toFixed(0)} kcal ·{" "}
+                                      {Number(item.protein ?? 0).toFixed(1)}g protein ·{" "}
+                                      {Number(item.fat ?? 0).toFixed(1)}g fat ·{" "}
+                                      {Number(item.carbs ?? 0).toFixed(1)}g carbs
                                     </p>
                                   </div>
                                 </div>
