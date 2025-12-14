@@ -1,3 +1,4 @@
+// src/auth/auth.jsx
 import { createContext, useContext, useState, useEffect } from 'react';
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
@@ -13,13 +14,11 @@ export const useAuth = () => {
 
 const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    // Check localStorage for existing session
     const savedAuth = localStorage.getItem('pharmalink_auth');
     return savedAuth ? JSON.parse(savedAuth) : false;
   });
   
   const [user, setUser] = useState(() => {
-    // Check localStorage for user data
     const savedUser = localStorage.getItem('pharmalink_user');
     return savedUser ? JSON.parse(savedUser) : null;
   });
@@ -27,8 +26,6 @@ const AuthProvider = ({ children }) => {
   const login = (userData) => {
     setIsAuthenticated(true);
     setUser(userData);
-    
-    // Persist to localStorage
     localStorage.setItem('pharmalink_auth', 'true');
     localStorage.setItem('pharmalink_user', JSON.stringify(userData));
   };
@@ -36,8 +33,6 @@ const AuthProvider = ({ children }) => {
   const logout = () => {
     setIsAuthenticated(false);
     setUser(null);
-    
-    // Clear localStorage
     localStorage.removeItem('pharmalink_auth');
     localStorage.removeItem('pharmalink_user');
     localStorage.removeItem('pharmalink_remember');
@@ -61,11 +56,9 @@ const AuthProvider = ({ children }) => {
 
 const UnauthorizedComponent = () => {
   useEffect(() => {
-    // Redirect to login after a short delay
     const timer = setTimeout(() => {
       window.location.href = '/login';
     }, 2000);
-    
     return () => clearTimeout(timer);
   }, []);
 
@@ -84,18 +77,18 @@ const UnauthorizedComponent = () => {
       </div>
     </div>
   )
-}
+};
 
 const ProtectedRoute = ({ element }) => {
   const { isAuthenticated } = useAuth();
-  return isAuthenticated ? element : <Unauthorized />;
-}
+  return isAuthenticated ? element : <UnauthorizedComponent />;
+};
 
 const createProtectedRoutes = (routes) => {
   return routes.map(route => ({
     path: route.path,
     element: <ProtectedRoute element={route.element} />
   }));
-}
+};
 
 export { AuthProvider, createProtectedRoutes };
