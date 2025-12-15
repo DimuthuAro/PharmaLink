@@ -280,7 +280,7 @@ const Profile = () => {
                       <p className="text-xl font-extrabold text-white truncate">
                         {user?.name || "User"}
                       </p>
-                      <p className="text-sm text-slate-200/90 truncate">
+                      <p className="text-sm text-black-200 truncate">
                         {user?.email || "user@example.com"}
                       </p>
 
