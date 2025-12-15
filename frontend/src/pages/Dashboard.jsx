@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback, useMemo, Suspense, use } from 
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/auth.jsx';
 import BrandLogo from '../components/brandLogo.jsx';
+import UserAvatar from '../components/UserAvatar.jsx';
+
 import { 
   ShieldCheckIcon as ShieldCheck, 
   LightBulbIcon as LightBulb, 
@@ -270,10 +272,12 @@ useEffect(() => {
   const initials = useMemo(() => {
     const name = user?.name?.trim() || "User";
     return name
-      .split("")
+      .split(" ")
+      .filter(Boolean)
+      .map((n) => n[0])
       .slice(0, 2)
-      .map((p) => p[0]?.toUpperCase())
-      .join("");
+      .join("")
+      .toUpperCase();
   }, [user?.name]);
 
   const roleLabel = useMemo(() => {
@@ -281,6 +285,7 @@ useEffect(() => {
     if (!r) return "Healthcare Professional";
     return r.charAt(0).toUpperCase() + r.slice(1);
   }, [user?.role]);
+
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -330,7 +335,7 @@ useEffect(() => {
                 <span className="absolute top-0 right-0 block h-2 w-2 bg-red-400 rounded-full animate-pulse"></span>
               </button>
               {/* User Menu */}
-              <div className="relative">
+              <div id="user-menu-wrapper" className="relative">
                 {/* Trigger */}
                 <button
                   type="button"
@@ -342,32 +347,30 @@ useEffect(() => {
                   aria-haspopup="menu"
                   aria-expanded={showUserMenu}
                 >
-                  {/* Avatar */}
-                  <div className="h-9 w-9 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center">
-                    <span className="text-blue-700 font-bold text-sm">{initials}</span>
-                  </div>
-              
-                  {/* Name + role */}
-                  <div className="hidden sm:flex flex-col items-start leading-tight">
-                    <span className="text-sm font-semibold text-slate-900">{user?.name || "User"}</span>
-                    <span className="text-xs text-slate-500">{roleLabel}</span>
-                  </div>
-              
-                  {/* Chevron */}
-                  <svg
-                    className={`hidden sm:block h-4 w-4 text-slate-400 transition-transform ${
-                      showUserMenu ? "rotate-180" : ""
-                    }`}
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+                {/* Image avatar */}
+                <UserAvatar user={user} size={36} />
+
+                <div className="hidden sm:flex flex-col items-start leading-tight">
+                  <span className="text-sm font-semibold text-slate-900">
+                    {user?.name || "User"}
+                  </span>
+                  <span className="text-xs text-slate-500">{roleLabel}</span>
+                </div>
+
+                <svg
+                  className={`hidden sm:block h-4 w-4 text-slate-400 transition-transform ${
+                    showUserMenu ? "rotate-180" : ""
+                  }`}
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
+                    clipRule="evenodd"
+                  />
+                </svg>
                 </button>
               
                 {/* Dropdown */}
@@ -383,9 +386,18 @@ useEffect(() => {
                     {/* Header */}
                     <div className="p-4 bg-slate-50/70 border-b border-slate-200">
                       <div className="flex items-center gap-3">
-                        <div className="h-12 w-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-extrabold">
-                          {initials}
-                        </div>
+                      {/* Bigger avatar with image */}
+                      <div className="h-12 w-12 rounded-2xl overflow-hidden bg-blue-600 flex items-center justify-center">
+                        {user?.avatar ? (
+                          <img
+                            src={user.avatar}
+                            alt={user?.name || "User"}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-white font-extrabold">{initials}</span>
+                        )}
+                      </div>
               
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">

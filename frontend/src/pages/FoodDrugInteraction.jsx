@@ -1,20 +1,20 @@
 // src/pages/FoodDrugInteraction.jsx
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../auth/auth.jsx";
 import BrandLogo from "../components/brandLogo.jsx";
+import UserAvatar from "../components/UserAvatar.jsx";
 
 import {
-  UserCircleIcon,
   ShieldCheckIcon,
   LightBulbIcon,
   ArrowPathIcon,
   ExclamationTriangleIcon,
   CheckCircleIcon,
   MagnifyingGlassIcon,
-  ClockIcon,
   Cog6ToothIcon,
   ArrowRightOnRectangleIcon,
+  UserCircleIcon,
 } from "@heroicons/react/24/outline";
 
 import {
@@ -32,19 +32,16 @@ const riskColors = {
   2: "bg-rose-50 text-rose-900 border-rose-200",
 };
 
-const riskBadge = (r) =>
-  r === 0 ? "Safe" : r === 1 ? "Moderate risk" : "High risk";
+const riskBadge = (r) => (r === 0 ? "Safe" : r === 1 ? "Moderate risk" : "High risk");
 
-/** ✅ ONE AutoComplete component */
+/** ONE AutoComplete component */
 const AutoComplete = ({ label, placeholder, fetcher, onSelect, value }) => {
   const [query, setQuery] = useState(value || "");
   const [options, setOptions] = useState([]);
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setQuery(value || "");
-  }, [value]);
+  useEffect(() => setQuery(value || ""), [value]);
 
   const handleSearch = async (val) => {
     setQuery(val);
@@ -60,7 +57,7 @@ const AutoComplete = ({ label, placeholder, fetcher, onSelect, value }) => {
       setLoading(true);
       const res = await fetcher(val);
       setOptions(res || []);
-    } catch (e) {
+    } catch {
       setOptions([]);
     } finally {
       setLoading(false);
@@ -116,9 +113,7 @@ const AutoComplete = ({ label, placeholder, fetcher, onSelect, value }) => {
                   </span>
 
                   {item.contains && (
-                    <span className="block text-xs text-slate-500">
-                      {item.contains}
-                    </span>
+                    <span className="block text-xs text-slate-500">{item.contains}</span>
                   )}
 
                   {(item.is_alcohol === 1 || item.is_alcohol === true) && (
@@ -152,10 +147,8 @@ const FoodDrugInteraction = () => {
   const [loadingCheck, setLoadingCheck] = useState(false);
   const [error, setError] = useState("");
 
-  /** ✅ Dropdown state */
   const [showUserMenu, setShowUserMenu] = useState(false);
 
-  /** ✅ initials + role label like Dashboard */
   const initials = useMemo(() => {
     const name = user?.name?.trim() || "User";
     return name
@@ -178,19 +171,14 @@ const FoodDrugInteraction = () => {
     navigate("/");
   };
 
-  /** auth guard */
   useEffect(() => {
     if (!isAuthenticated) navigate("/login");
   }, [isAuthenticated, navigate]);
 
-  /** close dropdown: click outside + ESC */
   useEffect(() => {
     if (!showUserMenu) return;
 
-    const onKeyDown = (e) => {
-      if (e.key === "Escape") setShowUserMenu(false);
-    };
-
+    const onKeyDown = (e) => e.key === "Escape" && setShowUserMenu(false);
     const onMouseDown = (e) => {
       if (!e.target.closest("#user-menu-wrapper")) setShowUserMenu(false);
     };
@@ -204,12 +192,10 @@ const FoodDrugInteraction = () => {
     };
   }, [showUserMenu]);
 
-  /** if coming from history */
   useEffect(() => {
     const state = location.state;
     if (state?.fromHistory) {
       const { drugIndex, drugName, foodName } = state;
-
       if (typeof drugIndex === "number") setSelectedDrugIndex(drugIndex);
       if (drugName) setSelectedDrugName(drugName);
       if (foodName) setSelectedFoodName(foodName);
@@ -220,7 +206,6 @@ const FoodDrugInteraction = () => {
     }
   }, [location.state]);
 
-  /** load history */
   useEffect(() => {
     if (user?.email) setHistory(loadHistory(user.email));
   }, [user?.email]);
@@ -263,71 +248,51 @@ const FoodDrugInteraction = () => {
     }
   };
 
-  const formattedHistory = useMemo(
-    () =>
-      (history || [])
-        .slice(0, 6)
-        .map((h) => ({ ...h, time: new Date(h.timestamp).toLocaleString() })),
-    [history]
-  );
-
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       {/* HEADER */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center">
-          {/* LEFT: Brand */}
           <div className="flex items-center gap-3">
             <BrandLogo className="h-7 w-7" />
           </div>
 
-          {/* Spacer */}
           <div className="flex-1" />
 
-          {/* RIGHT: Nav + User */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Nav */}
             <div className="hidden md:flex items-center gap-1">
               <button
                 onClick={() => navigate("/dashboard")}
-                className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
+                className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100"
               >
                 Dashboard
               </button>
               <button
                 onClick={() => navigate("/meal-plan")}
-                className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
+                className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100"
               >
                 Meal Plan
               </button>
               <button
                 onClick={() => navigate("/history")}
-                className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
+                className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100"
               >
                 History
               </button>
             </div>
 
-            {/* User Menu (Dashboard style) */}
+            {/* ✅ USER DROPDOWN WITH IMAGE */}
             <div id="user-menu-wrapper" className="relative">
               <button
                 type="button"
-                className="flex items-center gap-3 rounded-xl px-2 py-1.5 hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-200 cursor-pointer"
+                className="flex items-center gap-3 rounded-xl px-2 py-1.5 hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-200"
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowUserMenu((s) => !s);
                 }}
-                aria-haspopup="menu"
-                aria-expanded={showUserMenu}
               >
-                {/* Avatar */}
-                <div className="h-9 w-9 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center">
-                  <span className="text-blue-700 font-bold text-sm">
-                    {initials}
-                  </span>
-                </div>
+                <UserAvatar user={user} size={36} />
 
-                {/* Name + role */}
                 <div className="hidden sm:flex flex-col items-start leading-tight">
                   <span className="text-sm font-semibold text-slate-900">
                     {user?.name || "User"}
@@ -335,14 +300,12 @@ const FoodDrugInteraction = () => {
                   <span className="text-xs text-slate-500">{roleLabel}</span>
                 </div>
 
-                {/* Chevron */}
                 <svg
                   className={`hidden sm:block h-4 w-4 text-slate-400 transition-transform ${
                     showUserMenu ? "rotate-180" : ""
                   }`}
                   viewBox="0 0 20 20"
                   fill="currentColor"
-                  aria-hidden="true"
                 >
                   <path
                     fillRule="evenodd"
@@ -352,21 +315,22 @@ const FoodDrugInteraction = () => {
                 </svg>
               </button>
 
-              {/* Dropdown */}
               {showUserMenu && (
-                <div
-                  className="absolute right-0 mt-3 w-[320px] rounded-2xl bg-white shadow-xl border border-slate-200 overflow-hidden z-50"
-                  role="menu"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  {/* caret */}
+                <div className="absolute right-0 mt-3 w-[320px] rounded-2xl bg-white shadow-xl border border-slate-200 overflow-hidden z-50">
                   <div className="absolute -top-2 right-6 h-4 w-4 rotate-45 bg-white border-l border-t border-slate-200" />
 
-                  {/* header */}
                   <div className="p-4 bg-slate-50/70 border-b border-slate-200">
                     <div className="flex items-center gap-3">
-                      <div className="h-12 w-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-extrabold">
-                        {initials}
+                      <div className="h-12 w-12 rounded-2xl overflow-hidden bg-blue-600 flex items-center justify-center">
+                        {user?.avatar ? (
+                          <img
+                            src={user.avatar}
+                            alt={user?.name || "User"}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-white font-extrabold">{initials}</span>
+                        )}
                       </div>
 
                       <div className="min-w-0">
@@ -382,23 +346,19 @@ const FoodDrugInteraction = () => {
                         <p className="text-sm text-slate-600 truncate">
                           {user?.email || "user@example.com"}
                         </p>
-                        <p className="text-xs text-slate-500 mt-0.5">
-                          {roleLabel}
-                        </p>
+                        <p className="text-xs text-slate-500 mt-0.5">{roleLabel}</p>
                       </div>
                     </div>
                   </div>
 
-                  {/* items */}
                   <div className="p-2">
                     <button
                       type="button"
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition cursor-pointer"
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50"
                       onClick={() => {
                         setShowUserMenu(false);
-                        navigate("/profile"); // change if you want
+                        navigate("/profile");
                       }}
-                      role="menuitem"
                     >
                       <UserCircleIcon className="h-5 w-5 text-slate-400" />
                       Profile
@@ -406,12 +366,11 @@ const FoodDrugInteraction = () => {
 
                     <button
                       type="button"
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition cursor-pointer"
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50"
                       onClick={() => {
                         setShowUserMenu(false);
-                        navigate("/settings"); // change if you want
+                        navigate("/settings");
                       }}
-                      role="menuitem"
                     >
                       <Cog6ToothIcon className="h-5 w-5 text-slate-400" />
                       Account settings
@@ -421,12 +380,11 @@ const FoodDrugInteraction = () => {
 
                     <button
                       type="button"
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50"
                       onClick={() => {
                         setShowUserMenu(false);
                         handleLogout();
                       }}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 transition cursor-pointer"
-                      role="menuitem"
                     >
                       <ArrowRightOnRectangleIcon className="h-5 w-5" />
                       Sign out
@@ -442,9 +400,7 @@ const FoodDrugInteraction = () => {
       {/* MAIN */}
       <main className="flex-1 bg-blue-50">
         <div className="max-w-6xl mx-auto px-4 py-8 grid gap-6 lg:grid-cols-3">
-          {/* LEFT */}
           <section className="lg:col-span-2 space-y-6">
-            {/* Selector card */}
             <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 md:p-7">
               <div className="flex items-start justify-between gap-4">
                 <div>
@@ -457,8 +413,7 @@ const FoodDrugInteraction = () => {
                     </h2>
                   </div>
                   <p className="text-sm text-slate-600 mt-1">
-                    Search and select both inputs to evaluate potential
-                    interactions.
+                    Search and select both inputs to evaluate potential interactions.
                   </p>
                 </div>
               </div>
@@ -483,7 +438,6 @@ const FoodDrugInteraction = () => {
                     setSafeFoods([]);
                   }}
                 />
-
                 <AutoComplete
                   label="Food"
                   placeholder="Type food name…"
@@ -517,11 +471,8 @@ const FoodDrugInteraction = () => {
               </div>
             </div>
 
-            {/* Result */}
             {result && (
-              <div
-                className={`rounded-3xl border shadow-sm p-5 md:p-7 ${riskColors[result.risk]}`}
-              >
+              <div className={`rounded-3xl border shadow-sm p-5 md:p-7 ${riskColors[result.risk]}`}>
                 <div className="flex items-start gap-3">
                   {result.risk === 0 ? (
                     <CheckCircleIcon className="h-6 w-6 mt-0.5 text-emerald-600" />
@@ -534,12 +485,10 @@ const FoodDrugInteraction = () => {
                       <span className="inline-flex items-center rounded-full bg-white/70 px-3 py-1 text-xs font-extrabold">
                         {riskBadge(result.risk)}
                       </span>
-                      <span className="text-xs text-slate-700">
-                        Recommendation summary
-                      </span>
+                      <span className="text-xs text-slate-700">Recommendation summary</span>
                     </div>
 
-                    <h3 className="mt-3 text-base md:text-lg font-bold  wrap-break-words">
+                    <h3 className="mt-3 text-base md:text-lg font-bold wrap-break-words">
                       {result.drug} + {result.food}
                     </h3>
 
@@ -552,63 +501,44 @@ const FoodDrugInteraction = () => {
             )}
           </section>
 
-          {/* RIGHT SIDEBAR */}
           <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
             <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 md:p-6">
               <div className="flex items-center justify-between gap-3 mb-3">
-                <h2 className="text-sm font-bold text-slate-900">
-                  Suggested safer foods
-                </h2>
+                <h2 className="text-sm font-bold text-slate-900">Suggested safer foods</h2>
                 <span className="text-xs font-semibold rounded-full bg-slate-100 px-3 py-1 text-slate-600">
                   Top picks
                 </span>
               </div>
 
               <p className="text-sm text-slate-600 mb-4">
-                After you check an interaction, we’ll show safer alternatives
-                for the selected drug.
+                After you check an interaction, we’ll show safer alternatives for the selected drug.
               </p>
 
               <div className="max-h-[420px] overflow-y-auto pr-1">
                 {safeFoods.length === 0 ? (
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
-                    No suggestions yet. Run an interaction check to populate
-                    this panel.
+                    No suggestions yet. Run an interaction check to populate this panel.
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {safeFoods.map((f) => {
                       const name = f.Food || f.food || f.name;
                       return (
-                        <div
-                          key={name}
-                          className="rounded-2xl border border-green-200 bg-green-50 p-4"
-                        >
+                        <div key={name} className="rounded-2xl border border-green-200 bg-green-50 p-4">
                           <div className="flex items-start justify-between gap-3">
-                            <p className="font-semibold  text-green-900 text-sm leading-snug uppercase">
+                            <p className="font-semibold text-green-900 text-sm leading-snug uppercase">
                               {name}
                             </p>
                             <div className="text-right text-xs text-slate-600 shrink-0">
-                              <div className="font-semibold">
-                                {Number(f.energy || 0).toFixed(1)}
-                              </div>
+                              <div className="font-semibold">{Number(f.energy || 0).toFixed(1)}</div>
                               <div className="-mt-0.5">kcal</div>
                             </div>
                           </div>
 
                           <div className="mt-2 text-xs text-slate-700 flex flex-wrap gap-x-4 gap-y-1">
-                            <span>
-                              Protein:{" "}
-                              <b>{Number(f.protein || 0).toFixed(2)} g</b>
-                            </span>
-                            <span>
-                              Carbs:{" "}
-                              <b>{Number(f.carbs || 0).toFixed(2)} g</b>
-                            </span>
-                            <span>
-                              Fat:{" "}
-                              <b>{Number(f.fat || 0).toFixed(2)} g</b>
-                            </span>
+                            <span>Protein: <b>{Number(f.protein || 0).toFixed(2)} g</b></span>
+                            <span>Carbs: <b>{Number(f.carbs || 0).toFixed(2)} g</b></span>
+                            <span>Fat: <b>{Number(f.fat || 0).toFixed(2)} g</b></span>
                           </div>
                         </div>
                       );
@@ -622,9 +552,7 @@ const FoodDrugInteraction = () => {
       </main>
 
       <footer className="mt-8 mb-4 text-[11px] text-slate-500 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-3 max-w-6xl mx-auto px-4 w-full">
-        <span>
-          © {new Date().getFullYear()} PharmaLink. For academic/research use.
-        </span>
+        <span>© {new Date().getFullYear()} PharmaLink. For academic/research use.</span>
         <span>Always consult a qualified healthcare professional.</span>
       </footer>
     </div>
