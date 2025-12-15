@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/auth.jsx";
-import BrandLogo from "../components/brandLogo.jsx"
-import LoginImg from "../assets/Loginn.jpeg"; 
+import BrandLogo from "../components/brandLogo.jsx";
+import LoginImg from "../assets/Loginn.jpeg";
+import { USERS } from "../data/users.js";
 
 import {
   EyeIcon,
@@ -31,31 +32,18 @@ const LogIn = () => {
   const [loginAttempts, setLoginAttempts] = useState(0);
   const [isLocked, setIsLocked] = useState(false);
 
-  // ✅ Demo accordion (collapsed by default to prevent overflow)
+  // Demo accordion
   const [showDemo, setShowDemo] = useState(false);
 
   // ---------------- DEMO USERS ----------------
   const demoUsers = useMemo(
-    () => [
-      {
-        key: "doctor",
-        role: "Doctor",
-        email: "doctor@pharmalink.com",
-        password: "pharma123",
-      },
-      {
-        key: "admin",
-        role: "Admin",
-        email: "admin@pharmalink.com",
-        password: "admin123",
-      },
-      {
-        key: "pharmacist",
-        role: "Pharmacist",
-        email: "pharmacist@pharmalink.com",
-        password: "pharma123",
-      },
-    ],
+    () =>
+      USERS.map((u) => ({
+        key: u.role,
+        role: u.role.charAt(0).toUpperCase() + u.role.slice(1),
+        email: u.email,
+        password: u.password,
+      })),
     []
   );
 
@@ -110,9 +98,12 @@ const LogIn = () => {
     e.preventDefault();
 
     if (isLocked) {
-      setErrors({ general: "Account temporarily locked. Try again in 30 seconds." });
+      setErrors({
+        general: "Account temporarily locked. Try again in 30 seconds.",
+      });
       return;
     }
+
     if (!validateForm()) return;
 
     setIsLoading(true);
@@ -120,14 +111,9 @@ const LogIn = () => {
     try {
       await new Promise((r) => setTimeout(r, 900)); // simulate delay
 
-      const validCredentials = [
-        { email: "doctor@pharmalink.com", password: "pharma123", role: "doctor", name: "Dr. Sarah Smith" },
-        { email: "admin@pharmalink.com", password: "admin123", role: "admin", name: "Admin User" },
-        { email: "pharmacist@pharmalink.com", password: "pharma123", role: "pharmacist", name: "John Pharmacist" },
-      ];
-
-      const found = validCredentials.find(
-        (c) => c.email === formData.email && c.password === formData.password
+      // Use USERS list
+      const found = USERS.find(
+        (u) => u.email === formData.email && u.password === formData.password
       );
 
       if (!found) {
@@ -136,7 +122,9 @@ const LogIn = () => {
         // lock after 3 total tries
         if (loginAttempts >= 2) {
           setIsLocked(true);
-          setErrors({ general: "Too many failed attempts. Locked for 30 seconds." });
+          setErrors({
+            general: "Too many failed attempts. Locked for 30 seconds.",
+          });
           setTimeout(() => setIsLocked(false), 30000);
         } else {
           setErrors({ general: "Invalid email or password. Please try again." });
@@ -144,13 +132,13 @@ const LogIn = () => {
         return;
       }
 
-      // Success
+      // Success: store full user including avatar
       login({
-        id: Date.now(),
+        id: found.id,
         name: found.name,
         email: found.email,
         role: found.role,
-        avatar: null,
+        avatar: found.avatar,
         lastLogin: new Date().toISOString(),
       });
 
@@ -173,7 +161,7 @@ const LogIn = () => {
   return (
     <div className="h-screen overflow-hidden grid lg:grid-cols-2 bg-slate-50">
       {/* LEFT (Image / Branding) */}
-          <div className="hidden lg:flex relative h-screen">
+      <div className="hidden lg:flex relative h-screen">
         <img
           src={LoginImg}
           alt="Healthcare technology"
@@ -183,7 +171,7 @@ const LogIn = () => {
         <div className="absolute inset-0 backdrop-blur-[1px]" />
 
         <div className="relative z-10 p-10 flex flex-col justify-between h-full text-white">
-          <div /> {/* keep top empty (logo moved right) */}
+          <div />
 
           <div className="max-w-xl">
             <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-white drop-shadow-[0_6px_18px_rgba(0,0,0,0.45)]">
@@ -191,8 +179,8 @@ const LogIn = () => {
             </h1>
 
             <p className="mt-4 text-base leading-7 text-white/80 max-w-lg">
-              Centralize interaction checks, nutrition-aware guidance, brand comparison,
-              and prescription validation in one secure workspace.
+              Centralize interaction checks, nutrition-aware guidance, brand
+              comparison, and prescription validation in one secure workspace.
             </p>
 
             <div className="mt-6 grid grid-cols-2 gap-3 max-w-lg">
@@ -216,10 +204,10 @@ const LogIn = () => {
           </p>
         </div>
       </div>
-     {/* RIGHT (Form) */}
+
+      {/* RIGHT (Form) */}
       <div className="h-screen overflow-hidden flex items-center justify-center px-4 py-6">
         <div className="w-full max-w-md max-h-[calc(100vh-48px)] overflow-auto">
-          {/* Card */}
           <div className="bg-white border border-slate-200 shadow-sm rounded-3xl p-6">
             <div className="flex items-center justify-between gap-3 mb-5">
               <div className="flex items-center gap-3">
@@ -233,8 +221,12 @@ const LogIn = () => {
 
             <div className="mb-4 text-center">
               <div className="mx-auto mb-3 h-px w-95 bg-slate-200"></div>
-              <h2 className="text-2xl font-extrabold text-slate-900">Welcome back</h2>
-              <p className="text-sm text-slate-600 mt-1">Sign in to your account</p>
+              <h2 className="text-2xl font-extrabold text-slate-900">
+                Welcome back
+              </h2>
+              <p className="text-sm text-slate-600 mt-1">
+                Sign in to your account
+              </p>
             </div>
 
             {/* Demo accordion */}
@@ -246,7 +238,9 @@ const LogIn = () => {
               >
                 <span>Demo credentials</span>
                 <ChevronDownIcon
-                  className={`h-5 w-5 transition-transform ${showDemo ? "rotate-180" : ""}`}
+                  className={`h-5 w-5 transition-transform ${
+                    showDemo ? "rotate-180" : ""
+                  }`}
                 />
               </button>
 
@@ -266,10 +260,14 @@ const LogIn = () => {
                       >
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-sm font-semibold text-slate-900">{u.role}</p>
+                            <p className="text-sm font-semibold text-slate-900">
+                              {u.role}
+                            </p>
                             <p className="text-xs text-slate-600">{u.email}</p>
                           </div>
-                          <span className="text-xs text-slate-500">{u.password}</span>
+                          <span className="text-xs text-slate-500">
+                            {u.password}
+                          </span>
                         </div>
                       </button>
                     ))}
@@ -279,7 +277,6 @@ const LogIn = () => {
             </div>
 
             <form className="mt-5 space-y-4" onSubmit={handleSubmit}>
-              {/* General error */}
               {errors.general && (
                 <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 flex items-center gap-2">
                   <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
@@ -302,11 +299,15 @@ const LogIn = () => {
                     onChange={handleInputChange}
                     placeholder="you@hospital.org"
                     className={`w-full rounded-2xl border px-10 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 ${
-                      errors.email ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"
+                      errors.email
+                        ? "border-red-300 bg-red-50"
+                        : "border-slate-200 bg-white"
                     }`}
                   />
                 </div>
-                {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email}</p>}
+                {errors.email && (
+                  <p className="mt-1 text-xs text-red-600">{errors.email}</p>
+                )}
               </div>
 
               {/* Password */}
@@ -324,7 +325,9 @@ const LogIn = () => {
                     onChange={handleInputChange}
                     placeholder="Enter your password"
                     className={`w-full rounded-2xl border px-10 py-3 pr-11 text-sm outline-none focus:ring-2 focus:ring-blue-500 ${
-                      errors.password ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"
+                      errors.password
+                        ? "border-red-300 bg-red-50"
+                        : "border-slate-200 bg-white"
                     }`}
                   />
                   <button
@@ -341,7 +344,9 @@ const LogIn = () => {
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="mt-1 text-xs text-red-600">{errors.password}</p>
+                  <p className="mt-1 text-xs text-red-600">
+                    {errors.password}
+                  </p>
                 )}
               </div>
 
@@ -387,10 +392,10 @@ const LogIn = () => {
                   )}
                 </span>
               </button>
-              
+
               {/* Create account */}
               <div className="pt-2">
-                  <Link
+                <Link
                   to="/register"
                   className="w-full inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white py-3 text-sm font-semibold text-slate-800 hover:bg-slate-50 transition"
                 >
@@ -398,7 +403,6 @@ const LogIn = () => {
                 </Link>
               </div>
 
-              {/* Small footer inside card */}
               <p className="text-[11px] text-slate-500 text-center pt-1">
                 By continuing, you agree to our{" "}
                 <Link to="/terms" className="text-slate-700 hover:underline">
@@ -413,9 +417,9 @@ const LogIn = () => {
             </form>
           </div>
 
-          {/* Mobile brand footer */}
           <div className="mt-4 text-center text-xs text-slate-500 lg:hidden">
-            © {new Date().getFullYear()} PharmaLink. Always consult a qualified healthcare professional.
+            © {new Date().getFullYear()} PharmaLink. Always consult a qualified
+            healthcare professional.
           </div>
         </div>
       </div>

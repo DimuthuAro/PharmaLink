@@ -3,6 +3,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/auth.jsx";
 import BrandLogo from "../components/brandLogo.jsx";
+import UserAvatar from "../components/UserAvatar.jsx";
+
 import {
   ClockIcon,
   ArrowPathIcon,
@@ -13,7 +15,12 @@ import {
   Cog6ToothIcon,
   ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
-import { loadHistory, clearHistory, deleteHistoryEntry } from "../utils/historyUtils.js";
+
+import {
+  loadHistory,
+  clearHistory,
+  deleteHistoryEntry,
+} from "../utils/historyUtils.js";
 
 const riskMeta = {
   0: {
@@ -46,7 +53,7 @@ const History = () => {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Header dropdown
+  // Header dropdown
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   const initials = useMemo(() => {
@@ -83,7 +90,7 @@ const History = () => {
     setLoading(false);
   }, [user?.email]);
 
-  // ✅ click outside + ESC close
+  // click outside + ESC close dropdown
   useEffect(() => {
     if (!showUserMenu) return;
 
@@ -140,30 +147,35 @@ const History = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
-      {/*HEADER (same layout as FoodDrugInteraction) */}
+      {/* HEADER */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center">
-          {/* LEFT: Brand */}
+          {/* LEFT */}
           <div className="flex items-center gap-3">
             <BrandLogo className="h-7 w-7" />
           </div>
 
-          {/* Spacer */}
           <div className="flex-1" />
 
-          {/* RIGHT: Nav + User */}
+          {/* RIGHT */}
           <div className="flex items-center gap-2 sm:gap-3">
             {/* Nav */}
             <div className="hidden md:flex items-center gap-1">
               <button
+                onClick={() => navigate("/dashboard")}
+                className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
+              >
+                Dashboard
+              </button>
+              <button
                 onClick={() => navigate("/advisory")}
                 className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
               >
-                Food-Drug Interaction Check
+                Food–Drug Check
               </button>
             </div>
 
-            {/* User Menu (Dashboard style) */}
+            {/* User Menu */}
             <div id="user-menu-wrapper" className="relative">
               <button
                 type="button"
@@ -175,9 +187,8 @@ const History = () => {
                 aria-haspopup="menu"
                 aria-expanded={showUserMenu}
               >
-                <div className="h-9 w-9 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center">
-                  <span className="text-blue-700 font-bold text-sm">{initials}</span>
-                </div>
+                {/* Image avatar */}
+                <UserAvatar user={user} size={36} />
 
                 <div className="hidden sm:flex flex-col items-start leading-tight">
                   <span className="text-sm font-semibold text-slate-900">
@@ -210,11 +221,22 @@ const History = () => {
                 >
                   <div className="absolute -top-2 right-6 h-4 w-4 rotate-45 bg-white border-l border-t border-slate-200" />
 
+                  {/* header */}
                   <div className="p-4 bg-slate-50/70 border-b border-slate-200">
                     <div className="flex items-center gap-3">
-                      <div className="h-12 w-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-extrabold">
-                        {initials}
+                      {/* Bigger avatar with image */}
+                      <div className="h-12 w-12 rounded-2xl overflow-hidden bg-blue-600 flex items-center justify-center">
+                        {user?.avatar ? (
+                          <img
+                            src={user.avatar}
+                            alt={user?.name || "User"}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-white font-extrabold">{initials}</span>
+                        )}
                       </div>
+
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
                           <p className="font-bold text-slate-900 truncate">
@@ -233,10 +255,11 @@ const History = () => {
                     </div>
                   </div>
 
+                  {/* items */}
                   <div className="p-2">
                     <button
                       type="button"
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition"
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition cursor-pointer"
                       onClick={() => {
                         setShowUserMenu(false);
                         navigate("/profile");
@@ -249,7 +272,7 @@ const History = () => {
 
                     <button
                       type="button"
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition"
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition cursor-pointer"
                       onClick={() => {
                         setShowUserMenu(false);
                         navigate("/settings");
@@ -268,7 +291,7 @@ const History = () => {
                         setShowUserMenu(false);
                         handleLogout();
                       }}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 transition"
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 transition cursor-pointer"
                       role="menuitem"
                     >
                       <ArrowRightOnRectangleIcon className="h-5 w-5" />
@@ -285,29 +308,22 @@ const History = () => {
       {/* MAIN */}
       <main className="flex-1 bg-blue-50">
         <div className="max-w-6xl mx-auto px-4 py-8">
-          {/* Page title row */}
-
-
-          {/* Content card */}
           <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 md:p-7">
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-sm">
-                <ClockIcon className="h-5 w-5" />
+            {/* Title row */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-sm">
+                  <ClockIcon className="h-5 w-5" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-extrabold text-slate-900">
+                    Interaction History
+                  </h1>
+                  <p className="text-sm text-slate-600 mt-0.5">
+                    Review and manage your past food–drug interaction checks.
+                  </p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-2xl font-extrabold text-slate-900">
-                  Interaction History
-                </h1>
-                <p className="text-sm text-slate-600 mt-0.5">
-                   Review and manage your past food–drug interaction checks.
-                </p>
-
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-
 
               {history.length > 0 && (
                 <button
@@ -319,7 +335,7 @@ const History = () => {
                 </button>
               )}
             </div>
-          </div>
+
             {loading ? (
               <p className="text-sm text-slate-600">Loading history…</p>
             ) : formattedHistory.length === 0 ? (
@@ -331,8 +347,7 @@ const History = () => {
                   No interactions yet
                 </h2>
                 <p className="text-sm text-slate-600 max-w-md mx-auto">
-                  Start by checking a food–drug interaction. Your results will appear
-                  here automatically.
+                  Start by checking a food–drug interaction. Your results will appear here automatically.
                 </p>
                 <button
                   onClick={() => navigate("/advisory")}
@@ -364,7 +379,7 @@ const History = () => {
 
                             <div className="min-w-0">
                               <div className="flex flex-wrap items-center gap-2">
-                                <h3 className="font-bold  text-sm md:text-base wrap-break-words">
+                                <h3 className="font-bold text-sm md:text-base wrap-break-words">
                                   {entry.drug} + {entry.food}
                                 </h3>
                                 <span
