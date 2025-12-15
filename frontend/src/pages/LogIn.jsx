@@ -133,14 +133,15 @@ const LogIn = () => {
       }
 
       // Success: store full user including avatar
-      login({
-        id: found.id,
-        name: found.name,
-        email: found.email,
-        role: found.role,
-        avatar: found.avatar,
-        lastLogin: new Date().toISOString(),
-      });
+login({
+  id: found.id,
+  name: found.name,
+  email: found.email,
+  role: found.role,
+  phone: found.phone,
+  avatar: found.avatar,
+  lastLogin: new Date().toISOString(),
+});
 
       if (formData.rememberMe) {
         localStorage.setItem("pharmalink_remember", "true");
