@@ -38,13 +38,11 @@ app.add_middleware(
 # ---------------------------------------------------------
 rf = joblib.load(MODEL_DIR / "food_drug_risk_model.pkl")
 tfidf = joblib.load(MODEL_DIR / "tfidf_vectorizer.pkl")
-encoders = joblib.load(MODEL_DIR / "category_encoders.pkl")  # not used directly
+encoders = joblib.load(MODEL_DIR / "category_encoders.pkl")  
 
 drug_clean = pd.read_csv(DATA_DIR / "drug_clean.csv")
 food_subset = pd.read_csv(DATA_DIR / "food_subset.csv")
-
-# 🆕 NEW: meal planning dataset (your new_foodset.csv)
-meal_foods = pd.read_csv(DATA_DIR / "new_foodset.csv")
+meal_foods = pd.read_csv(DATA_DIR / "new_foodset.csv")# new_foodset.csv
 
 cat_cols = ["Chemical_Class", "Habit_Forming", "Therapeutic_Class", "Action_Class"]
 
@@ -323,7 +321,7 @@ def recommend_safe_foods(drug_index: int, top_n: int = 10):
     return df[cols_show].to_dict(orient="records")
 
 
-# 🆕 NEW: recommender that uses meal_foods for meal planning
+# recommender that uses meal_foods for meal planning
 def recommend_safe_meal_foods(drug_index: int, top_n: int = 30):
     base_risk = predict_drug_risk(drug_index)
 
@@ -372,7 +370,6 @@ def filter_by_dietary_restrictions(
         if not name:
             continue
 
-        # 🔁 NOW LOOKUP IN meal_foods (not food_subset)
         row = meal_foods[meal_foods["Food"] == name]
         if row.empty:
             continue
