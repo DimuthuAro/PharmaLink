@@ -14,6 +14,12 @@ app.use(morgan('combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Debug Middleware
+app.use((req, res, next) => {
+    console.log(`[Microservice] Received ${req.method} ${req.url}`);
+    next();
+});
+
 // Routes
 app.get('/health', (req, res) => {
     res.status(200).json({

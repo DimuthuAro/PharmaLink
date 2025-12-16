@@ -3,7 +3,11 @@ const logger = require('../shared_infrastructure/logger');
 
 const connectDB = async () => {
     try {
-        
+        if (!process.env.MONGODB_URI) {
+            logger.warn('MONGODB_URI not set; skipping database connection for this session.');
+            return;
+        }
+
         const conn = await mongoose.connect(process.env.MONGODB_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
