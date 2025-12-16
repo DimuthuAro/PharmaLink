@@ -2,6 +2,7 @@ import Dashboard from '../pages/Dashboard.jsx'
 import LogIn from '../pages/LogIn.jsx'
 import Register from '../pages/Register.jsx'
 import ProtectedTestPage from '../pages/ProtectedTestPage.jsx'
+import InteractionCheck from '../pages/InteractionCheck.jsx'
 import { createProtectedRoutes } from '../auth/auth.jsx'
 
 const unprotected_routes = [
@@ -12,6 +13,7 @@ const unprotected_routes = [
 
 const protected_routes = createProtectedRoutes([
   { path: '/dashboard', element: <Dashboard /> },
+  { path: '/interaction-check', element: <InteractionCheck /> },
   { path: '/e', element: <ProtectedTestPage /> }
 ])
 
