@@ -27,7 +27,7 @@ const LandingPage = () => {
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <BandLogo className="h-8 w-8" />
+            <BandLogo className="h-32 w-32" />
           </div>
 
           {/* Right actions */}

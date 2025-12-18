@@ -1033,7 +1033,7 @@ const InteractionCheck = () => {
 
                                     {/* Right Image Section */}
                                     <div className="relative lg:h-auto min-h-[300px] lg:min-h-[500px] overflow-hidden">
-                                        /* Hero Image */}
+                                        {/* Hero Image */}
                                         <img
                                             src="/src/assets/aro.jpg"
                                             alt="Drug Interaction Checker - Clinical Analysis"
