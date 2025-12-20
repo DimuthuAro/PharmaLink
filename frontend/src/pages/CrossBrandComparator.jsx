@@ -920,7 +920,7 @@ const QuickActionsBar = ({ selectedBrands, medications, onExport, onShare }) => 
 };
 
 // ========================================
-// MAIN COMPONENT
+// MAIN COMPONENT 
 // ========================================
 const CrossBrandComparator = () => {
     const navigate = useNavigate();
