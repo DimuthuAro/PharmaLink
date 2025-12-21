@@ -9,6 +9,7 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
+
 # ---------------------------------------------------------
 # Paths
 # ---------------------------------------------------------
@@ -161,7 +162,17 @@ leafy_words = [
     "green leaves",
     "leafy",
 ]
-
+ALLERGEN_KEYWORDS = {
+    "peanut": ["peanut", "groundnut"],
+    "tree_nut": ["almond", "cashew", "walnut", "pistachio", "hazelnut", "pecan", "macadamia", "nut"],
+    "milk": ["milk", "cheese", "butter", "cream", "yogurt", "curd", "ghee", "dairy"],
+    "egg": ["egg", "omelet", "omelette", "mayonnaise", "mayo"],
+    "fish": ["fish", "tuna", "salmon", "sardine", "mackerel"],
+    "shellfish": ["shrimp", "prawn", "crab", "lobster"],
+    "soy": ["soy", "soya", "tofu", "soybean"],
+    "wheat": ["wheat", "flour", "bread", "pasta", "noodle", "gluten"],
+    "sesame": ["sesame", "tahini"],
+}
 # ---------------------------------------------------------
 # Helper functions
 # ---------------------------------------------------------
@@ -400,6 +411,39 @@ def safe_float(value, default: float = 0.0) -> float:
 
 import random  # at top of file if not already
 
+def filter_by_allergies(foods: List[dict], allergies: List[str]) -> List[dict]:
+    """
+    Rule-based allergy filter using food name keyword matching.
+    If you later add 'allergens' or 'ingredients' columns, switch to that.
+    """
+    if not allergies:
+        return foods
+
+    allergy_set = {a.strip().lower() for a in allergies if a and a.strip()}
+    if not allergy_set:
+        return foods
+
+    blocked_words = []
+    for a in allergy_set:
+        blocked_words.extend(ALLERGEN_KEYWORDS.get(a, []))
+
+    # If unknown allergy keys are passed, we can’t reliably filter them
+    if not blocked_words:
+        return foods
+
+    allowed = []
+    for f in foods:
+        name = str(f.get("Food") or "").lower()
+        if not name:
+            continue
+
+        if any(w in name for w in blocked_words):
+            continue
+
+        allowed.append(f)
+
+    return allowed
+
 def build_meal_from_pool(
     pool: List[dict],
     target_kcal: float,
@@ -506,6 +550,11 @@ class MealPlanRequest(BaseModel):
     dietary_restrictions: List[str] = Field(
         default_factory=list,
         description="e.g. ['no_alcohol', 'vegetarian']",
+    )
+
+    allergies: List[str] = Field(
+        default_factory=list,
+        description="e.g. ['peanut', 'tree_nut', 'milk', 'egg', 'fish', 'shellfish', 'soy', 'wheat', 'sesame']",
     )
     days: int = 3
     meals_per_day: int = 3
@@ -647,6 +696,14 @@ def create_meal_plan(body: MealPlanRequest):
         raise HTTPException(
             status_code=400,
             detail="No foods match both safety rules and dietary restrictions.",
+        )
+    
+    # --- 4b) Apply allergy filtering ---
+    foods = filter_by_allergies(foods, body.allergies)
+    if not foods:
+        raise HTTPException(
+            status_code=400,
+            detail="No foods remain after applying allergy filters. Try removing some allergies or adding more foods to the dataset.",
         )
 
     # --- 5) Split foods by meal_type from meal_foods ---
