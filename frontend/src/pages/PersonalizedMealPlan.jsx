@@ -22,6 +22,23 @@ import {
 import { fetchDrugs, generateMealPlan } from "../utils/api.js";
 import AutoComplete from "../components/AutoComplete.jsx";
 
+const ALLERGY_OPTIONS = [
+  { key: "peanut", label: "Peanut" },
+  { key: "tree_nut", label: "Tree nuts" },
+  { key: "milk", label: "Milk / Dairy" },
+  { key: "egg", label: "Egg" },
+  { key: "fish", label: "Fish" },
+  { key: "shellfish", label: "Shellfish" },
+  { key: "soy", label: "Soy" },
+  { key: "wheat", label: "Wheat / Gluten" },
+  { key: "sesame", label: "Sesame" },
+];
+
+const STORAGE_KEYS = {
+  drugs: "pharmlink_user_drugs",
+  allergies: "pharmlink_user_allergies",
+};
+
 const PersonalizedMealPlan = () => {
   const navigate = useNavigate();
   const { user, logout, isAuthenticated } = useAuth();
@@ -39,6 +56,26 @@ const PersonalizedMealPlan = () => {
   const [globalRestrictions, setGlobalRestrictions] = useState({
     noAlcohol: true,
     vegetarian: false,
+  });
+
+  // ----------------- ALLERGIES (persisted) -----------------
+  const [allergies, setAllergies] = useState(() => {
+    const initial = {};
+    ALLERGY_OPTIONS.forEach((a) => (initial[a.key] = false));
+
+    // load saved allergies (if any)
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEYS.allergies) || "[]");
+      if (Array.isArray(saved)) {
+        saved.forEach((k) => {
+          if (k in initial) initial[k] = true;
+        });
+      }
+    } catch {
+      // ignore
+    }
+
+    return initial;
   });
 
   const [days, setDays] = useState(3);
@@ -162,12 +199,18 @@ const PersonalizedMealPlan = () => {
         return;
       }
 
+      // convert allergy boolean map => array of selected allergy keys
+      const selectedAllergies = Object.entries(allergies)
+        .filter(([, v]) => v)
+        .map(([k]) => k);
+
       const payload = {
         drug_indices: selectedDrugs.map((d) => d.index),
         dietary_restrictions: [
           globalRestrictions.noAlcohol && "no_alcohol",
           globalRestrictions.vegetarian && "vegetarian",
         ].filter(Boolean),
+        allergies: selectedAllergies, // backend can ignore if not implemented yet
         days,
         meals_per_day: mealsPerDay,
         calories_per_day: caloriesPerDay,
@@ -175,6 +218,23 @@ const PersonalizedMealPlan = () => {
 
       const res = await generateMealPlan(payload);
       setMealPlan(res);
+
+      // Persist for Profile page (with date)
+    try {
+      const today = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+    
+      const drugWithDate = selectedDrugs.map((d) => ({
+        name: d.name,
+        index: d.index,
+        date: today, // you can change this if you want user-selected date
+      }));
+    
+      localStorage.setItem("pharmlink_user_drugs", JSON.stringify(drugWithDate));
+      localStorage.setItem("pharmlink_user_allergies", JSON.stringify(selectedAllergies));
+    } catch {
+      // ignore
+    }
+
 
       // auto select Day 1 after generating
       setActiveDay(1);
@@ -310,17 +370,15 @@ const PersonalizedMealPlan = () => {
   // ----------------- RENDER -----------------
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
-      {/* HEADER (same style as FoodDrugInteraction) */}
+      {/* HEADER */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center">
-          {/* left */}
           <div className="flex items-center gap-3">
             <BrandLogo className="h-7 w-7" />
           </div>
 
           <div className="flex-1" />
 
-          {/* right */}
           <div className="flex items-center gap-3">
             <div className="hidden md:flex items-center gap-2">
               <button
@@ -481,7 +539,8 @@ const PersonalizedMealPlan = () => {
                 Generate New Meal Plan
               </h1>
               <p className="text-sm text-slate-600 mt-1">
-                Create interaction-aware meals based on active medications, calories, and preferences.
+                Create interaction-aware meals based on active medications, calories,
+                preferences, and allergies.
               </p>
             </div>
           </div>
@@ -547,7 +606,9 @@ const PersonalizedMealPlan = () => {
           {/* Calories + prefs */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
             <h2 className="text-sm font-semibold text-slate-900">Step 2 — Calories</h2>
-            <p className="text-[11px] text-slate-500 mb-2">Target calories per day for this plan.</p>
+            <p className="text-[11px] text-slate-500 mb-2">
+              Target calories per day for this plan.
+            </p>
 
             <input
               type="number"
@@ -558,7 +619,9 @@ const PersonalizedMealPlan = () => {
             />
 
             <div className="border-t border-slate-200 pt-3 mt-1">
-              <h3 className="text-xs font-semibold text-slate-900 mb-2">General preferences</h3>
+              <h3 className="text-xs font-semibold text-slate-900 mb-2">
+                General preferences
+              </h3>
 
               <div className="space-y-2 text-xs">
                 <label className="flex items-center gap-2 cursor-pointer">
@@ -582,6 +645,29 @@ const PersonalizedMealPlan = () => {
                   />
                   <span>Vegetarian</span>
                 </label>
+              </div>
+
+              {/* Allergies */}
+              <div className="border-t border-slate-200 pt-3 mt-3">
+                <h3 className="text-xs font-semibold text-slate-900 mb-2">Allergies</h3>
+                <p className="text-[11px] text-slate-500 mb-2">
+                  Foods containing these allergens will be excluded.
+                </p>
+
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  {ALLERGY_OPTIONS.map((a) => (
+                    <label key={a.key} className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={!!allergies[a.key]}
+                        onChange={(e) =>
+                          setAllergies((prev) => ({ ...prev, [a.key]: e.target.checked }))
+                        }
+                      />
+                      <span>{a.label}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
 
               <div className="mt-3 flex gap-3 text-xs">
@@ -750,13 +836,17 @@ const PersonalizedMealPlan = () => {
 
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4 text-sm">
                       <div>
-                        <p className="text-xs text-slate-500 uppercase tracking-wide">Calories</p>
+                        <p className="text-xs text-slate-500 uppercase tracking-wide">
+                          Calories
+                        </p>
                         <p className="text-lg font-semibold text-slate-900">
                           {totals.energy.toFixed(0)}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-500 uppercase tracking-wide">Protein</p>
+                        <p className="text-xs text-slate-500 uppercase tracking-wide">
+                          Protein
+                        </p>
                         <p className="text-lg font-semibold text-slate-900">
                           {totals.protein.toFixed(1)}g
                         </p>
@@ -789,13 +879,17 @@ const PersonalizedMealPlan = () => {
 
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-3 text-xs">
                               <div>
-                                <p className="text-[11px] text-slate-500 uppercase">Calories</p>
+                                <p className="text-[11px] text-slate-500 uppercase">
+                                  Calories
+                                </p>
                                 <p className="text-sm font-semibold text-slate-900">
                                   {mm.energy.toFixed(0)}
                                 </p>
                               </div>
                               <div>
-                                <p className="text-[11px] text-slate-500 uppercase">Protein</p>
+                                <p className="text-[11px] text-slate-500 uppercase">
+                                  Protein
+                                </p>
                                 <p className="text-sm font-semibold text-slate-900">
                                   {mm.protein.toFixed(1)}g
                                 </p>
