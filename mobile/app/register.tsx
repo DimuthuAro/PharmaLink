@@ -100,6 +100,10 @@ export default function Register() {
         <Pressable onPress={() => router.replace("/login")} style={styles.linkBtn}>
           <Text style={styles.linkText}>Already have an account? Login</Text>
         </Pressable>
+
+        <Pressable onPress={() => router.back()} style={{ marginBottom: 12 }}>
+          <Text style={{ color: "#93c5fd", fontWeight: "900" }}>← Back</Text>
+        </Pressable>
       </View>
     </View>
   );
