@@ -1,13 +1,7 @@
-<<<<<<< HEAD
-import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../auth/auth.jsx';
-=======
 import React, { useState, useEffect, useCallback, useMemo, Suspense, use } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/auth.jsx';
 import BrandLogo from '../components/brandLogo.jsx';
->>>>>>> origin/main
 import { 
   ShieldCheckIcon as ShieldCheck, 
   LightBulbIcon as LightBulb, 
@@ -23,19 +17,6 @@ import {
   ArrowTrendingDownIcon,
   MinusIcon,
   ArrowRightOnRectangleIcon,
-<<<<<<< HEAD
-  Cog6ToothIcon
-} from '@heroicons/react/24/outline';
-
-// Loading component for better UX
-const LoadingSpinner = () => (
-  <div className="animate-pulse">
-    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-    <div className="h-8 bg-gray-200 rounded w-1/2"></div>
-  </div>
-);
-
-=======
   Cog6ToothIcon,
   SparklesIcon,
   BoltIcon,
@@ -274,7 +255,6 @@ const QuickActionCard = ({ action, onNavigate }) => {
   );
 };
 
->>>>>>> origin/main
 // Enhanced Dashboard component with performance optimizations
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -335,22 +315,6 @@ const Dashboard = () => {
   // Logout handler
   const handleLogout = useCallback(() => {
     logout();
-<<<<<<< HEAD
-    navigate('/login');
-  }, [logout, navigate]);
-
-  // Close user menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = () => {
-      setShowUserMenu(false);
-    };
-    
-    if (showUserMenu) {
-      document.addEventListener('click', handleClickOutside);
-      return () => document.removeEventListener('click', handleClickOutside);
-    }
-  }, [showUserMenu]);
-=======
     navigate('/');
   }, [logout, navigate]);
 
@@ -372,7 +336,6 @@ useEffect(() => {
     window.removeEventListener("click", onClick);
   };
 }, [showUserMenu]);
->>>>>>> origin/main
 
   // Memoized quick actions data for performance
   const quickActions = useMemo(() => [
@@ -388,13 +351,8 @@ useEffect(() => {
     },
     {
       id: 2,
-<<<<<<< HEAD
-      title: 'Personalized Advisory',
-      description: 'Get AI-powered nutrition and lifestyle advice',
-=======
       title: 'Drug & Food Interaction Check',
       description: 'Check for potential drug & food interactions quickly',
->>>>>>> origin/main
       icon: LightBulb,
       path: '/advisory',
       color: 'bg-amber-50 text-amber-600 border-amber-200 hover:bg-amber-100',
@@ -536,29 +494,6 @@ useEffect(() => {
     }
   ], [stats]);
 
-<<<<<<< HEAD
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Enhanced Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <div className="flex-shrink-0 flex items-center cursor-pointer" onClick={() => handleNavigation('/')}>
-                <Activity className="h-8 w-8 text-blue-600" />
-                <span className="ml-2 text-xl font-bold text-gray-900">Pharmalink</span>
-              </div>
-              <nav className="hidden md:ml-8 md:flex md:space-x-8" role="navigation" aria-label="Main navigation">
-                {['Overview', 'Analytics', 'Patients', 'Settings'].map((item) => (
-                  <button
-                    key={item}
-                    className={`px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
-                      activeTab === item.toLowerCase()
-                        ? 'text-blue-600 bg-blue-50'
-                        : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-                    }`}
-                    onClick={() => handleTabChange(item.toLowerCase())}
-=======
   const initials = useMemo(() => {
     const name = user?.name?.trim() || "User";
     return name
@@ -609,7 +544,6 @@ useEffect(() => {
                         : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                         }`}
                       onClick={() => handleTabChange(item.toLowerCase())}
->>>>>>> origin/main
                     aria-current={activeTab === item.toLowerCase() ? 'page' : undefined}
                   >
                     {item}
@@ -618,11 +552,7 @@ useEffect(() => {
               </nav>
             </div>
             
-<<<<<<< HEAD
-            <div className="flex items-center space-x-4">
-=======
             <div className="flex items-center gap-3">
->>>>>>> origin/main
               <div className="relative hidden sm:block">
                 <Search className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
                 <input
@@ -630,11 +560,7 @@ useEffect(() => {
                   placeholder="Search medications, patients..."
                   value={searchQuery}
                   onChange={handleSearch}
-<<<<<<< HEAD
-                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64 transition-all duration-200"
-=======
                   className="pl-10 pr-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-72 transition placeholder-gray-300 "
->>>>>>> origin/main
                   aria-label="Search medications and patients"
                 />
               </div>
@@ -647,58 +573,6 @@ useEffect(() => {
               </button>
               {/* User Menu */}
               <div className="relative">
-<<<<<<< HEAD
-                <button 
-                  className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowUserMenu(!showUserMenu);
-                  }}
-                  aria-label="User menu"
-                >
-                  <UserCircle className="h-8 w-8 text-gray-400" />
-                  <div className="hidden sm:block text-left">
-                    <div className="text-sm font-medium text-gray-700">{user?.name || 'User'}</div>
-                    <div className="text-xs text-gray-500">{user?.role || 'Healthcare Professional'}</div>
-                  </div>
-                  <ChevronRightIcon className={`h-4 w-4 text-gray-400 transition-transform ${
-                    showUserMenu ? 'rotate-90' : ''
-                  }`} />
-                </button>
-
-                {/* User Dropdown Menu */}
-                {showUserMenu && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-                    <div className="p-4 border-b border-gray-100">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                          <span className="text-blue-600 font-semibold text-lg">
-                            {user?.name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
-                          </span>
-                        </div>
-                        <div>
-                          <div className="font-medium text-gray-900">{user?.name || 'User'}</div>
-                          <div className="text-sm text-gray-500">{user?.email || 'user@example.com'}</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="py-2">
-                      <button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                        <UserCircle className="h-4 w-4 mr-3" />
-                        Profile Settings
-                      </button>
-                      <button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                        <Cog6ToothIcon className="h-4 w-4 mr-3" />
-                        Account Settings
-                      </button>
-                    </div>
-                    <div className="border-t border-gray-100 py-2">
-                      <button 
-                        onClick={handleLogout}
-                        className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
-                      >
-                        <ArrowRightOnRectangleIcon className="h-4 w-4 mr-3" />
-=======
                 {/* Trigger */}
                 <button
                   type="button"
@@ -809,75 +683,20 @@ useEffect(() => {
                         role="menuitem"
                       >
                         <ArrowRightOnRectangleIcon className="h-5 w-5" />
->>>>>>> origin/main
                         Sign out
                       </button>
                     </div>
                   </div>
                 )}
               </div>
-<<<<<<< HEAD
-=======
               
               </div>
->>>>>>> origin/main
             </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-<<<<<<< HEAD
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">
-            Welcome back, {user?.name?.split(' ')[0] || 'User'}
-          </h1>
-          <p className="text-gray-600">
-            {user?.role === 'doctor' && "Here's what's happening with your patients today."}
-            {user?.role === 'pharmacist' && "Monitor prescriptions and drug interactions."}
-            {user?.role === 'admin' && "Manage your healthcare platform operations."}
-            {(!user?.role || user?.role === 'other') && "Welcome to your healthcare management dashboard."}
-          </p>
-        </div>
-
-        {/* Enhanced Stats Grid with Loading States */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-          {formattedStats.map((stat, index) => (
-            <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 transition-all duration-200 hover:shadow-md">
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">{stat.label}</p>
-                  {isLoading ? (
-                    <LoadingSpinner />
-                  ) : (
-                    <p className="text-xl sm:text-2xl font-bold text-gray-900">{stat.value}</p>
-                  )}
-                </div>
-                <div className="flex items-center ml-2">
-                  <span className={`text-xs sm:text-sm font-medium ${
-                    stat.isPositive ? 'text-green-600' : 'text-red-600'
-                  }`}>
-                    {stat.change}
-                  </span>
-                </div>
-              </div>
-              <div className="mt-3 sm:mt-4">
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className={`h-2 rounded-full transition-all duration-1000 ease-out ${
-                      isLoading ? 'w-0' : 'bg-blue-600'
-                    }`}
-                    style={{ 
-                      width: isLoading ? '0%' : `${Math.min(100, (index + 1) * 25)}%`,
-                      transitionDelay: `${index * 200}ms`
-                    }}
-                  ></div>
-                </div>
-              </div>
-            </div>
-=======
       <main className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Enhanced Welcome Section */}
         <div className="mb-8 relative overflow-hidden backdrop-blur-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 rounded-3xl p-8 text-white shadow-2xl">
@@ -927,17 +746,12 @@ useEffect(() => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
           {formattedStats.map((stat, index) => (
             <StatCard key={index} stat={stat} index={index} isLoading={isLoading} />
->>>>>>> origin/main
           ))}
         </div>
 
         {/* Enhanced Quick Actions Grid */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
-<<<<<<< HEAD
-            <h2 className="text-lg font-semibold text-gray-900">Quick Actions</h2>
-            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center space-x-1">
-=======
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
                 <RocketLaunchIcon className="h-5 w-5 text-white" />
@@ -948,53 +762,13 @@ useEffect(() => {
               </div>
             </div>
             <button className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-blue-600 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors">
->>>>>>> origin/main
               <span>View all</span>
               <ChevronRightIcon className="h-4 w-4" />
             </button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {quickActions.map((action) => (
-<<<<<<< HEAD
-              <div
-                key={action.id}
-                className={`bg-white rounded-xl shadow-sm border-2 ${action.color} p-4 sm:p-6 cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
-                onClick={() => handleNavigation(action.path)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleNavigation(action.path);
-                  }
-                }}
-                tabIndex={0}
-                role="button"
-                aria-label={`Navigate to ${action.title}`}
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <action.icon className="h-6 w-6 sm:h-8 sm:w-8" aria-hidden="true" />
-                  <span className={`text-xs font-medium px-2 py-1 rounded-full bg-white shadow-sm ${
-                    action.priority === 'high' ? 'ring-2 ring-red-200' : ''
-                  }`}>
-                    {action.stats}
-                  </span>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">{action.title}</h3>
-                <p className="text-xs sm:text-sm text-gray-600 mb-4">{action.description}</p>
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center space-x-1">
-                    <span className="text-xs sm:text-sm font-medium text-current">Try now</span>
-                    <ChevronRightIcon className="h-4 w-4" aria-hidden="true" />
-                  </div>
-                  {action.priority === 'high' && (
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                      Priority
-                    </span>
-                  )}
-                </div>
-              </div>
-=======
               <QuickActionCard key={action.id} action={action} onNavigate={handleNavigation} />
->>>>>>> origin/main
             ))}
           </div>
         </div>
@@ -1002,57 +776,6 @@ useEffect(() => {
         {/* Enhanced Bottom Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           {/* Enhanced Recent Activity */}
-<<<<<<< HEAD
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-semibold text-gray-900">Recent Activity</h2>
-              <button className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center space-x-1">
-                <span>View all</span>
-                <ChevronRightIcon className="h-4 w-4" />
-              </button>
-            </div>
-            <div className="space-y-4">
-              {isLoading ? (
-                Array(4).fill(0).map((_, index) => (
-                  <div key={index} className="flex items-start space-x-3">
-                    <div className="w-2 h-2 mt-2 bg-gray-200 rounded-full animate-pulse"></div>
-                    <LoadingSpinner />
-                  </div>
-                ))
-              ) : (
-                recentActivity.map((activity) => (
-                  <div key={activity.id} className={`flex items-start space-x-3 p-3 rounded-lg transition-colors duration-200 ${
-                    activity.actionable ? 'hover:bg-gray-50 cursor-pointer' : ''
-                  }`}>
-                    <div className="flex-shrink-0">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        activity.status === 'success' ? 'bg-green-100' : 
-                        activity.status === 'warning' ? 'bg-amber-100' : 'bg-red-100'
-                      }`}>
-                        <activity.icon className={`h-4 w-4 ${
-                          activity.status === 'success' ? 'text-green-600' : 
-                          activity.status === 'warning' ? 'text-amber-600' : 'text-red-600'
-                        }`} />
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between">
-                        <p className="text-sm font-medium text-gray-900 flex-1">{activity.description}</p>
-                        {activity.severity === 'high' && (
-                          <span className="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                            High
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
-                    </div>
-                    {activity.actionable && (
-                      <ChevronRightIcon className="h-4 w-4 text-gray-400 flex-shrink-0" />
-                    )}
-                  </div>
-                ))
-              )}
-=======
           <div className="relative overflow-hidden backdrop-blur-xl bg-white/80 border border-white/50 rounded-2xl shadow-xl p-6">
             {/* Background decoration */}
             <div className="absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-2xl"></div>
@@ -1122,56 +845,10 @@ useEffect(() => {
                   ))
                 )}
               </div>
->>>>>>> origin/main
             </div>
           </div>
 
           {/* Enhanced System Metrics */}
-<<<<<<< HEAD
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-6">System Performance</h2>
-            <div className="space-y-4">
-              {systemMetrics.map((metric, index) => (
-                <div key={index} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200">
-                  <div className="flex items-center space-x-3">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${metric.bgColor}`}>
-                      <metric.icon className={`h-5 w-5 ${metric.color}`} />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">{metric.name}</p>
-                      {isLoading ? (
-                        <div className="h-6 bg-gray-200 rounded w-16 mt-1 animate-pulse"></div>
-                      ) : (
-                        <p className="text-xl font-bold text-gray-900">{metric.value}</p>
-                      )}
-                    </div>
-                  </div>
-                  <div className={`flex items-center space-x-1 ${metric.color}`}>
-                    <span className="text-sm font-medium">{metric.change}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            {/* Enhanced Quick Stats */}
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  {isLoading ? (
-                    <div className="h-8 bg-blue-200 rounded w-8 mx-auto mb-2 animate-pulse"></div>
-                  ) : (
-                    <p className="text-2xl font-bold text-blue-900">15</p>
-                  )}
-                  <p className="text-sm text-blue-700">Active Sessions</p>
-                </div>
-                <div className="text-center p-4 bg-green-50 rounded-lg">
-                  {isLoading ? (
-                    <div className="h-8 bg-green-200 rounded w-8 mx-auto mb-2 animate-pulse"></div>
-                  ) : (
-                    <p className="text-2xl font-bold text-green-900">98%</p>
-                  )}
-                  <p className="text-sm text-green-700">Satisfaction</p>
-=======
           <div className="relative overflow-hidden backdrop-blur-xl bg-white/80 border border-white/50 rounded-2xl shadow-xl p-6">
             {/* Background decoration */}
             <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-full blur-2xl"></div>
@@ -1239,7 +916,6 @@ useEffect(() => {
                       <p className="text-xs font-semibold text-emerald-700">Satisfaction</p>
                     </div>
                   </div>
->>>>>>> origin/main
                 </div>
               </div>
             </div>
@@ -1247,18 +923,6 @@ useEffect(() => {
         </div>
 
         {/* Enhanced Emergency Alert */}
-<<<<<<< HEAD
-        <div className="mt-8 bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-xl p-4 sm:p-6 shadow-sm">
-          <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0">
-              <ExclamationTriangleIcon className="h-6 w-6 text-red-500" />
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-red-800 flex items-center space-x-2">
-                  <span>High Priority Alert</span>
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-=======
         <div className="mt-8 relative overflow-hidden bg-gradient-to-br from-red-50 via-orange-50 to-amber-50 border-2 border-red-200 rounded-2xl p-6 shadow-xl">
           {/* Animated background pulse */}
           <div className="absolute inset-0 overflow-hidden">
@@ -1278,36 +942,17 @@ useEffect(() => {
                   High Priority Alert
                   <span className="flex items-center gap-1 px-2 py-1 bg-red-500 text-white text-[10px] font-bold uppercase tracking-wider rounded-full animate-pulse">
                     <FireIcon className="w-3 h-3" />
->>>>>>> origin/main
                     Urgent
                   </span>
                 </h3>
                 <button 
-<<<<<<< HEAD
-                  className="text-red-400 hover:text-red-600 transition-colors duration-200"
-=======
                   className="w-8 h-8 rounded-lg flex items-center justify-center text-red-400 hover:text-white hover:bg-red-500 transition-all"
->>>>>>> origin/main
                   aria-label="Dismiss alert"
                 >
                   ×
                 </button>
               </div>
               <p className="text-sm text-red-700 mt-2">
-<<<<<<< HEAD
-                <strong>3 potential drug interactions</strong> detected in the last hour requiring immediate review.
-              </p>
-              <div className="mt-4 flex flex-col sm:flex-row gap-3">
-                <button 
-                  className="inline-flex items-center px-4 py-2 border border-red-300 text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
-                  onClick={() => handleNavigation('/interaction-check')}
-                >
-                  <ShieldCheck className="h-4 w-4 mr-2" />
-                  Review Interactions
-                </button>
-                <button className="text-sm text-red-600 hover:text-red-800 font-medium">
-                  View Details →
-=======
                 <strong className="text-red-800">3 potential drug interactions</strong> detected in the last hour requiring immediate review.
               </p>
               <div className="mt-4 flex flex-col sm:flex-row gap-3">
@@ -1321,14 +966,11 @@ useEffect(() => {
                 <button className="text-sm font-semibold text-red-600 hover:text-red-800 flex items-center gap-1">
                   View Details
                   <ChevronRightIcon className="w-4 h-4" />
->>>>>>> origin/main
                 </button>
               </div>
             </div>
           </div>
         </div>
-<<<<<<< HEAD
-=======
 
         {/* Enhanced Footer */}
         <footer className="mt-auto print:hidden relative">
@@ -1451,7 +1093,6 @@ useEffect(() => {
             </div>
           </div>
         </footer>
->>>>>>> origin/main
       </main>
     </div>
   );
@@ -1460,17 +1101,10 @@ useEffect(() => {
 // Wrapped component with Suspense for better loading experience
 const DashboardWithSuspense = () => (
   <Suspense fallback={
-<<<<<<< HEAD
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-        <p className="mt-4 text-gray-600">Loading dashboard...</p>
-=======
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 flex items-center justify-center">
       <div className="text-center">
         <PremiumLoader />
         <p className="mt-6 text-gray-600 font-medium">Loading your dashboard...</p>
->>>>>>> origin/main
       </div>
     </div>
   }>

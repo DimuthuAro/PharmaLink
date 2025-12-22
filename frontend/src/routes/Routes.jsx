@@ -2,9 +2,6 @@ import Dashboard from '../pages/Dashboard.jsx'
 import LogIn from '../pages/LogIn.jsx'
 import Register from '../pages/Register.jsx'
 import ProtectedTestPage from '../pages/ProtectedTestPage.jsx'
-<<<<<<< HEAD
-import { createProtectedRoutes } from '../auth/auth.jsx'
-=======
 import FoodDrugInteraction from '../pages/FoodDrugInteraction.jsx'
 import Prescription_Mainpage from '../pages/Prescription_Mainpage.jsx'
 import InteractionCheck from '../pages/InteractionCheck.jsx'
@@ -13,23 +10,15 @@ import History from '../pages/History.jsx'
 import Home from '../pages/Home.jsx'
 import MealPlan from '../pages/PersonalizedMealPlan.jsx'
 import CrossBrandComparator from '../pages/CrossBrandComparator.jsx'
->>>>>>> origin/main
 
 const unprotected_routes = [
   { path: '/login', element: <LogIn /> },
   { path: '/register', element: <Register /> },
-<<<<<<< HEAD
-  { path: '/', element: <LogIn /> } // Redirect to login by default
-=======
   { path: '/', element: <Home /> } // Redirect to login by default
->>>>>>> origin/main
 ]
 
 const protected_routes = createProtectedRoutes([
   { path: '/dashboard', element: <Dashboard /> },
-<<<<<<< HEAD
-  { path: '/e', element: <ProtectedTestPage /> }
-=======
   { path: '/interaction-check', element: <InteractionCheck /> },
   { path: '/e', element: <ProtectedTestPage /> },
   { path: '/advisory', element: <FoodDrugInteraction /> },
@@ -38,7 +27,6 @@ const protected_routes = createProtectedRoutes([
   { path: '/prescription', element: <Prescription_Mainpage /> },
 
   { path: '/comparator', element: <CrossBrandComparator /> }
->>>>>>> origin/main
 ])
 
 export { unprotected_routes, protected_routes }
