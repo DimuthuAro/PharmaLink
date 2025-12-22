@@ -78,8 +78,8 @@ const styles = StyleSheet.create({
   },
 
   logoWrap: {
-    width: 20,
-    height: 20,
+    width: 90,
+    height: 90,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 6,

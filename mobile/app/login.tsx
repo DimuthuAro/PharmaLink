@@ -62,6 +62,10 @@ export default function Login() {
           <Text style={styles.demo}>pharmacist@pharmalink.com / pharm123</Text>
           <Text style={styles.demo}>admin@pharmalink.com / admin123</Text>
         </View>
+
+        <Pressable onPress={() => router.back()} style={{ marginBottom: 12 }}>
+          <Text style={{ color: "#93c5fd", fontWeight: "900" }}>← Back</Text>
+        </Pressable>
         
       </View>
     </View>
