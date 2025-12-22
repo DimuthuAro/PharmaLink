@@ -7,6 +7,10 @@
         "start": "node server.js",
         "dev": "nodemon server.js",
         "start:dev": "concurrently \"npm run dev:drug-interaction\" \"npm run dev:advisory\" \"npm run dev:comparator\" \"npm run dev:interpreter\"",
+<<<<<<< HEAD
+=======
+        "dev:stack": "concurrently \"npm run dev\" \"npm run dev:drug-interaction\"",
+>>>>>>> origin/main
         "dev:drug-interaction": "cd microservices/drug_interaction_microservice && npm run dev",
         "dev:advisory": "cd microservices/personalized_advisory_microservice && npm run dev",
         "dev:comparator": "cd microservices/crossbrand_comparator_microservice && npm run dev",

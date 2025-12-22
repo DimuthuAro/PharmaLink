@@ -12,13 +12,44 @@ const connectDB = require('./config/database');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+<<<<<<< HEAD
+=======
+const test = 10;
+console.log(test);
+>>>>>>> origin/main
 
 // Security middleware
 app.use(helmet());
 
+<<<<<<< HEAD
 // CORS configuration
 app.use(cors({
     origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+=======
+// CORS configuration — allow configurable comma-separated origins, default Vite dev
+const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173')
+    .split(',')
+    .map(o => o.trim())
+    .filter(Boolean);
+
+const allowAllCors = process.env.CORS_ALLOW_ALL === 'true' || process.env.NODE_ENV === 'development';
+
+app.use(cors({
+    origin: (origin, callback) => {
+        if (allowAllCors) return callback(null, true);
+
+        // Allow server-to-server/no-origin, configured origins, and common local dev hosts.
+        const isLocal = origin && (
+            origin.startsWith('http://localhost:') ||
+            origin.startsWith('http://127.0.0.1:')
+        );
+
+        if (!origin || allowedOrigins.includes(origin) || isLocal) {
+            return callback(null, true);
+        }
+        return callback(new Error('Not allowed by CORS'));
+    },
+>>>>>>> origin/main
     credentials: true
 }));
 
@@ -38,9 +69,23 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
+<<<<<<< HEAD
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+=======
+// Body parsing middleware - MOVED AFTER PROXIES
+// Note: http-proxy-middleware handles body parsing internally.
+// If express.json() is used before proxy, it can consume the stream and cause issues with POST requests.
+// We only apply body parsing to non-proxy routes if needed, or ensure proxy config handles it.
+// For this setup, we'll move it after proxies or use a specific route for it if needed.
+// However, since we have health check and potentially other routes, we can apply it conditionally or just remove it for proxy paths.
+// Simplest fix for now: Move it after proxy definitions or remove global application if proxies need raw stream.
+// Actually, better approach: Apply body parser only to routes that need it, or skip it for /api/* routes.
+
+// app.use(express.json({ limit: '10mb' }));
+// app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+>>>>>>> origin/main
 
 // Connect to MongoDB
 connectDB();
@@ -59,10 +104,27 @@ app.get('/health', (req, res) => {
 });
 
 // API Routes - Proxy to microservices
+<<<<<<< HEAD
 app.use('/api/drug-interactions', createProxyMiddleware({
     target: `http://localhost:${process.env.DRUG_INTERACTION_PORT || 3001}`,
     changeOrigin: true,
     pathRewrite: { '^/api/drug-interactions': '' }
+=======
+// Important: Do not use body-parser before proxies for POST requests to work correctly without custom onProxyReq
+app.use('/api/drug-interactions', createProxyMiddleware({
+    target: `http://localhost:${process.env.DRUG_INTERACTION_PORT || 3001}`,
+    changeOrigin: true,
+    pathRewrite: { '^/api/drug-interactions': '' },
+    // onProxyReq: (proxyReq, req, res) => {
+    //     // Fix for body-parser issue if it was applied globally (though we moved it, this is safer)
+    //     if (req.body && Object.keys(req.body).length > 0) {
+    //         const bodyData = JSON.stringify(req.body);
+    //         proxyReq.setHeader('Content-Type', 'application/json');
+    //         proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+    //         proxyReq.write(bodyData);
+    //     }
+    // }
+>>>>>>> origin/main
 }));
 
 app.use('/api/advisory', createProxyMiddleware({
@@ -83,6 +145,13 @@ app.use('/api/prescription', createProxyMiddleware({
     pathRewrite: { '^/api/prescription': '' }
 }));
 
+<<<<<<< HEAD
+=======
+// Apply body parsing for other routes (if any) that are not proxies
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+>>>>>>> origin/main
 // Error handling middleware
 app.use((err, req, res, next) => {
     logger.error(err.stack);

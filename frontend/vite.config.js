@@ -17,7 +17,11 @@ export default defineConfig({
   
   // Development server configuration
   server: {
+<<<<<<< HEAD
     port: 3000,
+=======
+    port: 5173,
+>>>>>>> origin/main
     open: true,
     cors: true,
     hmr: {

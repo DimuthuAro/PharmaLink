@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+// src/auth/auth.jsx
+>>>>>>> origin/main
 import { createContext, useContext, useState, useEffect } from 'react';
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
@@ -13,13 +17,19 @@ export const useAuth = () => {
 
 const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
+<<<<<<< HEAD
     // Check localStorage for existing session
+=======
+>>>>>>> origin/main
     const savedAuth = localStorage.getItem('pharmalink_auth');
     return savedAuth ? JSON.parse(savedAuth) : false;
   });
   
   const [user, setUser] = useState(() => {
+<<<<<<< HEAD
     // Check localStorage for user data
+=======
+>>>>>>> origin/main
     const savedUser = localStorage.getItem('pharmalink_user');
     return savedUser ? JSON.parse(savedUser) : null;
   });
@@ -27,8 +37,11 @@ const AuthProvider = ({ children }) => {
   const login = (userData) => {
     setIsAuthenticated(true);
     setUser(userData);
+<<<<<<< HEAD
     
     // Persist to localStorage
+=======
+>>>>>>> origin/main
     localStorage.setItem('pharmalink_auth', 'true');
     localStorage.setItem('pharmalink_user', JSON.stringify(userData));
   };
@@ -36,8 +49,11 @@ const AuthProvider = ({ children }) => {
   const logout = () => {
     setIsAuthenticated(false);
     setUser(null);
+<<<<<<< HEAD
     
     // Clear localStorage
+=======
+>>>>>>> origin/main
     localStorage.removeItem('pharmalink_auth');
     localStorage.removeItem('pharmalink_user');
     localStorage.removeItem('pharmalink_remember');
@@ -61,11 +77,17 @@ const AuthProvider = ({ children }) => {
 
 const UnauthorizedComponent = () => {
   useEffect(() => {
+<<<<<<< HEAD
     // Redirect to login after a short delay
     const timer = setTimeout(() => {
       window.location.href = '/login';
     }, 2000);
     
+=======
+    const timer = setTimeout(() => {
+      window.location.href = '/login';
+    }, 2000);
+>>>>>>> origin/main
     return () => clearTimeout(timer);
   }, []);
 
@@ -84,18 +106,31 @@ const UnauthorizedComponent = () => {
       </div>
     </div>
   )
+<<<<<<< HEAD
 }
 
 const ProtectedRoute = ({ element }) => {
   const { isAuthenticated } = useAuth();
   return isAuthenticated ? element : <Unauthorized />;
 }
+=======
+};
+
+const ProtectedRoute = ({ element }) => {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? element : <UnauthorizedComponent />;
+};
+>>>>>>> origin/main
 
 const createProtectedRoutes = (routes) => {
   return routes.map(route => ({
     path: route.path,
     element: <ProtectedRoute element={route.element} />
   }));
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> origin/main
 
 export { AuthProvider, createProtectedRoutes };
