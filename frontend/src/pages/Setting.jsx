@@ -22,6 +22,52 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/outline";
 
+const PROFILE_LOG_KEY = "pharmlink_profile_log_v1";
+
+// ---------- helpers for history ----------
+const normalizeAllergyLabel = (key) => {
+  const map = {
+    peanut: "Peanut",
+    tree_nut: "Tree nuts",
+    milk: "Milk / Dairy",
+    egg: "Egg",
+    fish: "Fish",
+    shellfish: "Shellfish",
+    soy: "Soy",
+    wheat: "Wheat / Gluten",
+    sesame: "Sesame",
+  };
+  return map[key] || key;
+};
+
+const prettyTime = (iso) => {
+  try {
+    return new Date(iso).toLocaleString();
+  } catch {
+    return iso;
+  }
+};
+
+const Chip = ({ children, tone = "slate" }) => {
+  const tones = {
+    slate:
+      "bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-900/40 dark:text-slate-200 dark:border-slate-800",
+    red:
+      "bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-200 dark:border-red-900/40",
+    emerald:
+      "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-200 dark:border-emerald-800",
+    blue:
+      "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-200 dark:border-blue-800",
+  };
+    return (
+    <span
+      className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold ${tones[tone]}`}
+    >
+      {children}
+    </span>
+  );
+};
+
 const Section = ({ title, desc, children }) => (
   <div className="bg-white dark:bg-slate-950 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 md:p-6">
     <div className="mb-4">
@@ -256,6 +302,46 @@ useEffect(() => {
     }
   };
 
+    // Saved Checks History state + loader 
+  const [profileLog, setProfileLog] = useState([]);
+
+  const loadHistory = () => {
+    try {
+      const raw = localStorage.getItem(PROFILE_LOG_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      setProfileLog(Array.isArray(parsed) ? parsed : []);
+    } catch {
+      setProfileLog([]);
+    }
+  };
+
+   useEffect(() => {
+    loadHistory();
+
+    const onCustomUpdate = () => loadHistory();
+    window.addEventListener("pharmlink_profile_log_updated", onCustomUpdate);
+
+    const onStorage = (e) => {
+      if (e.key === PROFILE_LOG_KEY) loadHistory();
+    };
+    window.addEventListener("storage", onStorage);
+
+    const onFocus = () => loadHistory();
+    window.addEventListener("focus", onFocus);
+
+    return () => {
+      window.removeEventListener("pharmlink_profile_log_updated", onCustomUpdate);
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("focus", onFocus);
+    };
+  }, []);
+
+    const clearHistory = () => {
+    if (!window.confirm("Clear saved checks history?")) return;
+    localStorage.removeItem(PROFILE_LOG_KEY);
+    loadHistory();
+  };
+
   const resetEverythingAndLogout = () => {
     if (!window.confirm("This will log you out and remove local data. Continue?"))
       return;
@@ -285,12 +371,6 @@ useEffect(() => {
                 className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-900 cursor-pointer"
               >
                 Dashboard
-              </button>
-              <button
-                onClick={() => navigate("/profile")}
-                className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-900 cursor-pointer"
-              >
-                Profile
               </button>
             </div>
 
@@ -361,18 +441,6 @@ useEffect(() => {
                     >
                       <UserCircleIcon className="h-5 w-5 text-slate-400" />
                       Profile
-                    </button>
-
-                    <button
-                      type="button"
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-900 transition cursor-pointer"
-                      onClick={() => {
-                        setShowUserMenu(false);
-                        navigate("/settings");
-                      }}
-                    >
-                      <Cog6ToothIcon className="h-5 w-5 text-slate-400" />
-                      Account settings
                     </button>
 
                     <div className="my-2 h-px bg-slate-200 dark:bg-slate-800" />
@@ -526,6 +594,78 @@ useEffect(() => {
                 Save changes
               </button>
             </div>
+          </Section>
+
+           <Section
+            title="Saved checks history"
+            desc="This is the same history shown on your Profile page."
+          >
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                History
+              </p>
+
+              {profileLog.length > 0 ? (
+                <button
+                  onClick={clearHistory}
+                  className="text-sm font-bold text-red-600 hover:underline cursor-pointer dark:text-red-300"
+                >
+                  Clear
+                </button>
+              ) : null}
+            </div>
+            {profileLog.length === 0 ? (
+              <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
+                No saved checks yet.
+              </p>
+            ) : (
+              <div className="mt-4 space-y-3 max-h-[360px] overflow-y-auto pr-1">
+                {profileLog.map((entry) => (
+                  <div
+                    key={entry.id}
+                    className="rounded-2xl border border-slate-200 bg-white p-4
+                               dark:border-slate-800 dark:bg-slate-950"
+                  >
+                    <p className="text-xs font-extrabold text-slate-700 dark:text-slate-200">
+                      {prettyTime(entry.timestamp)}
+                    </p>
+                    <p className="mt-3 text-xs font-bold text-slate-700 dark:text-slate-300">
+                      Medications
+                    </p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {(entry.drugs || []).length ? (
+                        (entry.drugs || []).map((d, i) => (
+                          <Chip key={`${entry.id}-d-${d?.index ?? i}`} tone="blue">
+                            {d?.name}
+                          </Chip>
+                        ))
+                      ) : (
+                        <span className="text-sm text-slate-500 dark:text-slate-400">
+                          None
+                        </span>
+                      )}
+                    </div>
+                    
+                    <p className="mt-3 text-xs font-bold text-slate-700 dark:text-slate-300">
+                      Allergies
+                    </p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {(entry.allergies || []).length ? (
+                        entry.allergies.map((a, i) => (
+                          <Chip key={`${entry.id}-a-${a}-${i}`} tone="red">
+                            {normalizeAllergyLabel(a)}
+                          </Chip>
+                        ))
+                      ) : (
+                        <span className="text-sm text-slate-500 dark:text-slate-400">
+                          None
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </Section>
 
           {/* Security */}

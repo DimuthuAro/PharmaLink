@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/auth.jsx";
 import BrandLogo from "../components/brandLogo.jsx";
 import UserAvatar from "../components/UserAvatar.jsx";
-
 import {
   ShieldCheckIcon,
   UserCircleIcon,
@@ -13,13 +12,17 @@ import {
   IdentificationIcon,
   BriefcaseIcon,
   ClipboardDocumentCheckIcon,
-  BeakerIcon,
   ExclamationTriangleIcon,
+  BeakerIcon,
 } from "@heroicons/react/24/outline";
 
+const PROFILE_LOG_KEY = "pharmlink_profile_log_v1";
+
 const StatCard = ({ icon: Icon, label, value }) => (
-  <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm
-                  dark:border-slate-800 dark:bg-slate-900/60">
+  <div
+    className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm
+               dark:border-slate-800 dark:bg-slate-900/60"
+  >
     <div className="flex items-center gap-3">
       <div className="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center">
         <Icon className="h-5 w-5" />
@@ -70,51 +73,59 @@ const normalizeAllergyLabel = (key) => {
   return map[key] || key;
 };
 
+const prettyTime = (iso) => {
+  try {
+    return new Date(iso).toLocaleString();
+  } catch {
+    return iso;
+  }
+};
+
+// Build unique meds list with "last seen" timestamp for each med
+const buildMedicationLastSeen = (logArr) => {
+  const map = new Map(); // key -> { name, index, lastIso }
+
+  for (const entry of logArr || []) {
+    const ts = entry?.timestamp;
+    if (!ts) continue;
+
+    const drugs = Array.isArray(entry?.drugs) ? entry.drugs : [];
+    for (const d of drugs) {
+      const name = d?.name?.trim();
+      if (!name) continue;
+
+      const key = d?.index != null ? `i:${d.index}` : `n:${name.toLowerCase()}`;
+
+      const existing = map.get(key);
+      if (!existing || new Date(ts) > new Date(existing.lastIso)) {
+        map.set(key, { name, index: d?.index ?? null, lastIso: ts });
+      }
+    }
+  }
+
+  return Array.from(map.values()).sort(
+    (a, b) => new Date(b.lastIso) - new Date(a.lastIso)
+  );
+};
+
 const Profile = () => {
   const navigate = useNavigate();
   const { isAuthenticated, user, logout } = useAuth();
 
   const [showUserMenu, setShowUserMenu] = useState(false);
 
-  // stored user data for display
-  const [userDrugs, setUserDrugs] = useState([]);
+  // full history
+  const [profileLog, setProfileLog] = useState([]);
+
+  // active meds styled list (unique + last seen time)
+  const [activeMedsList, setActiveMedsList] = useState([]);
+
+  // latest allergies
   const [userAllergies, setUserAllergies] = useState([]);
 
   useEffect(() => {
     if (!isAuthenticated) navigate("/");
   }, [isAuthenticated, navigate]);
-
-  // Load stored drugs/allergies
-  useEffect(() => {
-    try {
-      const drugs = JSON.parse(localStorage.getItem("pharmlink_user_drugs") || "[]");
-      const allergies = JSON.parse(
-        localStorage.getItem("pharmlink_user_allergies") || "[]"
-      );
-
-      setUserDrugs(Array.isArray(drugs) ? drugs : []);
-      setUserAllergies(Array.isArray(allergies) ? allergies : []);
-    } catch {
-      setUserDrugs([]);
-      setUserAllergies([]);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!showUserMenu) return;
-
-    const onKeyDown = (e) => e.key === "Escape" && setShowUserMenu(false);
-    const onMouseDown = (e) => {
-      if (!e.target.closest("#user-menu-wrapper")) setShowUserMenu(false);
-    };
-
-    document.addEventListener("keydown", onKeyDown);
-    document.addEventListener("mousedown", onMouseDown);
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      document.removeEventListener("mousedown", onMouseDown);
-    };
-  }, [showUserMenu]);
 
   const roleLabel = useMemo(() => {
     const r = (user?.role || "").toLowerCase();
@@ -133,11 +144,6 @@ const Profile = () => {
       .toUpperCase();
   }, [user?.name]);
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
-
   const lastLoginNice = useMemo(() => {
     if (!user?.lastLogin) return "—";
     try {
@@ -147,12 +153,85 @@ const Profile = () => {
     }
   }, [user?.lastLogin]);
 
+  const handleLogout = () => {
+    logout?.();
+    navigate("/");
+  };
+
+  // Load log (latest + full history) and build active meds list
+  const loadLog = () => {
+    try {
+      const raw = localStorage.getItem(PROFILE_LOG_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      const logArr = Array.isArray(parsed) ? parsed : [];
+
+      setProfileLog(logArr);
+
+      const latest = logArr[0];
+      setUserAllergies(Array.isArray(latest?.allergies) ? latest.allergies : []);
+      setActiveMedsList(buildMedicationLastSeen(logArr));
+    } catch {
+      setProfileLog([]);
+      setUserAllergies([]);
+      setActiveMedsList([]);
+    }
+  };
+
+  // keep profile updated when meal-plan saves (same tab) + storage (other tabs) + focus
+  useEffect(() => {
+    loadLog();
+
+    const onCustomUpdate = () => loadLog();
+    window.addEventListener("pharmlink_profile_log_updated", onCustomUpdate);
+
+    const onStorage = (e) => {
+      if (e.key === PROFILE_LOG_KEY) loadLog();
+    };
+    window.addEventListener("storage", onStorage);
+
+    const onFocus = () => loadLog();
+    window.addEventListener("focus", onFocus);
+
+    return () => {
+      window.removeEventListener("pharmlink_profile_log_updated", onCustomUpdate);
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("focus", onFocus);
+    };
+  }, []);
+
+  // close user menu
+  useEffect(() => {
+    if (!showUserMenu) return;
+
+    const onKeyDown = (e) => e.key === "Escape" && setShowUserMenu(false);
+    const onMouseDown = (e) => {
+      if (!e.target.closest("#user-menu-wrapper")) setShowUserMenu(false);
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("mousedown", onMouseDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("mousedown", onMouseDown);
+    };
+  }, [showUserMenu]);
+
+  const clearHistory = () => {
+    if (!confirm("Clear saved checks history?")) return;
+    localStorage.removeItem(PROFILE_LOG_KEY);
+    loadLog();
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col
-                    dark:bg-slate-950 dark:text-slate-100">
+    <div
+      className="min-h-screen bg-slate-50 text-slate-900 flex flex-col
+                 dark:bg-slate-950 dark:text-slate-100"
+    >
       {/* HEADER */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-50
-                         dark:bg-slate-950 dark:border-slate-800">
+      <header
+        className="bg-white border-b border-slate-200 sticky top-0 z-50
+                   dark:bg-slate-950 dark:border-slate-800"
+      >
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center">
           <div className="flex items-center gap-3">
             <BrandLogo className="h-7 w-7" />
@@ -258,16 +337,22 @@ const Profile = () => {
         <div className="max-w-6xl mx-auto px-4 py-8 grid gap-6 lg:grid-cols-3">
           {/* LEFT */}
           <section className="lg:col-span-2 space-y-6">
-            <div className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden
-                            dark:border-slate-800 dark:bg-slate-950">
-              <div className="h-28 bg-gradient-to-r from-blue-600 via-indigo-600 to-slate-900
-                              dark:from-blue-700 dark:via-indigo-700 dark:to-slate-950" />
+            <div
+              className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden
+                         dark:border-slate-800 dark:bg-slate-950"
+            >
+              <div
+                className="h-28 bg-gradient-to-r from-blue-600 via-indigo-600 to-slate-900
+                           dark:from-blue-700 dark:via-indigo-700 dark:to-slate-950"
+              />
 
               <div className="px-6 pb-6 -mt-10">
                 <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                   <div className="flex items-end gap-4">
-                    <div className="h-24 w-24 rounded-3xl overflow-hidden border-4 border-white bg-slate-100 shadow-sm
-                                    dark:border-slate-950 dark:bg-slate-900">
+                    <div
+                      className="h-24 w-24 rounded-3xl overflow-hidden border-4 border-white bg-slate-100 shadow-sm
+                                 dark:border-slate-950 dark:bg-slate-900"
+                    >
                       {user?.avatar ? (
                         <img
                           src={user.avatar}
@@ -290,8 +375,10 @@ const Profile = () => {
                       </p>
 
                       <div className="mt-2 flex flex-wrap items-center gap-4">
-                        <span className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700
-                                         dark:border-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-200">
+                        <span
+                          className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700
+                                     dark:border-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-200"
+                        >
                           <ShieldCheckIcon className="h-4 w-4 mr-1" />
                           Secure session
                         </span>
@@ -331,8 +418,10 @@ const Profile = () => {
                 {/* Details */}
                 <div className="mt-6 grid gap-4 md:grid-cols-2">
                   {/* Account info */}
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4
-                                  dark:border-slate-800 dark:bg-slate-900/40">
+                  <div
+                    className="rounded-2xl border border-slate-200 bg-slate-50 p-4
+                               dark:border-slate-800 dark:bg-slate-900/40"
+                  >
                     <p className="text-xs font-bold text-slate-700 uppercase tracking-wide dark:text-slate-300">
                       Account info
                     </p>
@@ -353,8 +442,10 @@ const Profile = () => {
                   </div>
 
                   {/* PharmaLink notes */}
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4
-                                  dark:border-slate-800 dark:bg-slate-900/40">
+                  <div
+                    className="rounded-2xl border border-slate-200 bg-slate-50 p-4
+                               dark:border-slate-800 dark:bg-slate-900/40"
+                  >
                     <p className="text-xs font-bold text-slate-700 uppercase tracking-wide dark:text-slate-300">
                       PharmaLink notes
                     </p>
@@ -365,45 +456,79 @@ const Profile = () => {
                     </p>
                   </div>
 
-                  {/* Active drugs */}
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4
-                                  dark:border-slate-800 dark:bg-slate-900/40">
+                  {/*Active medications*/}
+                  <div
+                    className="rounded-2xl border border-slate-200 bg-slate-50 p-4
+                               dark:border-slate-800 dark:bg-slate-900/40"
+                  >
                     <p className="text-xs font-bold text-slate-700 uppercase tracking-wide dark:text-slate-300">
                       Active medications
                     </p>
-                  
-                    <div className="mt-3">
-                      {userDrugs.length === 0 ? (
+                    
+                    <div
+                      className="
+                        mt-3 space-y-3
+                        max-h-[280px]
+                        overflow-y-auto
+                        pr-1
+                      "
+                    >
+                      {activeMedsList.length === 0 ? (
                         <div className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-300">
                           <ExclamationTriangleIcon className="h-4 w-4 mt-0.5 text-slate-400" />
-                          <span>No saved medications yet. Add medications on Meal Plan page.</span>
+                          <span>No saved medications yet. Generate a meal plan first.</span>
                         </div>
                       ) : (
-                        <div className="space-y-2">
-                          {userDrugs.map((d, i) => (
+                        activeMedsList.map((m, i) => (
+                          <div
+                            key={`${m.index ?? m.name}-${i}`}
+                            className="
+                              flex items-center gap-3
+                              rounded-2xl
+                              border border-blue-200
+                              bg-blue-50
+                              px-3 py-3
+                              dark:border-blue-900/40
+                              dark:bg-blue-900/10
+                            "
+                          >
                             <div
-                              key={`${d.name}-${i}`}
-                              className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-3 py-2
-                                         dark:border-slate-800 dark:bg-slate-950"
+                              className="
+                                h-10 w-10
+                                rounded-xl
+                                bg-white
+                                border border-blue-200
+                                flex items-center justify-center
+                                dark:bg-slate-950
+                                dark:border-blue-900/40
+                              "
                             >
-                              <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                                {d.name}
-                              </p>
-                              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                                {d.date ? new Date(d.date).toLocaleDateString() : "—"}
-                              </span>
+                              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-sm">
+                                <BeakerIcon className="h-5 w-5 text-white" />
+                              </div>
+                              
                             </div>
-                          ))}
-                        </div>
+                    
+                            <div className="min-w-0">
+                              <p className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">
+                                {m.name}
+                              </p>
+                              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                                {prettyTime(m.lastIso)}
+                              </p>
+                            </div>
+                          </div>
+                        ))
                       )}
                     </div>
+
                   </div>
-                  
 
-
-                  {/* Allergies */}
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4
-                                  dark:border-slate-800 dark:bg-slate-900/40">
+                  {/* Allergies*/}
+                  <div
+                    className="rounded-2xl border border-slate-200 bg-slate-50 p-4
+                               dark:border-slate-800 dark:bg-slate-900/40"
+                  >
                     <p className="text-xs font-bold text-slate-700 uppercase tracking-wide dark:text-slate-300">
                       Allergies
                     </p>
@@ -430,8 +555,10 @@ const Profile = () => {
 
           {/* RIGHT */}
           <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
-            <div className="rounded-3xl border border-slate-200 bg-white shadow-sm p-5
-                            dark:border-slate-800 dark:bg-slate-950">
+            <div
+              className="rounded-3xl border border-slate-200 bg-white shadow-sm p-5
+                         dark:border-slate-800 dark:bg-slate-950"
+            >
               <p className="text-sm font-extrabold text-slate-900 dark:text-slate-100">
                 Quick actions
               </p>
@@ -469,8 +596,10 @@ const Profile = () => {
           </aside>
         </div>
 
-        <footer className="mt-10 mb-4 text-[11px] text-slate-500 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-3 max-w-6xl mx-auto px-4 w-full
-                           dark:border-slate-800 dark:text-slate-400">
+        <footer
+          className="mt-10 mb-4 text-[11px] text-slate-500 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-3 max-w-6xl mx-auto px-4 w-full
+                     dark:border-slate-800 dark:text-slate-400"
+        >
           <span>© {new Date().getFullYear()} PharmaLink. For academic/research use.</span>
           <span>Always consult a qualified healthcare professional.</span>
         </footer>

@@ -25,6 +25,9 @@ export default function RootLayout() {
           <Stack.Screen name="login" />
           <Stack.Screen name="register" />
           <Stack.Screen name="food-drug"/>
+          <Stack.Screen name="history"/>
+          <Stack.Screen name="meal-plan"/>
+          <Stack.Screen name="meal-plan-result"/>
         </>
       ): (
           <Stack.Screen name="(tabs)" />
