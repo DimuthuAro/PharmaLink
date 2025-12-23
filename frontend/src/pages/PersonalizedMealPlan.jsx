@@ -1,4 +1,3 @@
-// src/pages/PersonalizedMealPlan.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/auth.jsx";
@@ -33,6 +32,8 @@ const ALLERGY_OPTIONS = [
   { key: "wheat", label: "Wheat / Gluten" },
   { key: "sesame", label: "Sesame" },
 ];
+
+const PROFILE_LOG_KEY = "pharmlink_profile_log_v1";
 
 const STORAGE_KEYS = {
   drugs: "pharmlink_user_drugs",
@@ -220,21 +221,29 @@ const PersonalizedMealPlan = () => {
       setMealPlan(res);
 
       // Persist for Profile page (with date)
-    try {
-      const today = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
-    
-      const drugWithDate = selectedDrugs.map((d) => ({
-        name: d.name,
-        index: d.index,
-        date: today, // you can change this if you want user-selected date
-      }));
-    
-      localStorage.setItem("pharmlink_user_drugs", JSON.stringify(drugWithDate));
-      localStorage.setItem("pharmlink_user_allergies", JSON.stringify(selectedAllergies));
-    } catch {
-      // ignore
-    }
+      try {
+        const timestamp = new Date().toISOString();
 
+        const entry = {
+          id: `${Date.now()}_${Math.random().toString(16).slice(2)}`,
+          timestamp, // ISO date+time
+          drugs: selectedDrugs.map((d) => ({ name: d.name, index: d.index })),
+          allergies: selectedAllergies,
+        };
+    
+        const raw = localStorage.getItem(PROFILE_LOG_KEY);
+        const prev = raw ? JSON.parse(raw) : [];
+        const arr = Array.isArray(prev) ? prev : [];
+
+        const next = [entry, ...arr]; // newest first
+        localStorage.setItem(PROFILE_LOG_KEY, JSON.stringify(next));
+        window.dispatchEvent(new Event("pharmlink_profile_log_updated"));
+
+        localStorage.setItem(STORAGE_KEYS.drugs, JSON.stringify(entry.drugs));
+        localStorage.setItem(STORAGE_KEYS.allergies, JSON.stringify(entry.allergies));
+      } catch {
+        // ignore
+      }
 
       // auto select Day 1 after generating
       setActiveDay(1);

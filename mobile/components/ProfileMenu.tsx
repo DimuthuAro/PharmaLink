@@ -10,6 +10,8 @@ import {
 import { useRouter } from "expo-router";
 import { User } from "../utils/auth";
 import UserAvatar from "./UserAvatar";
+import { Ionicons } from "@expo/vector-icons";
+import { red } from "react-native-reanimated/lib/typescript/Colors";
 
 type Props = {
   user: User | null;
@@ -36,7 +38,7 @@ export default function ProfileMenu({ user, open, onClose, onSignOut }: Props) {
               {/* Header row */}
               <View style={styles.topRow}>
                 <UserAvatar user={user} size={48} />
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={styles.name} numberOfLines={1}>
                     {name}
                   </Text>
@@ -47,7 +49,7 @@ export default function ProfileMenu({ user, open, onClose, onSignOut }: Props) {
                 </View>
 
                 <View style={styles.securePill}>
-                  <Text style={styles.secureIcon}>🛡️</Text>
+                  <Ionicons name="shield-checkmark" size={14} color="#166534" />
                   <Text style={styles.secureText}>Secure</Text>
                 </View>
               </View>
@@ -62,19 +64,31 @@ export default function ProfileMenu({ user, open, onClose, onSignOut }: Props) {
                   router.push("/profile");
                 }}
               >
-                <Text style={styles.itemIcon}>👤</Text>
-                <Text style={styles.itemText}>Profile</Text>
+                <View style={styles.iconWrap}>
+                  <Ionicons name="person-outline" size={18} color="#2563eb" />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.itemText}>Profile</Text>
+                  <Text style={styles.itemSub}>View & update your details</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={18} color="#94a3b8" />
               </Pressable>
 
               <Pressable
                 style={({ pressed }) => [styles.item, pressed && styles.pressed]}
                 onPress={() => {
                   onClose();
-                  router.push("/settings"); // create later if you want
+                  router.push("/settings");
                 }}
               >
-                <Text style={styles.itemIcon}>⚙️</Text>
-                <Text style={styles.itemText}>Account settings</Text>
+                <View style={styles.iconWrap}>
+                  <Ionicons name="settings-outline" size={18} color="#2563eb" />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.itemText}>Account settings</Text>
+                  <Text style={styles.itemSub}>Security & preferences</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={18} color="#94a3b8" />
               </Pressable>
 
               <View style={styles.divider} />
@@ -84,14 +98,16 @@ export default function ProfileMenu({ user, open, onClose, onSignOut }: Props) {
                 onPress={async () => {
                   onClose();
                   await onSignOut?.();
-                  
                   router.replace("/welcome");
                 }}
               >
-                <Text style={[styles.itemIcon, { color: "#ef4444" }]}>⎋</Text>
-                <Text style={[styles.itemText, { color: "#ef4444", fontWeight: "900" }]}>
-                  Sign out
-                </Text>
+                <View style={[styles.iconWrap,]}>
+                  <Ionicons name="log-out-outline" size={18} color="#e11d48" />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.itemText, { color: "#e11d48" }]}>Sign out</Text>
+                  <Text style={[styles.itemSub, { color: "#fb7185" }]}>Exit your account</Text>
+                </View>
               </Pressable>
             </View>
           </TouchableWithoutFeedback>
@@ -110,12 +126,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "rgba(2,6,23,0.25)",
     alignItems: "flex-end",
-    paddingTop: 62, // places dropdown under header
+    paddingTop: 62, 
     paddingRight: 12,
   },
 
   card: {
-    width: 310,
+    width: 320,
     backgroundColor: "#fff",
     borderRadius: 18,
     borderWidth: 1,
@@ -150,7 +166,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(34,197,94,0.25)",
   },
-  secureIcon: { fontSize: 13 },
   secureText: { fontSize: 12, fontWeight: "900", color: "#166534" },
 
   divider: {
@@ -163,10 +178,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
     paddingHorizontal: 14,
-    paddingVertical: 14,
+    paddingVertical: 12,
   },
   pressed: { backgroundColor: "rgba(148,163,184,0.12)" },
 
-  itemIcon: { width: 22, textAlign: "center", fontSize: 16, color: "#64748b" },
-  itemText: { fontSize: 15, fontWeight: "800", color: "#0f172a" },
+  iconWrap: {
+    width: 38,
+    height: 38,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+
+  },
+
+  itemText: { fontSize: 15, fontWeight: "900", color: "#0f172a" },
+  itemSub: { marginTop: 2, fontSize: 12, fontWeight: "700", color: "#64748b" },
 });

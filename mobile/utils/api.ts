@@ -57,6 +57,7 @@ export const fetchSafeFoods = async (drugIndex: number, topN: number = 10) => {
 export const generateMealPlan = async (payload: {
   drug_indices: number[];
   dietary_restrictions?: string[];
+  allergies?: string[];
   days?: number;
   meals_per_day?: number;
   calories_per_day?: number;
