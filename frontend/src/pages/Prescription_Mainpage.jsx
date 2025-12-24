@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
+import Header from '../components/Header';
 import {
     Container, Paper, Typography, Box, Button, CircularProgress,
     Alert, Chip, Grid, Slider, Stack, LinearProgress, Menu, MenuItem,
@@ -2119,6 +2120,11 @@ const ProfessionalPrescriptionInterpreter = () => {
                 <StyledCanvas ref={canvasRef} />
 
                 {/* Header */}
+                <Header
+                    title="PharmaLink"
+                    subtitle="Prescription Interpreter - AI-Powered OCR Analysis"
+                />
+
                 <Box sx={{ textAlign: 'center', mb: 6 }}>
                 <Typography variant="h3" component="h1" gutterBottom sx={{
                     display: 'flex',
@@ -2170,19 +2176,76 @@ const ProfessionalPrescriptionInterpreter = () => {
                 )}
             </Paper>
 
-            {/* Footer */}
-            <Box sx={{ mt: 4, textAlign: 'center' }}>
-                <Typography variant="caption" color="text.secondary">
-                    This tool uses AI to analyze prescription images. Results are for informational purposes only.
-                    Always consult with a qualified healthcare professional for medical advice.
-                </Typography>
-            </Box>
-
             {/* Dialogs */}
             {renderExportDialog()}
             {renderFullscreenDialog()}
             {renderNotifications()}
         </Container>
+
+            {/* Footer - Enhanced */}
+            <footer className="mt-auto print:hidden relative">
+                <div className="h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+                <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-gray-900 to-zinc-900">
+                    <div className="absolute inset-0">
+                        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+                        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
+                    </div>
+                    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="relative h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                                        <MedicalServices className="text-white" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-bold text-white">PharmaLink</h3>
+                                        <p className="text-xs text-gray-400">Prescription Interpreter</p>
+                                    </div>
+                                </div>
+                                <p className="text-sm text-gray-400 leading-relaxed">
+                                    Advanced AI-powered OCR platform for analyzing prescription images, extracting medications, dosages, and clinical instructions.
+                                </p>
+                                <div className="flex items-center gap-3">
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/20 text-emerald-400 rounded-full text-xs font-medium">
+                                        <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                                        AI Online
+                                    </span>
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/20 text-blue-400 rounded-full text-xs font-medium">
+                                        🔒 Secure Processing
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="space-y-4">
+                                <h4 className="text-sm font-semibold text-white uppercase tracking-wider">Features</h4>
+                                <ul className="space-y-2">
+                                    {['OCR Extraction', 'Image Enhancement', 'Multi-format Export', 'History Tracking'].map((link) => (
+                                        <li key={link} className="text-sm text-gray-400 hover:text-white transition-colors">• {link}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <div className="space-y-4">
+                                <h4 className="text-sm font-semibold text-white uppercase tracking-wider">Medical Disclaimer</h4>
+                                <div className="p-4 rounded-xl bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20">
+                                    <p className="text-xs text-gray-300 leading-relaxed">
+                                        <span className="text-amber-400 font-semibold">⚠️ For informational purposes only.</span> Always verify with original prescription and consult healthcare professionals.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="pt-6 border-t border-white/10">
+                            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <div className="text-xs text-gray-500">© {new Date().getFullYear()} PharmaLink. All rights reserved.</div>
+                                <div className="flex items-center gap-4">
+                                    <span className="text-xs text-gray-500 flex items-center gap-1.5">
+                                        <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>v2.0.0
+                                    </span>
+                                    <span className="text-xs text-gray-500">Made with ❤️ by PharmaLink Team</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
         </div>
     );
 };
