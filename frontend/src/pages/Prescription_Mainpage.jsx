@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Header from '../components/Header';
 import {
     Container, Paper, Typography, Box, Button, CircularProgress,
     Alert, Chip, Grid, Slider, Stack, LinearProgress, Menu, MenuItem,
@@ -347,6 +347,8 @@ const ConfidenceBadge = styled(Box)(({ theme, confidence }) => ({
 }));
 
 const ProfessionalPrescriptionInterpreter = () => {
+    const navigate = useNavigate();
+
     // State Management
     const [state, setState] = useState({
         // Image States
@@ -2112,75 +2114,206 @@ const ProfessionalPrescriptionInterpreter = () => {
             <HexagonGrid />
             <DNAHelix />
 
+            {/* Header with Glassmorphism */}
+            <header className="sticky top-0 z-50 print:hidden">
+                <div className="h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
+                <div className="backdrop-blur-xl bg-white/70 border-b border-white/20 shadow-lg shadow-black/5">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-4">
+                                <div className="relative group">
+                                    <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl blur opacity-40 group-hover:opacity-60 transition duration-300"></div>
+                                    <div className="relative h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                                        <MedicalServices className="text-white" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-900 bg-clip-text text-transparent">
+                                            Prescription Interpreter
+                                        </h1>
+                                        <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full">
+                                            Pro
+                                        </span>
+                                    </div>
+                                    <p className="text-sm text-gray-500 flex items-center gap-1">
+                                        <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                        AI-Powered OCR Analysis Platform
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="hidden lg:flex items-center gap-3">
+                                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-200/50 backdrop-blur-sm">
+                                    <span className="text-sm font-semibold text-blue-700">{state.parsedData.medications.length}</span>
+                                    <span className="text-xs text-blue-600/70">medications</span>
+                                </div>
+                                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-200/50 backdrop-blur-sm">
+                                    <span className="text-sm font-semibold text-emerald-700">{state.parsedData.confidence}%</span>
+                                    <span className="text-xs text-emerald-600/70">confidence</span>
+                                </div>
+                            </div>
+                            <button
+                                className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-white/50 border border-gray-200/50 hover:bg-white hover:shadow-md transition-all duration-300"
+                                onClick={() => navigate('/dashboard')}
+                            >
+                                <span className="text-sm font-medium text-gray-600 group-hover:text-blue-600 transition-colors">← Dashboard</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
             {/* Loading Overlay */}
             {state.isLoading && <LoadingOverlay message={state.progress.step} />}
 
-            <Container maxWidth="lg" sx={{ py: 4, position: 'relative', zIndex: 10 }}>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
                 {/* Hidden Canvas */}
                 <StyledCanvas ref={canvasRef} />
 
-                {/* Header */}
-                <Header
-                    title="PharmaLink"
-                    subtitle="Prescription Interpreter - AI-Powered OCR Analysis"
-                />
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    {/* Main Content - 3 columns */}
+                    <section className="lg:col-span-3">
+                        <Paper elevation={3} sx={{ p: { xs: 2, md: 4 }, borderRadius: 3 }}>
+                            {renderUploadSection()}
 
-                <Box sx={{ textAlign: 'center', mb: 6 }}>
-                <Typography variant="h3" component="h1" gutterBottom sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 2,
-                    fontWeight: 700,
-                    background: 'linear-gradient(45deg, #1976d2, #21CBF3)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent'
-                }}>
-                    <MedicalServices sx={{ fontSize: 48 }} />
-                    Prescription Interpreter Pro
-                </Typography>
-                <Typography variant="h6" color="text.secondary">
-                    Professional-grade prescription analysis with AI-powered OCR
-                </Typography>
-            </Box>
+                            {state.selectedImage && (
+                                <>
+                                    {renderEnhancementControls()}
+                                    {renderResults()}
+                                </>
+                            )}
 
-            {/* Main Content */}
-            <Paper elevation={3} sx={{ p: { xs: 2, md: 4 }, borderRadius: 3 }}>
-                {renderUploadSection()}
+                            {/* Empty State */}
+                            {!state.selectedImage && !state.isLoading && (
+                                <Box sx={{ textAlign: 'center', py: 8 }}>
+                                    <CloudUpload sx={{ fontSize: 80, color: 'grey.400', mb: 3 }} />
+                                    <Typography variant="h5" color="text.secondary" gutterBottom>
+                                        Upload a prescription to begin analysis
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        Drag & drop an image or click to browse
+                                    </Typography>
+                                    <Button
+                                        variant="contained"
+                                        sx={{ mt: 3 }}
+                                        onClick={() => fileInputRef.current?.click()}
+                                    >
+                                        Browse Files
+                                    </Button>
+                                </Box>
+                            )}
+                        </Paper>
+                    </section>
 
-                {state.selectedImage && (
-                    <>
-                        {renderEnhancementControls()}
-                        {renderResults()}
-                    </>
-                )}
+                    {/* Sidebar - 1 column */}
+                    <aside className="space-y-4">
+                        {/* Tips Card */}
+                        <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-amber-50/90 via-orange-50/80 to-yellow-50/90 border border-amber-200/50 rounded-2xl shadow-xl shadow-amber-500/10 p-5">
+                            <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-amber-400/20 to-orange-400/20 rounded-full blur-2xl"></div>
+                            <div className="relative flex items-center gap-3 mb-4">
+                                <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg">
+                                    <span className="text-2xl">💡</span>
+                                </div>
+                                <div>
+                                    <p className="text-sm font-bold text-amber-900">OCR Tips</p>
+                                    <p className="text-xs text-amber-700/70">Better results</p>
+                                </div>
+                            </div>
+                            <div className="relative space-y-3">
+                                <div className="group flex gap-3 p-3 bg-white/60 backdrop-blur-sm rounded-xl border border-amber-200/50 hover:bg-white/80 transition-all">
+                                    <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
+                                        <span className="text-lg">📷</span>
+                                    </div>
+                                    <p className="text-sm text-amber-900">Use clear, well-lit images for best OCR accuracy.</p>
+                                </div>
+                                <div className="group flex gap-3 p-3 bg-white/60 backdrop-blur-sm rounded-xl border border-blue-200/50 hover:bg-white/80 transition-all">
+                                    <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                                        <span className="text-lg">✨</span>
+                                    </div>
+                                    <p className="text-sm text-blue-900">Use auto-enhance for low quality images.</p>
+                                </div>
+                                <div className="group flex gap-3 p-3 bg-white/60 backdrop-blur-sm rounded-xl border border-purple-200/50 hover:bg-white/80 transition-all">
+                                    <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
+                                        <span className="text-lg">🔍</span>
+                                    </div>
+                                    <p className="text-sm text-purple-900">Zoom in to verify extracted text accuracy.</p>
+                                </div>
+                            </div>
+                        </div>
 
-                {/* Empty State */}
-                {!state.selectedImage && !state.isLoading && (
-                    <Box sx={{ textAlign: 'center', py: 8 }}>
-                        <CloudUpload sx={{ fontSize: 80, color: 'grey.400', mb: 3 }} />
-                        <Typography variant="h5" color="text.secondary" gutterBottom>
-                            Upload a prescription to begin analysis
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                            Drag & drop an image or click to browse
-                        </Typography>
-                        <Button
-                            variant="contained"
-                            sx={{ mt: 3 }}
-                            onClick={() => fileInputRef.current?.click()}
-                        >
-                            Browse Files
-                        </Button>
-                    </Box>
-                )}
-            </Paper>
+                        {/* Quick Actions Card */}
+                        <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-blue-50/90 via-indigo-50/80 to-violet-50/90 border border-blue-200/50 rounded-2xl shadow-xl shadow-blue-500/10 p-5">
+                            <div className="absolute -top-8 -left-8 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 rounded-full blur-2xl"></div>
+                            <div className="relative flex items-center gap-3 mb-4">
+                                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                                    <span className="text-xl">⚡</span>
+                                </div>
+                                <div>
+                                    <p className="text-sm font-bold text-gray-900">Quick Actions</p>
+                                    <p className="text-xs text-gray-500">Common tasks</p>
+                                </div>
+                            </div>
+                            <div className="relative space-y-2">
+                                {[
+                                    { label: 'Check Interactions', icon: '💊', path: '/interactions' },
+                                    { label: 'Food Interactions', icon: '🍎', path: '/food-drug' },
+                                    { label: 'View History', icon: '📋', path: '/history' },
+                                    { label: 'Dashboard', icon: '📊', path: '/dashboard' }
+                                ].map((action) => (
+                                    <button
+                                        key={action.label}
+                                        onClick={() => navigate(action.path)}
+                                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium bg-white/80 border border-gray-200/50 text-gray-700 hover:border-blue-300 hover:bg-blue-50 hover:shadow-md transition-all"
+                                    >
+                                        <span>{action.icon}</span>
+                                        <span>{action.label}</span>
+                                        <span className="ml-auto text-gray-400">→</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
 
-            {/* Dialogs */}
-            {renderExportDialog()}
-            {renderFullscreenDialog()}
-            {renderNotifications()}
-        </Container>
+                        {/* Stats Card */}
+                        {state.parsedData.medications.length > 0 && (
+                            <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-emerald-50/90 via-teal-50/80 to-cyan-50/90 border border-emerald-200/50 rounded-2xl shadow-xl shadow-emerald-500/10 p-5">
+                                <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-gradient-to-br from-emerald-400/20 to-teal-400/20 rounded-full blur-2xl"></div>
+                                <div className="relative flex items-center gap-3 mb-4">
+                                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
+                                        <span className="text-xl">📊</span>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-bold text-gray-900">Analysis Stats</p>
+                                        <p className="text-xs text-gray-500">Current scan</p>
+                                    </div>
+                                </div>
+                                <div className="relative grid grid-cols-2 gap-3">
+                                    <div className="p-3 bg-white/60 rounded-xl text-center">
+                                        <p className="text-2xl font-bold text-emerald-600">{state.parsedData.medications.length}</p>
+                                        <p className="text-xs text-gray-500">Medications</p>
+                                    </div>
+                                    <div className="p-3 bg-white/60 rounded-xl text-center">
+                                        <p className="text-2xl font-bold text-blue-600">{state.parsedData.confidence}%</p>
+                                        <p className="text-xs text-gray-500">Confidence</p>
+                                    </div>
+                                    <div className="p-3 bg-white/60 rounded-xl text-center">
+                                        <p className="text-2xl font-bold text-purple-600">{state.parsedData.warnings.length}</p>
+                                        <p className="text-xs text-gray-500">Warnings</p>
+                                    </div>
+                                    <div className="p-3 bg-white/60 rounded-xl text-center">
+                                        <p className="text-2xl font-bold text-amber-600">{state.parsedData.dosages.length}</p>
+                                        <p className="text-xs text-gray-500">Dosages</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </aside>
+                </div>
+
+                {/* Dialogs */}
+                {renderExportDialog()}
+                {renderFullscreenDialog()}
+                {renderNotifications()}
+            </div>
 
             {/* Footer - Enhanced */}
             <footer className="mt-auto print:hidden relative">
