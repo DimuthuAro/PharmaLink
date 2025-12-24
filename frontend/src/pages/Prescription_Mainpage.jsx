@@ -43,6 +43,14 @@ import Print from '@mui/icons-material/Print';
 import Share from '@mui/icons-material/Share';
 import Warning from '@mui/icons-material/Warning';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import History from '@mui/icons-material/History';
+import ContentCopy from '@mui/icons-material/ContentCopy';
+import ZoomIn from '@mui/icons-material/ZoomIn';
+import ZoomOut from '@mui/icons-material/ZoomOut';
+import Fullscreen from '@mui/icons-material/Fullscreen';
+import LocalPharmacy from '@mui/icons-material/LocalPharmacy';
+import Schedule from '@mui/icons-material/Schedule';
+import Info from '@mui/icons-material/Info';
 
 // Animated background components (matching InteractionCheck theme)
 const MedicalPattern = () => (
@@ -390,6 +398,8 @@ const ProfessionalPrescriptionInterpreter = () => {
         exportDialogOpen: false,
         settingsDialogOpen: false,
         historyDrawerOpen: false,
+        fullscreenImage: false,
+        imageZoom: 100,
         notifications: [],
 
         // Settings
@@ -1429,16 +1439,20 @@ const ProfessionalPrescriptionInterpreter = () => {
 
             {state.previewUrl && (
                 <Box sx={{ position: 'relative', mb: 2 }}>
-                    <img
-                        src={state.enhancedPreviewUrl || state.previewUrl}
-                        alt="Prescription preview"
-                        style={{
-                            maxWidth: '100%',
-                            height: 'auto',
-                            borderRadius: 12,
-                            boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
-                        }}
-                    />
+                    <Box sx={{ overflow: 'auto', maxHeight: 500, borderRadius: 3 }}>
+                        <img
+                            src={state.enhancedPreviewUrl || state.previewUrl}
+                            alt="Prescription preview"
+                            style={{
+                                width: `${state.imageZoom}%`,
+                                height: 'auto',
+                                borderRadius: 12,
+                                boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                                transition: 'transform 0.2s ease'
+                            }}
+                        />
+                    </Box>
+                    {/* Top Right Controls */}
                     <Box sx={{ position: 'absolute', top: 16, right: 16, display: 'flex', gap: 1 }}>
                         <Tooltip title="Enhance image" arrow>
                             <IconButton
@@ -1449,6 +1463,15 @@ const ProfessionalPrescriptionInterpreter = () => {
                                 <AutoAwesome />
                             </IconButton>
                         </Tooltip>
+                        <Tooltip title="Fullscreen" arrow>
+                            <IconButton
+                                color="primary"
+                                sx={{ bgcolor: 'white', boxShadow: 1 }}
+                                onClick={() => updateState('fullscreenImage', true)}
+                            >
+                                <Fullscreen />
+                            </IconButton>
+                        </Tooltip>
                         <Tooltip title="Remove image" arrow>
                             <IconButton
                                 color="error"
@@ -1456,6 +1479,40 @@ const ProfessionalPrescriptionInterpreter = () => {
                                 onClick={clearAll}
                             >
                                 <Close />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                    {/* Bottom Zoom Controls */}
+                    <Box sx={{ 
+                        position: 'absolute', 
+                        bottom: 16, 
+                        left: '50%', 
+                        transform: 'translateX(-50%)',
+                        display: 'flex', 
+                        gap: 1,
+                        bgcolor: 'rgba(255,255,255,0.9)',
+                        borderRadius: 2,
+                        px: 1,
+                        py: 0.5,
+                        boxShadow: 2
+                    }}>
+                        <Tooltip title="Zoom Out" arrow>
+                            <IconButton 
+                                size="small"
+                                onClick={() => updateState('imageZoom', Math.max(50, state.imageZoom - 25))}
+                            >
+                                <ZoomOut />
+                            </IconButton>
+                        </Tooltip>
+                        <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center', px: 1 }}>
+                            {state.imageZoom}%
+                        </Typography>
+                        <Tooltip title="Zoom In" arrow>
+                            <IconButton 
+                                size="small"
+                                onClick={() => updateState('imageZoom', Math.min(200, state.imageZoom + 25))}
+                            >
+                                <ZoomIn />
                             </IconButton>
                         </Tooltip>
                     </Box>
@@ -2003,6 +2060,30 @@ const ProfessionalPrescriptionInterpreter = () => {
         </Dialog>
     );
 
+    const renderFullscreenDialog = () => (
+        <Dialog
+            open={state.fullscreenImage}
+            onClose={() => updateState('fullscreenImage', false)}
+            maxWidth="xl"
+            fullWidth
+            PaperProps={{ sx: { bgcolor: 'black', maxHeight: '95vh' } }}
+        >
+            <DialogContent sx={{ p: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <IconButton
+                    onClick={() => updateState('fullscreenImage', false)}
+                    sx={{ position: 'absolute', top: 8, right: 8, color: 'white', bgcolor: 'rgba(0,0,0,0.5)' }}
+                >
+                    <Close />
+                </IconButton>
+                <img
+                    src={state.enhancedPreviewUrl || state.previewUrl}
+                    alt="Fullscreen prescription"
+                    style={{ maxWidth: '100%', maxHeight: '90vh', objectFit: 'contain' }}
+                />
+            </DialogContent>
+        </Dialog>
+    );
+
     const renderNotifications = () => (
         <Snackbar open={state.notifications.length > 0} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
@@ -2021,12 +2102,24 @@ const ProfessionalPrescriptionInterpreter = () => {
     );
 
     return (
-        <Container maxWidth="lg" sx={{ py: 4 }}>
-            {/* Hidden Canvas */}
-            <StyledCanvas ref={canvasRef} />
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden">
+            <AnimationStyles />
+            <MedicalPattern />
+            <GradientOrbs />
+            <FloatingPills />
+            <ParticleField />
+            <HexagonGrid />
+            <DNAHelix />
 
-            {/* Header */}
-            <Box sx={{ textAlign: 'center', mb: 6 }}>
+            {/* Loading Overlay */}
+            {state.isLoading && <LoadingOverlay message={state.progress.step} />}
+
+            <Container maxWidth="lg" sx={{ py: 4, position: 'relative', zIndex: 10 }}>
+                {/* Hidden Canvas */}
+                <StyledCanvas ref={canvasRef} />
+
+                {/* Header */}
+                <Box sx={{ textAlign: 'center', mb: 6 }}>
                 <Typography variant="h3" component="h1" gutterBottom sx={{
                     display: 'flex',
                     alignItems: 'center',
@@ -2087,8 +2180,10 @@ const ProfessionalPrescriptionInterpreter = () => {
 
             {/* Dialogs */}
             {renderExportDialog()}
+            {renderFullscreenDialog()}
             {renderNotifications()}
         </Container>
+        </div>
     );
 };
 
