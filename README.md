@@ -1,4 +1,4 @@
-# 🏥 Pharmalink - Healthcare Management Platform
+# Pharmalink - Healthcare Management Platform
 
 > **A comprehensive healthcare management platform with AI-powered drug interaction checking, personalized recommendations, and prescription interpretation.**
 
@@ -8,29 +8,30 @@
 [![Express.js](https://img.shields.io/badge/Express.js-4.x-000000?logo=express)](https://expressjs.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1.13-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
 
-## 🌟 Features
+## Features
 
-### 🔐 **Authentication & Security**
+### **Authentication & Security**
 - **Secure Login/Registration** with role-based access control
 - **Multi-role Support**: Doctors, Pharmacists, Administrators
 - **Session Management** with persistent authentication
 - **Password Strength Validation** and account lockout protection
 
-### 🏥 **Healthcare Management**
+### **Healthcare Management**
 - **Interactive Dashboard** with real-time analytics
 - **Drug Interaction Checker** with severity levels and alerts
 - **Cross-Brand Comparator** for cost optimization
 - **Prescription Interpreter** with AI-powered OCR
 - **Personalized Advisory** for nutrition and lifestyle recommendations
 
-### ⚡ **Technical Excellence**
+### **Technical Excellence**
 - **Microservices Architecture** for scalability
 - **React 19** with modern hooks and Suspense
 - **Vite** for lightning-fast development
 - **Tailwind CSS** for responsive design
 - **Real-time Updates** and interactive components
+- **Expo** for rapid React Native mobile app development and cross-platform support
 
-## 🏗️ System Architecture
+## System Architecture
 
 ```
 Pharmalink Platform
@@ -51,7 +52,7 @@ Pharmalink Platform
     └── RabbitMQ (Message Queue)
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -96,30 +97,30 @@ npm run start:dev
    - **Admin**: admin@pharmalink.com / admin123
    - **Pharmacist**: pharmacist@pharmalink.com / pharma123
 
-## 📱 Frontend Features
+## Frontend Features
 
-### 🎨 **Modern React Application**
+### **Modern React Application**
 - **React 19** with latest features and optimizations
 - **Vite** for fast development and hot module replacement
 - **Tailwind CSS** for utility-first styling
 - **React Router** for seamless navigation
 - **Custom Hooks** for state management and API calls
 
-### 🔑 **Authentication System**
+### **Authentication System**
 - **Secure Login/Registration** forms with validation
 - **Role-based Access Control** (Doctor, Pharmacist, Admin)
 - **Password Strength Indicator** and security features
 - **Persistent Sessions** with localStorage integration
 - **Automatic Redirects** for unauthorized access
 
-### 📊 **Interactive Dashboard**
+### **Interactive Dashboard**
 - **Real-time Statistics** with animated counters
 - **Quick Actions** for common healthcare tasks
 - **Recent Activity** feed with actionable items
 - **System Performance** metrics and monitoring
 - **Responsive Design** for all screen sizes
 
-### 🎯 **User Experience**
+### **User Experience**
 - **Loading States** and smooth animations
 - **Error Handling** with user-friendly messages
 - **Keyboard Shortcuts** for power users
@@ -128,7 +129,7 @@ npm run start:dev
 
 ## 🔧 Backend Services
 
-### 🌐 **API Gateway (Port 3000)**
+### **API Gateway (Port 3000)**
 Central entry point for all client requests with routing and load balancing.
 
 **Endpoints:**
@@ -138,7 +139,7 @@ Central entry point for all client requests with routing and load balancing.
 - `POST /api/comparator/*` - Brand comparison services
 - `POST /api/prescription/*` - Prescription services
 
-### 💊 **Drug Interaction Service (Port 3001)**
+### **Drug Interaction Service (Port 3001)**
 Comprehensive drug interaction checking and analysis.
 
 **Key Features:**
@@ -147,16 +148,17 @@ Comprehensive drug interaction checking and analysis.
 - Drug information database
 - Search functionality
 
-### 🎯 **Personalized Advisory Service (Port 3002)**
-AI-powered personalized healthcare recommendations.
+### **Personalized Advisory Service (Port 3002)**
+checks interactions between food and drug 
 
 **Key Features:**
-- Nutrition recommendations
-- Lifestyle advice
-- Medication adherence analysis
-- Drug alternatives suggestions
+- Checks food-drug interactions 
+- Display all histories of interctions
+- Delete or clear histories
+- Generate personalized meal plan 
+- Display active medications and allergies
 
-### 💰 **Cross-Brand Comparator Service (Port 3003)**
+### **Cross-Brand Comparator Service (Port 3003)**
 Price comparison and cost optimization for medications.
 
 **Key Features:**
@@ -165,7 +167,7 @@ Price comparison and cost optimization for medications.
 - Pharmacy pricing data
 - Cost-saving recommendations
 
-### 📋 **Prescription Interpreter Service (Port 3004)**
+### **Prescription Interpreter Service (Port 3004)**
 OCR-powered prescription reading and interpretation.
 
 **Key Features:**
@@ -248,7 +250,7 @@ REDIS_PORT=6379
 JWT_SECRET=your_jwt_secret_here
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 PharmaLink/
@@ -284,7 +286,7 @@ PharmaLink/
 └── README.md               # This file
 ```
 
-## 🧪 Testing
+## Testing
 
 ### Frontend Testing
 ```bash
@@ -309,7 +311,7 @@ npm run test:integration  # Integration tests only
 4. **Responsive Design**: Test on different screen sizes
 5. **Error Handling**: Test network failures and invalid inputs
 
-## 🔒 Security Features
+## Security Features
 
 ### Frontend Security
 - **Input Validation** with real-time feedback
@@ -326,7 +328,7 @@ npm run test:integration  # Integration tests only
 - **File Upload Security** with type restrictions
 - **JWT Authentication** for stateless sessions
 
-## 🚀 Production Deployment
+## Production Deployment
 
 ### Frontend Deployment
 
@@ -365,7 +367,7 @@ npm start
 5. **Configure Load Balancers** for microservices
 6. **Set up Monitoring and Logging**
 
-## 📊 Performance Optimizations
+## Performance Optimizations
 
 ### Frontend Optimizations
 - **Code Splitting** with React.lazy()
@@ -381,7 +383,7 @@ npm start
 - **Load Balancing** across microservice instances
 - **Gzip Compression** for API responses
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Please follow these steps:
 
@@ -400,15 +402,15 @@ We welcome contributions! Please follow these steps:
 - **JSDoc** comments for complex functions
 - **TypeScript** adoption encouraged
 
-## 📞 Support & Documentation
+## Support & Documentation
 
 - **GitHub Issues**: [Report bugs or request features](https://github.com/DimuthuAro/PharmaLink/issues)
 - **Discussions**: [Community discussions](https://github.com/DimuthuAro/PharmaLink/discussions)
 - **Wiki**: [Detailed documentation](https://github.com/DimuthuAro/PharmaLink/wiki)
 
-## 🗺️ Roadmap
+## Roadmap
 
-### 🔮 **Upcoming Features**
+### **Upcoming Features**
 - [ ] **Mobile Application** (React Native)
 - [ ] **Real-time Notifications** (WebSocket integration)
 - [ ] **Advanced Analytics** with charts and reports
@@ -416,18 +418,18 @@ We welcome contributions! Please follow these steps:
 - [ ] **Integration APIs** for third-party systems
 - [ ] **Multi-language Support** (i18n)
 
-### 🎯 **Version 2.0 Goals**
+### **Version 2.0 Goals**
 - [ ] **Telemedicine Integration** with video calls
 - [ ] **Electronic Health Records** (EHR) system
 - [ ] **Pharmacy Management** system
 - [ ] **Insurance Claims** processing
 - [ ] **Clinical Decision Support** tools
 
-## 📄 License
+## License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **React Team** for the amazing framework
 - **Vite Team** for the lightning-fast build tool
@@ -443,7 +445,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 </p>
 
 <p align="center">
-  <a href="https://github.com/DimuthuAro/PharmaLink/stargazers">⭐ Star this repository</a> |
-  <a href="https://github.com/DimuthuAro/PharmaLink/issues">🐛 Report Bug</a> |
-  <a href="https://github.com/DimuthuAro/PharmaLink/issues">✨ Request Feature</a>
+  <a href="https://github.com/DimuthuAro/PharmaLink/stargazers">Star this repository</a> |
+  <a href="https://github.com/DimuthuAro/PharmaLink/issues">Report Bug</a> |
+  <a href="https://github.com/DimuthuAro/PharmaLink/issues">Request Feature</a>
 </p>

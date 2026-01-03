@@ -1,5 +1,3 @@
-// src/utils/historyUtils.js
-
 const STORAGE_KEY_PREFIX = "pharmalink_history_";
 
 const getKey = (email) => `${STORAGE_KEY_PREFIX}${email}`;
@@ -37,7 +35,7 @@ export const clearHistory = (email) => {
   localStorage.removeItem(getKey(email));
 };
 
-// 🔹 NEW: delete just one entry
+// delete just one entry
 export const deleteHistoryEntry = (email, id) => {
   const key = getKey(email);
   const current = loadHistory(email);
