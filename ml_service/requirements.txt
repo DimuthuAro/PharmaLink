@@ -26,6 +26,22 @@ lazy-loader>=0.3
 # Optional: Google Gemini for enhanced parsing
 google-genai>=0.3.0
 
+# DeepSeek-OCR (multimodal vision-language model)
+transformers>=4.36.0
+torch>=2.1.0
+accelerate>=0.25.0
+
+# Additional dependencies for DeepSeek-OCR / transformers models
+easydict>=1.10
+einops>=0.7.0
+timm>=0.9.12
+sentencepiece>=0.1.99
+protobuf>=4.25.0
+safetensors>=0.4.0
+
+# Environment variables
+python-dotenv>=1.0.0
+
 # Optional: PaddleOCR (uncomment if needed - requires paddlepaddle)
 # paddlepaddle>=2.5.0
 # paddleocr>=2.7.0
