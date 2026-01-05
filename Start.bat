@@ -1,169 +1,312 @@
 @echo off
-title PharmaLink Launcher
-cd /d "%~dp0"
-powershell -ExecutionPolicy Bypass -File "%~dp0Start.ps1"
-exit
-echo $form.BackColor = [Drawing.Color]::FromArgb(25,35,45) >> "%temp%\pharmalink_gui.ps1"
-echo. >> "%temp%\pharmalink_gui.ps1"
-echo $title = New-Object Windows.Forms.Label >> "%temp%\pharmalink_gui.ps1"
-echo $title.Text = 'PharmaLink' >> "%temp%\pharmalink_gui.ps1"
-echo $title.Font = New-Object Drawing.Font('Segoe UI',24,[Drawing.FontStyle]::Bold) >> "%temp%\pharmalink_gui.ps1"
-echo $title.ForeColor = [Drawing.Color]::FromArgb(0,200,150) >> "%temp%\pharmalink_gui.ps1"
-echo $title.AutoSize = $true >> "%temp%\pharmalink_gui.ps1"
-echo $title.Location = New-Object Drawing.Point(150,20) >> "%temp%\pharmalink_gui.ps1"
-echo $form.Controls.Add($title) >> "%temp%\pharmalink_gui.ps1"
-echo. >> "%temp%\pharmalink_gui.ps1"
-echo $subtitle = New-Object Windows.Forms.Label >> "%temp%\pharmalink_gui.ps1"
-echo $subtitle.Text = 'Service Manager' >> "%temp%\pharmalink_gui.ps1"
-echo $subtitle.Font = New-Object Drawing.Font('Segoe UI',11) >> "%temp%\pharmalink_gui.ps1"
-echo $subtitle.ForeColor = [Drawing.Color]::FromArgb(150,150,150) >> "%temp%\pharmalink_gui.ps1"
-echo $subtitle.AutoSize = $true >> "%temp%\pharmalink_gui.ps1"
-echo $subtitle.Location = New-Object Drawing.Point(175,65) >> "%temp%\pharmalink_gui.ps1"
-echo $form.Controls.Add($subtitle) >> "%temp%\pharmalink_gui.ps1"
-echo. >> "%temp%\pharmalink_gui.ps1"
-echo function Create-ServicePanel { >> "%temp%\pharmalink_gui.ps1"
-echo     param($text, $y, $tag, $port) >> "%temp%\pharmalink_gui.ps1"
-echo     $panel = New-Object Windows.Forms.Panel >> "%temp%\pharmalink_gui.ps1"
-echo     $panel.Size = New-Object Drawing.Size(420,55) >> "%temp%\pharmalink_gui.ps1"
-echo     $panel.Location = New-Object Drawing.Point(40,$y) >> "%temp%\pharmalink_gui.ps1"
-echo     $panel.BackColor = [Drawing.Color]::FromArgb(35,45,55) >> "%temp%\pharmalink_gui.ps1"
-echo     $status = New-Object Windows.Forms.Label >> "%temp%\pharmalink_gui.ps1"
-echo     $status.Text = 'o' >> "%temp%\pharmalink_gui.ps1"
-echo     $status.Font = New-Object Drawing.Font('Segoe UI',14) >> "%temp%\pharmalink_gui.ps1"
-echo     $status.ForeColor = [Drawing.Color]::FromArgb(100,100,100) >> "%temp%\pharmalink_gui.ps1"
-echo     $status.AutoSize = $true >> "%temp%\pharmalink_gui.ps1"
-echo     $status.Location = New-Object Drawing.Point(15,15) >> "%temp%\pharmalink_gui.ps1"
-echo     $panel.Controls.Add($status) >> "%temp%\pharmalink_gui.ps1"
-echo     $script:statusLabels[$tag] = $status >> "%temp%\pharmalink_gui.ps1"
-echo     $label = New-Object Windows.Forms.Label >> "%temp%\pharmalink_gui.ps1"
-echo     $label.Text = $text >> "%temp%\pharmalink_gui.ps1"
-echo     $label.Font = New-Object Drawing.Font('Segoe UI',12) >> "%temp%\pharmalink_gui.ps1"
-echo     $label.ForeColor = [Drawing.Color]::White >> "%temp%\pharmalink_gui.ps1"
-echo     $label.AutoSize = $true >> "%temp%\pharmalink_gui.ps1"
-echo     $label.Location = New-Object Drawing.Point(45,16) >> "%temp%\pharmalink_gui.ps1"
-echo     $panel.Controls.Add($label) >> "%temp%\pharmalink_gui.ps1"
-echo     $portLabel = New-Object Windows.Forms.Label >> "%temp%\pharmalink_gui.ps1"
-echo     $portLabel.Text = "Port: $port" >> "%temp%\pharmalink_gui.ps1"
-echo     $portLabel.Font = New-Object Drawing.Font('Segoe UI',9) >> "%temp%\pharmalink_gui.ps1"
-echo     $portLabel.ForeColor = [Drawing.Color]::FromArgb(120,120,120) >> "%temp%\pharmalink_gui.ps1"
-echo     $portLabel.AutoSize = $true >> "%temp%\pharmalink_gui.ps1"
-echo     $portLabel.Location = New-Object Drawing.Point(220,18) >> "%temp%\pharmalink_gui.ps1"
-echo     $panel.Controls.Add($portLabel) >> "%temp%\pharmalink_gui.ps1"
-echo     $btn = New-Object Windows.Forms.Button >> "%temp%\pharmalink_gui.ps1"
-echo     $btn.Text = 'START' >> "%temp%\pharmalink_gui.ps1"
-echo     $btn.Size = New-Object Drawing.Size(80,35) >> "%temp%\pharmalink_gui.ps1"
-echo     $btn.Location = New-Object Drawing.Point(320,10) >> "%temp%\pharmalink_gui.ps1"
-echo     $btn.FlatStyle = 'Flat' >> "%temp%\pharmalink_gui.ps1"
-echo     $btn.BackColor = [Drawing.Color]::FromArgb(0,150,100) >> "%temp%\pharmalink_gui.ps1"
-echo     $btn.ForeColor = [Drawing.Color]::White >> "%temp%\pharmalink_gui.ps1"
-echo     $btn.Font = New-Object Drawing.Font('Segoe UI',10,[Drawing.FontStyle]::Bold) >> "%temp%\pharmalink_gui.ps1"
-echo     $btn.Cursor = 'Hand' >> "%temp%\pharmalink_gui.ps1"
-echo     $btn.Tag = $tag >> "%temp%\pharmalink_gui.ps1"
-echo     $btn.FlatAppearance.BorderSize = 0 >> "%temp%\pharmalink_gui.ps1"
-echo     $script:toggleButtons[$tag] = $btn >> "%temp%\pharmalink_gui.ps1"
-echo     $btn.Add_Click({ Toggle-Service -serviceName $this.Tag -button $this }) >> "%temp%\pharmalink_gui.ps1"
-echo     $btn.Add_MouseEnter({ if($this.Text -eq 'START'){$this.BackColor=[Drawing.Color]::FromArgb(0,180,120)}else{$this.BackColor=[Drawing.Color]::FromArgb(220,80,80)} }) >> "%temp%\pharmalink_gui.ps1"
-echo     $btn.Add_MouseLeave({ if($this.Text -eq 'START'){$this.BackColor=[Drawing.Color]::FromArgb(0,150,100)}else{$this.BackColor=[Drawing.Color]::FromArgb(200,60,60)} }) >> "%temp%\pharmalink_gui.ps1"
-echo     $panel.Controls.Add($btn) >> "%temp%\pharmalink_gui.ps1"
-echo     return $panel >> "%temp%\pharmalink_gui.ps1"
-echo } >> "%temp%\pharmalink_gui.ps1"
-echo. >> "%temp%\pharmalink_gui.ps1"
-echo function Toggle-Service { >> "%temp%\pharmalink_gui.ps1"
-echo     param($serviceName, $button) >> "%temp%\pharmalink_gui.ps1"
-echo     if ($script:isRunning[$serviceName]) { >> "%temp%\pharmalink_gui.ps1"
-echo         if ($script:processes[$serviceName] -ne $null) { >> "%temp%\pharmalink_gui.ps1"
-echo             try { Stop-Process -Id $script:processes[$serviceName].Id -Force -EA SilentlyContinue } catch {} >> "%temp%\pharmalink_gui.ps1"
-echo         } >> "%temp%\pharmalink_gui.ps1"
-echo         $script:isRunning[$serviceName] = $false >> "%temp%\pharmalink_gui.ps1"
-echo         $button.Text = 'START' >> "%temp%\pharmalink_gui.ps1"
-echo         $button.BackColor = [Drawing.Color]::FromArgb(0,150,100) >> "%temp%\pharmalink_gui.ps1"
-echo         $script:statusLabels[$serviceName].ForeColor = [Drawing.Color]::FromArgb(100,100,100) >> "%temp%\pharmalink_gui.ps1"
-echo     } else { >> "%temp%\pharmalink_gui.ps1"
-echo         $cmd = switch($serviceName) { >> "%temp%\pharmalink_gui.ps1"
-echo             'Backend' { "cd /d `"$script:workingDir\backend`" ^&^& npm install ^&^& npm run dev" } >> "%temp%\pharmalink_gui.ps1"
-echo             'Frontend' { "cd /d `"$script:workingDir\frontend`" ^&^& npm install ^&^& npm run dev" } >> "%temp%\pharmalink_gui.ps1"
-echo             'MLService' { "cd /d `"$script:workingDir\ml_service`" ^&^& pip install -r requirements.txt ^&^& uvicorn main:app --host 0.0.0.0 --port 8000 --reload" } >> "%temp%\pharmalink_gui.ps1"
-echo         } >> "%temp%\pharmalink_gui.ps1"
-echo         $titleText = switch($serviceName) { >> "%temp%\pharmalink_gui.ps1"
-echo             'Backend' { "Backend (Express) - Port 3000" } >> "%temp%\pharmalink_gui.ps1"
-echo             'Frontend' { "Frontend (Vite) - Port 5173" } >> "%temp%\pharmalink_gui.ps1"
-echo             'MLService' { "ML Service (FastAPI) - Port 8000" } >> "%temp%\pharmalink_gui.ps1"
-echo         } >> "%temp%\pharmalink_gui.ps1"
-echo         $script:processes[$serviceName] = Start-Process -FilePath "cmd" -ArgumentList "/k","title $titleText ^&^& $cmd" -PassThru >> "%temp%\pharmalink_gui.ps1"
-echo         $script:isRunning[$serviceName] = $true >> "%temp%\pharmalink_gui.ps1"
-echo         $button.Text = 'STOP' >> "%temp%\pharmalink_gui.ps1"
-echo         $button.BackColor = [Drawing.Color]::FromArgb(200,60,60) >> "%temp%\pharmalink_gui.ps1"
-echo         $script:statusLabels[$serviceName].ForeColor = [Drawing.Color]::FromArgb(0,200,100) >> "%temp%\pharmalink_gui.ps1"
-echo     } >> "%temp%\pharmalink_gui.ps1"
-echo     Update-AllBtn >> "%temp%\pharmalink_gui.ps1"
-echo } >> "%temp%\pharmalink_gui.ps1"
-echo. >> "%temp%\pharmalink_gui.ps1"
-echo function Update-AllBtn { >> "%temp%\pharmalink_gui.ps1"
-echo     $allRunning = $script:isRunning['Backend'] -and $script:isRunning['Frontend'] -and $script:isRunning['MLService'] >> "%temp%\pharmalink_gui.ps1"
-echo     if ($allRunning) { >> "%temp%\pharmalink_gui.ps1"
-echo         $script:btnAll.Text = 'STOP ALL' >> "%temp%\pharmalink_gui.ps1"
-echo         $script:btnAll.BackColor = [Drawing.Color]::FromArgb(200,60,60) >> "%temp%\pharmalink_gui.ps1"
-echo     } else { >> "%temp%\pharmalink_gui.ps1"
-echo         $script:btnAll.Text = 'START ALL' >> "%temp%\pharmalink_gui.ps1"
-echo         $script:btnAll.BackColor = [Drawing.Color]::FromArgb(0,120,200) >> "%temp%\pharmalink_gui.ps1"
-echo     } >> "%temp%\pharmalink_gui.ps1"
-echo } >> "%temp%\pharmalink_gui.ps1"
-echo. >> "%temp%\pharmalink_gui.ps1"
-echo $form.Controls.Add((Create-ServicePanel 'Backend (Express)' 110 'Backend' '3000')) >> "%temp%\pharmalink_gui.ps1"
-echo $form.Controls.Add((Create-ServicePanel 'Frontend (Vite)' 175 'Frontend' '5173')) >> "%temp%\pharmalink_gui.ps1"
-echo $form.Controls.Add((Create-ServicePanel 'ML Service (FastAPI)' 240 'MLService' '8000')) >> "%temp%\pharmalink_gui.ps1"
-echo. >> "%temp%\pharmalink_gui.ps1"
-echo $separator = New-Object Windows.Forms.Label >> "%temp%\pharmalink_gui.ps1"
-echo $separator.BorderStyle = 'Fixed3D' >> "%temp%\pharmalink_gui.ps1"
-echo $separator.Size = New-Object Drawing.Size(420,2) >> "%temp%\pharmalink_gui.ps1"
-echo $separator.Location = New-Object Drawing.Point(40,310) >> "%temp%\pharmalink_gui.ps1"
-echo $form.Controls.Add($separator) >> "%temp%\pharmalink_gui.ps1"
-echo. >> "%temp%\pharmalink_gui.ps1"
-echo $script:btnAll = New-Object Windows.Forms.Button >> "%temp%\pharmalink_gui.ps1"
-echo $script:btnAll.Text = 'START ALL' >> "%temp%\pharmalink_gui.ps1"
-echo $script:btnAll.Size = New-Object Drawing.Size(420,50) >> "%temp%\pharmalink_gui.ps1"
-echo $script:btnAll.Location = New-Object Drawing.Point(40,330) >> "%temp%\pharmalink_gui.ps1"
-echo $script:btnAll.FlatStyle = 'Flat' >> "%temp%\pharmalink_gui.ps1"
-echo $script:btnAll.BackColor = [Drawing.Color]::FromArgb(0,120,200) >> "%temp%\pharmalink_gui.ps1"
-echo $script:btnAll.ForeColor = [Drawing.Color]::White >> "%temp%\pharmalink_gui.ps1"
-echo $script:btnAll.Font = New-Object Drawing.Font('Segoe UI',14,[Drawing.FontStyle]::Bold) >> "%temp%\pharmalink_gui.ps1"
-echo $script:btnAll.Cursor = 'Hand' >> "%temp%\pharmalink_gui.ps1"
-echo $script:btnAll.FlatAppearance.BorderSize = 0 >> "%temp%\pharmalink_gui.ps1"
-echo. >> "%temp%\pharmalink_gui.ps1"
-echo $script:btnAll.Add_Click({ >> "%temp%\pharmalink_gui.ps1"
-echo     $allRunning = $script:isRunning['Backend'] -and $script:isRunning['Frontend'] -and $script:isRunning['MLService'] >> "%temp%\pharmalink_gui.ps1"
-echo     if ($allRunning) { >> "%temp%\pharmalink_gui.ps1"
-echo         foreach ($svc in @('MLService','Frontend','Backend')) { >> "%temp%\pharmalink_gui.ps1"
-echo             if ($script:isRunning[$svc]) { Toggle-Service -serviceName $svc -button $script:toggleButtons[$svc]; Start-Sleep -Milliseconds 500 } >> "%temp%\pharmalink_gui.ps1"
-echo         } >> "%temp%\pharmalink_gui.ps1"
-echo     } else { >> "%temp%\pharmalink_gui.ps1"
-echo         foreach ($svc in @('MLService','Backend','Frontend')) { >> "%temp%\pharmalink_gui.ps1"
-echo             if (-not $script:isRunning[$svc]) { Toggle-Service -serviceName $svc -button $script:toggleButtons[$svc]; Start-Sleep -Seconds 2 } >> "%temp%\pharmalink_gui.ps1"
-echo         } >> "%temp%\pharmalink_gui.ps1"
-echo     } >> "%temp%\pharmalink_gui.ps1"
-echo }) >> "%temp%\pharmalink_gui.ps1"
-echo. >> "%temp%\pharmalink_gui.ps1"
-echo $script:btnAll.Add_MouseEnter({ if($this.Text -like '*START*'){$this.BackColor=[Drawing.Color]::FromArgb(0,150,230)}else{$this.BackColor=[Drawing.Color]::FromArgb(220,80,80)} }) >> "%temp%\pharmalink_gui.ps1"
-echo $script:btnAll.Add_MouseLeave({ if($this.Text -like '*START*'){$this.BackColor=[Drawing.Color]::FromArgb(0,120,200)}else{$this.BackColor=[Drawing.Color]::FromArgb(200,60,60)} }) >> "%temp%\pharmalink_gui.ps1"
-echo $form.Controls.Add($script:btnAll) >> "%temp%\pharmalink_gui.ps1"
-echo. >> "%temp%\pharmalink_gui.ps1"
-echo $form.Add_FormClosing({ >> "%temp%\pharmalink_gui.ps1"
-echo     $anyRunning = $script:isRunning['Backend'] -or $script:isRunning['Frontend'] -or $script:isRunning['MLService'] >> "%temp%\pharmalink_gui.ps1"
-echo     if ($anyRunning) { >> "%temp%\pharmalink_gui.ps1"
-echo         $result = [Windows.Forms.MessageBox]::Show('Stop all running services before closing?','PharmaLink',[Windows.Forms.MessageBoxButtons]::YesNoCancel,[Windows.Forms.MessageBoxIcon]::Question) >> "%temp%\pharmalink_gui.ps1"
-echo         if ($result -eq 'Cancel') { $_.Cancel = $true; return } >> "%temp%\pharmalink_gui.ps1"
-echo         if ($result -eq 'Yes') { >> "%temp%\pharmalink_gui.ps1"
-echo             foreach ($svc in @('MLService','Frontend','Backend')) { >> "%temp%\pharmalink_gui.ps1"
-echo                 if ($script:processes[$svc] -ne $null) { try { Stop-Process -Id $script:processes[$svc].Id -Force -EA SilentlyContinue } catch {} } >> "%temp%\pharmalink_gui.ps1"
-echo             } >> "%temp%\pharmalink_gui.ps1"
-echo         } >> "%temp%\pharmalink_gui.ps1"
-echo     } >> "%temp%\pharmalink_gui.ps1"
-echo }) >> "%temp%\pharmalink_gui.ps1"
-echo. >> "%temp%\pharmalink_gui.ps1"
-echo [void]$form.ShowDialog() >> "%temp%\pharmalink_gui.ps1"
+setlocal enabledelayedexpansion
 
-REM Run the PowerShell GUI
-powershell -ExecutionPolicy Bypass -File "%temp%\pharmalink_gui.ps1"
+:: PharmaLink Service Manager - Batch Version
+:: Standalone CMD script for managing PharmaLink services
 
-REM Cleanup
-del "%temp%\pharmalink_gui.ps1" 2>nul
+title PharmaLink Service Manager v1.0
+
+:: Get the directory where this batch file is located
+set "SCRIPT_DIR=%~dp0"
+cd /d "%SCRIPT_DIR%"
+
+:: Colors
+set "COLOR_DEFAULT=07"
+set "COLOR_HEADER=0B"
+set "COLOR_SUCCESS=0A"
+set "COLOR_ERROR=0C"
+set "COLOR_WARNING=0E"
+
+:MAIN_MENU
+cls
+color %COLOR_HEADER%
+echo.
+echo  ╔══════════════════════════════════════════════════════════════════╗
+echo  ║                                                                  ║
+echo  ║   ██████╗ ██╗  ██╗ █████╗ ██████╗ ███╗   ███╗ █████╗            ║
+echo  ║   ██╔══██╗██║  ██║██╔══██╗██╔══██╗████╗ ████║██╔══██╗           ║
+echo  ║   ██████╔╝███████║███████║██████╔╝██╔████╔██║███████║           ║
+echo  ║   ██╔═══╝ ██╔══██║██╔══██║██╔══██╗██║╚██╔╝██║██╔══██║           ║
+echo  ║   ██║     ██║  ██║██║  ██║██║  ██║██║ ╚═╝ ██║██║  ██║           ║
+echo  ║   ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝           ║
+echo  ║                        LINK                                      ║
+echo  ║                                                                  ║
+echo  ║            Integrated Service Management Console                 ║
+echo  ║                                                                  ║
+echo  ╚══════════════════════════════════════════════════════════════════╝
+echo.
+color %COLOR_DEFAULT%
+echo  ┌────────────────────────────────────────────────────────────────┐
+echo  │                      SERVICE CONTROLS                         │
+echo  ├────────────────────────────────────────────────────────────────┤
+echo  │                                                                │
+echo  │   [1]  Start Backend API          (Express.js - Port 3000)    │
+echo  │   [2]  Start Frontend App         (Vite+React - Port 5173)    │
+echo  │   [3]  Start ML Service           (FastAPI    - Port 8000)    │
+echo  │                                                                │
+echo  ├────────────────────────────────────────────────────────────────┤
+echo  │                                                                │
+echo  │   [4]  Install ^& Start Backend                                 │
+echo  │   [5]  Install ^& Start Frontend                                │
+echo  │   [6]  Install ^& Start ML Service                              │
+echo  │                                                                │
+echo  ├────────────────────────────────────────────────────────────────┤
+echo  │                      BATCH OPERATIONS                         │
+echo  ├────────────────────────────────────────────────────────────────┤
+echo  │                                                                │
+echo  │   [7]  Start ALL Services                                     │
+echo  │   [8]  Install ^& Start ALL Services                           │
+echo  │                                                                │
+echo  ├────────────────────────────────────────────────────────────────┤
+echo  │                                                                │
+echo  │   [0]  Exit                                                   │
+echo  │                                                                │
+echo  └────────────────────────────────────────────────────────────────┘
+echo.
+set /p "choice=  Enter your choice [0-8]: "
+
+if "%choice%"=="1" goto START_BACKEND
+if "%choice%"=="2" goto START_FRONTEND
+if "%choice%"=="3" goto START_ML
+if "%choice%"=="4" goto INSTALL_BACKEND
+if "%choice%"=="5" goto INSTALL_FRONTEND
+if "%choice%"=="6" goto INSTALL_ML
+if "%choice%"=="7" goto START_ALL
+if "%choice%"=="8" goto INSTALL_ALL
+if "%choice%"=="0" goto EXIT
+
+echo.
+color %COLOR_ERROR%
+echo  [ERROR] Invalid choice. Please try again.
+color %COLOR_DEFAULT%
+timeout /t 2 >nul
+goto MAIN_MENU
+
+:: ============================================================================
+::                           START SERVICES
+:: ============================================================================
+
+:START_BACKEND
+cls
+echo.
+color %COLOR_SUCCESS%
+echo  ═══════════════════════════════════════════════════════════════
+echo   Starting Backend API Service...
+echo  ═══════════════════════════════════════════════════════════════
+color %COLOR_DEFAULT%
+echo.
+echo  Directory: %SCRIPT_DIR%backend
+echo  Command:   npm run dev
+echo  Port:      3000
+echo.
+start "PharmaLink Backend (Port 3000)" cmd /k "cd /d "%SCRIPT_DIR%backend" && npm run dev"
+echo  [OK] Backend started in new window.
+echo.
+pause
+goto MAIN_MENU
+
+:START_FRONTEND
+cls
+echo.
+color %COLOR_SUCCESS%
+echo  ═══════════════════════════════════════════════════════════════
+echo   Starting Frontend Application...
+echo  ═══════════════════════════════════════════════════════════════
+color %COLOR_DEFAULT%
+echo.
+echo  Directory: %SCRIPT_DIR%frontend
+echo  Command:   npm run dev
+echo  Port:      5173
+echo.
+start "PharmaLink Frontend (Port 5173)" cmd /k "cd /d "%SCRIPT_DIR%frontend" && npm run dev"
+echo  [OK] Frontend started in new window.
+echo.
+pause
+goto MAIN_MENU
+
+:START_ML
+cls
+echo.
+color %COLOR_SUCCESS%
+echo  ═══════════════════════════════════════════════════════════════
+echo   Starting ML Service...
+echo  ═══════════════════════════════════════════════════════════════
+color %COLOR_DEFAULT%
+echo.
+echo  Directory: %SCRIPT_DIR%ml_service
+echo  Command:   uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+echo  Port:      8000
+echo.
+start "PharmaLink ML Service (Port 8000)" cmd /k "cd /d "%SCRIPT_DIR%ml_service" && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+echo  [OK] ML Service started in new window.
+echo.
+pause
+goto MAIN_MENU
+
+:: ============================================================================
+::                        INSTALL & START SERVICES
+:: ============================================================================
+
+:INSTALL_BACKEND
+cls
+echo.
+color %COLOR_WARNING%
+echo  ═══════════════════════════════════════════════════════════════
+echo   Installing ^& Starting Backend API Service...
+echo  ═══════════════════════════════════════════════════════════════
+color %COLOR_DEFAULT%
+echo.
+echo  Directory: %SCRIPT_DIR%backend
+echo  Commands:  npm install ^&^& npm run dev
+echo  Port:      3000
+echo.
+start "PharmaLink Backend - Installing (Port 3000)" cmd /k "cd /d "%SCRIPT_DIR%backend" && echo Installing dependencies... && npm install && echo. && echo Starting server... && npm run dev"
+echo  [OK] Backend installation started in new window.
+echo.
+pause
+goto MAIN_MENU
+
+:INSTALL_FRONTEND
+cls
+echo.
+color %COLOR_WARNING%
+echo  ═══════════════════════════════════════════════════════════════
+echo   Installing ^& Starting Frontend Application...
+echo  ═══════════════════════════════════════════════════════════════
+color %COLOR_DEFAULT%
+echo.
+echo  Directory: %SCRIPT_DIR%frontend
+echo  Commands:  npm install ^&^& npm run dev
+echo  Port:      5173
+echo.
+start "PharmaLink Frontend - Installing (Port 5173)" cmd /k "cd /d "%SCRIPT_DIR%frontend" && echo Installing dependencies... && npm install && echo. && echo Starting server... && npm run dev"
+echo  [OK] Frontend installation started in new window.
+echo.
+pause
+goto MAIN_MENU
+
+:INSTALL_ML
+cls
+echo.
+color %COLOR_WARNING%
+echo  ═══════════════════════════════════════════════════════════════
+echo   Installing ^& Starting ML Service...
+echo  ═══════════════════════════════════════════════════════════════
+color %COLOR_DEFAULT%
+echo.
+echo  Directory: %SCRIPT_DIR%ml_service
+echo  Commands:  pip install -r requirements.txt ^&^& uvicorn ...
+echo  Port:      8000
+echo.
+start "PharmaLink ML Service - Installing (Port 8000)" cmd /k "cd /d "%SCRIPT_DIR%ml_service" && echo Installing dependencies... && pip install -r requirements.txt && echo. && echo Starting server... && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+echo  [OK] ML Service installation started in new window.
+echo.
+pause
+goto MAIN_MENU
+
+:: ============================================================================
+::                          BATCH OPERATIONS
+:: ============================================================================
+
+:START_ALL
+cls
+echo.
+color %COLOR_SUCCESS%
+echo  ═══════════════════════════════════════════════════════════════
+echo   Starting ALL PharmaLink Services...
+echo  ═══════════════════════════════════════════════════════════════
+color %COLOR_DEFAULT%
+echo.
+
+echo  [1/3] Starting ML Service (Port 8000)...
+start "PharmaLink ML Service (Port 8000)" cmd /k "cd /d "%SCRIPT_DIR%ml_service" && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+timeout /t 2 >nul
+
+echo  [2/3] Starting Backend API (Port 3000)...
+start "PharmaLink Backend (Port 3000)" cmd /k "cd /d "%SCRIPT_DIR%backend" && npm run dev"
+timeout /t 2 >nul
+
+echo  [3/3] Starting Frontend App (Port 5173)...
+start "PharmaLink Frontend (Port 5173)" cmd /k "cd /d "%SCRIPT_DIR%frontend" && npm run dev"
+
+echo.
+color %COLOR_SUCCESS%
+echo  ═══════════════════════════════════════════════════════════════
+echo   All services started successfully!
+echo  ═══════════════════════════════════════════════════════════════
+color %COLOR_DEFAULT%
+echo.
+echo  Access Points:
+echo  ─────────────────────────────────────────────────────────────
+echo    Frontend:   http://localhost:5173
+echo    Backend:    http://localhost:3000
+echo    ML Service: http://localhost:8000
+echo    ML Docs:    http://localhost:8000/docs
+echo  ─────────────────────────────────────────────────────────────
+echo.
+pause
+goto MAIN_MENU
+
+:INSTALL_ALL
+cls
+echo.
+color %COLOR_WARNING%
+echo  ═══════════════════════════════════════════════════════════════
+echo   Installing ^& Starting ALL PharmaLink Services...
+echo  ═══════════════════════════════════════════════════════════════
+color %COLOR_DEFAULT%
+echo.
+
+echo  [1/3] Installing ^& Starting ML Service (Port 8000)...
+start "PharmaLink ML Service - Installing (Port 8000)" cmd /k "cd /d "%SCRIPT_DIR%ml_service" && echo Installing ML dependencies... && pip install -r requirements.txt && echo. && echo Starting ML server... && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+timeout /t 3 >nul
+
+echo  [2/3] Installing ^& Starting Backend API (Port 3000)...
+start "PharmaLink Backend - Installing (Port 3000)" cmd /k "cd /d "%SCRIPT_DIR%backend" && echo Installing Backend dependencies... && npm install && echo. && echo Starting Backend server... && npm run dev"
+timeout /t 3 >nul
+
+echo  [3/3] Installing ^& Starting Frontend App (Port 5173)...
+start "PharmaLink Frontend - Installing (Port 5173)" cmd /k "cd /d "%SCRIPT_DIR%frontend" && echo Installing Frontend dependencies... && npm install && echo. && echo Starting Frontend server... && npm run dev"
+
+echo.
+color %COLOR_SUCCESS%
+echo  ═══════════════════════════════════════════════════════════════
+echo   All installation processes started!
+echo  ═══════════════════════════════════════════════════════════════
+color %COLOR_DEFAULT%
+echo.
+echo  Each service is installing in its own window.
+echo  Please wait for installations to complete.
+echo.
+echo  Access Points (after installation):
+echo  ─────────────────────────────────────────────────────────────
+echo    Frontend:   http://localhost:5173
+echo    Backend:    http://localhost:3000
+echo    ML Service: http://localhost:8000
+echo    ML Docs:    http://localhost:8000/docs
+echo  ─────────────────────────────────────────────────────────────
+echo.
+pause
+goto MAIN_MENU
+
+:: ============================================================================
+::                               EXIT
+:: ============================================================================
+
+:EXIT
+cls
+echo.
+color %COLOR_HEADER%
+echo  ╔══════════════════════════════════════════════════════════════════╗
+echo  ║                                                                  ║
+echo  ║                    Thank you for using                           ║
+echo  ║                 PharmaLink Service Manager                       ║
+echo  ║                                                                  ║
+echo  ╚══════════════════════════════════════════════════════════════════╝
+color %COLOR_DEFAULT%
+echo.
+echo  NOTE: Any started services will continue running in their windows.
+echo        Close those windows manually to stop the services.
+echo.
+timeout /t 3 >nul
+exit /b 0
