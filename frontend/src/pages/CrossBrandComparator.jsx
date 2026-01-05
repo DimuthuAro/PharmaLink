@@ -799,6 +799,496 @@ const MarketInsights = ({ medications, selectedMedication }) => {
     );
 };
 
+// Price Alert System
+const PriceAlertSystem = ({ medications, priceAlerts, onAddAlert, onRemoveAlert }) => {
+    const [showAddAlert, setShowAddAlert] = useState(false);
+    const [selectedBrand, setSelectedBrand] = useState(null);
+    const [targetPrice, setTargetPrice] = useState('');
+
+    const allBrands = medications.flatMap(med => med.brands);
+
+    const handleAddAlert = () => {
+        if (selectedBrand && targetPrice) {
+            onAddAlert({
+                id: Date.now(),
+                brandId: selectedBrand.id,
+                brandName: selectedBrand.name,
+                currentPrice: selectedBrand.price,
+                targetPrice: parseFloat(targetPrice),
+                createdAt: new Date().toISOString()
+            });
+            setShowAddAlert(false);
+            setSelectedBrand(null);
+            setTargetPrice('');
+        }
+    };
+
+    return (
+        <div className="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-2xl p-6 mb-6">
+            <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                    <BellAlertIcon className="h-6 w-6 text-purple-600" />
+                    <div>
+                        <h3 className="text-lg font-bold text-slate-900">Price Alert System</h3>
+                        <p className="text-sm text-slate-600">Get notified when prices drop</p>
+                    </div>
+                </div>
+                <button
+                    onClick={() => setShowAddAlert(!showAddAlert)}
+                    className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
+                >
+                    + Create Alert
+                </button>
+            </div>
+
+            {showAddAlert && (
+                <div className="bg-white rounded-xl p-4 mb-4 border border-purple-200">
+                    <div className="grid md:grid-cols-3 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-2">Select Brand</label>
+                            <select
+                                value={selectedBrand?.id || ''}
+                                onChange={(e) => setSelectedBrand(allBrands.find(b => b.id === parseInt(e.target.value)))}
+                                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                            >
+                                <option value="">Choose a brand...</option>
+                                {allBrands.map(brand => (
+                                    <option key={brand.id} value={brand.id}>
+                                        {brand.name} (${brand.price})
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-2">Target Price ($)</label>
+                            <input
+                                type="number"
+                                step="0.01"
+                                value={targetPrice}
+                                onChange={(e) => setTargetPrice(e.target.value)}
+                                placeholder="Enter target price"
+                                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                            />
+                        </div>
+                        <div className="flex items-end">
+                            <button
+                                onClick={handleAddAlert}
+                                className="w-full px-4 py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors"
+                            >
+                                Set Alert
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {priceAlerts.length > 0 ? (
+                <div className="space-y-3">
+                    {priceAlerts.map(alert => (
+                        <div key={alert.id} className="bg-white rounded-lg p-4 border border-purple-200 flex items-center justify-between">
+                            <div className="flex-1">
+                                <h4 className="font-bold text-slate-900">{alert.brandName}</h4>
+                                <div className="flex items-center gap-4 mt-1 text-sm">
+                                    <span className="text-slate-600">Current: <span className="font-semibold">${alert.currentPrice}</span></span>
+                                    <span className="text-purple-600">Target: <span className="font-bold">${alert.targetPrice}</span></span>
+                                    {alert.currentPrice <= alert.targetPrice && (
+                                        <span className="px-2 py-1 bg-green-100 text-green-700 font-bold text-xs rounded-full animate-pulse">
+                                            🎯 Target Reached!
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => onRemoveAlert(alert.id)}
+                                className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <p className="text-center text-slate-500 py-8">No active price alerts. Create one to get notified!</p>
+            )}
+        </div>
+    );
+};
+
+// Batch Comparison Mode
+const BatchComparisonMode = ({ medications, batchSelectedMeds, onToggleMed, onCompare }) => {
+    return (
+        <div className="bg-gradient-to-br from-cyan-50 to-blue-50 border border-cyan-200 rounded-2xl p-6 mb-6">
+            <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                    <ClipboardDocumentCheckIcon className="h-6 w-6 text-cyan-600" />
+                    <div>
+                        <h3 className="text-lg font-bold text-slate-900">Batch Comparison Mode</h3>
+                        <p className="text-sm text-slate-600">Compare multiple medications at once</p>
+                    </div>
+                </div>
+                {batchSelectedMeds.length > 0 && (
+                    <button
+                        onClick={onCompare}
+                        className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
+                    >
+                        Compare {batchSelectedMeds.length} Medications
+                    </button>
+                )}
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {medications.map(med => {
+                    const isSelected = batchSelectedMeds.some(m => m.id === med.id);
+                    return (
+                        <button
+                            key={med.id}
+                            onClick={() => onToggleMed(med)}
+                            className={`text-left p-4 rounded-xl border-2 transition-all ${isSelected
+                                    ? 'border-cyan-500 bg-cyan-50 shadow-lg'
+                                    : 'border-slate-200 bg-white hover:border-cyan-300'
+                                }`}
+                        >
+                            <div className="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 className="font-bold text-slate-900">{med.genericName}</h4>
+                                    <p className="text-sm text-slate-600">{med.strength} • {med.form}</p>
+                                </div>
+                                {isSelected && (
+                                    <CheckCircleIcon className="h-6 w-6 text-cyan-600" />
+                                )}
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                                <span className="text-slate-600">{med.brands.length} brands</span>
+                                <span className="font-semibold text-cyan-600">
+                                    From ${Math.min(...med.brands.map(b => b.price)).toFixed(2)}
+                                </span>
+                            </div>
+                        </button>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
+
+// Side-by-Side Brand Comparison Modal
+const SideBySideComparisonModal = ({ brands, onClose }) => {
+    if (brands.length < 2) return null;
+
+    return (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 flex items-center justify-between">
+                    <h2 className="text-2xl font-black text-white">Side-by-Side Comparison</h2>
+                    <button
+                        onClick={onClose}
+                        className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                    >
+                        <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div className="overflow-auto max-h-[calc(90vh-88px)]">
+                    <table className="w-full">
+                        <thead className="bg-slate-100 sticky top-0">
+                            <tr>
+                                <th className="px-4 py-3 text-left font-bold text-slate-700">Feature</th>
+                                {brands.map(brand => (
+                                    <th key={brand.id} className="px-4 py-3 text-center font-bold text-slate-900">
+                                        {brand.name}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr className="border-b border-slate-200">
+                                <td className="px-4 py-3 font-semibold text-slate-700">Price</td>
+                                {brands.map(brand => (
+                                    <td key={brand.id} className="px-4 py-3 text-center">
+                                        <span className="text-xl font-black text-slate-900">${brand.price}</span>
+                                    </td>
+                                ))}
+                            </tr>
+                            <tr className="border-b border-slate-200 bg-slate-50">
+                                <td className="px-4 py-3 font-semibold text-slate-700">Manufacturer</td>
+                                {brands.map(brand => (
+                                    <td key={brand.id} className="px-4 py-3 text-center text-slate-600">
+                                        {brand.manufacturer}
+                                    </td>
+                                ))}
+                            </tr>
+                            <tr className="border-b border-slate-200">
+                                <td className="px-4 py-3 font-semibold text-slate-700">Rating</td>
+                                {brands.map(brand => (
+                                    <td key={brand.id} className="px-4 py-3 text-center">
+                                        <div className="flex items-center justify-center gap-1">
+                                            <StarSolid className="h-5 w-5 text-amber-400" />
+                                            <span className="font-bold">{brand.rating}</span>
+                                            <span className="text-sm text-slate-500">({brand.reviews})</span>
+                                        </div>
+                                    </td>
+                                ))}
+                            </tr>
+                            <tr className="border-b border-slate-200 bg-slate-50">
+                                <td className="px-4 py-3 font-semibold text-slate-700">Efficacy Score</td>
+                                {brands.map(brand => (
+                                    <td key={brand.id} className="px-4 py-3 text-center">
+                                        <span className="font-bold text-emerald-600">{brand.efficacyScore}%</span>
+                                    </td>
+                                ))}
+                            </tr>
+                            <tr className="border-b border-slate-200">
+                                <td className="px-4 py-3 font-semibold text-slate-700">Patient Compliance</td>
+                                {brands.map(brand => (
+                                    <td key={brand.id} className="px-4 py-3 text-center">
+                                        <span className="font-bold text-blue-600">{brand.patientCompliance}%</span>
+                                    </td>
+                                ))}
+                            </tr>
+                            <tr className="border-b border-slate-200 bg-slate-50">
+                                <td className="px-4 py-3 font-semibold text-slate-700">Availability</td>
+                                {brands.map(brand => (
+                                    <td key={brand.id} className="px-4 py-3 text-center">
+                                        <span className={`px-3 py-1 rounded-full text-sm font-bold ${brand.availability === 'In Stock' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                                            }`}>
+                                            {brand.availability}
+                                        </span>
+                                    </td>
+                                ))}
+                            </tr>
+                            <tr className="border-b border-slate-200">
+                                <td className="px-4 py-3 font-semibold text-slate-700">Pack Size</td>
+                                {brands.map(brand => (
+                                    <td key={brand.id} className="px-4 py-3 text-center text-slate-600">
+                                        {brand.packSize}
+                                    </td>
+                                ))}
+                            </tr>
+                            <tr className="border-b border-slate-200 bg-slate-50">
+                                <td className="px-4 py-3 font-semibold text-slate-700">Savings</td>
+                                {brands.map(brand => (
+                                    <td key={brand.id} className="px-4 py-3 text-center">
+                                        {brand.savings > 0 ? (
+                                            <span className="font-bold text-green-600">${brand.savings.toFixed(2)}</span>
+                                        ) : (
+                                            <span className="text-slate-400">-</span>
+                                        )}
+                                    </td>
+                                ))}
+                            </tr>
+                            <tr className="border-b border-slate-200">
+                                <td className="px-4 py-3 font-semibold text-slate-700">Eco-Friendly</td>
+                                {brands.map(brand => (
+                                    <td key={brand.id} className="px-4 py-3 text-center">
+                                        {brand.sustainability.ecoFriendly ? (
+                                            <span className="text-green-600 font-bold">✓</span>
+                                        ) : (
+                                            <span className="text-slate-300">-</span>
+                                        )}
+                                    </td>
+                                ))}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// Historical Price Analytics
+const HistoricalPriceAnalytics = ({ medications, onClose }) => {
+    const [selectedMed, setSelectedMed] = useState(medications[0]);
+
+    const analyzeTrend = (history) => {
+        if (history.length < 2) return 'stable';
+        const recent = history.slice(-3);
+        const trend = recent[recent.length - 1] - recent[0];
+        if (trend < -0.5) return 'decreasing';
+        if (trend > 0.5) return 'increasing';
+        return 'stable';
+    };
+
+    const predictNextPrice = (history) => {
+        if (history.length < 2) return history[history.length - 1];
+        const recent = history.slice(-3);
+        const avg = recent.reduce((a, b) => a + b, 0) / recent.length;
+        const trend = (recent[recent.length - 1] - recent[0]) / recent.length;
+        return (avg + trend).toFixed(2);
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden">
+                <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <ChartBarIcon className="h-8 w-8 text-white" />
+                        <div>
+                            <h2 className="text-2xl font-black text-white">Historical Price Analytics</h2>
+                            <p className="text-indigo-100">AI-powered trend analysis & predictions</p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={onClose}
+                        className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                    >
+                        <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div className="p-6 overflow-auto max-h-[calc(90vh-120px)]">
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-slate-700 mb-2">Select Medication</label>
+                        <select
+                            value={selectedMed.id}
+                            onChange={(e) => setSelectedMed(medications.find(m => m.id === parseInt(e.target.value)))}
+                            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                        >
+                            {medications.map(med => (
+                                <option key={med.id} value={med.id}>{med.genericName} - {med.strength}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {selectedMed.brands.map(brand => {
+                            const trend = analyzeTrend(brand.priceHistory);
+                            const prediction = predictNextPrice(brand.priceHistory);
+                            const avgPrice = (brand.priceHistory.reduce((a, b) => a + b, 0) / brand.priceHistory.length).toFixed(2);
+                            const lowestPrice = Math.min(...brand.priceHistory).toFixed(2);
+                            const highestPrice = Math.max(...brand.priceHistory).toFixed(2);
+
+                            return (
+                                <div key={brand.id} className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl p-4 border border-slate-200">
+                                    <h4 className="font-bold text-slate-900 mb-3">{brand.name}</h4>
+
+                                    <div className="space-y-2 mb-4">
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-slate-600">Current Price:</span>
+                                            <span className="font-bold text-slate-900">${brand.price}</span>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-slate-600">Average Price:</span>
+                                            <span className="font-semibold text-blue-600">${avgPrice}</span>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-slate-600">Lowest:</span>
+                                            <span className="font-semibold text-green-600">${lowestPrice}</span>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-slate-600">Highest:</span>
+                                            <span className="font-semibold text-red-600">${highestPrice}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="border-t border-slate-300 pt-3 mt-3">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="text-sm font-medium text-slate-700">Trend:</span>
+                                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${trend === 'decreasing' ? 'bg-green-100 text-green-700' :
+                                                    trend === 'increasing' ? 'bg-red-100 text-red-700' :
+                                                        'bg-blue-100 text-blue-700'
+                                                }`}>
+                                                {trend === 'decreasing' && '↓ Decreasing'}
+                                                {trend === 'increasing' && '↑ Increasing'}
+                                                {trend === 'stable' && '→ Stable'}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-sm font-medium text-slate-700">Predicted:</span>
+                                            <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-bold">
+                                                ${prediction}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-3">
+                                        <div className="flex items-center gap-1 h-8">
+                                            {brand.priceHistory.map((price, idx) => (
+                                                <div
+                                                    key={idx}
+                                                    className="flex-1 bg-gradient-to-t from-indigo-500 to-purple-400 rounded-t"
+                                                    style={{ height: `${(price / highestPrice) * 100}%` }}
+                                                    title={`$${price}`}
+                                                />
+                                            ))}
+                                        </div>
+                                        <div className="flex justify-between text-xs text-slate-500 mt-1">
+                                            <span>5 months ago</span>
+                                            <span>Now</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// Notification Center
+const NotificationCenter = ({ notifications, onClose, onClearAll }) => {
+    return (
+        <div className="fixed top-20 right-8 w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 max-h-[600px] overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                    <BellIcon className="h-5 w-5 text-white" />
+                    <h3 className="font-bold text-white">Notifications</h3>
+                    <span className="px-2 py-0.5 bg-white/30 rounded-full text-xs font-bold text-white">
+                        {notifications.length}
+                    </span>
+                </div>
+                <button
+                    onClick={onClose}
+                    className="p-1 hover:bg-white/20 rounded-lg transition-colors"
+                >
+                    <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <div className="overflow-auto max-h-[500px]">
+                {notifications.length > 0 ? (
+                    <div className="p-2">
+                        {notifications.map((notif, idx) => (
+                            <div key={idx} className="p-3 mb-2 bg-slate-50 rounded-lg border border-slate-200 hover:bg-blue-50 transition-colors">
+                                <div className="flex items-start gap-2">
+                                    <div className={`w-2 h-2 rounded-full mt-1.5 ${notif.type === 'price' ? 'bg-green-500' :
+                                            notif.type === 'stock' ? 'bg-orange-500' :
+                                                'bg-blue-500'
+                                        }`} />
+                                    <div className="flex-1">
+                                        <p className="text-sm font-semibold text-slate-900">{notif.title}</p>
+                                        <p className="text-xs text-slate-600 mt-1">{notif.message}</p>
+                                        <p className="text-xs text-slate-400 mt-1">{notif.time}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                        <button
+                            onClick={onClearAll}
+                            className="w-full py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors font-semibold"
+                        >
+                            Clear All
+                        </button>
+                    </div>
+                ) : (
+                    <div className="p-8 text-center">
+                        <BellIcon className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+                        <p className="text-slate-500">No notifications</p>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
 // Popular Alternatives
 const PopularAlternatives = ({ medications, selectedMedication }) => {
     if (!selectedMedication) return null;
@@ -897,14 +1387,14 @@ const QuickActionsBar = ({ selectedBrands, medications, onExport, onShare }) => 
                         className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all flex items-center gap-2"
                     >
                         <DocumentArrowDownIcon className="h-5 w-5" />
-                        Export Report
+                        Export
                     </button>
                     <button
                         onClick={onShare}
                         className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all flex items-center gap-2"
                     >
                         <UsersIcon className="h-5 w-5" />
-                        Share Analysis
+                        Share
                     </button>
                     <button
                         onClick={() => alert('AI Insights generated')}
@@ -939,6 +1429,14 @@ const CrossBrandComparator = () => {
     const [priceRange, setPriceRange] = useState([0, 100]);
     const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
     const [showSustainability, setShowSustainability] = useState(false);
+    const [priceAlerts, setPriceAlerts] = useState([]);
+    const [notifications, setNotifications] = useState([]);
+    const [showNotifications, setShowNotifications] = useState(false);
+    const [batchCompareMode, setBatchCompareMode] = useState(false);
+    const [batchSelectedMeds, setBatchSelectedMeds] = useState([]);
+    const [showSideBySide, setShowSideBySide] = useState(false);
+    const [sideBySideCompareBrands, setSideBySideCompareBrands] = useState([]);
+    const [showHistoricalAnalytics, setShowHistoricalAnalytics] = useState(false);
 
     // Redirect if not authenticated
     useEffect(() => {
@@ -1054,6 +1552,54 @@ const CrossBrandComparator = () => {
         }
     };
 
+    const handleAddPriceAlert = (alert) => {
+        setPriceAlerts(prev => [...prev, alert]);
+        setNotifications(prev => [{
+            type: 'price',
+            title: 'Price Alert Created',
+            message: `Alert set for ${alert.brandName} at $${alert.targetPrice}`,
+            time: new Date().toLocaleTimeString()
+        }, ...prev]);
+    };
+
+    const handleRemovePriceAlert = (alertId) => {
+        setPriceAlerts(prev => prev.filter(a => a.id !== alertId));
+    };
+
+    const handleToggleBatchMed = (med) => {
+        setBatchSelectedMeds(prev => {
+            const exists = prev.find(m => m.id === med.id);
+            if (exists) {
+                return prev.filter(m => m.id !== med.id);
+            } else {
+                return [...prev, med];
+            }
+        });
+    };
+
+    const handleBatchCompare = () => {
+        setNotifications(prev => [{
+            type: 'info',
+            title: 'Batch Comparison Generated',
+            message: `Comparing ${batchSelectedMeds.length} medications across ${batchSelectedMeds.reduce((sum, m) => sum + m.brands.length, 0)} brands`,
+            time: new Date().toLocaleTimeString()
+        }, ...prev]);
+        alert(`Batch comparison for ${batchSelectedMeds.length} medications ready!`);
+    };
+
+    const handlePrint = () => {
+        window.print();
+    };
+
+    const handleSideBySideCompare = () => {
+        if (selectedBrands.length >= 2) {
+            setSideBySideCompareBrands(selectedBrands.slice(0, 4));
+            setShowSideBySide(true);
+        } else {
+            alert('Please select at least 2 brands to compare side-by-side');
+        }
+    };
+
     return (
         <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
             <AnimationStyles />
@@ -1090,6 +1636,17 @@ const CrossBrandComparator = () => {
                             </div>
                         </div>
                         <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => setShowNotifications(!showNotifications)}
+                                className="relative p-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                            >
+                                <BellIcon className="h-6 w-6" />
+                                {notifications.length > 0 && (
+                                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center animate-pulse">
+                                        {notifications.length}
+                                    </span>
+                                )}
+                            </button>
                             <div className="text-right">
                                 <p className="text-sm font-semibold text-slate-900">{user?.name || 'Healthcare Professional'}</p>
                                 <p className="text-xs text-slate-500 flex items-center gap-1">
@@ -1147,6 +1704,60 @@ const CrossBrandComparator = () => {
                     medications={medications}
                     selectedMedication={selectedMedication}
                 />
+
+                {/* Price Alert System */}
+                <PriceAlertSystem
+                    medications={medications}
+                    priceAlerts={priceAlerts}
+                    onAddAlert={handleAddPriceAlert}
+                    onRemoveAlert={handleRemovePriceAlert}
+                />
+
+                {/* Batch Comparison Mode */}
+                {batchCompareMode && (
+                    <BatchComparisonMode
+                        medications={medications}
+                        batchSelectedMeds={batchSelectedMeds}
+                        onToggleMed={handleToggleBatchMed}
+                        onCompare={handleBatchCompare}
+                    />
+                )}
+
+                {/* Feature Toggle Bar */}
+                <div className="bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl p-4 mb-6 flex flex-wrap items-center gap-3">
+                    <button
+                        onClick={() => setBatchCompareMode(!batchCompareMode)}
+                        className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 ${batchCompareMode ? 'bg-cyan-500 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                            }`}
+                    >
+                        <ClipboardDocumentCheckIcon className="h-5 w-5" />
+                        Batch Compare
+                    </button>
+                    <button
+                        onClick={() => setShowHistoricalAnalytics(true)}
+                        className="px-4 py-2 bg-slate-100 text-slate-700 hover:bg-indigo-100 hover:text-indigo-700 rounded-lg font-semibold transition-all flex items-center gap-2"
+                    >
+                        <ChartBarIcon className="h-5 w-5" />
+                        Price Analytics
+                    </button>
+                    <button
+                        onClick={handleSideBySideCompare}
+                        disabled={selectedBrands.length < 2}
+                        className="px-4 py-2 bg-slate-100 text-slate-700 hover:bg-blue-100 hover:text-blue-700 rounded-lg font-semibold transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <ArrowsRightLeftIcon className="h-5 w-5" />
+                        Side-by-Side ({selectedBrands.length})
+                    </button>
+                    <button
+                        onClick={handlePrint}
+                        className="px-4 py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-lg font-semibold transition-all flex items-center gap-2"
+                    >
+                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                        </svg>
+                        Print
+                    </button>
+                </div>
 
                 {/* Advanced Filters */}
                 {showAdvancedFilters && (
@@ -1397,6 +2008,31 @@ const CrossBrandComparator = () => {
                 <BrandDetailsModal
                     brand={showDetails}
                     onClose={() => setShowDetails(null)}
+                />
+            )}
+
+            {/* Side-by-Side Comparison Modal */}
+            {showSideBySide && (
+                <SideBySideComparisonModal
+                    brands={sideBySideCompareBrands}
+                    onClose={() => setShowSideBySide(false)}
+                />
+            )}
+
+            {/* Historical Price Analytics Modal */}
+            {showHistoricalAnalytics && (
+                <HistoricalPriceAnalytics
+                    medications={medications}
+                    onClose={() => setShowHistoricalAnalytics(false)}
+                />
+            )}
+
+            {/* Notification Center */}
+            {showNotifications && (
+                <NotificationCenter
+                    notifications={notifications}
+                    onClose={() => setShowNotifications(false)}
+                    onClearAll={() => setNotifications([])}
                 />
             )}
 

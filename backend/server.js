@@ -123,6 +123,10 @@ app.use('/api/prescription', createProxyMiddleware({
     pathRewrite: { '^/api/prescription': '' }
 }));
 
+// ML Service Routes (connects to Python FastAPI)
+const mlRoutes = require('./routes/mlRoutes');
+app.use('/api/ml', mlRoutes);
+
 // Apply body parsing for other routes (if any) that are not proxies
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
