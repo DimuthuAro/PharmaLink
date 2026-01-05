@@ -1,0 +1,29 @@
+{
+    "name": "pharmalink",
+    "version": "1.0.0",
+    "description": "PharmaLink - AI-powered drug interaction and prescription analysis platform",
+    "scripts": {
+        "start:ml": "cd ml_service && python main.py",
+        "train:model": "cd ml_service && python train_quick_model.py",
+        "start:backend": "cd backend && npm start",
+        "start:frontend": "cd frontend && npm run dev",
+        "start:all": "concurrently \"npm run start:ml\" \"npm run start:backend\" \"npm run start:frontend\"",
+        "docker:build": "docker compose build",
+        "docker:up": "docker compose up -d",
+        "docker:down": "docker compose down",
+        "docker:logs": "docker compose logs -f",
+        "docker:dev": "docker compose up --build"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    },
+    "keywords": [
+        "pharma",
+        "ai",
+        "drug-interaction",
+        "prescription",
+        "ml"
+    ],
+    "author": "PharmaLink Team",
+    "license": "MIT"
+}

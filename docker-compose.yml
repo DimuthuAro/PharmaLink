@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  ml_service:
+    build: ./ml_service
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./model:/app/model
+      - ./data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: python main.py
+
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      - ML_SERVICE_URL=http://ml_service:8000
+      - NODE_ENV=development
+    depends_on:
+      - ml_service
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_DRUG_INTERACTION_API=http://localhost:3000/api
+      - VITE_ML_SERVICE_URL=http://localhost:8000
+    depends_on:
+      - backend

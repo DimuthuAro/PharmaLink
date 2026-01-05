@@ -96,7 +96,70 @@ npm run start:dev
    - **Admin**: admin@pharmalink.com / admin123
    - **Pharmacist**: pharmacist@pharmalink.com / pharma123
 
-## 📱 Frontend Features
+## � Docker Setup (Recommended)
+
+For the easiest setup experience, use Docker Compose to run all services with a single command.
+
+### Prerequisites
+
+- **Docker** (v20.10 or higher)
+- **Docker Compose** (v2.0 or higher)
+
+### Quick Docker Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/DimuthuAro/PharmaLink.git
+cd PharmaLink
+
+# Build and start all services
+npm run docker:dev
+
+# Or manually:
+# docker-compose build
+# docker-compose up -d
+```
+
+**Services will be available at:**
+- **Frontend**: http://localhost:5173
+- **Backend API**: http://localhost:3000
+- **ML Service**: http://localhost:8000
+
+### Docker Commands
+
+```bash
+# Start services in background
+npm run docker:up
+
+# View logs
+npm run docker:logs
+
+# Stop services
+npm run docker:down
+
+# Rebuild and restart
+npm run docker:dev
+```
+
+### Docker Architecture
+
+```
+PharmaLink Docker Stack
+├── ml_service (Python FastAPI)
+│   ├── Port: 8000
+│   ├── AI/ML models for drug interactions
+│   └── OCR processing for prescriptions
+├── backend (Node.js Express)
+│   ├── Port: 3000
+│   ├── API Gateway and microservices
+│   └── Connects to ML service internally
+└── frontend (React Vite)
+    ├── Port: 5173
+    ├── Modern React application
+    └── Connects to backend API
+```
+
+## �📱 Frontend Features
 
 ### 🎨 **Modern React Application**
 - **React 19** with latest features and optimizations

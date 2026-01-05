@@ -48,6 +48,71 @@ lerna-debug.log*
 .idea
 .DS_Store
 Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Large data files
+*.csv
+*.xlsx
+*.xls
+data/
+datasets/
+*.parquet
+*.feather
+raw_data/
+
+# Model files (keep trained models, exclude large raw models)
+ml_service/data/
+ml_service/raw_data/
+ml_service/datasets/
+ml_service/__pycache__/
+ml_service/.pytest_cache/
+ml_service/venv/
+ml_service/.venv/
+ml_service/*.pyc
+!ml_service/model/
+!ml_service/model/*.pkl
+
+# ML models (large files)
+*.h5
+*.pb
+*.onnx
+*.pt
+*.pth
+
+# OCR models cache
+.easyocr/
+paddleocr/
+
+# Node
+.next/
+.nuxt/
+.cache/
+.vuepress/dist/
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
+
+# Artifacts
+artifacts/
+*.pickle
+model_working/
 *.suo
 *.ntvs*
 *.njsproj
@@ -61,3 +126,46 @@ tmp/
 # Database files (if applicable and not intended for version control)
 *.sqlite
 *.db
+
+# Python
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+.Python
+**/venv/
+**/env/
+**/.venv/
+**/.env/
+*.egg-info/
+.eggs/
+**/.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Model temporary files
+model/*_temp.*
+model/*_old.*
+model/*_backup.*
+model/test_*.pkl
+
+# Raw data (already processed)
+artifacts/*.xlsx
+artifacts/*.json
+artifacts/*.csv
+
+# Jupyter Notebooks
+**/.ipynb_checkpoints/
+
+# Archive folder (local only)
+archive/
+
+# Temporary files
+**/*.tmp
+**/*~
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db

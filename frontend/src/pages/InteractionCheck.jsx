@@ -1148,28 +1148,42 @@ const InteractionCheck = () => {
             let data;
             try {
                 const mlResult = await mlService.checkInteractions(drugs, false);
-                if (mlResult.success) {
+                console.log('ML Service Response:', mlResult); // Debug log
+                
+                // Handle the nested response structure
+                const mlData = mlResult.data || mlResult;
+                const interactions = mlData.interactions || [];
+                
+                if (mlResult.success && interactions.length > 0) {
                     // Transform ML service response to match expected format
                     data = {
-                        severity: mlResult.interactions?.length > 0
-                            ? mlResult.interactions.reduce((max, i) =>
-                                i.severity === 'severe' ? 'severe' :
-                                    i.severity === 'moderate' && max !== 'severe' ? 'moderate' :
-                                        i.severity === 'mild' && max === 'none' ? 'mild' : max, 'none')
-                            : 'none',
-                        interactions: mlResult.interactions?.map(i => ({
-                            drug1: i.drug_pair[0],
-                            drug2: i.drug_pair[1],
-                            severity: i.severity,
-                            description: i.description,
-                            confidence: i.confidence,
-                            recommendation: `Confidence: ${(i.confidence * 100).toFixed(0)}%`
-                        })) || [],
-                        risk_score: mlResult.risk_score,
-                        processing_time_ms: mlResult.processing_time_ms
+                        severity: interactions.reduce((max, i) => {
+                            const sev = i.prediction?.severity || i.severity || 'none';
+                            return sev === 'high' || sev === 'severe' ? 'severe' :
+                                sev === 'medium' || sev === 'moderate' && max !== 'severe' ? 'moderate' :
+                                    sev === 'low' || sev === 'mild' && max === 'none' ? 'mild' : max;
+                        }, 'none'),
+                        interactions: interactions.map(i => ({
+                            drug1: i.drugs?.[0] || i.drug_pair?.[0] || '',
+                            drug2: i.drugs?.[1] || i.drug_pair?.[1] || '',
+                            severity: i.prediction?.severity || i.severity || 'none',
+                            description: i.prediction?.description || i.description || 'No description available',
+                            confidence: i.prediction?.confidence || i.confidence || 'medium',
+                            probability: i.prediction?.probability || i.probability || 0,
+                            hasInteraction: i.prediction?.hasInteraction ?? i.hasInteraction ?? false,
+                            recommendation: i.prediction?.recommendation || i.recommendation || 'Consult healthcare provider'
+                        })).filter(i => i.hasInteraction || i.probability > 0.5 || i.severity !== 'none'),
+                        risk_score: mlData.summary?.overallRisk === 'high' ? 25 : 
+                                   mlData.summary?.overallRisk === 'medium' ? 50 : 100,
+                        processing_time_ms: mlData.processingTime
                     };
+                    
+                    // If no actual interactions found after filtering
+                    if (data.interactions.length === 0) {
+                        data.severity = 'none';
+                    }
                 } else {
-                    throw new Error('ML Service unavailable');
+                    throw new Error('ML Service unavailable or no data');
                 }
             } catch (mlError) {
                 console.log('ML Service fallback, using original API:', mlError.message);
