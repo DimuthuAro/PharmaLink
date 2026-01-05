@@ -5,15 +5,63 @@ const morgan = require('morgan');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const { createProxyMiddleware } = require('http-proxy-middleware');
+const { spawn } = require('child_process');
+const path = require('path');
 require('dotenv').config();
 
 const logger = require('./shared_infrastructure/logger');
-const connectDB = require('./config/database');
+const { connectDB, getDBStatus } = require('./config/database');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const test = 10;
-console.log(test);
+
+// Auto-start microservices
+const microserviceProcesses = [];
+
+function startMicroservice(name, dir, port) {
+    const servicePath = path.join(__dirname, 'microservices', dir);
+    logger.info(`Starting ${name} on port ${port}...`);
+    
+    const proc = spawn('node', ['index.js'], {
+        cwd: servicePath,
+        stdio: ['pipe', 'pipe', 'pipe'],
+        env: { ...process.env, PORT: port },
+        shell: true
+    });
+    
+    proc.stdout.on('data', (data) => {
+        logger.info(`[${name}] ${data.toString().trim()}`);
+    });
+    
+    proc.stderr.on('data', (data) => {
+        logger.error(`[${name}] ${data.toString().trim()}`);
+    });
+    
+    proc.on('error', (err) => {
+        logger.error(`Failed to start ${name}: ${err.message}`);
+    });
+    
+    proc.on('exit', (code) => {
+        if (code !== 0 && code !== null) {
+            logger.warn(`${name} exited with code ${code}`);
+        }
+    });
+    
+    microserviceProcesses.push({ name, proc, port });
+    return proc;
+}
+
+// Start microservices with delay to allow main server to initialize first
+setTimeout(() => {
+    if (process.env.AUTO_START_MICROSERVICES !== 'false') {
+        logger.info('Auto-starting microservices...');
+        startMicroservice('Drug Interaction Service', 'drug_interaction_microservice', 3001);
+        // Uncomment these to start other microservices:
+        // startMicroservice('Advisory Service', 'personalized_advisory_microservice', 3002);
+        // startMicroservice('Comparator Service', 'crossbrand_comparator_microservice', 3003);
+        // startMicroservice('Prescription Service', 'prescription_interpreter_microservice', 3004);
+    }
+}, 2000);
 
 // Security middleware
 app.use(helmet());
@@ -72,18 +120,26 @@ app.use(limiter);
 // app.use(express.json({ limit: '10mb' }));
 // app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Connect to MongoDB
+// Connect to MongoDB (non-blocking if unavailable)
 connectDB();
 
 // Health check endpoint
 app.get('/health', (req, res) => {
+    const dbStatus = getDBStatus();
+    const status = dbStatus.connected ? 'OK' : 'DEGRADED';
+
     res.status(200).json({
-        status: 'OK',
+        status,
         timestamp: new Date().toISOString(),
         services: {
-            database: 'connected',
+            database: dbStatus.connected ? 'connected' : 'unavailable',
             redis: 'connected',
             messageQueue: 'connected'
+        },
+        database: {
+            connected: dbStatus.connected,
+            lastError: dbStatus.lastError,
+            lastAttempt: dbStatus.lastAttempt
         }
     });
 });
@@ -151,6 +207,28 @@ app.use('*', (req, res) => {
 // Graceful shutdown
 process.on('SIGTERM', () => {
     logger.info('SIGTERM signal received. Closing HTTP server.');
+    
+    // Kill all microservice processes
+    microserviceProcesses.forEach(({ name, proc }) => {
+        logger.info(`Stopping ${name}...`);
+        proc.kill('SIGTERM');
+    });
+    
+    server.close(() => {
+        logger.info('HTTP server closed.');
+        process.exit(0);
+    });
+});
+
+process.on('SIGINT', () => {
+    logger.info('SIGINT signal received. Closing HTTP server.');
+    
+    // Kill all microservice processes
+    microserviceProcesses.forEach(({ name, proc }) => {
+        logger.info(`Stopping ${name}...`);
+        proc.kill('SIGTERM');
+    });
+    
     server.close(() => {
         logger.info('HTTP server closed.');
         process.exit(0);

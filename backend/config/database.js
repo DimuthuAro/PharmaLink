@@ -1,11 +1,24 @@
 const mongoose = require('mongoose');
 const logger = require('../shared_infrastructure/logger');
 
+let connectionStatus = {
+    connected: false,
+    lastError: null,
+    lastAttempt: null
+};
+
 const connectDB = async () => {
+    connectionStatus.lastAttempt = new Date().toISOString();
+
     try {
         if (!process.env.MONGODB_URI) {
             logger.warn('MONGODB_URI not set; skipping database connection for this session.');
-            return;
+            connectionStatus = {
+                connected: false,
+                lastError: 'MONGODB_URI not configured',
+                lastAttempt: connectionStatus.lastAttempt
+            };
+            return connectionStatus;
         }
 
         const conn = await mongoose.connect(process.env.MONGODB_URI, {
@@ -13,19 +26,40 @@ const connectDB = async () => {
             useUnifiedTopology: true,
         });
 
+        connectionStatus = {
+            connected: true,
+            lastError: null,
+            lastAttempt: connectionStatus.lastAttempt
+        };
+
         logger.info(`MongoDB Connected: ${conn.connection.host}`);
 
         // Handle connection events
         mongoose.connection.on('connected', () => {
             logger.info('Mongoose connected to MongoDB');
+            connectionStatus = {
+                connected: true,
+                lastError: null,
+                lastAttempt: new Date().toISOString()
+            };
         });
 
         mongoose.connection.on('error', (err) => {
             logger.error('Mongoose connection error:', err);
+            connectionStatus = {
+                connected: false,
+                lastError: err.message,
+                lastAttempt: new Date().toISOString()
+            };
         });
 
         mongoose.connection.on('disconnected', () => {
             logger.warn('Mongoose disconnected from MongoDB');
+            connectionStatus = {
+                connected: false,
+                lastError: 'Disconnected',
+                lastAttempt: new Date().toISOString()
+            };
         });
 
         // Graceful shutdown
@@ -35,10 +69,29 @@ const connectDB = async () => {
             process.exit(0);
         });
 
+        return connectionStatus;
+
     } catch (error) {
         logger.error('Database connection failed:', error);
-        process.exit(1);
+        connectionStatus = {
+            connected: false,
+            lastError: error.message,
+            lastAttempt: connectionStatus.lastAttempt
+        };
+
+        if (process.env.EXIT_ON_DB_FAIL === 'true') {
+            process.exit(1);
+        } else {
+            logger.warn('Continuing without database connection. Some features may be unavailable.');
+        }
+
+        return connectionStatus;
     }
 };
 
-module.exports = connectDB;
+const getDBStatus = () => connectionStatus;
+
+module.exports = {
+    connectDB,
+    getDBStatus
+};

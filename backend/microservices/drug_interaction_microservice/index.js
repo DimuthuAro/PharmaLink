@@ -2,10 +2,19 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const axios = require('axios');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.DRUG_INTERACTION_PORT || 3001;
+const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://localhost:8000';
+
+// ML Service client
+const mlClient = axios.create({
+    baseURL: ML_SERVICE_URL,
+    timeout: 30000,
+    headers: { 'Content-Type': 'application/json' }
+});
 
 // Middleware
 app.use(helmet());
@@ -55,6 +64,64 @@ app.post('/check-interactions', async (req, res) => {
         res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to check drug interactions'
+        });
+    }
+});
+
+// Check endpoint (frontend compatibility)
+app.post('/check', async (req, res) => {
+    try {
+        const { drugs, includeFood, patientAge, conditions } = req.body;
+
+        if (!drugs || !Array.isArray(drugs) || drugs.length < 2) {
+            return res.status(400).json({
+                success: false,
+                error: 'At least 2 drugs are required'
+            });
+        }
+
+        const interactions = await checkDrugInteractions(drugs);
+        
+        // Calculate summary
+        const highRisk = interactions.filter(i => i.severity === 'high').length;
+        const mediumRisk = interactions.filter(i => i.severity === 'medium').length;
+        const lowRisk = interactions.filter(i => i.severity === 'low').length;
+        const noInteraction = interactions.filter(i => !i.hasInteraction).length;
+
+        res.json({
+            success: true,
+            data: {
+                requestId: `req_${Date.now()}`,
+                timestamp: new Date().toISOString(),
+                drugCount: drugs.length,
+                interactions: interactions.map(i => ({
+                    drugs: [i.drug1, i.drug2],
+                    prediction: {
+                        hasInteraction: i.hasInteraction,
+                        probability: i.probability,
+                        severity: i.severity,
+                        description: i.description,
+                        confidence: i.confidence,
+                        source: i.source,
+                        recommendation: i.recommendation
+                    }
+                })),
+                summary: {
+                    totalPairs: interactions.length,
+                    highRisk,
+                    mediumRisk,
+                    lowRisk,
+                    noInteraction,
+                    overallRisk: highRisk > 0 ? 'high' : mediumRisk > 0 ? 'medium' : lowRisk > 0 ? 'low' : 'none'
+                },
+                model: 'ml_service'
+            }
+        });
+    } catch (error) {
+        console.error('Drug interaction check error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to check drug interactions'
         });
     }
 });
@@ -116,24 +183,81 @@ app.get('/search', async (req, res) => {
 
 // Placeholder functions - implement with actual drug database
 async function checkDrugInteractions(drugs) {
-    // Simulate drug interaction checking
-    const interactions = [];
+    // Call ML Service for real predictions
+    try {
+        const response = await mlClient.post('/predict/interactions', {
+            drugs: drugs,
+            include_food: false
+        });
+        
+        const data = response.data;
+        
+        // Transform ML response to microservice format
+        const interactions = (data.interactions || []).map(interaction => ({
+            drug1: interaction.drug_pair?.[0] || interaction.drug1,
+            drug2: interaction.drug_pair?.[1] || interaction.drug2,
+            hasInteraction: interaction.interaction,
+            probability: interaction.probability,
+            severity: interaction.severity || 'unknown',
+            description: interaction.description || `Interaction between ${interaction.drug_pair?.[0]} and ${interaction.drug_pair?.[1]}`,
+            recommendation: getRecommendation(interaction.severity, interaction.probability),
+            confidence: interaction.confidence || 'medium',
+            source: interaction.source || 'ml_model'
+        }));
+        
+        return interactions;
+        
+    } catch (error) {
+        console.error('ML Service error:', error.message);
+        // Fallback to rule-based checking
+        return fallbackInteractionCheck(drugs);
+    }
+}
 
+function getRecommendation(severity, probability) {
+    if (severity === 'high' || probability > 0.8) {
+        return 'AVOID this combination. Consult healthcare provider immediately.';
+    } else if (severity === 'medium' || probability > 0.5) {
+        return 'Use with caution. Monitor for adverse effects and consult healthcare provider.';
+    } else if (severity === 'low' || probability > 0.2) {
+        return 'Low risk. Standard monitoring recommended.';
+    }
+    return 'No significant interaction expected. Safe to use together.';
+}
+
+function fallbackInteractionCheck(drugs) {
+    // Known dangerous interactions (fallback)
+    const knownInteractions = {
+        'aspirin_warfarin': { severity: 'high', probability: 0.95 },
+        'warfarin_ibuprofen': { severity: 'high', probability: 0.92 },
+        'metformin_insulin': { severity: 'medium', probability: 0.75 },
+        'sertraline_tramadol': { severity: 'high', probability: 0.85 },
+        'alprazolam_oxycodone': { severity: 'high', probability: 0.90 },
+    };
+    
+    const interactions = [];
+    
     for (let i = 0; i < drugs.length; i++) {
         for (let j = i + 1; j < drugs.length; j++) {
-            // Simulate some interactions
-            if (Math.random() > 0.7) {
+            const key = [drugs[i].toLowerCase(), drugs[j].toLowerCase()].sort().join('_');
+            const known = knownInteractions[key];
+            
+            if (known) {
                 interactions.push({
                     drug1: drugs[i],
                     drug2: drugs[j],
-                    severity: ['mild', 'moderate', 'severe'][Math.floor(Math.random() * 3)],
-                    description: `Potential interaction between ${drugs[i]} and ${drugs[j]}`,
-                    recommendation: 'Consult healthcare provider'
+                    hasInteraction: true,
+                    probability: known.probability,
+                    severity: known.severity,
+                    description: `Known interaction between ${drugs[i]} and ${drugs[j]}`,
+                    recommendation: getRecommendation(known.severity, known.probability),
+                    confidence: 'high',
+                    source: 'fallback_database'
                 });
             }
         }
     }
-
+    
     return interactions;
 }
 
