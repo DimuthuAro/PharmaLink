@@ -1,8 +1,22 @@
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-pydantic==2.5.2
-numpy==1.26.2
-joblib==1.3.2
-scikit-learn==1.3.2
-python-multipart==0.0.6
-httpx==0.25.2
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.2
+numpy>=1.26.0
+joblib>=1.3.2
+scikit-learn>=1.3.2
+python-multipart>=0.0.6
+httpx>=0.25.2
+
+# Image Processing
+Pillow>=10.0.0
+opencv-python-headless>=4.8.0
+
+# OCR Engines (Pre-trained models)
+easyocr>=1.7.0
+
+# Optional: PaddleOCR (uncomment if needed - requires paddlepaddle)
+# paddlepaddle>=2.5.0
+# paddleocr>=2.7.0
+
+# Optional: Tesseract wrapper
+# pytesseract>=0.3.10
