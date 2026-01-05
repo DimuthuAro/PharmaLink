@@ -6,6 +6,7 @@
     "scripts": {
         "start": "node server.js",
         "dev": "nodemon server.js",
+        "dev:all": "node scripts/start-dev.js",
         "start:dev": "concurrently \"npm run dev:drug-interaction\" \"npm run dev:advisory\" \"npm run dev:comparator\" \"npm run dev:interpreter\"",
         "dev:stack": "concurrently \"npm run dev\" \"npm run dev:drug-interaction\"",
         "dev:drug-interaction": "cd microservices/drug_interaction_microservice && npm run dev",
