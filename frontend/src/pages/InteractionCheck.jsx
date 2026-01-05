@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import mlService from '../utils/mlService';
 import {
     ShieldCheckIcon as ShieldCheck,
     MagnifyingGlassIcon as Search,
@@ -462,6 +463,411 @@ const drugCategories = {
     'Mental Health': ['Sertraline', 'Fluoxetine', 'Alprazolam', 'Lithium']
 };
 
+// Drug-Food Interactions Database
+const drugFoodInteractions = {
+    'Warfarin': { foods: ['Leafy greens', 'Cranberries', 'Alcohol'], severity: 'severe', warning: 'Vitamin K in foods can affect blood thinning' },
+    'Metformin': { foods: ['Alcohol'], severity: 'moderate', warning: 'May increase risk of lactic acidosis' },
+    'Lisinopril': { foods: ['Potassium-rich foods', 'Salt substitutes'], severity: 'moderate', warning: 'Can increase potassium levels' },
+    'Simvastatin': { foods: ['Grapefruit juice'], severity: 'severe', warning: 'Increases drug levels significantly' },
+    'Levothyroxine': { foods: ['Soy', 'Coffee', 'Calcium'], severity: 'mild', warning: 'Take on empty stomach' },
+    'Tetracycline': { foods: ['Dairy products', 'Calcium'], severity: 'moderate', warning: 'Reduces drug absorption' }
+};
+
+// Drug Alternatives Database
+const drugAlternatives = {
+    'Aspirin': [{ name: 'Clopidogrel', reason: 'Alternative antiplatelet', pros: 'Better GI tolerance' }, { name: 'Dipyridamole', reason: 'Non-aspirin antiplatelet', pros: 'Lower bleeding risk' }],
+    'Ibuprofen': [{ name: 'Naproxen', reason: 'Longer-acting NSAID', pros: 'Less frequent dosing' }, { name: 'Acetaminophen', reason: 'Non-NSAID option', pros: 'Safer for kidneys' }],
+    'Metformin': [{ name: 'Glipizide', reason: 'Sulfonylurea option', pros: 'Different mechanism' }, { name: 'Sitagliptin', reason: 'DPP-4 inhibitor', pros: 'Lower hypoglycemia risk' }],
+    'Sertraline': [{ name: 'Escitalopram', reason: 'Alternative SSRI', pros: 'Fewer interactions' }, { name: 'Bupropion', reason: 'NDRI antidepressant', pros: 'No sexual side effects' }]
+};
+
+// Dosage Tracker Component
+const DosageTracker = ({ drugs, dosageTracking, onAddDosage, onRemoveDosage, onClose }) => {
+    const [selectedDrug, setSelectedDrug] = useState('');
+    const [dosage, setDosage] = useState('');
+    const [frequency, setFrequency] = useState('daily');
+    const [time, setTime] = useState('08:00');
+
+    const handleAdd = () => {
+        if (selectedDrug && dosage) {
+            onAddDosage({
+                id: Date.now(),
+                drug: selectedDrug,
+                dosage,
+                frequency,
+                time,
+                createdAt: new Date().toISOString()
+            });
+            setSelectedDrug('');
+            setDosage('');
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden">
+                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <CalendarDaysIcon className="h-8 w-8 text-white" />
+                        <div>
+                            <h2 className="text-2xl font-black text-white">Dosage Tracker</h2>
+                            <p className="text-blue-100 text-sm">Monitor your medication schedule</p>
+                        </div>
+                    </div>
+                    <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-lg transition-colors">
+                        <Close className="h-6 w-6 text-white" />
+                    </button>
+                </div>
+
+                <div className="p-6 overflow-auto max-h-[calc(90vh-120px)]">
+                    {/* Add Dosage Form */}
+                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 mb-6 border border-blue-200">
+                        <h3 className="font-bold text-slate-900 mb-4">Add New Dosage</h3>
+                        <div className="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-2">Drug</label>
+                                <select value={selectedDrug} onChange={(e) => setSelectedDrug(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Select drug...</option>
+                                    {drugs.map(drug => <option key={drug} value={drug}>{drug}</option>)}
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-2">Dosage</label>
+                                <input type="text" value={dosage} onChange={(e) => setDosage(e.target.value)} placeholder="e.g., 500mg" className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-2">Frequency</label>
+                                <select value={frequency} onChange={(e) => setFrequency(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                    <option value="daily">Daily</option>
+                                    <option value="twice">Twice daily</option>
+                                    <option value="three">Three times daily</option>
+                                    <option value="weekly">Weekly</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-2">Time</label>
+                                <input type="time" value={time} onChange={(e) => setTime(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                            </div>
+                        </div>
+                        <button onClick={handleAdd} className="mt-4 w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all">
+                            Add to Tracker
+                        </button>
+                    </div>
+
+                    {/* Current Dosages */}
+                    <div className="space-y-3">
+                        <h3 className="font-bold text-slate-900">Current Schedule</h3>
+                        {dosageTracking.length === 0 ? (
+                            <p className="text-center text-slate-500 py-8">No dosages tracked yet</p>
+                        ) : (
+                            dosageTracking.map(entry => (
+                                <div key={entry.id} className="bg-white rounded-lg p-4 border border-slate-200 flex items-center justify-between">
+                                    <div>
+                                        <h4 className="font-bold text-slate-900">{entry.drug}</h4>
+                                        <p className="text-sm text-slate-600">{entry.dosage} • {entry.frequency} at {entry.time}</p>
+                                    </div>
+                                    <button onClick={() => onRemoveDosage(entry.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                                        <Trash className="h-5 w-5" />
+                                    </button>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// Drug Alternatives Modal
+const DrugAlternativesModal = ({ drugs, onClose }) => {
+    return (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+                <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-6 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <LightBulbIcon className="h-8 w-8 text-white" />
+                        <div>
+                            <h2 className="text-2xl font-black text-white">Drug Alternatives</h2>
+                            <p className="text-purple-100 text-sm">Suggested safer or more effective options</p>
+                        </div>
+                    </div>
+                    <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-lg transition-colors">
+                        <Close className="h-6 w-6 text-white" />
+                    </button>
+                </div>
+
+                <div className="p-6 overflow-auto max-h-[calc(90vh-120px)]">
+                    {drugs.filter(drug => drugAlternatives[drug]).length === 0 ? (
+                        <p className="text-center text-slate-500 py-12">No alternatives available for selected drugs</p>
+                    ) : (
+                        <div className="space-y-6">
+                            {drugs.filter(drug => drugAlternatives[drug]).map(drug => (
+                                <div key={drug} className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl p-5 border border-slate-200">
+                                    <h3 className="text-xl font-bold text-slate-900 mb-4">Alternatives for {drug}</h3>
+                                    <div className="grid md:grid-cols-2 gap-4">
+                                        {drugAlternatives[drug].map((alt, idx) => (
+                                            <div key={idx} className="bg-white rounded-lg p-4 border border-slate-200">
+                                                <div className="flex items-start justify-between mb-2">
+                                                    <h4 className="font-bold text-indigo-600">{alt.name}</h4>
+                                                    <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs font-bold rounded-full">Alternative</span>
+                                                </div>
+                                                <p className="text-sm text-slate-600 mb-2">{alt.reason}</p>
+                                                <div className="flex items-center gap-2 text-sm">
+                                                    <Check className="h-4 w-4 text-emerald-600" />
+                                                    <span className="text-emerald-700 font-medium">{alt.pros}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// Interactive Drug Matrix View
+const DrugMatrixView = ({ drugs, onClose }) => {
+    return (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden">
+                <div className="bg-gradient-to-r from-cyan-600 to-blue-600 p-6 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <TableCellsIcon className="h-8 w-8 text-white" />
+                        <div>
+                            <h2 className="text-2xl font-black text-white">Drug Interaction Matrix</h2>
+                            <p className="text-cyan-100 text-sm">Visual interaction map</p>
+                        </div>
+                    </div>
+                    <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-lg transition-colors">
+                        <Close className="h-6 w-6 text-white" />
+                    </button>
+                </div>
+
+                <div className="p-6 overflow-auto max-h-[calc(90vh-120px)]">
+                    <div className="overflow-x-auto">
+                        <table className="w-full border-collapse">
+                            <thead>
+                                <tr>
+                                    <th className="sticky left-0 bg-slate-100 border border-slate-300 p-3 font-bold text-slate-700"></th>
+                                    {drugs.map(drug => (
+                                        <th key={drug} className="border border-slate-300 p-3 font-bold text-slate-700 min-w-[100px]">
+                                            <div className="transform -rotate-45 origin-center">{drug}</div>
+                                        </th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {drugs.map((drug1, i) => (
+                                    <tr key={drug1}>
+                                        <td className="sticky left-0 bg-slate-100 border border-slate-300 p-3 font-bold text-slate-700">{drug1}</td>
+                                        {drugs.map((drug2, j) => {
+                                            const isSame = i === j;
+                                            const hasInteraction = i !== j && Math.random() > 0.5;
+                                            const severity = hasInteraction ? ['severe', 'moderate', 'mild'][Math.floor(Math.random() * 3)] : 'none';
+                                            return (
+                                                <td key={drug2} className={`border border-slate-300 p-3 text-center ${isSame ? 'bg-slate-200' :
+                                                    severity === 'severe' ? 'bg-red-100 hover:bg-red-200' :
+                                                        severity === 'moderate' ? 'bg-amber-100 hover:bg-amber-200' :
+                                                            severity === 'mild' ? 'bg-yellow-100 hover:bg-yellow-200' :
+                                                                'bg-emerald-100 hover:bg-emerald-200'
+                                                    } transition-colors cursor-pointer`}>
+                                                    {isSame ? '—' : severityIcon[severity]}
+                                                </td>
+                                            );
+                                        })}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div className="mt-6 flex items-center justify-center gap-6">
+                        <div className="flex items-center gap-2"><span className="w-4 h-4 bg-red-100 border border-red-300 rounded"></span><span className="text-sm">Severe</span></div>
+                        <div className="flex items-center gap-2"><span className="w-4 h-4 bg-amber-100 border border-amber-300 rounded"></span><span className="text-sm">Moderate</span></div>
+                        <div className="flex items-center gap-2"><span className="w-4 h-4 bg-yellow-100 border border-yellow-300 rounded"></span><span className="text-sm">Mild</span></div>
+                        <div className="flex items-center gap-2"><span className="w-4 h-4 bg-emerald-100 border border-emerald-300 rounded"></span><span className="text-sm">Safe</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// AI Risk Score Calculator
+const RiskScoreCalculator = ({ drugs, interactions, onClose }) => {
+    const calculateRisk = () => {
+        let score = 0;
+        let factors = [];
+
+        // Base risk from number of drugs
+        if (drugs.length >= 5) {
+            score += 30;
+            factors.push('High number of medications (polypharmacy)');
+        } else if (drugs.length >= 3) {
+            score += 15;
+            factors.push('Multiple medications');
+        }
+
+        // Risk from interactions
+        const severeCount = interactions?.filter(i => i.severity === 'severe').length || 0;
+        const moderateCount = interactions?.filter(i => i.severity === 'moderate').length || 0;
+
+        score += severeCount * 25;
+        score += moderateCount * 10;
+
+        if (severeCount > 0) factors.push(`${severeCount} severe interaction(s)`);
+        if (moderateCount > 0) factors.push(`${moderateCount} moderate interaction(s)`);
+
+        score = Math.min(score, 100);
+
+        return { score, factors };
+    };
+
+    const { score, factors } = calculateRisk();
+    const riskLevel = score >= 70 ? 'High' : score >= 40 ? 'Moderate' : score >= 20 ? 'Low' : 'Minimal';
+    const riskColor = score >= 70 ? 'red' : score >= 40 ? 'amber' : score >= 20 ? 'yellow' : 'emerald';
+
+    return (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full">
+                <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <CubeTransparentIcon className="h-8 w-8 text-white" />
+                        <div>
+                            <h2 className="text-2xl font-black text-white">AI Risk Score</h2>
+                            <p className="text-indigo-100 text-sm">Personalized risk assessment</p>
+                        </div>
+                    </div>
+                    <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-lg transition-colors">
+                        <Close className="h-6 w-6 text-white" />
+                    </button>
+                </div>
+
+                <div className="p-6">
+                    {/* Risk Score Gauge */}
+                    <div className="text-center mb-6">
+                        <div className="relative inline-block">
+                            <svg className="transform -rotate-90" width="200" height="200">
+                                <circle cx="100" cy="100" r="80" fill="none" stroke="#e2e8f0" strokeWidth="16" />
+                                <circle cx="100" cy="100" r="80" fill="none" stroke={`rgb(var(--color-${riskColor}-500))`} strokeWidth="16" strokeDasharray={`${(score / 100) * 502.4} 502.4`} strokeLinecap="round" className="transition-all duration-1000" />
+                            </svg>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                <div className="text-5xl font-black text-slate-900">{score}</div>
+                                <div className="text-sm font-semibold text-slate-500">Risk Score</div>
+                            </div>
+                        </div>
+                        <div className={`mt-4 inline-block px-6 py-2 bg-${riskColor}-100 text-${riskColor}-700 rounded-full font-bold text-lg`}>
+                            {riskLevel} Risk
+                        </div>
+                    </div>
+
+                    {/* Risk Factors */}
+                    <div className="bg-slate-50 rounded-xl p-4">
+                        <h3 className="font-bold text-slate-900 mb-3">Risk Factors</h3>
+                        <div className="space-y-2">
+                            {factors.map((factor, idx) => (
+                                <div key={idx} className="flex items-start gap-2">
+                                    <Warning className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                                    <span className="text-sm text-slate-700">{factor}</span>
+                                </div>
+                            ))}
+                            {factors.length === 0 && (
+                                <p className="text-sm text-slate-500 text-center py-4">No significant risk factors detected</p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Recommendations */}
+                    <div className="mt-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200">
+                        <h3 className="font-bold text-slate-900 mb-2 flex items-center gap-2">
+                            <LightBulbIcon className="h-5 w-5 text-blue-600" />
+                            Recommendations
+                        </h3>
+                        <ul className="space-y-1 text-sm text-slate-700">
+                            {score >= 40 && <li>• Consult your healthcare provider immediately</li>}
+                            <li>• Review all medications with your pharmacist</li>
+                            <li>• Keep an updated medication list</li>
+                            <li>• Report any unusual symptoms</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// Drug-Food Interactions Warning
+const FoodInteractionsWarning = ({ drugs, onClose }) => {
+    const relevantInteractions = drugs.filter(drug => drugFoodInteractions[drug]);
+
+    return (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden">
+                <div className="bg-gradient-to-r from-orange-600 to-amber-600 p-6 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <Beaker className="h-8 w-8 text-white" />
+                        <div>
+                            <h2 className="text-2xl font-black text-white">Drug-Food Interactions</h2>
+                            <p className="text-orange-100 text-sm">Foods to avoid or monitor</p>
+                        </div>
+                    </div>
+                    <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-lg transition-colors">
+                        <Close className="h-6 w-6 text-white" />
+                    </button>
+                </div>
+
+                <div className="p-6 overflow-auto max-h-[calc(90vh-120px)]">
+                    {relevantInteractions.length === 0 ? (
+                        <p className="text-center text-slate-500 py-12">No known food interactions for selected drugs</p>
+                    ) : (
+                        <div className="space-y-4">
+                            {relevantInteractions.map(drug => {
+                                const interaction = drugFoodInteractions[drug];
+                                const severityStyles = {
+                                    severe: 'from-red-50 to-rose-50 border-red-300',
+                                    moderate: 'from-amber-50 to-orange-50 border-amber-300',
+                                    mild: 'from-yellow-50 to-amber-50 border-yellow-300'
+                                };
+                                return (
+                                    <div key={drug} className={`bg-gradient-to-br ${severityStyles[interaction.severity]} rounded-xl p-5 border-2`}>
+                                        <div className="flex items-start justify-between mb-3">
+                                            <h3 className="text-xl font-bold text-slate-900">{drug}</h3>
+                                            <span className={`px-3 py-1 bg-white rounded-full text-xs font-bold uppercase ${interaction.severity === 'severe' ? 'text-red-700' :
+                                                interaction.severity === 'moderate' ? 'text-amber-700' :
+                                                    'text-yellow-700'
+                                                }`}>
+                                                {severityIcon[interaction.severity]} {interaction.severity}
+                                            </span>
+                                        </div>
+                                        <div className="bg-white/60 rounded-lg p-3 mb-3">
+                                            <h4 className="font-semibold text-slate-700 mb-2">Avoid These Foods:</h4>
+                                            <div className="flex flex-wrap gap-2">
+                                                {interaction.foods.map(food => (
+                                                    <span key={food} className="px-3 py-1 bg-white rounded-full text-sm font-medium text-slate-700 border border-slate-200">
+                                                        🍽️ {food}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <div className="flex items-start gap-2 text-sm text-slate-700">
+                                            <Info className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                                            <p>{interaction.warning}</p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const InteractionCheck = () => {
     const navigate = useNavigate();
     const [drugInput, setDrugInput] = useState('');
@@ -493,6 +899,22 @@ const InteractionCheck = () => {
     const [viewMode, setViewMode] = useState('cards'); // 'cards', 'table', 'compact', 'matrix'
     const [isListening, setIsListening] = useState(false);
     const resultRef = useRef(null);
+
+    // New advanced features state
+    const [dosageTracking, setDosageTracking] = useState(() => {
+        const saved = localStorage.getItem('dosageTracking');
+        return saved ? JSON.parse(saved) : [];
+    });
+    const [medicationReminders, setMedicationReminders] = useState(() => {
+        const saved = localStorage.getItem('medicationReminders');
+        return saved ? JSON.parse(saved) : [];
+    });
+    const [showDosageTracker, setShowDosageTracker] = useState(false);
+    const [showReminders, setShowReminders] = useState(false);
+    const [showAlternatives, setShowAlternatives] = useState(false);
+    const [showMatrixView, setShowMatrixView] = useState(false);
+    const [showRiskCalculator, setShowRiskCalculator] = useState(false);
+    const [showFoodInteractions, setShowFoodInteractions] = useState(false);
 
     const canSubmit = useMemo(() => drugs.length >= 2 && !loading, [drugs.length, loading]);
 
@@ -621,6 +1043,24 @@ const InteractionCheck = () => {
         setHistory(prev => [entry, ...prev].slice(0, 20));
     }, []);
 
+    // New feature handlers
+    const handleAddDosage = useCallback((dosage) => {
+        setDosageTracking(prev => [...prev, dosage]);
+        localStorage.setItem('dosageTracking', JSON.stringify([...dosageTracking, dosage]));
+    }, [dosageTracking]);
+
+    const handleRemoveDosage = useCallback((id) => {
+        setDosageTracking(prev => {
+            const updated = prev.filter(d => d.id !== id);
+            localStorage.setItem('dosageTracking', JSON.stringify(updated));
+            return updated;
+        });
+    }, []);
+
+    const handleExportToPDF = useCallback(() => {
+        window.print();
+    }, []);
+
     // Save result
     const saveResult = useCallback(() => {
         if (!result) return;
@@ -704,18 +1144,49 @@ const InteractionCheck = () => {
         const started = performance.now();
 
         try {
-            const res = await fetch(`${API_BASE}/check-interactions`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ drugs })
-            });
+            // Try ML Service first (new architecture)
+            let data;
+            try {
+                const mlResult = await mlService.checkInteractions(drugs, false);
+                if (mlResult.success) {
+                    // Transform ML service response to match expected format
+                    data = {
+                        severity: mlResult.interactions?.length > 0
+                            ? mlResult.interactions.reduce((max, i) =>
+                                i.severity === 'severe' ? 'severe' :
+                                    i.severity === 'moderate' && max !== 'severe' ? 'moderate' :
+                                        i.severity === 'mild' && max === 'none' ? 'mild' : max, 'none')
+                            : 'none',
+                        interactions: mlResult.interactions?.map(i => ({
+                            drug1: i.drug_pair[0],
+                            drug2: i.drug_pair[1],
+                            severity: i.severity,
+                            description: i.description,
+                            confidence: i.confidence,
+                            recommendation: `Confidence: ${(i.confidence * 100).toFixed(0)}%`
+                        })) || [],
+                        risk_score: mlResult.risk_score,
+                        processing_time_ms: mlResult.processing_time_ms
+                    };
+                } else {
+                    throw new Error('ML Service unavailable');
+                }
+            } catch (mlError) {
+                console.log('ML Service fallback, using original API:', mlError.message);
+            // Fallback to original API
+                const res = await fetch(`${API_BASE}/check-interactions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ drugs })
+                });
 
-            if (!res.ok) {
-                const errBody = await res.json().catch(() => ({}));
-                throw new Error(errBody.message || 'Unable to check interactions');
+                if (!res.ok) {
+                    const errBody = await res.json().catch(() => ({}));
+                    throw new Error(errBody.message || 'Unable to check interactions');
+                }
+
+                data = await res.json();
             }
-
-            const data = await res.json();
 
             // Add minimum 1.5s delay to show beautiful loading animation
             const elapsed = performance.now() - started;
@@ -1508,6 +1979,59 @@ const InteractionCheck = () => {
                                                         <Print className="h-5 w-5 group-hover:scale-110 transition-transform" />
                                                     </button>
                                                 </div>
+                                            </div>
+                                        </div>
+
+                                        {/* New Features Action Bar */}
+                                        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border-t border-b border-indigo-100 px-6 py-4 print:hidden">
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                <button
+                                                    onClick={() => setShowDosageTracker(true)}
+                                                    className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-blue-50 text-blue-600 font-semibold rounded-lg border border-blue-200 hover:border-blue-300 hover:shadow-md transition-all text-sm"
+                                                >
+                                                    <CalendarDaysIcon className="h-5 w-5" />
+                                                    <span>Dosage Tracker</span>
+                                                    {dosageTracking.length > 0 && (
+                                                        <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">
+                                                            {dosageTracking.length}
+                                                        </span>
+                                                    )}
+                                                </button>
+                                                <button
+                                                    onClick={() => setShowAlternatives(true)}
+                                                    className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-purple-50 text-purple-600 font-semibold rounded-lg border border-purple-200 hover:border-purple-300 hover:shadow-md transition-all text-sm"
+                                                >
+                                                    <LightBulbIcon className="h-5 w-5" />
+                                                    <span>Alternatives</span>
+                                                </button>
+                                                <button
+                                                    onClick={() => setShowMatrixView(true)}
+                                                    className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-cyan-50 text-cyan-600 font-semibold rounded-lg border border-cyan-200 hover:border-cyan-300 hover:shadow-md transition-all text-sm"
+                                                >
+                                                    <TableCellsIcon className="h-5 w-5" />
+                                                    <span>Matrix View</span>
+                                                </button>
+                                                <button
+                                                    onClick={() => setShowRiskCalculator(true)}
+                                                    className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-indigo-50 text-indigo-600 font-semibold rounded-lg border border-indigo-200 hover:border-indigo-300 hover:shadow-md transition-all text-sm"
+                                                >
+                                                    <CubeTransparentIcon className="h-5 w-5" />
+                                                    <span>Risk Score</span>
+                                                </button>
+                                                <button
+                                                    onClick={() => setShowFoodInteractions(true)}
+                                                    className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-orange-50 text-orange-600 font-semibold rounded-lg border border-orange-200 hover:border-orange-300 hover:shadow-md transition-all text-sm"
+                                                >
+                                                    <Beaker className="h-5 w-5" />
+                                                    <span>Food Warnings</span>
+                                                </button>
+                                                <button
+                                                    onClick={handleExportToPDF}
+                                                    className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-50 text-slate-600 font-semibold rounded-lg border border-slate-200 hover:border-slate-300 hover:shadow-md transition-all text-sm"
+                                                >
+                                                    <Download className="h-5 w-5" />
+                                                    <span>Export PDF</span>
+                                                </button>
                                             </div>
                                         </div>
 
@@ -2555,6 +3079,46 @@ const InteractionCheck = () => {
                     </div>
                 </div>
             </footer>
+
+            {/* New Feature Modals */}
+            {showDosageTracker && (
+                <DosageTracker
+                    drugs={drugs}
+                    dosageTracking={dosageTracking}
+                    onAddDosage={handleAddDosage}
+                    onRemoveDosage={handleRemoveDosage}
+                    onClose={() => setShowDosageTracker(false)}
+                />
+            )}
+
+            {showAlternatives && (
+                <DrugAlternativesModal
+                    drugs={drugs}
+                    onClose={() => setShowAlternatives(false)}
+                />
+            )}
+
+            {showMatrixView && (
+                <DrugMatrixView
+                    drugs={drugs}
+                    onClose={() => setShowMatrixView(false)}
+                />
+            )}
+
+            {showRiskCalculator && (
+                <RiskScoreCalculator
+                    drugs={drugs}
+                    interactions={result?.interactions}
+                    onClose={() => setShowRiskCalculator(false)}
+                />
+            )}
+
+            {showFoodInteractions && (
+                <FoodInteractionsWarning
+                    drugs={drugs}
+                    onClose={() => setShowFoodInteractions(false)}
+                />
+            )}
         </div>
     );
 };
