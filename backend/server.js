@@ -94,15 +94,15 @@ app.use('/api/drug-interactions', createProxyMiddleware({
     target: `http://localhost:${process.env.DRUG_INTERACTION_PORT || 3001}`,
     changeOrigin: true,
     pathRewrite: { '^/api/drug-interactions': '' },
-    // onProxyReq: (proxyReq, req, res) => {
-    //     // Fix for body-parser issue if it was applied globally (though we moved it, this is safer)
-    //     if (req.body && Object.keys(req.body).length > 0) {
-    //         const bodyData = JSON.stringify(req.body);
-    //         proxyReq.setHeader('Content-Type', 'application/json');
-    //         proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
-    //         proxyReq.write(bodyData);
-    //     }
-    // }
+    onProxyReq: (proxyReq, req, res) => {
+        // Fix for body-parser issue if it was applied globally (though we moved it, this is safer)
+        if (req.body && Object.keys(req.body).length > 0) {
+            const bodyData = JSON.stringify(req.body);
+            proxyReq.setHeader('Content-Type', 'application/json');
+            proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+            proxyReq.write(bodyData);
+        }
+    }
 }));
 
 app.use('/api/advisory', createProxyMiddleware({
