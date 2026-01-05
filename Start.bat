@@ -1,312 +1,392 @@
 @echo off
-setlocal enabledelayedexpansion
+title PharmaLink Service Manager
+color 0A
 
-:: PharmaLink Service Manager - Batch Version
-:: Standalone CMD script for managing PharmaLink services
-
-title PharmaLink Service Manager v1.0
-
-:: Get the directory where this batch file is located
-set "SCRIPT_DIR=%~dp0"
-cd /d "%SCRIPT_DIR%"
-
-:: Colors
-set "COLOR_DEFAULT=07"
-set "COLOR_HEADER=0B"
-set "COLOR_SUCCESS=0A"
-set "COLOR_ERROR=0C"
-set "COLOR_WARNING=0E"
-
-:MAIN_MENU
-cls
-color %COLOR_HEADER%
-echo.
-echo  ╔══════════════════════════════════════════════════════════════════╗
-echo  ║                                                                  ║
-echo  ║   ██████╗ ██╗  ██╗ █████╗ ██████╗ ███╗   ███╗ █████╗            ║
-echo  ║   ██╔══██╗██║  ██║██╔══██╗██╔══██╗████╗ ████║██╔══██╗           ║
-echo  ║   ██████╔╝███████║███████║██████╔╝██╔████╔██║███████║           ║
-echo  ║   ██╔═══╝ ██╔══██║██╔══██║██╔══██╗██║╚██╔╝██║██╔══██║           ║
-echo  ║   ██║     ██║  ██║██║  ██║██║  ██║██║ ╚═╝ ██║██║  ██║           ║
-echo  ║   ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝           ║
-echo  ║                        LINK                                      ║
-echo  ║                                                                  ║
-echo  ║            Integrated Service Management Console                 ║
-echo  ║                                                                  ║
-echo  ╚══════════════════════════════════════════════════════════════════╝
-echo.
-color %COLOR_DEFAULT%
-echo  ┌────────────────────────────────────────────────────────────────┐
-echo  │                      SERVICE CONTROLS                         │
-echo  ├────────────────────────────────────────────────────────────────┤
-echo  │                                                                │
-echo  │   [1]  Start Backend API          (Express.js - Port 3000)    │
-echo  │   [2]  Start Frontend App         (Vite+React - Port 5173)    │
-echo  │   [3]  Start ML Service           (FastAPI    - Port 8000)    │
-echo  │                                                                │
-echo  ├────────────────────────────────────────────────────────────────┤
-echo  │                                                                │
-echo  │   [4]  Install ^& Start Backend                                 │
-echo  │   [5]  Install ^& Start Frontend                                │
-echo  │   [6]  Install ^& Start ML Service                              │
-echo  │                                                                │
-echo  ├────────────────────────────────────────────────────────────────┤
-echo  │                      BATCH OPERATIONS                         │
-echo  ├────────────────────────────────────────────────────────────────┤
-echo  │                                                                │
-echo  │   [7]  Start ALL Services                                     │
-echo  │   [8]  Install ^& Start ALL Services                           │
-echo  │                                                                │
-echo  ├────────────────────────────────────────────────────────────────┤
-echo  │                                                                │
-echo  │   [0]  Exit                                                   │
-echo  │                                                                │
-echo  └────────────────────────────────────────────────────────────────┘
-echo.
-set /p "choice=  Enter your choice [0-8]: "
-
-if "%choice%"=="1" goto START_BACKEND
-if "%choice%"=="2" goto START_FRONTEND
-if "%choice%"=="3" goto START_ML
-if "%choice%"=="4" goto INSTALL_BACKEND
-if "%choice%"=="5" goto INSTALL_FRONTEND
-if "%choice%"=="6" goto INSTALL_ML
-if "%choice%"=="7" goto START_ALL
-if "%choice%"=="8" goto INSTALL_ALL
-if "%choice%"=="0" goto EXIT
+REM PharmaLink Service Manager - Batch-Embedded PowerShell GUI
+REM Creates temporary PowerShell script for GUI and runs it
 
 echo.
-color %COLOR_ERROR%
-echo  [ERROR] Invalid choice. Please try again.
-color %COLOR_DEFAULT%
-timeout /t 2 >nul
-goto MAIN_MENU
-
-:: ============================================================================
-::                           START SERVICES
-:: ============================================================================
-
-:START_BACKEND
-cls
-echo.
-color %COLOR_SUCCESS%
-echo  ═══════════════════════════════════════════════════════════════
-echo   Starting Backend API Service...
-echo  ═══════════════════════════════════════════════════════════════
-color %COLOR_DEFAULT%
-echo.
-echo  Directory: %SCRIPT_DIR%backend
-echo  Command:   npm run dev
-echo  Port:      3000
-echo.
-start "PharmaLink Backend (Port 3000)" cmd /k "cd /d "%SCRIPT_DIR%backend" && npm run dev"
-echo  [OK] Backend started in new window.
-echo.
-pause
-goto MAIN_MENU
-
-:START_FRONTEND
-cls
-echo.
-color %COLOR_SUCCESS%
-echo  ═══════════════════════════════════════════════════════════════
-echo   Starting Frontend Application...
-echo  ═══════════════════════════════════════════════════════════════
-color %COLOR_DEFAULT%
-echo.
-echo  Directory: %SCRIPT_DIR%frontend
-echo  Command:   npm run dev
-echo  Port:      5173
-echo.
-start "PharmaLink Frontend (Port 5173)" cmd /k "cd /d "%SCRIPT_DIR%frontend" && npm run dev"
-echo  [OK] Frontend started in new window.
-echo.
-pause
-goto MAIN_MENU
-
-:START_ML
-cls
-echo.
-color %COLOR_SUCCESS%
-echo  ═══════════════════════════════════════════════════════════════
-echo   Starting ML Service...
-echo  ═══════════════════════════════════════════════════════════════
-color %COLOR_DEFAULT%
-echo.
-echo  Directory: %SCRIPT_DIR%ml_service
-echo  Command:   uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-echo  Port:      8000
-echo.
-start "PharmaLink ML Service (Port 8000)" cmd /k "cd /d "%SCRIPT_DIR%ml_service" && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
-echo  [OK] ML Service started in new window.
-echo.
-pause
-goto MAIN_MENU
-
-:: ============================================================================
-::                        INSTALL & START SERVICES
-:: ============================================================================
-
-:INSTALL_BACKEND
-cls
-echo.
-color %COLOR_WARNING%
-echo  ═══════════════════════════════════════════════════════════════
-echo   Installing ^& Starting Backend API Service...
-echo  ═══════════════════════════════════════════════════════════════
-color %COLOR_DEFAULT%
-echo.
-echo  Directory: %SCRIPT_DIR%backend
-echo  Commands:  npm install ^&^& npm run dev
-echo  Port:      3000
-echo.
-start "PharmaLink Backend - Installing (Port 3000)" cmd /k "cd /d "%SCRIPT_DIR%backend" && echo Installing dependencies... && npm install && echo. && echo Starting server... && npm run dev"
-echo  [OK] Backend installation started in new window.
-echo.
-pause
-goto MAIN_MENU
-
-:INSTALL_FRONTEND
-cls
-echo.
-color %COLOR_WARNING%
-echo  ═══════════════════════════════════════════════════════════════
-echo   Installing ^& Starting Frontend Application...
-echo  ═══════════════════════════════════════════════════════════════
-color %COLOR_DEFAULT%
-echo.
-echo  Directory: %SCRIPT_DIR%frontend
-echo  Commands:  npm install ^&^& npm run dev
-echo  Port:      5173
-echo.
-start "PharmaLink Frontend - Installing (Port 5173)" cmd /k "cd /d "%SCRIPT_DIR%frontend" && echo Installing dependencies... && npm install && echo. && echo Starting server... && npm run dev"
-echo  [OK] Frontend installation started in new window.
-echo.
-pause
-goto MAIN_MENU
-
-:INSTALL_ML
-cls
-echo.
-color %COLOR_WARNING%
-echo  ═══════════════════════════════════════════════════════════════
-echo   Installing ^& Starting ML Service...
-echo  ═══════════════════════════════════════════════════════════════
-color %COLOR_DEFAULT%
-echo.
-echo  Directory: %SCRIPT_DIR%ml_service
-echo  Commands:  pip install -r requirements.txt ^&^& uvicorn ...
-echo  Port:      8000
-echo.
-start "PharmaLink ML Service - Installing (Port 8000)" cmd /k "cd /d "%SCRIPT_DIR%ml_service" && echo Installing dependencies... && pip install -r requirements.txt && echo. && echo Starting server... && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
-echo  [OK] ML Service installation started in new window.
-echo.
-pause
-goto MAIN_MENU
-
-:: ============================================================================
-::                          BATCH OPERATIONS
-:: ============================================================================
-
-:START_ALL
-cls
-echo.
-color %COLOR_SUCCESS%
-echo  ═══════════════════════════════════════════════════════════════
-echo   Starting ALL PharmaLink Services...
-echo  ═══════════════════════════════════════════════════════════════
-color %COLOR_DEFAULT%
+echo  Loading PharmaLink Service Manager...
 echo.
 
-echo  [1/3] Starting ML Service (Port 8000)...
-start "PharmaLink ML Service (Port 8000)" cmd /k "cd /d "%SCRIPT_DIR%ml_service" && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
-timeout /t 2 >nul
+REM Get working directory
+set "WORK_DIR=%~dp0"
 
-echo  [2/3] Starting Backend API (Port 3000)...
-start "PharmaLink Backend (Port 3000)" cmd /k "cd /d "%SCRIPT_DIR%backend" && npm run dev"
-timeout /t 2 >nul
+REM Create temporary PowerShell script for GUI
+(
+echo Add-Type -AssemblyName System.Windows.Forms
+echo Add-Type -AssemblyName System.Drawing
+echo.
+echo $script:workingDir = '%WORK_DIR%'
+echo $script:processes = @{ Backend = $null; Frontend = $null; MLService = $null }
+echo $script:isRunning = @{ Backend = $false; Frontend = $false; MLService = $false }
+echo $script:statusLabels = @{}
+echo $script:statusBoxes = @{}
+echo $script:toggleButtons = @{}
+echo.
+echo # Colors
+echo $primaryColor = [Drawing.Color]::FromArgb^(41, 128, 185^)
+echo $successColor = [Drawing.Color]::FromArgb^(39, 174, 96^)
+echo $dangerColor = [Drawing.Color]::FromArgb^(231, 76, 60^)
+echo $warningColor = [Drawing.Color]::FromArgb^(241, 196, 15^)
+echo $bgColor = [Drawing.Color]::FromArgb^(240, 242, 245^)
+echo $cardColor = [Drawing.Color]::White
+echo $textColor = [Drawing.Color]::FromArgb^(52, 73, 94^)
+echo $mutedColor = [Drawing.Color]::FromArgb^(149, 165, 166^)
+echo.
+echo # Main Form
+echo $form = New-Object Windows.Forms.Form
+echo $form.Text = 'PharmaLink Service Manager v1.0'
+echo $form.Size = New-Object Drawing.Size^(600, 600^)
+echo $form.StartPosition = 'CenterScreen'
+echo $form.FormBorderStyle = 'FixedSingle'
+echo $form.MaximizeBox = $false
+echo $form.BackColor = $bgColor
+echo $form.Font = New-Object Drawing.Font^('Segoe UI', 9^)
+echo.
+echo # Header Panel
+echo $headerPanel = New-Object Windows.Forms.Panel
+echo $headerPanel.Size = New-Object Drawing.Size^(600, 100^)
+echo $headerPanel.Location = New-Object Drawing.Point^(0, 0^)
+echo $headerPanel.BackColor = $primaryColor
+echo $form.Controls.Add^($headerPanel^)
+echo.
+echo # Title
+echo $title = New-Object Windows.Forms.Label
+echo $title.Text = 'PHARMALINK'
+echo $title.Font = New-Object Drawing.Font^('Segoe UI', 26, [Drawing.FontStyle]::Bold^)
+echo $title.ForeColor = [Drawing.Color]::White
+echo $title.AutoSize = $true
+echo $title.Location = New-Object Drawing.Point^(30, 25^)
+echo $headerPanel.Controls.Add^($title^)
+echo.
+echo # Subtitle
+echo $subtitle = New-Object Windows.Forms.Label
+echo $subtitle.Text = 'Integrated Service Management Console'
+echo $subtitle.Font = New-Object Drawing.Font^('Segoe UI', 10^)
+echo $subtitle.ForeColor = [Drawing.Color]::FromArgb^(220, 220, 220^)
+echo $subtitle.AutoSize = $true
+echo $subtitle.Location = New-Object Drawing.Point^(33, 75^)
+echo $headerPanel.Controls.Add^($subtitle^)
+echo.
+echo # Status Bar
+echo $statusBar = New-Object Windows.Forms.Panel
+echo $statusBar.Size = New-Object Drawing.Size^(600, 30^)
+echo $statusBar.Location = New-Object Drawing.Point^(0, 535^)
+echo $statusBar.BackColor = [Drawing.Color]::FromArgb^(52, 73, 94^)
+echo $form.Controls.Add^($statusBar^)
+echo.
+echo $script:statusLabel = New-Object Windows.Forms.Label
+echo $script:statusLabel.Text = 'Ready'
+echo $script:statusLabel.Font = New-Object Drawing.Font^('Segoe UI', 9^)
+echo $script:statusLabel.ForeColor = [Drawing.Color]::White
+echo $script:statusLabel.AutoSize = $true
+echo $script:statusLabel.Location = New-Object Drawing.Point^(15, 7^)
+echo $statusBar.Controls.Add^($script:statusLabel^)
+echo.
+echo function Update-Status { param^($msg^); $script:statusLabel.Text = $msg; $form.Refresh^(^) }
+echo.
+echo function Create-ServiceCard {
+echo     param^($cardTitle, $description, $port, $y, $tag^)
+echo     $card = New-Object Windows.Forms.Panel
+echo     $card.Size = New-Object Drawing.Size^(540, 100^)
+echo     $card.Location = New-Object Drawing.Point^(30, $y^)
+echo     $card.BackColor = $cardColor
+echo     $card.BorderStyle = 'FixedSingle'
+echo.
+echo     $statusBox = New-Object Windows.Forms.Panel
+echo     $statusBox.Size = New-Object Drawing.Size^(10, 100^)
+echo     $statusBox.Location = New-Object Drawing.Point^(0, 0^)
+echo     $statusBox.BackColor = $mutedColor
+echo     $card.Controls.Add^($statusBox^)
+echo     $script:statusBoxes[$tag] = $statusBox
+echo.
+echo     $icon = New-Object Windows.Forms.Label
+echo     $icon.Text = '[S]'
+echo     $icon.Font = New-Object Drawing.Font^('Consolas', 16, [Drawing.FontStyle]::Bold^)
+echo     $icon.ForeColor = $primaryColor
+echo     $icon.AutoSize = $true
+echo     $icon.Location = New-Object Drawing.Point^(25, 15^)
+echo     $card.Controls.Add^($icon^)
+echo.
+echo     $titleLbl = New-Object Windows.Forms.Label
+echo     $titleLbl.Text = $cardTitle
+echo     $titleLbl.Font = New-Object Drawing.Font^('Segoe UI', 12, [Drawing.FontStyle]::Bold^)
+echo     $titleLbl.ForeColor = $textColor
+echo     $titleLbl.AutoSize = $true
+echo     $titleLbl.Location = New-Object Drawing.Point^(70, 15^)
+echo     $card.Controls.Add^($titleLbl^)
+echo.
+echo     $descLbl = New-Object Windows.Forms.Label
+echo     $descLbl.Text = $description
+echo     $descLbl.Font = New-Object Drawing.Font^('Segoe UI', 9^)
+echo     $descLbl.ForeColor = $mutedColor
+echo     $descLbl.AutoSize = $true
+echo     $descLbl.Location = New-Object Drawing.Point^(70, 40^)
+echo     $card.Controls.Add^($descLbl^)
+echo.
+echo     $portLbl = New-Object Windows.Forms.Label
+echo     $portLbl.Text = "PORT: $port"
+echo     $portLbl.Font = New-Object Drawing.Font^('Consolas', 9, [Drawing.FontStyle]::Bold^)
+echo     $portLbl.ForeColor = $primaryColor
+echo     $portLbl.AutoSize = $true
+echo     $portLbl.Location = New-Object Drawing.Point^(70, 65^)
+echo     $card.Controls.Add^($portLbl^)
+echo.
+echo     $statusText = New-Object Windows.Forms.Label
+echo     $statusText.Text = 'STOPPED'
+echo     $statusText.Font = New-Object Drawing.Font^('Segoe UI', 9, [Drawing.FontStyle]::Bold^)
+echo     $statusText.ForeColor = $mutedColor
+echo     $statusText.AutoSize = $true
+echo     $statusText.Location = New-Object Drawing.Point^(350, 20^)
+echo     $card.Controls.Add^($statusText^)
+echo     $script:statusLabels[$tag] = $statusText
+echo.
+echo     $btn = New-Object Windows.Forms.Button
+echo     $btn.Text = 'START'
+echo     $btn.Size = New-Object Drawing.Size^(100, 35^)
+echo     $btn.Location = New-Object Drawing.Point^(420, 15^)
+echo     $btn.FlatStyle = 'Flat'
+echo     $btn.BackColor = $successColor
+echo     $btn.ForeColor = [Drawing.Color]::White
+echo     $btn.Font = New-Object Drawing.Font^('Segoe UI', 10, [Drawing.FontStyle]::Bold^)
+echo     $btn.Cursor = 'Hand'
+echo     $btn.Tag = $tag
+echo     $btn.FlatAppearance.BorderSize = 0
+echo     $script:toggleButtons[$tag] = $btn
+echo     $btn.Add_Click^({ Toggle-Service -serviceName $this.Tag -button $this }^)
+echo     $card.Controls.Add^($btn^)
+echo.
+echo     $installBtn = New-Object Windows.Forms.Button
+echo     $installBtn.Text = 'INSTALL ^& START'
+echo     $installBtn.Size = New-Object Drawing.Size^(140, 35^)
+echo     $installBtn.Location = New-Object Drawing.Point^(380, 55^)
+echo     $installBtn.FlatStyle = 'Flat'
+echo     $installBtn.BackColor = [Drawing.Color]::FromArgb^(0, 122, 204^)
+echo     $installBtn.ForeColor = [Drawing.Color]::White
+echo     $installBtn.Font = New-Object Drawing.Font^('Segoe UI', 9^)
+echo     $installBtn.Cursor = 'Hand'
+echo     $installBtn.Tag = $tag
+echo     $installBtn.FlatAppearance.BorderSize = 0
+echo     $installBtn.Add_Click^({ Install-Service -serviceName $this.Tag }^)
+echo     $card.Controls.Add^($installBtn^)
+echo.
+echo     return $card
+echo }
+echo.
+echo function Toggle-Service {
+echo     param^($serviceName, $button^)
+echo     if ^($script:isRunning[$serviceName]^) {
+echo         Update-Status "Stopping $serviceName..."
+echo         if ^($script:processes[$serviceName] -ne $null^) {
+echo             try { Stop-Process -Id $script:processes[$serviceName].Id -Force -EA SilentlyContinue } catch {}
+echo         }
+echo         $script:isRunning[$serviceName] = $false
+echo         $button.Text = 'START'
+echo         $button.BackColor = $successColor
+echo         $script:statusLabels[$serviceName].Text = 'STOPPED'
+echo         $script:statusLabels[$serviceName].ForeColor = $mutedColor
+echo         $script:statusBoxes[$serviceName].BackColor = $mutedColor
+echo         Update-Status "$serviceName stopped"
+echo     } else {
+echo         Update-Status "Starting $serviceName..."
+echo         $svcDir = switch ^($serviceName^) {
+echo             'Backend' { Join-Path $script:workingDir 'backend' }
+echo             'Frontend' { Join-Path $script:workingDir 'frontend' }
+echo             'MLService' { Join-Path $script:workingDir 'ml_service' }
+echo         }
+echo         $runCmd = switch ^($serviceName^) {
+echo             'Backend' { 'npm run dev' }
+echo             'Frontend' { 'npm run dev' }
+echo             'MLService' { 'uvicorn main:app --host 0.0.0.0 --port 8000 --reload' }
+echo         }
+echo         $winTitle = switch ^($serviceName^) {
+echo             'Backend' { 'PharmaLink Backend ^(Port 3000^)' }
+echo             'Frontend' { 'PharmaLink Frontend ^(Port 5173^)' }
+echo             'MLService' { 'PharmaLink ML Service ^(Port 8000^)' }
+echo         }
+echo         $script:processes[$serviceName] = Start-Process -FilePath 'cmd.exe' -ArgumentList "/k title $winTitle ^& cd /d `"$svcDir`" ^& $runCmd" -PassThru
+echo         $script:isRunning[$serviceName] = $true
+echo         $button.Text = 'STOP'
+echo         $button.BackColor = $dangerColor
+echo         $script:statusLabels[$serviceName].Text = 'RUNNING'
+echo         $script:statusLabels[$serviceName].ForeColor = $successColor
+echo         $script:statusBoxes[$serviceName].BackColor = $successColor
+echo         Update-Status "$serviceName started successfully"
+echo     }
+echo     Update-AllBtn
+echo }
+echo.
+echo function Install-Service {
+echo     param^($serviceName^)
+echo     Update-Status "Installing dependencies for $serviceName..."
+echo     $svcDir = switch ^($serviceName^) {
+echo         'Backend' { Join-Path $script:workingDir 'backend' }
+echo         'Frontend' { Join-Path $script:workingDir 'frontend' }
+echo         'MLService' { Join-Path $script:workingDir 'ml_service' }
+echo     }
+echo     $installCmd = switch ^($serviceName^) {
+echo         'Backend' { 'echo. ^| npm install ^& npm run dev' }
+echo         'Frontend' { 'echo. ^| npm install ^& npm run dev' }
+echo         'MLService' { 'pip install -r requirements.txt ^& uvicorn main:app --host 0.0.0.0 --port 8000 --reload' }
+echo     }
+echo     $winTitle = "$serviceName - Installing Dependencies"
+echo     Start-Process -FilePath 'cmd.exe' -ArgumentList "/k title $winTitle ^& cd /d `"$svcDir`" ^& $installCmd"
+echo     Update-Status "$serviceName installation started in new window"
+echo }
+echo.
+echo function Update-AllBtn {
+echo     $allRunning = $script:isRunning['Backend'] -and $script:isRunning['Frontend'] -and $script:isRunning['MLService']
+echo     if ^($allRunning^) {
+echo         $script:btnAll.Text = 'STOP ALL SERVICES'
+echo         $script:btnAll.BackColor = $dangerColor
+echo     } else {
+echo         $script:btnAll.Text = 'START ALL SERVICES'
+echo         $script:btnAll.BackColor = $primaryColor
+echo     }
+echo }
+echo.
+echo function Check-ProcessStatus {
+echo     foreach ^($svc in @^('Backend', 'Frontend', 'MLService'^)^) {
+echo         if ^($script:isRunning[$svc]^) {
+echo             $proc = $script:processes[$svc]
+echo             if ^($proc -ne $null^) {
+echo                 try {
+echo                     if ^($proc.HasExited^) {
+echo                         $script:isRunning[$svc] = $false
+echo                         $script:processes[$svc] = $null
+echo                         $btn = $script:toggleButtons[$svc]
+echo                         if ^($btn -ne $null^) { $btn.Text = 'START'; $btn.BackColor = $successColor }
+echo                         if ^($script:statusLabels[$svc] -ne $null^) { $script:statusLabels[$svc].Text = 'STOPPED'; $script:statusLabels[$svc].ForeColor = $mutedColor }
+echo                         if ^($script:statusBoxes[$svc] -ne $null^) { $script:statusBoxes[$svc].BackColor = $mutedColor }
+echo                         Update-Status "$svc was closed externally"
+echo                         Update-AllBtn
+echo                     }
+echo                 } catch { $script:isRunning[$svc] = $false; $script:processes[$svc] = $null }
+echo             }
+echo         }
+echo     }
+echo }
+echo.
+echo # Add Service Cards
+echo $yPos = 120
+echo $form.Controls.Add^(^(Create-ServiceCard 'Backend API' 'Express.js REST API with MongoDB' '3000' $yPos 'Backend'^)^)
+echo $yPos += 110
+echo $form.Controls.Add^(^(Create-ServiceCard 'Frontend Application' 'Vite + React User Interface' '5173' $yPos 'Frontend'^)^)
+echo $yPos += 110
+echo $form.Controls.Add^(^(Create-ServiceCard 'ML Service' 'FastAPI Machine Learning Service' '8000' $yPos 'MLService'^)^)
+echo.
+echo # Control Panel
+echo $controlPanel = New-Object Windows.Forms.Panel
+echo $controlPanel.Size = New-Object Drawing.Size^(540, 60^)
+echo $controlPanel.Location = New-Object Drawing.Point^(30, 460^)
+echo $controlPanel.BackColor = [Drawing.Color]::FromArgb^(250, 250, 250^)
+echo $controlPanel.BorderStyle = 'FixedSingle'
+echo $form.Controls.Add^($controlPanel^)
+echo.
+echo # Start All Button
+echo $script:btnAll = New-Object Windows.Forms.Button
+echo $script:btnAll.Text = 'START ALL SERVICES'
+echo $script:btnAll.Size = New-Object Drawing.Size^(160, 40^)
+echo $script:btnAll.Location = New-Object Drawing.Point^(20, 10^)
+echo $script:btnAll.FlatStyle = 'Flat'
+echo $script:btnAll.BackColor = $primaryColor
+echo $script:btnAll.ForeColor = [Drawing.Color]::White
+echo $script:btnAll.Font = New-Object Drawing.Font^('Segoe UI', 10, [Drawing.FontStyle]::Bold^)
+echo $script:btnAll.Cursor = 'Hand'
+echo $script:btnAll.FlatAppearance.BorderSize = 0
+echo $script:btnAll.Add_Click^({
+echo     $allRunning = $script:isRunning['Backend'] -and $script:isRunning['Frontend'] -and $script:isRunning['MLService']
+echo     if ^($allRunning^) {
+echo         Update-Status 'Stopping all services...'
+echo         foreach ^($svc in @^('MLService', 'Frontend', 'Backend'^)^) {
+echo             if ^($script:isRunning[$svc]^) { Toggle-Service -serviceName $svc -button $script:toggleButtons[$svc]; Start-Sleep -Milliseconds 500 }
+echo         }
+echo         Update-Status 'All services stopped'
+echo     } else {
+echo         Update-Status 'Starting all services...'
+echo         foreach ^($svc in @^('MLService', 'Backend', 'Frontend'^)^) {
+echo             if ^(-not $script:isRunning[$svc]^) { Toggle-Service -serviceName $svc -button $script:toggleButtons[$svc]; Start-Sleep -Seconds 2 }
+echo         }
+echo         Update-Status 'All services started successfully'
+echo     }
+echo }^)
+echo $controlPanel.Controls.Add^($script:btnAll^)
+echo.
+echo # Install All Button
+echo $script:btnAllInstall = New-Object Windows.Forms.Button
+echo $script:btnAllInstall.Text = 'INSTALL ^& RUN ALL'
+echo $script:btnAllInstall.Size = New-Object Drawing.Size^(160, 40^)
+echo $script:btnAllInstall.Location = New-Object Drawing.Point^(200, 10^)
+echo $script:btnAllInstall.FlatStyle = 'Flat'
+echo $script:btnAllInstall.BackColor = $warningColor
+echo $script:btnAllInstall.ForeColor = [Drawing.Color]::White
+echo $script:btnAllInstall.Font = New-Object Drawing.Font^('Segoe UI', 10, [Drawing.FontStyle]::Bold^)
+echo $script:btnAllInstall.Cursor = 'Hand'
+echo $script:btnAllInstall.FlatAppearance.BorderSize = 0
+echo $script:btnAllInstall.Add_Click^({
+echo     Update-Status 'Installing dependencies for all services...'
+echo     foreach ^($svc in @^('MLService', 'Backend', 'Frontend'^)^) {
+echo         Install-Service -serviceName $svc
+echo         Start-Sleep -Seconds 2
+echo     }
+echo     Update-Status 'All installation processes started in separate windows'
+echo }^)
+echo $controlPanel.Controls.Add^($script:btnAllInstall^)
+echo.
+echo # Exit Button
+echo $exitBtn = New-Object Windows.Forms.Button
+echo $exitBtn.Text = 'EXIT'
+echo $exitBtn.Size = New-Object Drawing.Size^(100, 40^)
+echo $exitBtn.Location = New-Object Drawing.Point^(420, 10^)
+echo $exitBtn.FlatStyle = 'Flat'
+echo $exitBtn.BackColor = [Drawing.Color]::FromArgb^(149, 165, 166^)
+echo $exitBtn.ForeColor = [Drawing.Color]::White
+echo $exitBtn.Font = New-Object Drawing.Font^('Segoe UI', 10^)
+echo $exitBtn.Cursor = 'Hand'
+echo $exitBtn.FlatAppearance.BorderSize = 0
+echo $exitBtn.Add_Click^({ $form.Close^(^) }^)
+echo $controlPanel.Controls.Add^($exitBtn^)
+echo.
+echo # Form Closing Handler
+echo $form.Add_FormClosing^({
+echo     $runningServices = @^(^)
+echo     foreach ^($svc in @^('MLService', 'Frontend', 'Backend'^)^) {
+echo         if ^($script:isRunning[$svc]^) { $runningServices += $svc }
+echo     }
+echo     if ^($runningServices.Count -gt 0^) {
+echo         $result = [Windows.Forms.MessageBox]::Show^(
+echo             "The following services are still running:`n`n$^($runningServices -join ', '^)`n`nDo you want to stop them before exiting?",
+echo             'Running Services Detected',
+echo             [Windows.Forms.MessageBoxButtons]::YesNoCancel,
+echo             [Windows.Forms.MessageBoxIcon]::Warning
+echo         ^)
+echo         if ^($result -eq 'Cancel'^) { $_.Cancel = $true; return }
+echo         if ^($result -eq 'Yes'^) {
+echo             foreach ^($svc in @^('MLService', 'Frontend', 'Backend'^)^) {
+echo                 if ^($script:processes[$svc] -ne $null^) {
+echo                     try { Stop-Process -Id $script:processes[$svc].Id -Force -EA SilentlyContinue } catch {}
+echo                 }
+echo             }
+echo         }
+echo     }
+echo }^)
+echo.
+echo # Process Monitor Timer
+echo $script:processMonitor = New-Object Windows.Forms.Timer
+echo $script:processMonitor.Interval = 1000
+echo $script:processMonitor.Add_Tick^({ Check-ProcessStatus }^)
+echo $script:processMonitor.Start^(^)
+echo.
+echo Update-Status 'PharmaLink Service Manager Ready'
+echo [void]$form.ShowDialog^(^)
+echo.
+echo $script:processMonitor.Stop^(^)
+echo $script:processMonitor.Dispose^(^)
+) > "%temp%\pharmalink_gui.ps1"
 
-echo  [3/3] Starting Frontend App (Port 5173)...
-start "PharmaLink Frontend (Port 5173)" cmd /k "cd /d "%SCRIPT_DIR%frontend" && npm run dev"
+REM Run the PowerShell GUI
+powershell -ExecutionPolicy Bypass -NoProfile -File "%temp%\pharmalink_gui.ps1"
 
-echo.
-color %COLOR_SUCCESS%
-echo  ═══════════════════════════════════════════════════════════════
-echo   All services started successfully!
-echo  ═══════════════════════════════════════════════════════════════
-color %COLOR_DEFAULT%
-echo.
-echo  Access Points:
-echo  ─────────────────────────────────────────────────────────────
-echo    Frontend:   http://localhost:5173
-echo    Backend:    http://localhost:3000
-echo    ML Service: http://localhost:8000
-echo    ML Docs:    http://localhost:8000/docs
-echo  ─────────────────────────────────────────────────────────────
-echo.
-pause
-goto MAIN_MENU
-
-:INSTALL_ALL
-cls
-echo.
-color %COLOR_WARNING%
-echo  ═══════════════════════════════════════════════════════════════
-echo   Installing ^& Starting ALL PharmaLink Services...
-echo  ═══════════════════════════════════════════════════════════════
-color %COLOR_DEFAULT%
-echo.
-
-echo  [1/3] Installing ^& Starting ML Service (Port 8000)...
-start "PharmaLink ML Service - Installing (Port 8000)" cmd /k "cd /d "%SCRIPT_DIR%ml_service" && echo Installing ML dependencies... && pip install -r requirements.txt && echo. && echo Starting ML server... && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
-timeout /t 3 >nul
-
-echo  [2/3] Installing ^& Starting Backend API (Port 3000)...
-start "PharmaLink Backend - Installing (Port 3000)" cmd /k "cd /d "%SCRIPT_DIR%backend" && echo Installing Backend dependencies... && npm install && echo. && echo Starting Backend server... && npm run dev"
-timeout /t 3 >nul
-
-echo  [3/3] Installing ^& Starting Frontend App (Port 5173)...
-start "PharmaLink Frontend - Installing (Port 5173)" cmd /k "cd /d "%SCRIPT_DIR%frontend" && echo Installing Frontend dependencies... && npm install && echo. && echo Starting Frontend server... && npm run dev"
-
-echo.
-color %COLOR_SUCCESS%
-echo  ═══════════════════════════════════════════════════════════════
-echo   All installation processes started!
-echo  ═══════════════════════════════════════════════════════════════
-color %COLOR_DEFAULT%
-echo.
-echo  Each service is installing in its own window.
-echo  Please wait for installations to complete.
-echo.
-echo  Access Points (after installation):
-echo  ─────────────────────────────────────────────────────────────
-echo    Frontend:   http://localhost:5173
-echo    Backend:    http://localhost:3000
-echo    ML Service: http://localhost:8000
-echo    ML Docs:    http://localhost:8000/docs
-echo  ─────────────────────────────────────────────────────────────
-echo.
-pause
-goto MAIN_MENU
-
-:: ============================================================================
-::                               EXIT
-:: ============================================================================
-
-:EXIT
-cls
-echo.
-color %COLOR_HEADER%
-echo  ╔══════════════════════════════════════════════════════════════════╗
-echo  ║                                                                  ║
-echo  ║                    Thank you for using                           ║
-echo  ║                 PharmaLink Service Manager                       ║
-echo  ║                                                                  ║
-echo  ╚══════════════════════════════════════════════════════════════════╝
-color %COLOR_DEFAULT%
-echo.
-echo  NOTE: Any started services will continue running in their windows.
-echo        Close those windows manually to stop the services.
-echo.
-timeout /t 3 >nul
-exit /b 0
+REM Cleanup
+del "%temp%\pharmalink_gui.ps1" 2>nul
