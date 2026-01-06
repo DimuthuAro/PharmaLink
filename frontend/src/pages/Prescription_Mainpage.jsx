@@ -76,8 +76,10 @@ const API_ENDPOINTS = {
     HEALTH: `${API_BASE}/health`,
     
     // ML Service OCR endpoints  
-    OCR_PROCESS: `${ML_SERVICE_BASE}/prescription/ocr`,
+    OCR_PROCESS: `${ML_SERVICE_BASE}/prescription/ocr`,       // Full pipeline with interpretation
     OCR_ENHANCE: `${ML_SERVICE_BASE}/prescription/enhance`,
+    DEEPSEEK_OCR: `${ML_SERVICE_BASE}/api/deepseek-ocr`,      // DeepSeek OCR (raw extraction)
+    EASY_OCR: `${ML_SERVICE_BASE}/api/easy-ocr`,              // EasyOCR fallback
     
     // Backend gateway routes
     PRESCRIPTION_INTERPRET: `${BACKEND_API}/prescription/interpret`,
@@ -855,18 +857,24 @@ const ProfessionalPrescriptionInterpreter = () => {
             }));
 
             setProcessingStatus(PROCESSING_STATES.PROCESSING_OCR);
-            addNotification('Processing prescription with OCR...', 'info');
+            addNotification('Processing prescription with AI-powered OCR pipeline...', 'info');
 
-            // Try primary endpoint (backend microservice)
+            // Try the full OCR pipeline endpoint first (DeepSeek + Gemini interpretation)
             let response;
             let ocrData;
 
             try {
-                response = await axios.post(API_ENDPOINTS.UPLOAD, formData, {
+                // Add pipeline options to FormData
+                formData.append('preprocess', 'true');
+                formData.append('enhance_handwriting', 'false');
+                formData.append('interpret', 'true');
+                formData.append('use_fallback', 'true');
+
+                response = await axios.post(API_ENDPOINTS.OCR_PROCESS, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     },
-                    timeout: 60000, // 60 second timeout for OCR processing
+                    timeout: 90000, // Extended timeout for full pipeline (preprocessing + OCR + interpretation)
                     onUploadProgress: (progressEvent) => {
                         const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
                         updateState('progress', {
@@ -876,24 +884,93 @@ const ProfessionalPrescriptionInterpreter = () => {
                         });
                     }
                 });
-                ocrData = response.data;
-            } catch (primaryError) {
-                console.warn('Primary API failed, trying ML service directly:', primaryError.message);
-                
-                // Fallback to ML service direct endpoint
+
+                // Full pipeline response includes extracted_text, parsed_prescription, medications
+                ocrData = {
+                    rawText: response.data.extracted_text,
+                    medications: response.data.medications || response.data.parsed_prescription?.medications || [],
+                    parsedPrescription: response.data.parsed_prescription,
+                    source: response.data.ocr_method || 'ml-pipeline',
+                    interpretationMethod: response.data.interpretation_method,
+                    processingTime: response.data.processing_time_seconds,
+                    ...response.data
+                };
+
+                console.log(`OCR completed via ${response.data.ocr_method}, interpreted with ${response.data.interpretation_method}`);
+
+            } catch (pipelineError) {
+                console.warn('Full pipeline failed, trying DeepSeek-OCR directly:', pipelineError.message);
+
+                // Fallback to DeepSeek-OCR raw extraction
                 try {
-                    response = await axios.post(API_ENDPOINTS.OCR_PROCESS, formData, {
+                    const deepseekFormData = new FormData();
+                    if (state.enhancedPreviewUrl) {
+                        const enhancedResponse = await fetch(state.enhancedPreviewUrl);
+                        const enhancedBlob = await enhancedResponse.blob();
+                        deepseekFormData.append('file', enhancedBlob, state.selectedImage.name);
+                    } else {
+                        deepseekFormData.append('file', state.selectedImage);
+                    }
+                    deepseekFormData.append('preprocess', 'true');
+
+                    response = await axios.post(API_ENDPOINTS.DEEPSEEK_OCR, deepseekFormData, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         },
                         timeout: 60000
                     });
-                    ocrData = response.data;
-                } catch (mlError) {
-                    console.warn('ML service also failed, using mock response:', mlError.message);
-                    
-                    // Fallback to mock response for development/demo
-                    ocrData = generateMockOCRResponse();
+
+                    ocrData = {
+                        rawText: response.data.extracted_text,
+                        source: 'deepseek-ocr',
+                        ...response.data
+                    };
+                } catch (deepseekError) {
+                    console.warn('DeepSeek-OCR failed, trying EasyOCR fallback:', deepseekError.message);
+
+                    // Fallback to EasyOCR
+                    try {
+                        const easyocrFormData = new FormData();
+                        if (state.enhancedPreviewUrl) {
+                            const enhancedResponse = await fetch(state.enhancedPreviewUrl);
+                            const enhancedBlob = await enhancedResponse.blob();
+                            easyocrFormData.append('file', enhancedBlob, state.selectedImage.name);
+                        } else {
+                            easyocrFormData.append('file', state.selectedImage);
+                        }
+                        easyocrFormData.append('preprocess', 'true');
+
+                        response = await axios.post(API_ENDPOINTS.EASY_OCR, easyocrFormData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
+                            },
+                            timeout: 60000
+                        });
+
+                        ocrData = {
+                            rawText: response.data.extracted_text,
+                            source: 'easyocr-fallback',
+                            ...response.data
+                        };
+                    } catch (easyocrError) {
+                        console.warn('EasyOCR failed, trying backend service:', easyocrError.message);
+
+                        // Final fallback to backend microservice
+                        try {
+                            response = await axios.post(API_ENDPOINTS.UPLOAD, formData, {
+                                headers: {
+                                    'Content-Type': 'multipart/form-data'
+                                },
+                                timeout: 60000
+                            });
+                            ocrData = response.data;
+                        } catch (backendError) {
+                            console.warn('All OCR services failed, using mock response:', backendError.message);
+
+                            // Fallback to mock response for development/demo
+                            ocrData = generateMockOCRResponse();
+                        }
+                    }
                 }
             }
 
