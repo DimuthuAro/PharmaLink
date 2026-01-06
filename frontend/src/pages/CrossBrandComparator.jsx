@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/auth.jsx';
 import AnimationStyles from '../components/AnimationStyles.jsx';
@@ -42,6 +42,7 @@ import {
     BellAlertIcon,
     ChevronDownIcon,
     ChevronUpIcon,
+    ChevronRightIcon,
     AdjustmentsHorizontalIcon,
     ArrowsRightLeftIcon,
     ClipboardDocumentCheckIcon,
@@ -1439,6 +1440,89 @@ const CrossBrandComparator = () => {
     const [sideBySideCompareBrands, setSideBySideCompareBrands] = useState([]);
     const [showHistoricalAnalytics, setShowHistoricalAnalytics] = useState(false);
     const [showDDIPredictor, setShowDDIPredictor] = useState(false);
+    const [showAutocomplete, setShowAutocomplete] = useState(false);
+    const [highlightedIndex, setHighlightedIndex] = useState(-1);
+    const searchInputRef = useRef(null);
+
+    // Generate autocomplete suggestions
+    const autocompleteSuggestions = useMemo(() => {
+        if (!searchTerm || searchTerm.length < 1) return [];
+        
+        const term = searchTerm.toLowerCase();
+        const suggestions = [];
+        
+        // Add matching medications
+        medications.forEach(med => {
+            if (med.genericName.toLowerCase().includes(term)) {
+                suggestions.push({
+                    type: 'medication',
+                    id: med.id,
+                    name: med.genericName,
+                    subtitle: `${med.strength} • ${med.category} • ${med.brands.length} brands`,
+                    icon: 'pill',
+                    medication: med
+                });
+            }
+            // Add matching brands
+            med.brands.forEach(brand => {
+                if (brand.name.toLowerCase().includes(term) || 
+                    brand.manufacturer.toLowerCase().includes(term)) {
+                    suggestions.push({
+                        type: 'brand',
+                        id: `${med.id}-${brand.id}`,
+                        name: brand.name,
+                        subtitle: `${brand.manufacturer} • $${brand.price} • ${med.genericName}`,
+                        icon: 'tag',
+                        medication: med,
+                        brand: brand
+                    });
+                }
+            });
+        });
+        
+        // Limit suggestions and remove duplicates
+        return suggestions.slice(0, 8);
+    }, [searchTerm, medications]);
+
+    // Handle autocomplete selection
+    const handleAutocompleteSelect = (suggestion) => {
+        if (suggestion.type === 'medication') {
+            setSelectedMedication(suggestion.medication);
+            setSearchTerm(suggestion.name);
+        } else if (suggestion.type === 'brand') {
+            setSelectedMedication(suggestion.medication);
+            setSearchTerm(suggestion.brand.name);
+            // Also select the brand for comparison
+            if (!selectedBrands.find(b => b.id === suggestion.brand.id)) {
+                setSelectedBrands(prev => [...prev, suggestion.brand]);
+            }
+        }
+        setShowAutocomplete(false);
+        setHighlightedIndex(-1);
+    };
+
+    // Handle keyboard navigation in autocomplete
+    const handleSearchKeyDown = (e) => {
+        if (!showAutocomplete || autocompleteSuggestions.length === 0) return;
+        
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setHighlightedIndex(prev => 
+                prev < autocompleteSuggestions.length - 1 ? prev + 1 : 0
+            );
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            setHighlightedIndex(prev => 
+                prev > 0 ? prev - 1 : autocompleteSuggestions.length - 1
+            );
+        } else if (e.key === 'Enter' && highlightedIndex >= 0) {
+            e.preventDefault();
+            handleAutocompleteSelect(autocompleteSuggestions[highlightedIndex]);
+        } else if (e.key === 'Escape') {
+            setShowAutocomplete(false);
+            setHighlightedIndex(-1);
+        }
+    };
 
     // Redirect if not authenticated
     useEffect(() => {
@@ -1602,6 +1686,57 @@ const CrossBrandComparator = () => {
         }
     };
 
+    // Demo function to load sample data for demonstration
+    const loadDemoData = () => {
+        // Select Atorvastatin (cholesterol medication) for demo
+        const demoMedication = medications.find(m => m.genericName === 'Atorvastatin');
+        if (demoMedication) {
+            setSelectedMedication(demoMedication);
+            // Select both brand and generic for comparison
+            setSelectedBrands(demoMedication.brands);
+            // Set some demo notifications
+            setNotifications([
+                {
+                    type: 'price',
+                    title: '💰 Price Drop Alert!',
+                    message: 'Atorvastatin Generic dropped 15% - Now $18.99',
+                    time: 'Just now'
+                },
+                {
+                    type: 'stock',
+                    title: '📦 Stock Update',
+                    message: 'Lipitor back in stock at most pharmacies',
+                    time: '5 min ago'
+                },
+                {
+                    type: 'info',
+                    title: '🎯 Savings Opportunity',
+                    message: 'Switch to generic to save $27/month',
+                    time: '10 min ago'
+                }
+            ]);
+            // Set demo price alerts
+            setPriceAlerts([
+                {
+                    id: 1,
+                    brandName: 'Lipitor',
+                    currentPrice: 45.99,
+                    targetPrice: 40.00
+                },
+                {
+                    id: 2,
+                    brandName: 'Glucophage',
+                    currentPrice: 32.50,
+                    targetPrice: 28.00
+                }
+            ]);
+            // Scroll to brands section
+            setTimeout(() => {
+                document.getElementById('brands-section')?.scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+        }
+    };
+
     return (
         <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
             <AnimationStyles />
@@ -1670,18 +1805,26 @@ const CrossBrandComparator = () => {
                     onShare={handleShare}
                 />
 
-                {/* Search Bar */}
+                {/* Search Bar with Autocomplete */}
                 <div className="mb-8">
                     <div className="relative group">
-                        <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400 group-hover:text-blue-400 transition-colors" />
+                        <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400 group-hover:text-blue-400 transition-colors z-10" />
                         <input
+                            ref={searchInputRef}
                             type="text"
                             placeholder="Search medications by name, brand, manufacturer, or symptoms..."
                             value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onChange={(e) => {
+                                setSearchTerm(e.target.value);
+                                setShowAutocomplete(true);
+                                setHighlightedIndex(-1);
+                            }}
+                            onFocus={() => setShowAutocomplete(true)}
+                            onBlur={() => setTimeout(() => setShowAutocomplete(false), 200)}
+                            onKeyDown={handleSearchKeyDown}
                             className="w-full pl-12 pr-36 py-4 bg-white/80 backdrop-blur-sm border border-slate-300 rounded-2xl shadow-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-lg"
                         />
-                        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center gap-2 z-10">
                             <button
                                 onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
                                 className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-blue-600 bg-white/50 backdrop-blur-sm rounded-lg border border-slate-200"
@@ -1690,7 +1833,10 @@ const CrossBrandComparator = () => {
                                 <span className="text-sm font-medium">Smart Filters</span>
                             </button>
                             <button
-                                onClick={() => setSearchTerm('')}
+                                onClick={() => {
+                                    setSearchTerm('');
+                                    setShowAutocomplete(false);
+                                }}
                                 className="p-2 text-slate-400 hover:text-red-500"
                             >
                                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1698,6 +1844,68 @@ const CrossBrandComparator = () => {
                                 </svg>
                             </button>
                         </div>
+
+                        {/* Autocomplete Dropdown */}
+                        {showAutocomplete && autocompleteSuggestions.length > 0 && (
+                            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden z-50">
+                                <div className="p-2 border-b border-slate-100 bg-slate-50">
+                                    <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        {autocompleteSuggestions.length} suggestions
+                                    </span>
+                                </div>
+                                <ul className="max-h-80 overflow-y-auto">
+                                    {autocompleteSuggestions.map((suggestion, index) => (
+                                        <li
+                                            key={suggestion.id}
+                                            onClick={() => handleAutocompleteSelect(suggestion)}
+                                            className={`px-4 py-3 cursor-pointer transition-all flex items-center gap-3 ${
+                                                highlightedIndex === index
+                                                    ? 'bg-blue-50 border-l-4 border-blue-500'
+                                                    : 'hover:bg-slate-50 border-l-4 border-transparent'
+                                            }`}
+                                        >
+                                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                                                suggestion.type === 'medication'
+                                                    ? 'bg-gradient-to-br from-blue-500 to-indigo-600'
+                                                    : 'bg-gradient-to-br from-emerald-500 to-teal-600'
+                                            }`}>
+                                                {suggestion.type === 'medication' ? (
+                                                    <BeakerIcon className="h-5 w-5 text-white" />
+                                                ) : (
+                                                    <TagIcon className="h-5 w-5 text-white" />
+                                                )}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="font-semibold text-slate-900 truncate">
+                                                        {suggestion.name}
+                                                    </span>
+                                                    <span className={`px-2 py-0.5 text-xs font-bold rounded-full ${
+                                                        suggestion.type === 'medication'
+                                                            ? 'bg-blue-100 text-blue-700'
+                                                            : 'bg-emerald-100 text-emerald-700'
+                                                    }`}>
+                                                        {suggestion.type === 'medication' ? 'Medication' : 'Brand'}
+                                                    </span>
+                                                </div>
+                                                <p className="text-sm text-slate-500 truncate">
+                                                    {suggestion.subtitle}
+                                                </p>
+                                            </div>
+                                            <ChevronRightIcon className="h-5 w-5 text-slate-400" />
+                                        </li>
+                                    ))}
+                                </ul>
+                                <div className="p-2 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
+                                    <span className="text-xs text-slate-500">
+                                        Use ↑↓ to navigate, Enter to select, Esc to close
+                                    </span>
+                                    <span className="text-xs text-blue-600 font-medium">
+                                        Powered by AI
+                                    </span>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -1727,6 +1935,16 @@ const CrossBrandComparator = () => {
 
                 {/* Feature Toggle Bar */}
                 <div className="bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl p-4 mb-6 flex flex-wrap items-center gap-3">
+                    {/* Demo Button - Primary CTA */}
+                    <button
+                        onClick={loadDemoData}
+                        className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 animate-pulse"
+                        style={{ animationDuration: '2s' }}
+                    >
+                        <SparklesIcon className="h-5 w-5" />
+                        ✨ Load Demo
+                    </button>
+                    <div className="w-px h-8 bg-slate-300 mx-2"></div>
                     <button
                         onClick={() => setBatchCompareMode(!batchCompareMode)}
                         className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 ${batchCompareMode ? 'bg-cyan-500 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'

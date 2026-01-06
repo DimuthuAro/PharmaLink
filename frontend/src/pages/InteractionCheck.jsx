@@ -1024,6 +1024,52 @@ const InteractionCheck = () => {
         setError('');
     }, []);
 
+    // Demo scenarios for demonstration
+    const demoScenarios = useMemo(() => [
+        {
+            id: 'severe-interaction',
+            name: '⚠️ Severe Interaction',
+            description: 'Warfarin + Aspirin - Critical bleeding risk',
+            drugs: ['Warfarin', 'Aspirin'],
+            color: 'from-red-500 to-rose-600',
+            borderColor: 'border-red-200',
+            bgColor: 'from-red-50 to-rose-50'
+        },
+        {
+            id: 'moderate-interaction',
+            name: '🟠 Moderate Interaction',
+            description: 'Diabetes + Heart medication combo',
+            drugs: ['Metformin', 'Lisinopril', 'Atorvastatin'],
+            color: 'from-amber-500 to-orange-600',
+            borderColor: 'border-amber-200',
+            bgColor: 'from-amber-50 to-orange-50'
+        },
+        {
+            id: 'multi-drug',
+            name: '💊 Complex Multi-Drug',
+            description: 'Simvastatin + Ibuprofen + Omeprazole',
+            drugs: ['Simvastatin', 'Ibuprofen', 'Omeprazole'],
+            color: 'from-purple-500 to-indigo-600',
+            borderColor: 'border-purple-200',
+            bgColor: 'from-purple-50 to-indigo-50'
+        },
+        {
+            id: 'safe-combination',
+            name: '✅ Safe Combination',
+            description: 'Amoxicillin + Omeprazole - Generally safe',
+            drugs: ['Amoxicillin', 'Omeprazole'],
+            color: 'from-emerald-500 to-teal-600',
+            borderColor: 'border-emerald-200',
+            bgColor: 'from-emerald-50 to-teal-50'
+        }
+    ], []);
+
+    const loadDemoScenario = useCallback((scenario) => {
+        setDrugs(scenario.drugs);
+        setResult(null);
+        setError('');
+    }, []);
+
     // Toggle expanded state for interaction cards
     const toggleExpanded = useCallback((idx) => {
         setExpandedInteractions(prev => ({
@@ -1847,6 +1893,45 @@ const InteractionCheck = () => {
                                         )}
                                     </div>
                                 </form>
+
+                                    {/* Demo Scenarios Section - Quick Demo */}
+                                    <div className="mt-5 p-5 backdrop-blur-sm bg-gradient-to-br from-blue-50/80 to-indigo-100/50 rounded-2xl border border-blue-200 shadow-xl shadow-blue-500/10">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-lg">🎯</span>
+                                                <p className="text-sm font-bold text-gray-800">Quick Demo Scenarios</p>
+                                            </div>
+                                            <span className="px-2 py-1 text-xs font-bold bg-blue-100 text-blue-700 rounded-full">Try These!</span>
+                                        </div>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                            {demoScenarios.map((scenario) => (
+                                                <button
+                                                    key={scenario.id}
+                                                    type="button"
+                                                    onClick={() => loadDemoScenario(scenario)}
+                                                    className={`group p-3 rounded-xl border-2 ${scenario.borderColor} bg-gradient-to-r ${scenario.bgColor} hover:shadow-lg transition-all duration-300 text-left hover:scale-[1.02]`}
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${scenario.color} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
+                                                            <span className="text-white text-sm">💊</span>
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="font-bold text-gray-900 text-sm truncate">{scenario.name}</p>
+                                                            <p className="text-xs text-gray-500 truncate">{scenario.description}</p>
+                                                        </div>
+                                                        <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-1 transition-all" />
+                                                    </div>
+                                                    <div className="mt-2 flex flex-wrap gap-1">
+                                                        {scenario.drugs.map((drug) => (
+                                                            <span key={drug} className="px-2 py-0.5 bg-white/80 rounded-full text-xs font-medium text-gray-600">
+                                                                {drug}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
 
                                     {/* Drug Categories Panel - Enhanced */}
                                 {showCategories && (

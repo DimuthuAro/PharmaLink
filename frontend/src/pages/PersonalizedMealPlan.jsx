@@ -436,6 +436,27 @@ const PersonalizedMealPlan = () => {
               )}
             </button>
 
+            {/* Demo Button */}
+            <button
+              type="button"
+              onClick={() => {
+                // Load demo drugs for meal planning
+                setSelectedDrugs([
+                  { index: 1, name: 'Metformin' },
+                  { index: 2, name: 'Atorvastatin' },
+                  { index: 3, name: 'Lisinopril' }
+                ]);
+                setCaloriesPerDay(2000);
+                setDays(3);
+                setMealsPerDay(3);
+                setGlobalRestrictions({ noAlcohol: true, vegetarian: false });
+              }}
+              className="mt-2 w-full inline-flex items-center justify-center rounded-full border-2 border-amber-200 bg-gradient-to-r from-amber-50 to-yellow-50 px-4 py-2 text-sm font-semibold text-amber-700 hover:border-amber-300 hover:shadow-md transition-all"
+            >
+              <span className="mr-2">✨</span>
+              Load Demo Data
+            </button>
+
             {/*Export dropdown */}
             {mealPlan && (
               <div className="mt-2 relative">

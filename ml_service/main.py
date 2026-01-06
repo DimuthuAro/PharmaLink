@@ -76,7 +76,7 @@ if GEMINI_AVAILABLE:
         print("⚠️ GEMINI_API_KEY not set. Text interpretation will use rule-based parsing.")
 
 # Initialize DeepSeek-OCR model (OPTIONAL - set to False to skip 7GB download)
-ENABLE_DEEPSEEK_OCR = True  # Set to True when you want to use DeepSeek-OCR
+ENABLE_DEEPSEEK_OCR = False  # Set to True when you want to use DeepSeek-OCR
 
 ocr_model = None
 ocr_tokenizer = None
