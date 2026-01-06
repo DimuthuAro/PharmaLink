@@ -36,6 +36,8 @@ class ServiceConfig:
 
 
 # Service URLs - Adjust these based on your environment
+# Note: Microservices on ports 3002-3004 are accessed through the backend gateway proxy
+# They don't run as separate servers with their own health endpoints
 SERVICES = {
     "frontend": ServiceConfig(
         name="Frontend (Vite)",
@@ -51,24 +53,29 @@ SERVICES = {
         name="ML Service",
         base_url="http://localhost:8000",
         health_endpoint="/health",
+        timeout=30,  # Longer timeout as model loading can be slow
     ),
     "drug_interaction": ServiceConfig(
         name="Drug Interaction Microservice",
         base_url="http://localhost:3001",
         health_endpoint="/health",
     ),
+}
+
+# Optional microservices - only check if running as separate processes
+OPTIONAL_SERVICES = {
     "advisory": ServiceConfig(
-        name="Advisory Microservice",
+        name="Advisory Microservice (Optional)",
         base_url="http://localhost:3002",
         health_endpoint="/health",
     ),
     "comparator": ServiceConfig(
-        name="Comparator Microservice",
+        name="Comparator Microservice (Optional)",
         base_url="http://localhost:3003",
         health_endpoint="/health",
     ),
     "prescription": ServiceConfig(
-        name="Prescription Microservice",
+        name="Prescription Microservice (Optional)",
         base_url="http://localhost:3004",
         health_endpoint="/health",
     ),
@@ -247,7 +254,7 @@ def test_all_services_health(suite: TestSuite) -> Dict[str, bool]:
     """Test health of all configured services"""
     results = {}
     
-    print("\n🔍 Testing Service Connectivity...")
+    print("\n🔍 Testing Core Service Connectivity...")
     print("-" * 40)
     
     for service_key in SERVICES.keys():
@@ -255,6 +262,18 @@ def test_all_services_health(suite: TestSuite) -> Dict[str, bool]:
         results[service_key] = is_healthy
         status = "✅ UP" if is_healthy else "❌ DOWN"
         print(f"  {SERVICES[service_key].name}: {status}")
+    
+    # Test optional services (don't fail if not running)
+    if OPTIONAL_SERVICES:
+        print("\n🔍 Testing Optional Microservices...")
+        print("-" * 40)
+        for service_key, config in OPTIONAL_SERVICES.items():
+            url = f"{config.base_url}{config.health_endpoint}"
+            success, response, error, _ = make_request("GET", url, timeout=3)
+            is_healthy = success and response and response.status_code in [200, 204]
+            results[service_key] = is_healthy
+            status = "✅ UP" if is_healthy else "⚪ NOT RUNNING (optional)"
+            print(f"  {config.name}: {status}")
     
     return results
 
