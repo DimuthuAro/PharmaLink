@@ -76,7 +76,7 @@ if GEMINI_AVAILABLE:
         print("⚠️ GEMINI_API_KEY not set. Text interpretation will use rule-based parsing.")
 
 # Initialize DeepSeek-OCR model (OPTIONAL - set to False to skip 7GB download)
-ENABLE_DEEPSEEK_OCR = False  # Set to True when you want to use DeepSeek-OCR
+ENABLE_DEEPSEEK_OCR = True  # Set to True when you want to use DeepSeek-OCR
 
 ocr_model = None
 ocr_tokenizer = None
@@ -1069,6 +1069,580 @@ async def predict_food_drug(request: FoodDrugRequest):
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Food-drug prediction error: {str(e)}")
+
+
+# =============================================================================
+# CROSS-BRAND COMPARISON ENDPOINTS (FDA Orange Book Data)
+# =============================================================================
+
+# Import the Cross-Brand Service
+try:
+    from services.cross_brand_service import get_cross_brand_service, CrossBrandService
+    CROSS_BRAND_AVAILABLE = True
+    print("\n Cross-Brand Service loaded successfully")
+except ImportError as e:
+    CROSS_BRAND_AVAILABLE = False
+    print(f"\n Cross-Brand Service not available: {e}")
+
+
+class BrandComparisonRequest(BaseModel):
+    """Request model for brand comparison."""
+    ingredient: str
+    strength: Optional[str] = None
+    dosage_form: Optional[str] = None
+
+
+class IngredientSearchRequest(BaseModel):
+    """Request model for ingredient search."""
+    ingredient: str
+    include_salt_forms: bool = True
+
+
+class TherapeuticEquivalentsRequest(BaseModel):
+    """Request model for therapeutic equivalents."""
+    trade_name: str
+    strength: Optional[str] = None
+
+
+@app.post("/api/cross-brand/compare")
+async def compare_drug_brands(request: BrandComparisonRequest):
+    """
+    Compare all available brands for a given drug ingredient.
+    
+    Uses FDA Orange Book data to find all brand-name and generic versions
+    of a drug, including formulation variants and patent status.
+    """
+    if not CROSS_BRAND_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Cross-Brand Service not available")
+    
+    try:
+        service = get_cross_brand_service()
+        result = service.compare_brands(
+            ingredient=request.ingredient,
+            strength=request.strength,
+            dosage_form=request.dosage_form
+        )
+        
+        return {
+            "success": True,
+            "data": result,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Brand comparison error: {str(e)}")
+
+
+@app.post("/api/cross-brand/search-ingredient")
+async def search_by_ingredient(request: IngredientSearchRequest):
+    """
+    Search for all drugs containing a specific ingredient.
+    
+    Args:
+        ingredient: The ingredient name to search for
+        include_salt_forms: If True, matches base ingredient regardless of salt form
+    """
+    if not CROSS_BRAND_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Cross-Brand Service not available")
+    
+    try:
+        service = get_cross_brand_service()
+        results = service.search_by_ingredient(
+            ingredient=request.ingredient,
+            include_salt_forms=request.include_salt_forms
+        )
+        
+        return {
+            "success": True,
+            "ingredient": request.ingredient,
+            "total_results": len(results),
+            "results": results,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ingredient search error: {str(e)}")
+
+
+@app.get("/api/cross-brand/search/{trade_name}")
+async def search_by_trade_name(trade_name: str):
+    """
+    Search for drugs by trade/brand name.
+    """
+    if not CROSS_BRAND_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Cross-Brand Service not available")
+    
+    try:
+        service = get_cross_brand_service()
+        results = service.search_by_trade_name(trade_name)
+        
+        return {
+            "success": True,
+            "trade_name": trade_name,
+            "total_results": len(results),
+            "results": results,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Trade name search error: {str(e)}")
+
+
+@app.post("/api/cross-brand/therapeutic-equivalents")
+async def get_therapeutic_equivalents(request: TherapeuticEquivalentsRequest):
+    """
+    Find therapeutically equivalent drugs for a given brand.
+    
+    Returns drugs with the same active ingredient that are rated as
+    therapeutically equivalent (AB rated) by the FDA.
+    """
+    if not CROSS_BRAND_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Cross-Brand Service not available")
+    
+    try:
+        service = get_cross_brand_service()
+        equivalents = service.get_therapeutic_equivalents(
+            trade_name=request.trade_name,
+            strength=request.strength
+        )
+        
+        return {
+            "success": True,
+            "trade_name": request.trade_name,
+            "total_equivalents": len(equivalents),
+            "equivalents": equivalents,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Therapeutic equivalents error: {str(e)}")
+
+
+@app.get("/api/cross-brand/formulations/{ingredient}")
+async def get_formulation_variants(ingredient: str):
+    """
+    Get all formulation variants for an ingredient.
+    
+    Returns drugs grouped by formulation type:
+    - Immediate release
+    - Extended release
+    - Delayed release
+    - Other formulations
+    """
+    if not CROSS_BRAND_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Cross-Brand Service not available")
+    
+    try:
+        service = get_cross_brand_service()
+        variants = service.get_formulation_variants(ingredient)
+        
+        return {
+            "success": True,
+            "ingredient": ingredient,
+            "formulation_variants": variants,
+            "summary": {
+                "immediate_release_count": len(variants.get("immediate_release", [])),
+                "extended_release_count": len(variants.get("extended_release", [])),
+                "delayed_release_count": len(variants.get("delayed_release", [])),
+                "other_count": len(variants.get("other_formulations", []))
+            },
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Formulation variants error: {str(e)}")
+
+
+@app.get("/api/cross-brand/statistics")
+async def get_lexicon_statistics():
+    """
+    Get statistics about the drug lexicon.
+    """
+    if not CROSS_BRAND_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Cross-Brand Service not available")
+    
+    try:
+        service = get_cross_brand_service()
+        stats = service.get_statistics()
+        
+        return {
+            "success": True,
+            "statistics": stats,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Statistics error: {str(e)}")
+
+
+class CrossBrandDDIRequest(BaseModel):
+    """Request model for cross-brand DDI prediction with formulation awareness."""
+    trade_name_1: str
+    trade_name_2: str
+    strength_1: Optional[str] = None
+    strength_2: Optional[str] = None
+
+
+@app.post("/api/cross-brand/predict")
+async def predict_cross_brand(data: dict):
+    """
+    Simple endpoint for cross-brand DDI prediction.
+    
+    Accepts a simple dict with drug1 and drug2 keys for ease of use from frontend.
+    
+    Example:
+        POST /api/cross-brand/predict
+        {
+            "drug1": "PAXIL CR",
+            "drug2": "NOLVADEX",
+            "strength1": "12.5MG",  // optional
+            "strength2": "20MG"     // optional
+        }
+    """
+    try:
+        trade_name_1 = data.get('drug1')
+        trade_name_2 = data.get('drug2')
+        strength_1 = data.get('strength1')
+        strength_2 = data.get('strength2')
+        
+        if not trade_name_1 or not trade_name_2:
+            raise HTTPException(
+                status_code=400,
+                detail="Both 'drug1' and 'drug2' are required"
+            )
+        
+        service = get_cross_brand_service()
+        result = service.predict_cross_brand_interaction(
+            trade_name_1=trade_name_1,
+            trade_name_2=trade_name_2,
+            strength_1=strength_1,
+            strength_2=strength_2
+        )
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Cross-brand prediction error: {str(e)}"
+        )
+
+
+@app.post("/api/cross-brand/predict-interaction")
+async def predict_cross_brand_ddi(request: CrossBrandDDIRequest):
+    """
+    Predict drug-drug interaction between two brand-name drugs with formulation-aware adjustment.
+    
+    This endpoint:
+    1. Maps brand names to active ingredients using FDA Orange Book data
+    2. Gets base DDI risk from the interaction model
+    3. Adjusts risk based on formulation characteristics (extended-release, delayed-release, etc.)
+    4. Returns comprehensive prediction with explanations and recommendations
+    
+    Example:
+        POST /api/cross-brand/predict-interaction
+        {
+            "trade_name_1": "PAXIL CR",
+            "trade_name_2": "NOLVADEX",
+            "strength_1": "12.5MG",
+            "strength_2": "20MG"
+        }
+    """
+    try:
+        service = get_cross_brand_service()
+        result = service.predict_cross_brand_interaction(
+            trade_name_1=request.trade_name_1,
+            trade_name_2=request.trade_name_2,
+            strength_1=request.strength_1,
+            strength_2=request.strength_2
+        )
+        return result
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Cross-brand prediction error: {str(e)}"
+        )
+
+
+@app.get("/api/cross-brand/predict-interaction")
+async def predict_cross_brand_ddi_get(
+    drug1: str, 
+    drug2: str, 
+    strength1: Optional[str] = None, 
+    strength2: Optional[str] = None
+):
+    """
+    GET endpoint for cross-brand DDI prediction.
+    
+    Example:
+        GET /api/cross-brand/predict-interaction?drug1=PAXIL%20CR&drug2=NOLVADEX&strength1=12.5MG&strength2=20MG
+    """
+    try:
+        service = get_cross_brand_service()
+        result = service.predict_cross_brand_interaction(
+            trade_name_1=drug1,
+            trade_name_2=drug2,
+            strength_1=strength1,
+            strength_2=strength2
+        )
+        return result
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Cross-brand prediction error: {str(e)}"
+        )
+
+
+# =============================================================================
+# CROSS-BRAND PREDICTION PIPELINE ENDPOINTS
+# =============================================================================
+
+# Import the Cross-Brand Prediction Pipeline
+try:
+    from services.cross_brand_pipeline import get_prediction_pipeline, CrossBrandPredictionPipeline
+    PIPELINE_AVAILABLE = True
+    print("\n✅ Cross-Brand Prediction Pipeline loaded successfully")
+except ImportError as e:
+    PIPELINE_AVAILABLE = False
+    print(f"\n⚠️ Cross-Brand Prediction Pipeline not available: {e}")
+
+# Import the Formulation Risk Model
+try:
+    from models.formulation_risk_model import get_formulation_model, FormulationRiskModel
+    FORMULATION_MODEL_AVAILABLE = True
+    print("✅ Formulation Risk Model loaded successfully")
+except ImportError as e:
+    FORMULATION_MODEL_AVAILABLE = False
+    print(f"⚠️ Formulation Risk Model not available: {e}")
+
+
+class BrandDDIPredictionRequest(BaseModel):
+    """Request model for brand-aware DDI prediction."""
+    drug_a: str  # e.g., "Paxil CR 12.5mg tablet"
+    drug_b: str  # e.g., "Tamoxifen 20mg tablet"
+
+
+class BatchBrandDDIPredictionRequest(BaseModel):
+    """Request model for batch brand-aware DDI prediction."""
+    drugs: List[str]  # List of drug strings
+
+
+class FormulationAdjustmentRequest(BaseModel):
+    """Request model for formulation-based risk adjustment."""
+    base_risk: float
+    is_extended_release_a: bool = False
+    is_extended_release_b: bool = False
+    is_delayed_release_a: bool = False
+    is_delayed_release_b: bool = False
+    route_match: bool = True
+    strength_ratio: float = 1.0
+    same_manufacturer: bool = False
+
+
+@app.post("/api/predict/brand-interaction")
+async def predict_brand_interaction(request: BrandDDIPredictionRequest):
+    """
+    Predict drug interaction with brand-aware formulation adjustment.
+    
+    This endpoint provides a complete prediction pipeline that:
+    1. Parses brand names to extract drug information
+    2. Resolves brands to active ingredients
+    3. Predicts base interaction risk using the DDI model
+    4. Adjusts risk based on formulation features (extended release, etc.)
+    
+    Example:
+        Input: {"drug_a": "Paxil CR 12.5mg tablet", "drug_b": "Tamoxifen 20mg tablet"}
+        
+        Output includes:
+        - Resolved ingredients (paroxetine, tamoxifen)
+        - Base risk (72%)
+        - Adjusted risk (68%) accounting for extended-release formulation
+        - Detailed explanation
+    """
+    if not PIPELINE_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Cross-Brand Prediction Pipeline not available")
+    
+    try:
+        pipeline = get_prediction_pipeline()
+        result = pipeline.predict(request.drug_a, request.drug_b)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
+
+
+@app.post("/api/predict/brand-interactions-batch")
+async def predict_brand_interactions_batch(request: BatchBrandDDIPredictionRequest):
+    """
+    Predict all pairwise drug interactions for a list of drugs with brand awareness.
+    
+    Takes a list of drug strings and returns predictions for all unique pairs.
+    """
+    if not PIPELINE_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Cross-Brand Prediction Pipeline not available")
+    
+    if len(request.drugs) < 2:
+        raise HTTPException(status_code=400, detail="At least 2 drugs required for interaction prediction")
+    
+    if len(request.drugs) > 10:
+        raise HTTPException(status_code=400, detail="Maximum 10 drugs allowed per request")
+    
+    try:
+        pipeline = get_prediction_pipeline()
+        predictions = []
+        
+        # Generate all unique pairs
+        for i in range(len(request.drugs)):
+            for j in range(i + 1, len(request.drugs)):
+                result = pipeline.predict(request.drugs[i], request.drugs[j])
+                predictions.append({
+                    "drug_pair": [request.drugs[i], request.drugs[j]],
+                    "prediction": result
+                })
+        
+        # Sort by adjusted risk (highest first)
+        predictions.sort(
+            key=lambda x: x["prediction"]["final_prediction"]["adjusted_risk"],
+            reverse=True
+        )
+        
+        return {
+            "success": True,
+            "total_pairs": len(predictions),
+            "predictions": predictions,
+            "summary": {
+                "critical_interactions": sum(1 for p in predictions 
+                    if p["prediction"]["final_prediction"]["severity"] == "critical"),
+                "high_risk_interactions": sum(1 for p in predictions 
+                    if p["prediction"]["final_prediction"]["severity"] == "high"),
+                "moderate_interactions": sum(1 for p in predictions 
+                    if p["prediction"]["final_prediction"]["severity"] == "moderate"),
+                "low_risk_interactions": sum(1 for p in predictions 
+                    if p["prediction"]["final_prediction"]["severity"] in ["low", "minimal"])
+            },
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Batch prediction error: {str(e)}")
+
+
+@app.post("/api/formulation/adjust-risk")
+async def adjust_risk_for_formulation(request: FormulationAdjustmentRequest):
+    """
+    Adjust a base DDI risk score based on formulation features.
+    
+    This endpoint allows direct access to the Formulation Risk Model
+    for adjusting interaction risk based on drug formulation characteristics.
+    """
+    if not FORMULATION_MODEL_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Formulation Risk Model not available")
+    
+    try:
+        formulation_model = get_formulation_model()
+        
+        formulation_features = {
+            "is_extended_release_a": int(request.is_extended_release_a),
+            "is_extended_release_b": int(request.is_extended_release_b),
+            "is_delayed_release_a": int(request.is_delayed_release_a),
+            "is_delayed_release_b": int(request.is_delayed_release_b),
+            "route_match": int(request.route_match),
+            "strength_ratio": request.strength_ratio,
+            "same_manufacturer": int(request.same_manufacturer),
+            "has_patent_a": 0,
+            "has_patent_b": 0
+        }
+        
+        result = formulation_model.predict(request.base_risk, formulation_features)
+        
+        return {
+            "success": True,
+            "result": result,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Formulation adjustment error: {str(e)}")
+
+
+@app.get("/api/formulation/model-info")
+async def get_formulation_model_info():
+    """
+    Get information about the Formulation Risk Model.
+    """
+    if not FORMULATION_MODEL_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Formulation Risk Model not available")
+    
+    try:
+        formulation_model = get_formulation_model()
+        info = formulation_model.get_model_info()
+        
+        return {
+            "success": True,
+            "model_info": info,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Model info error: {str(e)}")
+
+
+@app.post("/api/formulation/train")
+async def train_formulation_model():
+    """
+    Train or retrain the Formulation Risk Model.
+    
+    This endpoint triggers training of the formulation risk adjustment model
+    using the training data in data/formulation_training_data.csv.
+    """
+    if not FORMULATION_MODEL_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Formulation Risk Model not available")
+    
+    try:
+        formulation_model = get_formulation_model()
+        metrics = formulation_model.train()
+        formulation_model.save_model()
+        
+        return {
+            "success": True,
+            "message": "Formulation Risk Model trained successfully",
+            "metrics": metrics,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Training error: {str(e)}")
+
+
+@app.post("/api/drug/parse")
+async def parse_drug_input(drug_input: str):
+    """
+    Parse a drug input string into components (brand name, strength, dosage form).
+    
+    Useful for testing the drug parsing functionality.
+    """
+    if not PIPELINE_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Pipeline not available")
+    
+    try:
+        pipeline = get_prediction_pipeline()
+        parsed = pipeline.parse_drug_input(drug_input)
+        resolved = pipeline.resolve_drug(parsed)
+        
+        return {
+            "success": True,
+            "input": drug_input,
+            "parsed": {
+                "brand_name": parsed.brand_name,
+                "strength": parsed.strength,
+                "strength_value": parsed.strength_value,
+                "strength_unit": parsed.strength_unit,
+                "dosage_form": parsed.dosage_form
+            },
+            "resolved": {
+                "ingredient": resolved.ingredient,
+                "ingredient_base": resolved.ingredient_base,
+                "is_extended_release": resolved.is_extended_release,
+                "is_delayed_release": resolved.is_delayed_release,
+                "route": resolved.route,
+                "manufacturer": resolved.manufacturer,
+                "resolution_confidence": resolved.resolution_confidence,
+                "resolution_method": resolved.resolution_method
+            },
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Parsing error: {str(e)}")
+
 
 if __name__ == "__main__":
     print("\n" + "="*60)

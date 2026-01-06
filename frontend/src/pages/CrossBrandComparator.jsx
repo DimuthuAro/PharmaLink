@@ -15,6 +15,7 @@ import EmptyState from '../components/EmptyState.jsx';
 import Header from '../components/Header.jsx';
 import SearchBar from '../components/SearchBar.jsx';
 import MedicationHeader from '../components/MedicationHeader.jsx';
+import CrossBrandPredictor from '../components/CrossBrandPredictor.jsx';
 import {
     MagnifyingGlassIcon,
     ScaleIcon,
@@ -1437,6 +1438,7 @@ const CrossBrandComparator = () => {
     const [showSideBySide, setShowSideBySide] = useState(false);
     const [sideBySideCompareBrands, setSideBySideCompareBrands] = useState([]);
     const [showHistoricalAnalytics, setShowHistoricalAnalytics] = useState(false);
+    const [showDDIPredictor, setShowDDIPredictor] = useState(false);
 
     // Redirect if not authenticated
     useEffect(() => {
@@ -1757,7 +1759,43 @@ const CrossBrandComparator = () => {
                         </svg>
                         Print
                     </button>
+                    <button
+                        onClick={() => setShowDDIPredictor(!showDDIPredictor)}
+                        className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 ${showDDIPredictor
+                            ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg'
+                            : 'bg-slate-100 text-slate-700 hover:bg-indigo-100 hover:text-indigo-700'
+                            }`}
+                    >
+                        <BeakerIcon className="h-5 w-5" />
+                        DDI Predictor
+                    </button>
                 </div>
+
+                {/* DDI Predictor Panel */}
+                {showDDIPredictor && (
+                    <div className="mb-6 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 border border-indigo-200 rounded-2xl p-6 shadow-lg">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg">
+                                    <BeakerIcon className="h-6 w-6 text-white" />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-slate-900">Cross-Brand DDI Predictor</h3>
+                                    <p className="text-sm text-slate-600">Formulation-aware drug interaction prediction</p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setShowDDIPredictor(false)}
+                                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-white/50 rounded-lg transition-colors"
+                            >
+                                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <CrossBrandPredictor />
+                    </div>
+                )}
 
                 {/* Advanced Filters */}
                 {showAdvancedFilters && (

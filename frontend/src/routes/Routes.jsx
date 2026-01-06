@@ -25,7 +25,6 @@ const protected_routes = createProtectedRoutes([
   { path: "/history", element: <History /> },
   { path: "/meal-plan", element: <MealPlan /> },
   { path: '/prescription', element: <Prescription_Mainpage /> },
-
   { path: '/comparator', element: <CrossBrandComparator /> }
 ])
 
