@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/auth.jsx';
 import AnimationStyles from '../components/AnimationStyles.jsx';
@@ -15,6 +15,7 @@ import EmptyState from '../components/EmptyState.jsx';
 import Header from '../components/Header.jsx';
 import SearchBar from '../components/SearchBar.jsx';
 import MedicationHeader from '../components/MedicationHeader.jsx';
+import CrossBrandPredictor from '../components/CrossBrandPredictor.jsx';
 import {
     MagnifyingGlassIcon,
     ScaleIcon,
@@ -41,6 +42,7 @@ import {
     BellAlertIcon,
     ChevronDownIcon,
     ChevronUpIcon,
+    ChevronRightIcon,
     AdjustmentsHorizontalIcon,
     ArrowsRightLeftIcon,
     ClipboardDocumentCheckIcon,
@@ -490,6 +492,798 @@ const sampleMedications = [
                     recyclable: true,
                     carbonNeutral: true
                 }
+            }
+        ]
+    },
+    {
+        id: 5,
+        genericName: "Lisinopril",
+        strength: "10mg",
+        category: "ACE Inhibitor",
+        form: "Tablet",
+        therapeuticClass: "Antihypertensive",
+        popularity: 87,
+        prescriptionRate: 85,
+        brands: [
+            {
+                id: 10,
+                name: "Zestril",
+                manufacturer: "AstraZeneca",
+                price: 28.99,
+                priceHistory: [30.00, 29.50, 28.99, 28.50, 28.99],
+                packSize: "30 tablets",
+                availability: "In Stock",
+                stockLevel: 1100,
+                rating: 4.6,
+                reviews: 1560,
+                savings: 0,
+                isGeneric: false,
+                description: "Proven ACE inhibitor for blood pressure control",
+                sideEffects: ["Dry cough", "Dizziness", "Headache"],
+                efficacyScore: 94,
+                patientCompliance: 87,
+                storage: "Room temperature",
+                requiresPrescription: true,
+                lastUpdated: "2024-01-06",
+                favorite: true,
+                popularity: 82,
+                interactions: ["Potassium supplements", "NSAIDs"],
+                dosage: "10mg once daily",
+                warnings: ["Monitor kidney function"],
+                tags: ["Blood pressure", "Heart health"],
+                discount: 0,
+                subscription: { available: true, discount: 12, frequency: "Monthly" },
+                sustainability: { ecoFriendly: true, recyclable: true, carbonNeutral: false }
+            },
+            {
+                id: 11,
+                name: "Lisinopril (Generic)",
+                manufacturer: "Various",
+                price: 12.49,
+                priceHistory: [14.00, 13.50, 12.49, 12.25, 12.49],
+                packSize: "30 tablets",
+                availability: "In Stock",
+                stockLevel: 2800,
+                rating: 4.3,
+                reviews: 980,
+                savings: 16.50,
+                isGeneric: true,
+                description: "Affordable generic alternative",
+                sideEffects: ["Mild cough"],
+                efficacyScore: 92,
+                patientCompliance: 91,
+                storage: "Room temperature",
+                requiresPrescription: true,
+                lastUpdated: "2024-01-05",
+                favorite: false,
+                popularity: 78,
+                interactions: ["Diuretics"],
+                dosage: "As prescribed",
+                warnings: ["Avoid in pregnancy"],
+                tags: ["Generic", "Budget-friendly"],
+                discount: 20,
+                subscription: { available: true, discount: 25, frequency: "Monthly" },
+                sustainability: { ecoFriendly: true, recyclable: true, carbonNeutral: true }
+            }
+        ]
+    },
+    {
+        id: 6,
+        genericName: "Omeprazole",
+        strength: "20mg",
+        category: "PPI",
+        form: "Capsule",
+        therapeuticClass: "Proton Pump Inhibitor",
+        popularity: 91,
+        prescriptionRate: 72,
+        brands: [
+            {
+                id: 12,
+                name: "Prilosec",
+                manufacturer: "Procter & Gamble",
+                price: 22.99,
+                priceHistory: [24.00, 23.50, 22.99, 22.50, 22.99],
+                packSize: "42 capsules",
+                availability: "In Stock",
+                stockLevel: 1450,
+                rating: 4.7,
+                reviews: 2100,
+                savings: 0,
+                isGeneric: false,
+                description: "Leading acid reflux treatment",
+                sideEffects: ["Headache", "Nausea", "Abdominal pain"],
+                efficacyScore: 95,
+                patientCompliance: 89,
+                storage: "Room temperature",
+                requiresPrescription: false,
+                lastUpdated: "2024-01-04",
+                favorite: true,
+                popularity: 90,
+                interactions: ["Clopidogrel", "Methotrexate"],
+                dosage: "20mg once daily",
+                warnings: ["Short-term use recommended"],
+                tags: ["Acid reflux", "OTC"],
+                discount: 0,
+                subscription: { available: true, discount: 15, frequency: "Monthly" },
+                sustainability: { ecoFriendly: false, recyclable: true, carbonNeutral: false }
+            },
+            {
+                id: 13,
+                name: "Omeprazole (Generic)",
+                manufacturer: "Various",
+                price: 9.99,
+                priceHistory: [11.00, 10.50, 9.99, 9.75, 9.99],
+                packSize: "42 capsules",
+                availability: "In Stock",
+                stockLevel: 3200,
+                rating: 4.4,
+                reviews: 1780,
+                savings: 13.00,
+                isGeneric: true,
+                description: "Cost-effective acid reducer",
+                sideEffects: ["Mild digestive issues"],
+                efficacyScore: 93,
+                patientCompliance: 92,
+                storage: "Room temperature",
+                requiresPrescription: false,
+                lastUpdated: "2024-01-03",
+                favorite: false,
+                popularity: 85,
+                interactions: ["Warfarin"],
+                dosage: "As directed",
+                warnings: ["Consult doctor for long-term use"],
+                tags: ["Generic", "Value"],
+                discount: 15,
+                subscription: { available: true, discount: 20, frequency: "Bi-monthly" },
+                sustainability: { ecoFriendly: true, recyclable: true, carbonNeutral: true }
+            }
+        ]
+    },
+    {
+        id: 7,
+        genericName: "Amlodipine",
+        strength: "5mg",
+        category: "Calcium Channel Blocker",
+        form: "Tablet",
+        therapeuticClass: "Antihypertensive",
+        popularity: 85,
+        prescriptionRate: 80,
+        brands: [
+            {
+                id: 14,
+                name: "Norvasc",
+                manufacturer: "Pfizer",
+                price: 35.99,
+                priceHistory: [38.00, 37.00, 35.99, 35.50, 35.99],
+                packSize: "30 tablets",
+                availability: "In Stock",
+                stockLevel: 920,
+                rating: 4.7,
+                reviews: 1890,
+                savings: 0,
+                isGeneric: false,
+                description: "Effective calcium channel blocker",
+                sideEffects: ["Edema", "Fatigue", "Flushing"],
+                efficacyScore: 95,
+                patientCompliance: 88,
+                storage: "Room temperature",
+                requiresPrescription: true,
+                lastUpdated: "2024-01-02",
+                favorite: true,
+                popularity: 84,
+                interactions: ["Simvastatin", "Cyclosporine"],
+                dosage: "5mg once daily",
+                warnings: ["Monitor blood pressure"],
+                tags: ["Blood pressure", "Trusted"],
+                discount: 0,
+                subscription: { available: true, discount: 10, frequency: "Monthly" },
+                sustainability: { ecoFriendly: false, recyclable: true, carbonNeutral: false }
+            },
+            {
+                id: 15,
+                name: "Amlodipine (Generic)",
+                manufacturer: "Various",
+                price: 11.99,
+                priceHistory: [13.00, 12.50, 11.99, 11.75, 11.99],
+                packSize: "30 tablets",
+                availability: "In Stock",
+                stockLevel: 3100,
+                rating: 4.4,
+                reviews: 1450,
+                savings: 24.00,
+                isGeneric: true,
+                description: "Affordable blood pressure control",
+                sideEffects: ["Mild swelling"],
+                efficacyScore: 93,
+                patientCompliance: 91,
+                storage: "Room temperature",
+                requiresPrescription: true,
+                lastUpdated: "2024-01-01",
+                favorite: false,
+                popularity: 80,
+                interactions: ["Grapefruit juice"],
+                dosage: "As prescribed",
+                warnings: ["Take at same time daily"],
+                tags: ["Generic", "High savings"],
+                discount: 25,
+                subscription: { available: true, discount: 30, frequency: "Monthly" },
+                sustainability: { ecoFriendly: true, recyclable: true, carbonNeutral: true }
+            }
+        ]
+    },
+    {
+        id: 8,
+        genericName: "Levothyroxine",
+        strength: "50mcg",
+        category: "Thyroid Hormone",
+        form: "Tablet",
+        therapeuticClass: "Hormone Replacement",
+        popularity: 89,
+        prescriptionRate: 88,
+        brands: [
+            {
+                id: 16,
+                name: "Synthroid",
+                manufacturer: "AbbVie",
+                price: 42.99,
+                priceHistory: [45.00, 44.00, 42.99, 42.50, 42.99],
+                packSize: "30 tablets",
+                availability: "In Stock",
+                stockLevel: 1050,
+                rating: 4.8,
+                reviews: 2450,
+                savings: 0,
+                isGeneric: false,
+                description: "Gold standard thyroid replacement",
+                sideEffects: ["Palpitations", "Weight changes", "Insomnia"],
+                efficacyScore: 97,
+                patientCompliance: 86,
+                storage: "Room temperature, protect from light",
+                requiresPrescription: true,
+                lastUpdated: "2023-12-30",
+                favorite: true,
+                popularity: 92,
+                interactions: ["Calcium supplements", "Antacids"],
+                dosage: "50mcg once daily on empty stomach",
+                warnings: ["Take 30-60 min before breakfast"],
+                tags: ["Thyroid", "Premium"],
+                discount: 0,
+                subscription: { available: true, discount: 12, frequency: "Monthly" },
+                sustainability: { ecoFriendly: false, recyclable: true, carbonNeutral: false }
+            },
+            {
+                id: 17,
+                name: "Levothyroxine (Generic)",
+                manufacturer: "Various",
+                price: 15.99,
+                priceHistory: [17.00, 16.50, 15.99, 15.75, 15.99],
+                packSize: "30 tablets",
+                availability: "In Stock",
+                stockLevel: 2900,
+                rating: 4.3,
+                reviews: 1680,
+                savings: 27.00,
+                isGeneric: true,
+                description: "Effective generic thyroid medication",
+                sideEffects: ["Mild anxiety"],
+                efficacyScore: 94,
+                patientCompliance: 90,
+                storage: "Room temperature",
+                requiresPrescription: true,
+                lastUpdated: "2023-12-29",
+                favorite: false,
+                popularity: 85,
+                interactions: ["Iron supplements"],
+                dosage: "As prescribed",
+                warnings: ["Regular thyroid monitoring required"],
+                tags: ["Generic", "Cost-effective"],
+                discount: 20,
+                subscription: { available: true, discount: 28, frequency: "Monthly" },
+                sustainability: { ecoFriendly: true, recyclable: true, carbonNeutral: true }
+            }
+        ]
+    },
+    {
+        id: 9,
+        genericName: "Gabapentin",
+        strength: "300mg",
+        category: "Anticonvulsant",
+        form: "Capsule",
+        therapeuticClass: "Nerve Pain/Seizure",
+        popularity: 78,
+        prescriptionRate: 65,
+        brands: [
+            {
+                id: 18,
+                name: "Neurontin",
+                manufacturer: "Pfizer",
+                price: 55.99,
+                priceHistory: [58.00, 57.00, 55.99, 55.50, 55.99],
+                packSize: "90 capsules",
+                availability: "In Stock",
+                stockLevel: 780,
+                rating: 4.5,
+                reviews: 1340,
+                savings: 0,
+                isGeneric: false,
+                description: "Proven treatment for nerve pain and seizures",
+                sideEffects: ["Drowsiness", "Dizziness", "Fatigue"],
+                efficacyScore: 91,
+                patientCompliance: 82,
+                storage: "Room temperature",
+                requiresPrescription: true,
+                lastUpdated: "2023-12-28",
+                favorite: false,
+                popularity: 75,
+                interactions: ["Opioids", "Antacids"],
+                dosage: "300mg three times daily",
+                warnings: ["Do not stop abruptly"],
+                tags: ["Nerve pain", "Seizures"],
+                discount: 0,
+                subscription: { available: true, discount: 10, frequency: "Monthly" },
+                sustainability: { ecoFriendly: false, recyclable: true, carbonNeutral: false }
+            },
+            {
+                id: 19,
+                name: "Gabapentin (Generic)",
+                manufacturer: "Various",
+                price: 18.99,
+                priceHistory: [20.00, 19.50, 18.99, 18.75, 18.99],
+                packSize: "90 capsules",
+                availability: "In Stock",
+                stockLevel: 2400,
+                rating: 4.2,
+                reviews: 980,
+                savings: 37.00,
+                isGeneric: true,
+                description: "Affordable nerve pain relief",
+                sideEffects: ["Mild sedation"],
+                efficacyScore: 89,
+                patientCompliance: 88,
+                storage: "Room temperature",
+                requiresPrescription: true,
+                lastUpdated: "2023-12-27",
+                favorite: true,
+                popularity: 72,
+                interactions: ["Alcohol"],
+                dosage: "As prescribed",
+                warnings: ["May cause drowsiness"],
+                tags: ["Generic", "High savings"],
+                discount: 30,
+                subscription: { available: true, discount: 35, frequency: "Monthly" },
+                sustainability: { ecoFriendly: true, recyclable: true, carbonNeutral: true }
+            }
+        ]
+    },
+    {
+        id: 10,
+        genericName: "Sertraline",
+        strength: "50mg",
+        category: "SSRI",
+        form: "Tablet",
+        therapeuticClass: "Antidepressant",
+        popularity: 86,
+        prescriptionRate: 75,
+        brands: [
+            {
+                id: 20,
+                name: "Zoloft",
+                manufacturer: "Pfizer",
+                price: 38.99,
+                priceHistory: [40.00, 39.50, 38.99, 38.50, 38.99],
+                packSize: "30 tablets",
+                availability: "In Stock",
+                stockLevel: 1180,
+                rating: 4.6,
+                reviews: 2890,
+                savings: 0,
+                isGeneric: false,
+                description: "Leading SSRI for depression and anxiety",
+                sideEffects: ["Nausea", "Insomnia", "Sexual dysfunction"],
+                efficacyScore: 93,
+                patientCompliance: 84,
+                storage: "Room temperature",
+                requiresPrescription: true,
+                lastUpdated: "2023-12-26",
+                favorite: true,
+                popularity: 88,
+                interactions: ["MAOIs", "Blood thinners"],
+                dosage: "50mg once daily",
+                warnings: ["Monitor for mood changes"],
+                tags: ["Antidepressant", "Anxiety"],
+                discount: 0,
+                subscription: { available: true, discount: 15, frequency: "Monthly" },
+                sustainability: { ecoFriendly: false, recyclable: true, carbonNeutral: false }
+            },
+            {
+                id: 21,
+                name: "Sertraline (Generic)",
+                manufacturer: "Various",
+                price: 14.99,
+                priceHistory: [16.00, 15.50, 14.99, 14.75, 14.99],
+                packSize: "30 tablets",
+                availability: "In Stock",
+                stockLevel: 3500,
+                rating: 4.4,
+                reviews: 2150,
+                savings: 24.00,
+                isGeneric: true,
+                description: "Effective generic antidepressant",
+                sideEffects: ["Mild nausea"],
+                efficacyScore: 91,
+                patientCompliance: 89,
+                storage: "Room temperature",
+                requiresPrescription: true,
+                lastUpdated: "2023-12-25",
+                favorite: false,
+                popularity: 82,
+                interactions: ["St. John's Wort"],
+                dosage: "As prescribed",
+                warnings: ["Do not stop abruptly"],
+                tags: ["Generic", "Mental health"],
+                discount: 25,
+                subscription: { available: true, discount: 30, frequency: "Monthly" },
+                sustainability: { ecoFriendly: true, recyclable: true, carbonNeutral: true }
+            }
+        ]
+    },
+    {
+        id: 11,
+        genericName: "Losartan",
+        strength: "50mg",
+        category: "ARB",
+        form: "Tablet",
+        therapeuticClass: "Antihypertensive",
+        popularity: 84,
+        prescriptionRate: 78,
+        brands: [
+            {
+                id: 22,
+                name: "Cozaar",
+                manufacturer: "Merck",
+                price: 52.99,
+                priceHistory: [55.00, 54.00, 52.99, 52.50, 52.99],
+                packSize: "30 tablets",
+                availability: "In Stock",
+                stockLevel: 890,
+                rating: 4.7,
+                reviews: 1670,
+                savings: 0,
+                isGeneric: false,
+                description: "Effective ARB for hypertension",
+                sideEffects: ["Dizziness", "Back pain", "Fatigue"],
+                efficacyScore: 94,
+                patientCompliance: 87,
+                storage: "Room temperature",
+                requiresPrescription: true,
+                lastUpdated: "2023-12-24",
+                favorite: true,
+                popularity: 81,
+                interactions: ["Potassium supplements", "Lithium"],
+                dosage: "50mg once daily",
+                warnings: ["Monitor potassium levels"],
+                tags: ["Blood pressure", "Kidney protection"],
+                discount: 0,
+                subscription: { available: true, discount: 12, frequency: "Monthly" },
+                sustainability: { ecoFriendly: false, recyclable: true, carbonNeutral: false }
+            },
+            {
+                id: 23,
+                name: "Losartan (Generic)",
+                manufacturer: "Various",
+                price: 16.99,
+                priceHistory: [18.00, 17.50, 16.99, 16.75, 16.99],
+                packSize: "30 tablets",
+                availability: "In Stock",
+                stockLevel: 2700,
+                rating: 4.4,
+                reviews: 1290,
+                savings: 36.00,
+                isGeneric: true,
+                description: "Affordable ARB option",
+                sideEffects: ["Mild dizziness"],
+                efficacyScore: 92,
+                patientCompliance: 90,
+                storage: "Room temperature",
+                requiresPrescription: true,
+                lastUpdated: "2023-12-23",
+                favorite: false,
+                popularity: 77,
+                interactions: ["NSAIDs"],
+                dosage: "As prescribed",
+                warnings: ["Avoid in pregnancy"],
+                tags: ["Generic", "Heart health"],
+                discount: 25,
+                subscription: { available: true, discount: 30, frequency: "Monthly" },
+                sustainability: { ecoFriendly: true, recyclable: true, carbonNeutral: true }
+            }
+        ]
+    },
+    {
+        id: 12,
+        genericName: "Hydrochlorothiazide",
+        strength: "25mg",
+        category: "Diuretic",
+        form: "Tablet",
+        therapeuticClass: "Thiazide Diuretic",
+        popularity: 80,
+        prescriptionRate: 70,
+        brands: [
+            {
+                id: 24,
+                name: "Microzide",
+                manufacturer: "Watson",
+                price: 18.99,
+                priceHistory: [20.00, 19.50, 18.99, 18.50, 18.99],
+                packSize: "30 tablets",
+                availability: "In Stock",
+                stockLevel: 1320,
+                rating: 4.4,
+                reviews: 890,
+                savings: 0,
+                isGeneric: false,
+                description: "Effective diuretic for fluid retention",
+                sideEffects: ["Frequent urination", "Electrolyte imbalance"],
+                efficacyScore: 90,
+                patientCompliance: 85,
+                storage: "Room temperature",
+                requiresPrescription: true,
+                lastUpdated: "2023-12-22",
+                favorite: false,
+                popularity: 76,
+                interactions: ["Lithium", "Digoxin"],
+                dosage: "25mg once daily",
+                warnings: ["Monitor electrolytes"],
+                tags: ["Diuretic", "Blood pressure"],
+                discount: 0,
+                subscription: { available: true, discount: 10, frequency: "Monthly" },
+                sustainability: { ecoFriendly: true, recyclable: true, carbonNeutral: false }
+            },
+            {
+                id: 25,
+                name: "HCTZ (Generic)",
+                manufacturer: "Various",
+                price: 6.99,
+                priceHistory: [8.00, 7.50, 6.99, 6.75, 6.99],
+                packSize: "30 tablets",
+                availability: "In Stock",
+                stockLevel: 4100,
+                rating: 4.2,
+                reviews: 1120,
+                savings: 12.00,
+                isGeneric: true,
+                description: "Very affordable diuretic",
+                sideEffects: ["Increased thirst"],
+                efficacyScore: 88,
+                patientCompliance: 91,
+                storage: "Room temperature",
+                requiresPrescription: true,
+                lastUpdated: "2023-12-21",
+                favorite: true,
+                popularity: 82,
+                interactions: ["Corticosteroids"],
+                dosage: "As prescribed",
+                warnings: ["Stay hydrated"],
+                tags: ["Generic", "Very affordable"],
+                discount: 15,
+                subscription: { available: true, discount: 20, frequency: "Bi-monthly" },
+                sustainability: { ecoFriendly: true, recyclable: true, carbonNeutral: true }
+            }
+        ]
+    },
+    {
+        id: 13,
+        genericName: "Pantoprazole",
+        strength: "40mg",
+        category: "PPI",
+        form: "Tablet",
+        therapeuticClass: "Proton Pump Inhibitor",
+        popularity: 83,
+        prescriptionRate: 68,
+        brands: [
+            {
+                id: 26,
+                name: "Protonix",
+                manufacturer: "Pfizer",
+                price: 45.99,
+                priceHistory: [48.00, 47.00, 45.99, 45.50, 45.99],
+                packSize: "30 tablets",
+                availability: "In Stock",
+                stockLevel: 870,
+                rating: 4.6,
+                reviews: 1450,
+                savings: 0,
+                isGeneric: false,
+                description: "Prescription-strength acid reducer",
+                sideEffects: ["Headache", "Diarrhea", "Nausea"],
+                efficacyScore: 94,
+                patientCompliance: 86,
+                storage: "Room temperature",
+                requiresPrescription: true,
+                lastUpdated: "2023-12-20",
+                favorite: true,
+                popularity: 79,
+                interactions: ["Atazanavir", "Methotrexate"],
+                dosage: "40mg once daily",
+                warnings: ["Use lowest effective dose"],
+                tags: ["GERD", "Acid reflux"],
+                discount: 0,
+                subscription: { available: true, discount: 12, frequency: "Monthly" },
+                sustainability: { ecoFriendly: false, recyclable: true, carbonNeutral: false }
+            },
+            {
+                id: 27,
+                name: "Pantoprazole (Generic)",
+                manufacturer: "Various",
+                price: 15.49,
+                priceHistory: [17.00, 16.50, 15.49, 15.25, 15.49],
+                packSize: "30 tablets",
+                availability: "In Stock",
+                stockLevel: 2600,
+                rating: 4.3,
+                reviews: 1080,
+                savings: 30.50,
+                isGeneric: true,
+                description: "Effective generic PPI",
+                sideEffects: ["Mild GI discomfort"],
+                efficacyScore: 92,
+                patientCompliance: 90,
+                storage: "Room temperature",
+                requiresPrescription: true,
+                lastUpdated: "2023-12-19",
+                favorite: false,
+                popularity: 75,
+                interactions: ["Warfarin"],
+                dosage: "As prescribed",
+                warnings: ["Regular monitoring for long-term use"],
+                tags: ["Generic", "Stomach health"],
+                discount: 25,
+                subscription: { available: true, discount: 30, frequency: "Monthly" },
+                sustainability: { ecoFriendly: true, recyclable: true, carbonNeutral: true }
+            }
+        ]
+    },
+    {
+        id: 14,
+        genericName: "Escitalopram",
+        strength: "10mg",
+        category: "SSRI",
+        form: "Tablet",
+        therapeuticClass: "Antidepressant",
+        popularity: 88,
+        prescriptionRate: 76,
+        brands: [
+            {
+                id: 28,
+                name: "Lexapro",
+                manufacturer: "Lundbeck",
+                price: 48.99,
+                priceHistory: [50.00, 49.50, 48.99, 48.50, 48.99],
+                packSize: "30 tablets",
+                availability: "In Stock",
+                stockLevel: 980,
+                rating: 4.7,
+                reviews: 3120,
+                savings: 0,
+                isGeneric: false,
+                description: "Highly effective SSRI with fewer side effects",
+                sideEffects: ["Nausea", "Headache", "Insomnia"],
+                efficacyScore: 95,
+                patientCompliance: 88,
+                storage: "Room temperature",
+                requiresPrescription: true,
+                lastUpdated: "2023-12-18",
+                favorite: true,
+                popularity: 90,
+                interactions: ["MAOIs", "Triptans"],
+                dosage: "10mg once daily",
+                warnings: ["Monitor for suicidal thoughts initially"],
+                tags: ["Depression", "Anxiety", "Well-tolerated"],
+                discount: 0,
+                subscription: { available: true, discount: 15, frequency: "Monthly" },
+                sustainability: { ecoFriendly: false, recyclable: true, carbonNeutral: false }
+            },
+            {
+                id: 29,
+                name: "Escitalopram (Generic)",
+                manufacturer: "Various",
+                price: 12.99,
+                priceHistory: [14.00, 13.50, 12.99, 12.75, 12.99],
+                packSize: "30 tablets",
+                availability: "In Stock",
+                stockLevel: 3800,
+                rating: 4.5,
+                reviews: 2450,
+                savings: 36.00,
+                isGeneric: true,
+                description: "Popular generic antidepressant",
+                sideEffects: ["Mild fatigue"],
+                efficacyScore: 93,
+                patientCompliance: 91,
+                storage: "Room temperature",
+                requiresPrescription: true,
+                lastUpdated: "2023-12-17",
+                favorite: false,
+                popularity: 86,
+                interactions: ["NSAIDs"],
+                dosage: "As prescribed",
+                warnings: ["Do not discontinue abruptly"],
+                tags: ["Generic", "Mental wellness"],
+                discount: 30,
+                subscription: { available: true, discount: 35, frequency: "Monthly" },
+                sustainability: { ecoFriendly: true, recyclable: true, carbonNeutral: true }
+            }
+        ]
+    },
+    {
+        id: 15,
+        genericName: "Simvastatin",
+        strength: "20mg",
+        category: "Statin",
+        form: "Tablet",
+        therapeuticClass: "Lipid-lowering",
+        popularity: 82,
+        prescriptionRate: 74,
+        brands: [
+            {
+                id: 30,
+                name: "Zocor",
+                manufacturer: "Merck",
+                price: 39.99,
+                priceHistory: [42.00, 41.00, 39.99, 39.50, 39.99],
+                packSize: "30 tablets",
+                availability: "In Stock",
+                stockLevel: 1020,
+                rating: 4.5,
+                reviews: 1780,
+                savings: 0,
+                isGeneric: false,
+                description: "Proven statin for cholesterol control",
+                sideEffects: ["Muscle pain", "Constipation", "Headache"],
+                efficacyScore: 93,
+                patientCompliance: 85,
+                storage: "Room temperature",
+                requiresPrescription: true,
+                lastUpdated: "2023-12-16",
+                favorite: true,
+                popularity: 78,
+                interactions: ["Grapefruit", "Amiodarone", "Amlodipine"],
+                dosage: "20mg once daily in evening",
+                warnings: ["Take in evening for best effect"],
+                tags: ["Cholesterol", "Heart health"],
+                discount: 0,
+                subscription: { available: true, discount: 12, frequency: "Monthly" },
+                sustainability: { ecoFriendly: false, recyclable: true, carbonNeutral: false }
+            },
+            {
+                id: 32,
+                name: "Simvastatin (Generic)",
+                manufacturer: "Various",
+                price: 10.99,
+                priceHistory: [12.00, 11.50, 10.99, 10.75, 10.99],
+                packSize: "30 tablets",
+                availability: "In Stock",
+                stockLevel: 3200,
+                rating: 4.3,
+                reviews: 1340,
+                savings: 29.00,
+                isGeneric: true,
+                description: "Affordable cholesterol management",
+                sideEffects: ["Mild muscle discomfort"],
+                efficacyScore: 91,
+                patientCompliance: 90,
+                storage: "Room temperature",
+                requiresPrescription: true,
+                lastUpdated: "2023-12-15",
+                favorite: false,
+                popularity: 75,
+                interactions: ["Diltiazem"],
+                dosage: "As prescribed",
+                warnings: ["Limit grapefruit consumption"],
+                tags: ["Generic", "Budget-friendly"],
+                discount: 25,
+                subscription: { available: true, discount: 30, frequency: "Monthly" },
+                sustainability: { ecoFriendly: true, recyclable: true, carbonNeutral: true }
             }
         ]
     }
@@ -1437,6 +2231,98 @@ const CrossBrandComparator = () => {
     const [showSideBySide, setShowSideBySide] = useState(false);
     const [sideBySideCompareBrands, setSideBySideCompareBrands] = useState([]);
     const [showHistoricalAnalytics, setShowHistoricalAnalytics] = useState(false);
+    const [showDDIPredictor, setShowDDIPredictor] = useState(false);
+    const [showAutocomplete, setShowAutocomplete] = useState(false);
+    const [highlightedIndex, setHighlightedIndex] = useState(-1);
+    const searchInputRef = useRef(null);
+
+    // Generate autocomplete suggestions - shows all matching drugs and brands
+    const autocompleteSuggestions = useMemo(() => {
+        if (!searchTerm || searchTerm.length < 1) return [];
+        
+        const term = searchTerm.toLowerCase();
+        const suggestions = [];
+        
+        // Add matching medications
+        medications.forEach(med => {
+            if (med.genericName.toLowerCase().includes(term) ||
+                med.category.toLowerCase().includes(term) ||
+                med.therapeuticClass.toLowerCase().includes(term)) {
+                suggestions.push({
+                    type: 'medication',
+                    id: med.id,
+                    name: med.genericName,
+                    subtitle: `${med.strength} • ${med.category} • ${med.brands.length} brands available`,
+                    category: med.category,
+                    icon: 'pill',
+                    medication: med
+                });
+            }
+            // Add matching brands
+            med.brands.forEach(brand => {
+                if (brand.name.toLowerCase().includes(term) || 
+                    brand.manufacturer.toLowerCase().includes(term)) {
+                    suggestions.push({
+                        type: 'brand',
+                        id: `${med.id}-${brand.id}`,
+                        name: brand.name,
+                        subtitle: `${brand.manufacturer} • $${brand.price} • ${med.genericName} ${med.strength}`,
+                        category: med.category,
+                        icon: 'tag',
+                        medication: med,
+                        brand: brand
+                    });
+                }
+            });
+        });
+        
+        // Return more suggestions (up to 12)
+        return suggestions.slice(0, 12);
+    }, [searchTerm, medications]);
+
+    // Handle autocomplete selection
+    const handleAutocompleteSelect = (suggestion) => {
+        if (suggestion.type === 'medication') {
+            setSelectedMedication(suggestion.medication);
+            setSearchTerm(suggestion.name);
+        } else if (suggestion.type === 'brand') {
+            setSelectedMedication(suggestion.medication);
+            setSearchTerm(suggestion.brand.name);
+            // Also select the brand for comparison
+            if (!selectedBrands.find(b => b.id === suggestion.brand.id)) {
+                setSelectedBrands(prev => [...prev, suggestion.brand]);
+            }
+        }
+        setShowAutocomplete(false);
+        setHighlightedIndex(-1);
+        // Scroll to brands section
+        setTimeout(() => {
+            document.getElementById('brands-section')?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+    };
+
+    // Handle keyboard navigation in autocomplete
+    const handleSearchKeyDown = (e) => {
+        if (!showAutocomplete || autocompleteSuggestions.length === 0) return;
+        
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setHighlightedIndex(prev => 
+                prev < autocompleteSuggestions.length - 1 ? prev + 1 : 0
+            );
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            setHighlightedIndex(prev => 
+                prev > 0 ? prev - 1 : autocompleteSuggestions.length - 1
+            );
+        } else if (e.key === 'Enter' && highlightedIndex >= 0) {
+            e.preventDefault();
+            handleAutocompleteSelect(autocompleteSuggestions[highlightedIndex]);
+        } else if (e.key === 'Escape') {
+            setShowAutocomplete(false);
+            setHighlightedIndex(-1);
+        }
+    };
 
     // Redirect if not authenticated
     useEffect(() => {
@@ -1600,6 +2486,57 @@ const CrossBrandComparator = () => {
         }
     };
 
+    // Demo function to load sample data for demonstration
+    const loadDemoData = () => {
+        // Select Atorvastatin (cholesterol medication) for demo
+        const demoMedication = medications.find(m => m.genericName === 'Atorvastatin');
+        if (demoMedication) {
+            setSelectedMedication(demoMedication);
+            // Select both brand and generic for comparison
+            setSelectedBrands(demoMedication.brands);
+            // Set some demo notifications
+            setNotifications([
+                {
+                    type: 'price',
+                    title: '💰 Price Drop Alert!',
+                    message: 'Atorvastatin Generic dropped 15% - Now $18.99',
+                    time: 'Just now'
+                },
+                {
+                    type: 'stock',
+                    title: '📦 Stock Update',
+                    message: 'Lipitor back in stock at most pharmacies',
+                    time: '5 min ago'
+                },
+                {
+                    type: 'info',
+                    title: '🎯 Savings Opportunity',
+                    message: 'Switch to generic to save $27/month',
+                    time: '10 min ago'
+                }
+            ]);
+            // Set demo price alerts
+            setPriceAlerts([
+                {
+                    id: 1,
+                    brandName: 'Lipitor',
+                    currentPrice: 45.99,
+                    targetPrice: 40.00
+                },
+                {
+                    id: 2,
+                    brandName: 'Glucophage',
+                    currentPrice: 32.50,
+                    targetPrice: 28.00
+                }
+            ]);
+            // Scroll to brands section
+            setTimeout(() => {
+                document.getElementById('brands-section')?.scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+        }
+    };
+
     return (
         <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
             <AnimationStyles />
@@ -1668,18 +2605,26 @@ const CrossBrandComparator = () => {
                     onShare={handleShare}
                 />
 
-                {/* Search Bar */}
+                {/* Search Bar with Autocomplete */}
                 <div className="mb-8">
                     <div className="relative group">
-                        <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400 group-hover:text-blue-400 transition-colors" />
+                        <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400 group-hover:text-blue-400 transition-colors z-10" />
                         <input
+                            ref={searchInputRef}
                             type="text"
                             placeholder="Search medications by name, brand, manufacturer, or symptoms..."
                             value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onChange={(e) => {
+                                setSearchTerm(e.target.value);
+                                setShowAutocomplete(true);
+                                setHighlightedIndex(-1);
+                            }}
+                            onFocus={() => setShowAutocomplete(true)}
+                            onBlur={() => setTimeout(() => setShowAutocomplete(false), 200)}
+                            onKeyDown={handleSearchKeyDown}
                             className="w-full pl-12 pr-36 py-4 bg-white/80 backdrop-blur-sm border border-slate-300 rounded-2xl shadow-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-lg"
                         />
-                        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center gap-2 z-10">
                             <button
                                 onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
                                 className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-blue-600 bg-white/50 backdrop-blur-sm rounded-lg border border-slate-200"
@@ -1688,7 +2633,10 @@ const CrossBrandComparator = () => {
                                 <span className="text-sm font-medium">Smart Filters</span>
                             </button>
                             <button
-                                onClick={() => setSearchTerm('')}
+                                onClick={() => {
+                                    setSearchTerm('');
+                                    setShowAutocomplete(false);
+                                }}
                                 className="p-2 text-slate-400 hover:text-red-500"
                             >
                                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1696,6 +2644,81 @@ const CrossBrandComparator = () => {
                                 </svg>
                             </button>
                         </div>
+
+                        {/* Autocomplete Dropdown */}
+                        {showAutocomplete && autocompleteSuggestions.length > 0 && (
+                            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden z-50">
+                                <div className="p-3 border-b border-slate-100 bg-gradient-to-r from-blue-50 to-indigo-50">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                            💊 {autocompleteSuggestions.length} Results Found
+                                        </span>
+                                        <span className="text-xs text-slate-500">
+                                            Search across {medications.length} medications & {medications.reduce((sum, m) => sum + m.brands.length, 0)} brands
+                                        </span>
+                                    </div>
+                                </div>
+                                <ul className="max-h-96 overflow-y-auto">
+                                    {autocompleteSuggestions.map((suggestion, index) => (
+                                        <li
+                                            key={suggestion.id}
+                                            onClick={() => handleAutocompleteSelect(suggestion)}
+                                            className={`px-4 py-3 cursor-pointer transition-all flex items-center gap-3 ${
+                                                highlightedIndex === index
+                                                    ? 'bg-blue-50 border-l-4 border-blue-500'
+                                                    : 'hover:bg-slate-50 border-l-4 border-transparent'
+                                            }`}
+                                        >
+                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-md ${
+                                                suggestion.type === 'medication'
+                                                    ? 'bg-gradient-to-br from-blue-500 to-indigo-600'
+                                                    : 'bg-gradient-to-br from-emerald-500 to-teal-600'
+                                            }`}>
+                                                {suggestion.type === 'medication' ? (
+                                                    <BeakerIcon className="h-6 w-6 text-white" />
+                                                ) : (
+                                                    <TagIcon className="h-6 w-6 text-white" />
+                                                )}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center gap-2 flex-wrap">
+                                                    <span className="font-bold text-slate-900">
+                                                        {suggestion.name}
+                                                    </span>
+                                                    <span className={`px-2 py-0.5 text-xs font-bold rounded-full ${
+                                                        suggestion.type === 'medication'
+                                                            ? 'bg-blue-100 text-blue-700'
+                                                            : 'bg-emerald-100 text-emerald-700'
+                                                    }`}>
+                                                        {suggestion.type === 'medication' ? 'Medication' : 'Brand'}
+                                                    </span>
+                                                    <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-slate-100 text-slate-600">
+                                                        {suggestion.category}
+                                                    </span>
+                                                </div>
+                                                <p className="text-sm text-slate-500 truncate mt-0.5">
+                                                    {suggestion.subtitle}
+                                                </p>
+                                            </div>
+                                            <ChevronRightIcon className="h-5 w-5 text-slate-400 flex-shrink-0" />
+                                        </li>
+                                    ))}
+                                </ul>
+                                <div className="p-3 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
+                                    <span className="text-xs text-slate-500 flex items-center gap-2">
+                                        <kbd className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-xs">↑</kbd>
+                                        <kbd className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-xs">↓</kbd>
+                                        navigate
+                                        <kbd className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-xs ml-2">Enter</kbd>
+                                        select
+                                    </span>
+                                    <span className="text-xs text-blue-600 font-semibold flex items-center gap-1">
+                                        <SparklesSolid className="h-3 w-3" />
+                                        AI-Powered Search
+                                    </span>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -1725,6 +2748,16 @@ const CrossBrandComparator = () => {
 
                 {/* Feature Toggle Bar */}
                 <div className="bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl p-4 mb-6 flex flex-wrap items-center gap-3">
+                    {/* Demo Button - Primary CTA */}
+                    <button
+                        onClick={loadDemoData}
+                        className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 animate-pulse"
+                        style={{ animationDuration: '2s' }}
+                    >
+                        <SparklesIcon className="h-5 w-5" />
+                        ✨ Load Demo
+                    </button>
+                    <div className="w-px h-8 bg-slate-300 mx-2"></div>
                     <button
                         onClick={() => setBatchCompareMode(!batchCompareMode)}
                         className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 ${batchCompareMode ? 'bg-cyan-500 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -1757,7 +2790,43 @@ const CrossBrandComparator = () => {
                         </svg>
                         Print
                     </button>
+                    <button
+                        onClick={() => setShowDDIPredictor(!showDDIPredictor)}
+                        className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 ${showDDIPredictor
+                            ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg'
+                            : 'bg-slate-100 text-slate-700 hover:bg-indigo-100 hover:text-indigo-700'
+                            }`}
+                    >
+                        <BeakerIcon className="h-5 w-5" />
+                        DDI Predictor
+                    </button>
                 </div>
+
+                {/* DDI Predictor Panel */}
+                {showDDIPredictor && (
+                    <div className="mb-6 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 border border-indigo-200 rounded-2xl p-6 shadow-lg">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg">
+                                    <BeakerIcon className="h-6 w-6 text-white" />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-slate-900">Cross-Brand DDI Predictor</h3>
+                                    <p className="text-sm text-slate-600">Formulation-aware drug interaction prediction</p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setShowDDIPredictor(false)}
+                                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-white/50 rounded-lg transition-colors"
+                            >
+                                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <CrossBrandPredictor />
+                    </div>
+                )}
 
                 {/* Advanced Filters */}
                 {showAdvancedFilters && (
