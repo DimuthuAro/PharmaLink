@@ -81,11 +81,20 @@ ENABLE_DEEPSEEK_OCR = True  # Set to True when you want to use DeepSeek-OCR
 ocr_model = None
 ocr_tokenizer = None
 ocr_device = "cpu"
-deepseek_model_name = "deepseek-ai/DeepSeek-OCR"
+
+# Local path for DeepSeek-OCR model - download files here from HuggingFace
+DEEPSEEK_OCR_LOCAL_PATH = os.path.join(os.path.dirname(__file__), "models", "deepseek-ocr")
+# Fallback to HuggingFace hub if local path doesn't exist
+deepseek_model_name = DEEPSEEK_OCR_LOCAL_PATH if os.path.exists(os.path.join(DEEPSEEK_OCR_LOCAL_PATH, "config.json")) else "deepseek-ai/DeepSeek-OCR"
 
 if ENABLE_DEEPSEEK_OCR:
     print("\n" + "="*60)
-    print("📷 Loading DeepSeek-OCR model... (This downloads ~7GB on first run)")
+    if deepseek_model_name == DEEPSEEK_OCR_LOCAL_PATH:
+        print("📷 Loading DeepSeek-OCR from LOCAL directory...")
+        print(f"   Path: {DEEPSEEK_OCR_LOCAL_PATH}")
+    else:
+        print("📷 Loading DeepSeek-OCR model... (This downloads ~7GB on first run)")
+        print(f"   To use local files, place model in: {DEEPSEEK_OCR_LOCAL_PATH}")
     print("="*60)
     try:
         ocr_tokenizer = AutoTokenizer.from_pretrained(deepseek_model_name, trust_remote_code=True)
