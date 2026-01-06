@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/auth.jsx';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import AnimationStyles from '../components/AnimationStyles.jsx';
 import PriceTrendChart from '../components/PriceTrendChart.jsx';
 import BrandCard from '../components/BrandCard.jsx';
@@ -1298,32 +1300,6 @@ const SmartAlerts = ({ brands, selectedBrands = [] }) => {
     const getAlerts = () => {
         const alerts = [];
 
-        // Check if selected brands have low stock
-        const selectedLowStock = selectedBrands.filter(b => b.stockLevel < 50);
-        if (selectedLowStock.length > 0) {
-            alerts.push({
-                type: 'critical',
-                title: 'Selected Brand Alert',
-                message: `${selectedLowStock.length} of your selected brands have low stock`,
-                brands: selectedLowStock.slice(0, 2).map(b => b.name),
-                icon: ExclamationTriangleIcon
-            });
-        }
-
-        // Low stock alert
-        const lowStockBrands = brands.filter(brand =>
-            brand.availability === 'Limited Stock' && brand.stockLevel < 50
-        );
-        if (lowStockBrands.length > 0) {
-            alerts.push({
-                type: 'warning',
-                title: 'Low Stock Alert',
-                message: `${lowStockBrands.length} brands have limited stock`,
-                brands: lowStockBrands.slice(0, 2).map(b => b.name),
-                icon: ExclamationTriangleIcon
-            });
-        }
-
         // Price drop alert
         const priceDropBrands = brands.filter(brand => {
             if (brand.priceHistory.length < 2) return false;
@@ -1841,17 +1817,6 @@ const SideBySideComparisonModal = ({ brands, onClose }) => {
                                     </td>
                                 ))}
                             </tr>
-                            <tr className="border-b border-slate-200 bg-slate-50">
-                                <td className="px-4 py-3 font-semibold text-slate-700">Availability</td>
-                                {brands.map(brand => (
-                                    <td key={brand.id} className="px-4 py-3 text-center">
-                                        <span className={`px-3 py-1 rounded-full text-sm font-bold ${brand.availability === 'In Stock' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
-                                            }`}>
-                                            {brand.availability}
-                                        </span>
-                                    </td>
-                                ))}
-                            </tr>
                             <tr className="border-b border-slate-200">
                                 <td className="px-4 py-3 font-semibold text-slate-700">Pack Size</td>
                                 {brands.map(brand => (
@@ -2145,8 +2110,241 @@ const PopularAlternatives = ({ medications, selectedMedication }) => {
     );
 };
 
+// AI Insights Modal Component
+const AIInsightsModal = ({ insights, loading, error, onClose }) => {
+    if (loading) {
+        return (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8">
+                    <div className="flex flex-col items-center justify-center py-12">
+                        <div className="relative w-20 h-20 mb-6">
+                            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 animate-spin" style={{ animationDuration: '3s' }}></div>
+                            <div className="absolute inset-2 rounded-full bg-white flex items-center justify-center">
+                                <SparklesSolid className="h-8 w-8 text-purple-600 animate-pulse" />
+                            </div>
+                        </div>
+                        <h3 className="text-xl font-bold text-slate-900 mb-2">Generating AI Insights</h3>
+                        <p className="text-slate-600 text-center">Analyzing brand data, market trends, and patient outcomes...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+                    <div className="text-center">
+                        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 flex items-center justify-center">
+                            <ExclamationTriangleIcon className="h-8 w-8 text-red-600" />
+                        </div>
+                        <h3 className="text-xl font-bold text-slate-900 mb-2">Unable to Generate Insights</h3>
+                        <p className="text-slate-600 mb-6">{error}</p>
+                        <button
+                            onClick={onClose}
+                            className="px-6 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (!insights) return null;
+
+    const priorityColors = {
+        high: 'from-red-500 to-orange-500',
+        medium: 'from-amber-500 to-yellow-500',
+        low: 'from-blue-500 to-cyan-500'
+    };
+
+    const typeIcons = {
+        savings: CurrencyDollarIcon,
+        quality: StarIcon,
+        warning: ExclamationTriangleIcon,
+        value: ChartBarIcon,
+        subscription: GiftIcon,
+        sustainability: BeakerIcon
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+                {/* Header */}
+                <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 p-6 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
+                            <SparklesSolid className="h-7 w-7 text-white" />
+                        </div>
+                        <div>
+                            <h2 className="text-2xl font-black text-white">AI Insights</h2>
+                            <p className="text-purple-100">
+                                {insights.medication.name} {insights.medication.strength} • {insights.medication.category}
+                            </p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <div className="px-3 py-1 bg-white/20 rounded-full text-white text-sm">
+                            Confidence: {(insights.aiConfidence * 100).toFixed(0)}%
+                        </div>
+                        <button
+                            onClick={onClose}
+                            className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                        >
+                            <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div className="overflow-auto max-h-[calc(90vh-120px)] p-6">
+                    {/* Top Picks */}
+                    <div className="mb-8">
+                        <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                            <FireIcon className="h-5 w-5 text-orange-500" />
+                            Top Picks
+                        </h3>
+                        <div className="grid md:grid-cols-3 gap-4">
+                            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl p-4">
+                                <span className="text-xs font-bold text-emerald-600 uppercase">Best Value</span>
+                                <h4 className="text-lg font-bold text-slate-900 mt-1">{insights.topPicks.bestValue.name}</h4>
+                                <div className="flex items-center gap-2 mt-2">
+                                    <span className="text-emerald-600 font-bold">${insights.topPicks.bestValue.price}</span>
+                                    <span className="text-slate-400">•</span>
+                                    <span className="flex items-center gap-1">
+                                        <StarSolid className="h-4 w-4 text-amber-400" />
+                                        {insights.topPicks.bestValue.rating}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4">
+                                <span className="text-xs font-bold text-blue-600 uppercase">Most Affordable</span>
+                                <h4 className="text-lg font-bold text-slate-900 mt-1">{insights.topPicks.mostAffordable.name}</h4>
+                                <div className="flex items-center gap-2 mt-2">
+                                    <span className="text-blue-600 font-bold">${insights.topPicks.mostAffordable.price}</span>
+                                </div>
+                            </div>
+                            <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4">
+                                <span className="text-xs font-bold text-amber-600 uppercase">Highest Rated</span>
+                                <h4 className="text-lg font-bold text-slate-900 mt-1">{insights.topPicks.highestRated.name}</h4>
+                                <div className="flex items-center gap-2 mt-2">
+                                    <span className="flex items-center gap-1">
+                                        <StarSolid className="h-4 w-4 text-amber-400" />
+                                        <span className="text-amber-600 font-bold">{insights.topPicks.highestRated.rating}</span>
+                                    </span>
+                                    <span className="text-slate-400">•</span>
+                                    <span className="text-slate-600 text-sm">{insights.topPicks.highestRated.reviews} reviews</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Recommendations */}
+                    <div className="mb-8">
+                        <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                            <LightBulbIcon className="h-5 w-5 text-purple-500" />
+                            AI Recommendations
+                        </h3>
+                        <div className="space-y-3">
+                            {insights.recommendations.map((rec, idx) => {
+                                const IconComponent = typeIcons[rec.type] || LightBulbIcon;
+                                return (
+                                    <div key={idx} className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-start gap-4">
+                                        <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${priorityColors[rec.priority]} flex items-center justify-center flex-shrink-0`}>
+                                            <IconComponent className="h-5 w-5 text-white" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <h4 className="font-bold text-slate-900">{rec.title}</h4>
+                                                <span className={`px-2 py-0.5 text-xs font-bold rounded-full ${
+                                                    rec.priority === 'high' ? 'bg-red-100 text-red-700' :
+                                                    rec.priority === 'medium' ? 'bg-amber-100 text-amber-700' :
+                                                    'bg-blue-100 text-blue-700'
+                                                }`}>
+                                                    {rec.priority}
+                                                </span>
+                                            </div>
+                                            <p className="text-slate-600 text-sm">{rec.description}</p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* Market Analysis */}
+                    <div className="mb-8">
+                        <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                            <ChartBarIcon className="h-5 w-5 text-indigo-500" />
+                            Market Analysis
+                        </h3>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
+                                <div className="text-2xl font-black text-slate-900">{insights.marketAnalysis.totalBrands}</div>
+                                <div className="text-sm text-slate-600">Total Brands</div>
+                            </div>
+                            <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
+                                <div className="text-2xl font-black text-emerald-600">${insights.marketAnalysis.averagePrice.toFixed(2)}</div>
+                                <div className="text-sm text-slate-600">Avg. Price</div>
+                            </div>
+                            <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
+                                <div className="text-2xl font-black text-amber-600">{insights.marketAnalysis.averageRating}</div>
+                                <div className="text-sm text-slate-600">Avg. Rating</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Selection Analysis */}
+                    {insights.selectionAnalysis && (
+                        <div className="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-5">
+                            <h3 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+                                <CheckCircleIcon className="h-5 w-5 text-purple-500" />
+                                Your Selection
+                            </h3>
+                            <p className="text-slate-700 mb-3">{insights.selectionAnalysis.summary}</p>
+                            <div className="flex flex-wrap gap-4">
+                                <div className="flex items-center gap-2">
+                                    <CurrencyDollarIcon className="h-5 w-5 text-purple-500" />
+                                    <span className="text-slate-600">Total: <strong>${insights.selectionAnalysis.totalCost.toFixed(2)}</strong></span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <StarIcon className="h-5 w-5 text-purple-500" />
+                                    <span className="text-slate-600">Avg Rating: <strong>{insights.selectionAnalysis.averageRating}</strong></span>
+                                </div>
+                                {insights.selectionAnalysis.potentialSavings > 0 && (
+                                    <div className="flex items-center gap-2">
+                                        <ArrowTrendingDownIcon className="h-5 w-5 text-emerald-500" />
+                                        <span className="text-emerald-600">Savings: <strong>${insights.selectionAnalysis.potentialSavings.toFixed(2)}</strong></span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Footer */}
+                <div className="border-t border-slate-200 p-4 bg-slate-50 flex items-center justify-between">
+                    <div className="text-xs text-slate-500">
+                        Generated at {new Date(insights.timestamp).toLocaleString()} • Model v{insights.modelVersion}
+                    </div>
+                    <button
+                        onClick={onClose}
+                        className="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
+                    >
+                        Done
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 // Quick Actions Bar
-const QuickActionsBar = ({ selectedBrands, medications, onExport, onShare }) => {
+const QuickActionsBar = ({ selectedBrands, medications, onExport, onShare, onAIInsights }) => {
     const favoriteCount = medications.reduce((sum, med) =>
         sum + med.brands.filter(b => b.favorite).length, 0
     );
@@ -2191,7 +2389,7 @@ const QuickActionsBar = ({ selectedBrands, medications, onExport, onShare }) => 
                         Share
                     </button>
                     <button
-                        onClick={() => alert('AI Insights generated')}
+                        onClick={onAIInsights}
                         className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all flex items-center gap-2"
                     >
                         <SparklesSolid className="h-5 w-5" />
@@ -2214,7 +2412,6 @@ const CrossBrandComparator = () => {
     const [selectedBrands, setSelectedBrands] = useState([]);
     const [sortBy, setSortBy] = useState('price');
     const [filterGeneric, setFilterGeneric] = useState('all');
-    const [filterAvailability, setFilterAvailability] = useState('all');
     const [filterRating, setFilterRating] = useState(0);
     const [showFavorites, setShowFavorites] = useState(false);
     const [showDetails, setShowDetails] = useState(null);
@@ -2235,6 +2432,12 @@ const CrossBrandComparator = () => {
     const [showAutocomplete, setShowAutocomplete] = useState(false);
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
     const searchInputRef = useRef(null);
+    
+    // AI Insights state
+    const [showAIInsights, setShowAIInsights] = useState(false);
+    const [aiInsights, setAIInsights] = useState(null);
+    const [aiInsightsLoading, setAIInsightsLoading] = useState(false);
+    const [aiInsightsError, setAIInsightsError] = useState(null);
 
     // Generate autocomplete suggestions - shows all matching drugs and brands
     const autocompleteSuggestions = useMemo(() => {
@@ -2341,11 +2544,6 @@ const CrossBrandComparator = () => {
                 if (filterGeneric === 'brand') return !brand.isGeneric;
                 return true;
             })
-            .filter(brand => {
-                if (filterAvailability === 'in-stock') return brand.availability === 'In Stock';
-                if (filterAvailability === 'limited') return brand.availability === 'Limited Stock';
-                return true;
-            })
             .filter(brand => brand.rating >= filterRating)
             .filter(brand => brand.price >= priceRange[0] && brand.price <= priceRange[1])
             .filter(brand => !showFavorites || brand.favorite)
@@ -2361,7 +2559,7 @@ const CrossBrandComparator = () => {
                     default: return 0;
                 }
             });
-    }, [selectedMedication, filterGeneric, filterAvailability, filterRating, priceRange, showFavorites, sortBy, showSustainability]);
+    }, [selectedMedication, filterGeneric, filterRating, priceRange, showFavorites, sortBy, showSustainability]);
 
     const handleBrandSelect = (brand) => {
         setSelectedBrands(prev => {
@@ -2402,28 +2600,503 @@ const CrossBrandComparator = () => {
         ? (selectedBrands.reduce((sum, brand) => sum + brand.rating, 0) / selectedBrands.length).toFixed(1)
         : 0;
 
-    const handleExport = () => {
-        const data = {
-            selectedMedication: selectedMedication?.genericName,
-            selectedBrands: selectedBrands.map(brand => ({
-                name: brand.name,
-                manufacturer: brand.manufacturer,
-                price: brand.price,
-                savings: brand.savings,
-                rating: brand.rating,
-                efficacy: brand.efficacyScore
-            })),
-            totalSavings: totalSavings,
-            averageRating: averageRating,
-            exportDate: new Date().toISOString()
+    const handleExport = async () => {
+        if (!selectedMedication) {
+            alert('Please select a medication first to export.');
+            return;
+        }
+
+        // Auto-fetch AI insights if not already loaded
+        let insightsData = aiInsights;
+        if (!insightsData) {
+            try {
+                const response = await fetch('/api/ml/brand-insights', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        medication: {
+                            id: selectedMedication.id,
+                            genericName: selectedMedication.genericName,
+                            category: selectedMedication.category,
+                            strength: selectedMedication.strength,
+                            therapeuticClass: selectedMedication.therapeuticClass
+                        },
+                        selectedBrands: selectedBrands.map(b => ({
+                            id: b.id, name: b.name, manufacturer: b.manufacturer,
+                            price: b.price, rating: b.rating, efficacyScore: b.efficacyScore,
+                            isGeneric: b.isGeneric, availability: b.availability, savings: b.savings
+                        })),
+                        allBrands: selectedMedication.brands.map(b => ({
+                            id: b.id, name: b.name, manufacturer: b.manufacturer,
+                            price: b.price, rating: b.rating, efficacyScore: b.efficacyScore,
+                            isGeneric: b.isGeneric, availability: b.availability, savings: b.savings,
+                            patientCompliance: b.patientCompliance, subscription: b.subscription,
+                            sustainability: b.sustainability
+                        }))
+                    })
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        insightsData = data.data;
+                        setAIInsights(data.data);
+                    }
+                }
+            } catch (e) {
+                console.log('Could not fetch AI insights for PDF:', e);
+            }
+        }
+
+        // Create PDF document
+        const doc = new jsPDF();
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        let yPos = 20;
+
+        // Helper function to add new page if needed
+        const checkPageBreak = (requiredSpace = 30) => {
+            if (yPos + requiredSpace > pageHeight - 20) {
+                doc.addPage();
+                yPos = 20;
+                return true;
+            }
+            return false;
         };
 
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `brand-comparison-${new Date().toISOString().split('T')[0]}.json`;
-        a.click();
+        // ===== HEADER =====
+        // Gradient-like header background
+        doc.setFillColor(59, 130, 246); // Blue
+        doc.rect(0, 0, pageWidth, 45, 'F');
+        doc.setFillColor(99, 102, 241); // Indigo overlay
+        doc.rect(0, 35, pageWidth, 10, 'F');
+
+        // Logo/Brand
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(24);
+        doc.setFont('helvetica', 'bold');
+        doc.text('PharmaLink', 15, 22);
+        
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.text('Intelligent Medication Comparison Platform', 15, 30);
+        
+        // Report title
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Brand Comparison Report', 15, 40);
+
+        // Date on right side
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'normal');
+        const dateStr = new Date().toLocaleDateString('en-US', { 
+            year: 'numeric', month: 'long', day: 'numeric' 
+        });
+        doc.text(`Generated: ${dateStr}`, pageWidth - 15, 22, { align: 'right' });
+
+        yPos = 55;
+
+        // ===== MEDICATION INFO =====
+        doc.setTextColor(30, 41, 59); // Slate-800
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Medication Overview', 15, yPos);
+        yPos += 8;
+
+        // Info box
+        doc.setFillColor(241, 245, 249); // Slate-100
+        doc.roundedRect(15, yPos, pageWidth - 30, 28, 3, 3, 'F');
+        
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(59, 130, 246);
+        doc.text(selectedMedication.genericName, 20, yPos + 8);
+        
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(100, 116, 139); // Slate-500
+        doc.setFontSize(9);
+        doc.text(`Strength: ${selectedMedication.strength}  |  Category: ${selectedMedication.category}  |  Form: ${selectedMedication.form}`, 20, yPos + 16);
+        doc.text(`Therapeutic Class: ${selectedMedication.therapeuticClass}  |  Total Brands Available: ${selectedMedication.brands.length}`, 20, yPos + 23);
+        
+        yPos += 38;
+
+        // ===== SUMMARY STATS =====
+        doc.setTextColor(30, 41, 59);
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Analysis Summary', 15, yPos);
+        yPos += 10;
+
+        // Stats boxes
+        const boxWidth = (pageWidth - 40) / 4;
+        const statsData = [
+            { label: 'Brands Compared', value: selectedBrands.length.toString(), color: [59, 130, 246] },
+            { label: 'Total Savings', value: `$${totalSavings.toFixed(2)}`, color: [16, 185, 129] },
+            { label: 'Avg Rating', value: `${averageRating}/5`, color: [245, 158, 11] },
+            { label: 'Best Price', value: selectedBrands.length > 0 ? `$${Math.min(...selectedBrands.map(b => b.price)).toFixed(2)}` : 'N/A', color: [139, 92, 246] }
+        ];
+
+        statsData.forEach((stat, i) => {
+            const x = 15 + (i * (boxWidth + 5));
+            doc.setFillColor(...stat.color);
+            doc.roundedRect(x, yPos, boxWidth, 22, 2, 2, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.text(stat.value, x + boxWidth/2, yPos + 10, { align: 'center' });
+            doc.setFontSize(7);
+            doc.setFont('helvetica', 'normal');
+            doc.text(stat.label, x + boxWidth/2, yPos + 17, { align: 'center' });
+        });
+        yPos += 32;
+
+        // ===== BRAND COMPARISON TABLE =====
+        checkPageBreak(50);
+        doc.setTextColor(30, 41, 59);
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Brand Comparison Details', 15, yPos);
+        yPos += 8;
+
+        if (selectedBrands.length > 0) {
+            const tableData = selectedBrands.map(brand => [
+                brand.name,
+                brand.manufacturer,
+                brand.isGeneric ? 'Generic' : 'Brand',
+                `$${brand.price.toFixed(2)}`,
+                `$${brand.savings.toFixed(2)}`,
+                `${brand.rating}/5`,
+                `${brand.efficacyScore}%`
+            ]);
+
+            doc.autoTable({
+                startY: yPos,
+                head: [['Brand Name', 'Manufacturer', 'Type', 'Price', 'Savings', 'Rating', 'Efficacy']],
+                body: tableData,
+                theme: 'striped',
+                headStyles: {
+                    fillColor: [59, 130, 246],
+                    textColor: [255, 255, 255],
+                    fontStyle: 'bold',
+                    fontSize: 8,
+                    halign: 'center',
+                    cellPadding: 3
+                },
+                bodyStyles: {
+                    fontSize: 8,
+                    textColor: [51, 65, 85],
+                    cellPadding: 2,
+                    valign: 'middle'
+                },
+                alternateRowStyles: {
+                    fillColor: [248, 250, 252]
+                },
+                columnStyles: {
+                    0: { fontStyle: 'bold', cellWidth: 35 },
+                    1: { cellWidth: 40 },
+                    2: { cellWidth: 20, halign: 'center' },
+                    3: { cellWidth: 22, halign: 'right' },
+                    4: { cellWidth: 22, halign: 'right', textColor: [16, 185, 129] },
+                    5: { cellWidth: 20, halign: 'center' },
+                    6: { cellWidth: 20, halign: 'center' }
+                },
+                margin: { left: 15, right: 15 },
+                tableWidth: 'auto'
+            });
+            yPos = doc.lastAutoTable.finalY + 15;
+        }
+
+        // ===== AI INSIGHTS SECTION =====
+        if (insightsData) {
+            checkPageBreak(80);
+            
+            // Header - Purple/Pink gradient like the modal
+            doc.setFillColor(147, 51, 234); // Purple-600
+            doc.rect(15, yPos, pageWidth - 30, 25, 'F');
+            doc.setFillColor(219, 39, 119); // Pink-600
+            doc.rect(15, yPos + 20, pageWidth - 30, 8, 'F');
+            
+            // Icon placeholder
+            doc.setFillColor(255, 255, 255, 0.2);
+            doc.roundedRect(20, yPos + 4, 18, 18, 3, 3, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(14);
+            doc.text('*', 26, yPos + 16); // Sparkle placeholder
+            
+            // Header text
+            doc.setFontSize(16);
+            doc.setFont('helvetica', 'bold');
+            doc.text('AI Insights', 45, yPos + 12);
+            
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${insightsData.medication?.name || selectedMedication.genericName} ${insightsData.medication?.strength || selectedMedication.strength} - ${insightsData.medication?.category || selectedMedication.category}`, 45, yPos + 20);
+            
+            // Confidence badge
+            doc.setFillColor(255, 255, 255, 0.3);
+            doc.roundedRect(pageWidth - 55, yPos + 8, 35, 10, 2, 2, 'F');
+            doc.setFontSize(8);
+            doc.text(`Confidence: ${(insightsData.aiConfidence * 100).toFixed(0)}%`, pageWidth - 52, yPos + 15);
+            
+            yPos += 35;
+
+            // ===== TOP PICKS SECTION =====
+            if (insightsData.topPicks) {
+                doc.setTextColor(30, 41, 59);
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Top Picks', 15, yPos);
+                yPos += 8;
+
+                const cardWidth = (pageWidth - 40) / 3;
+                const cardHeight = 35;
+
+                // Best Value Card - Green gradient
+                doc.setFillColor(236, 253, 245); // Emerald-50
+                doc.roundedRect(15, yPos, cardWidth, cardHeight, 3, 3, 'F');
+                doc.setDrawColor(167, 243, 208); // Emerald-200
+                doc.roundedRect(15, yPos, cardWidth, cardHeight, 3, 3, 'S');
+                
+                doc.setFontSize(7);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(5, 150, 105); // Emerald-600
+                doc.text('BEST VALUE', 18, yPos + 8);
+                doc.setFontSize(10);
+                doc.setTextColor(30, 41, 59);
+                doc.text(insightsData.topPicks.bestValue.name, 18, yPos + 17);
+                doc.setFontSize(9);
+                doc.setTextColor(5, 150, 105);
+                doc.text(`$${insightsData.topPicks.bestValue.price}`, 18, yPos + 26);
+                doc.setTextColor(100, 116, 139);
+                doc.text(` - ${insightsData.topPicks.bestValue.rating}/5`, 18 + doc.getTextWidth(`$${insightsData.topPicks.bestValue.price}`), yPos + 26);
+
+                // Most Affordable Card - Blue gradient
+                const card2X = 15 + cardWidth + 5;
+                doc.setFillColor(239, 246, 255); // Blue-50
+                doc.roundedRect(card2X, yPos, cardWidth, cardHeight, 3, 3, 'F');
+                doc.setDrawColor(191, 219, 254); // Blue-200
+                doc.roundedRect(card2X, yPos, cardWidth, cardHeight, 3, 3, 'S');
+                
+                doc.setFontSize(7);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(37, 99, 235); // Blue-600
+                doc.text('MOST AFFORDABLE', card2X + 3, yPos + 8);
+                doc.setFontSize(10);
+                doc.setTextColor(30, 41, 59);
+                doc.text(insightsData.topPicks.mostAffordable.name, card2X + 3, yPos + 17);
+                doc.setFontSize(9);
+                doc.setTextColor(37, 99, 235);
+                doc.text(`$${insightsData.topPicks.mostAffordable.price}`, card2X + 3, yPos + 26);
+
+                // Highest Rated Card - Amber gradient
+                const card3X = 15 + (cardWidth + 5) * 2;
+                doc.setFillColor(255, 251, 235); // Amber-50
+                doc.roundedRect(card3X, yPos, cardWidth, cardHeight, 3, 3, 'F');
+                doc.setDrawColor(253, 230, 138); // Amber-200
+                doc.roundedRect(card3X, yPos, cardWidth, cardHeight, 3, 3, 'S');
+                
+                doc.setFontSize(7);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(217, 119, 6); // Amber-600
+                doc.text('HIGHEST RATED', card3X + 3, yPos + 8);
+                doc.setFontSize(10);
+                doc.setTextColor(30, 41, 59);
+                doc.text(insightsData.topPicks.highestRated.name, card3X + 3, yPos + 17);
+                doc.setFontSize(9);
+                doc.setTextColor(217, 119, 6);
+                doc.text(`${insightsData.topPicks.highestRated.rating}/5`, card3X + 3, yPos + 26);
+                doc.setTextColor(100, 116, 139);
+                doc.text(` - ${insightsData.topPicks.highestRated.reviews} reviews`, card3X + 3 + doc.getTextWidth(`${insightsData.topPicks.highestRated.rating}/5`), yPos + 26);
+
+                yPos += cardHeight + 10;
+            }
+
+            // ===== RECOMMENDATIONS SECTION =====
+            if (insightsData.recommendations && insightsData.recommendations.length > 0) {
+                checkPageBreak(50);
+                doc.setTextColor(30, 41, 59);
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'bold');
+                doc.text('AI Recommendations', 15, yPos);
+                yPos += 8;
+
+                insightsData.recommendations.forEach((rec) => {
+                    checkPageBreak(25);
+                    
+                    // Card background
+                    doc.setFillColor(248, 250, 252); // Slate-50
+                    doc.roundedRect(15, yPos, pageWidth - 30, 22, 3, 3, 'F');
+                    doc.setDrawColor(226, 232, 240); // Slate-200
+                    doc.roundedRect(15, yPos, pageWidth - 30, 22, 3, 3, 'S');
+                    
+                    // Priority colored icon box
+                    const priorityColors = {
+                        high: [239, 68, 68],     // Red
+                        medium: [245, 158, 11],  // Amber
+                        low: [59, 130, 246]      // Blue
+                    };
+                    const color = priorityColors[rec.priority] || [147, 51, 234];
+                    doc.setFillColor(...color);
+                    doc.roundedRect(18, yPos + 3, 16, 16, 2, 2, 'F');
+                    
+                    // Icon symbol
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(10);
+                    const symbols = { savings: '$', quality: '*', warning: '!', value: '#', subscription: '+', sustainability: '~' };
+                    doc.text(symbols[rec.type] || '?', 23, yPos + 13);
+                    
+                    // Title and priority badge
+                    doc.setTextColor(30, 41, 59);
+                    doc.setFontSize(9);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(rec.title || rec.type || 'Recommendation', 38, yPos + 9);
+                    
+                    // Priority badge
+                    const badgeColors = {
+                        high: { bg: [254, 226, 226], text: [185, 28, 28] },
+                        medium: { bg: [254, 243, 199], text: [180, 83, 9] },
+                        low: { bg: [219, 234, 254], text: [29, 78, 216] }
+                    };
+                    const badge = badgeColors[rec.priority] || badgeColors.low;
+                    const badgeX = 38 + doc.getTextWidth(rec.title || rec.type || 'Recommendation') + 3;
+                    doc.setFillColor(...badge.bg);
+                    doc.roundedRect(badgeX, yPos + 3, 18, 8, 2, 2, 'F');
+                    doc.setTextColor(...badge.text);
+                    doc.setFontSize(6);
+                    doc.text(rec.priority.toUpperCase(), badgeX + 2, yPos + 9);
+                    
+                    // Description
+                    doc.setFont('helvetica', 'normal');
+                    doc.setTextColor(100, 116, 139);
+                    doc.setFontSize(8);
+                    const descText = rec.description || rec.recommendation || '';
+                    const splitDesc = doc.splitTextToSize(descText, pageWidth - 60);
+                    doc.text(splitDesc[0] || '', 38, yPos + 17);
+                    
+                    yPos += 26;
+                });
+                yPos += 5;
+            }
+
+            // ===== MARKET ANALYSIS SECTION =====
+            if (insightsData.marketAnalysis) {
+                checkPageBreak(45);
+                doc.setTextColor(30, 41, 59);
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Market Analysis', 15, yPos);
+                yPos += 8;
+
+                const ma = insightsData.marketAnalysis;
+                const statWidth = (pageWidth - 35) / 3;
+                const statHeight = 30;
+
+                const marketStats = [
+                    { value: ma.totalBrands || 0, label: 'Total Brands', color: [30, 41, 59] },
+                    { value: `$${(ma.averagePrice || ma.avgPrice || 0).toFixed(2)}`, label: 'Avg. Price', color: [5, 150, 105] },
+                    { value: ma.averageRating || ma.avgRating || 'N/A', label: 'Avg. Rating', color: [217, 119, 6] }
+                ];
+
+                marketStats.forEach((stat, i) => {
+                    const x = 15 + (i * (statWidth + 5));
+                    doc.setFillColor(255, 255, 255);
+                    doc.roundedRect(x, yPos, statWidth, statHeight, 3, 3, 'F');
+                    doc.setDrawColor(226, 232, 240);
+                    doc.roundedRect(x, yPos, statWidth, statHeight, 3, 3, 'S');
+                    
+                    doc.setTextColor(...stat.color);
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(String(stat.value), x + statWidth/2, yPos + 14, { align: 'center' });
+                    
+                    doc.setTextColor(100, 116, 139);
+                    doc.setFontSize(7);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(stat.label, x + statWidth/2, yPos + 23, { align: 'center' });
+                });
+                yPos += statHeight + 10;
+            }
+
+            // ===== SELECTION ANALYSIS SECTION =====
+            if (insightsData.selectionAnalysis) {
+                checkPageBreak(35);
+                
+                // Purple/Pink gradient background
+                doc.setFillColor(250, 245, 255); // Purple-50
+                doc.roundedRect(15, yPos, pageWidth - 30, 35, 3, 3, 'F');
+                doc.setDrawColor(233, 213, 255); // Purple-200
+                doc.roundedRect(15, yPos, pageWidth - 30, 35, 3, 3, 'S');
+                
+                doc.setTextColor(30, 41, 59);
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Your Selection', 20, yPos + 10);
+                
+                const sa = insightsData.selectionAnalysis;
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(71, 85, 105);
+                doc.setFontSize(9);
+                doc.text(sa.summary || '', 20, yPos + 20);
+                
+                // Stats row
+                doc.setFontSize(8);
+                let statsX = 20;
+                
+                // Total cost
+                doc.setTextColor(147, 51, 234);
+                doc.text(`Total: $${(sa.totalCost || 0).toFixed(2)}`, statsX, yPos + 30);
+                statsX += 45;
+                
+                // Rating
+                doc.text(`Avg Rating: ${sa.averageRating || 'N/A'}`, statsX, yPos + 30);
+                statsX += 45;
+                
+                // Savings
+                if (sa.potentialSavings > 0) {
+                    doc.setTextColor(5, 150, 105);
+                    doc.text(`Savings: $${sa.potentialSavings.toFixed(2)}`, statsX, yPos + 30);
+                }
+                
+                yPos += 42;
+            }
+
+            // Footer info
+            doc.setFontSize(7);
+            doc.setTextColor(147, 51, 234);
+            doc.text(`Generated: ${new Date(insightsData.timestamp).toLocaleString()} | Model v${insightsData.modelVersion}`, 15, yPos);
+            yPos += 10;
+
+        } else {
+            // No AI insights - show prompt
+            checkPageBreak(25);
+            doc.setFillColor(254, 243, 199); // Amber-100
+            doc.roundedRect(15, yPos, pageWidth - 30, 18, 2, 2, 'F');
+            doc.setTextColor(180, 83, 9); // Amber-700
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Tip: Click "AI Insights" button to generate personalized recommendations before exporting.', 20, yPos + 11);
+            yPos += 25;
+        }
+
+        // ===== FOOTER =====
+        const footerY = pageHeight - 15;
+        doc.setDrawColor(226, 232, 240);
+        doc.line(15, footerY - 5, pageWidth - 15, footerY - 5);
+        
+        doc.setFontSize(7);
+        doc.setTextColor(148, 163, 184);
+        doc.text('This report is generated by PharmaLink AI-powered comparison engine. Always consult with your healthcare provider.', pageWidth / 2, footerY, { align: 'center' });
+        doc.text(`© ${new Date().getFullYear()} PharmaLink - Confidential`, pageWidth / 2, footerY + 4, { align: 'center' });
+
+        // Save the PDF
+        doc.save(`PharmaLink-Comparison-${selectedMedication.genericName}-${new Date().toISOString().split('T')[0]}.pdf`);
+
+        // Add notification
+        setNotifications(prev => [{
+            type: 'success',
+            title: 'PDF Exported',
+            message: `Brand comparison report for ${selectedMedication.genericName} downloaded successfully`,
+            time: new Date().toLocaleTimeString()
+        }, ...prev]);
     };
 
     const handleShare = () => {
@@ -2435,6 +3108,86 @@ const CrossBrandComparator = () => {
             });
         } else {
             alert('Sharing is not supported in your browser. Export the report instead.');
+        }
+    };
+
+    // AI Insights handler - calls backend API for intelligent brand analysis
+    const handleAIInsights = async () => {
+        if (!selectedMedication) {
+            alert('Please select a medication first to get AI insights.');
+            return;
+        }
+
+        setShowAIInsights(true);
+        setAIInsightsLoading(true);
+        setAIInsightsError(null);
+        setAIInsights(null);
+
+        try {
+            const response = await fetch('/api/ml/brand-insights', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    medication: {
+                        id: selectedMedication.id,
+                        genericName: selectedMedication.genericName,
+                        category: selectedMedication.category,
+                        strength: selectedMedication.strength,
+                        therapeuticClass: selectedMedication.therapeuticClass
+                    },
+                    selectedBrands: selectedBrands.map(b => ({
+                        id: b.id,
+                        name: b.name,
+                        manufacturer: b.manufacturer,
+                        price: b.price,
+                        rating: b.rating,
+                        efficacyScore: b.efficacyScore,
+                        isGeneric: b.isGeneric,
+                        availability: b.availability,
+                        savings: b.savings
+                    })),
+                    allBrands: selectedMedication.brands.map(b => ({
+                        id: b.id,
+                        name: b.name,
+                        manufacturer: b.manufacturer,
+                        price: b.price,
+                        rating: b.rating,
+                        efficacyScore: b.efficacyScore,
+                        isGeneric: b.isGeneric,
+                        availability: b.availability,
+                        savings: b.savings,
+                        patientCompliance: b.patientCompliance,
+                        subscription: b.subscription,
+                        sustainability: b.sustainability
+                    }))
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status} ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            
+            if (data.success) {
+                setAIInsights(data.data);
+                // Add notification for successful insight generation
+                setNotifications(prev => [{
+                    type: 'ai',
+                    title: '🤖 AI Insights Ready',
+                    message: `Generated ${data.data.recommendations?.length || 0} recommendations for ${selectedMedication.genericName}`,
+                    time: new Date().toLocaleTimeString()
+                }, ...prev]);
+            } else {
+                throw new Error(data.error || 'Failed to generate insights');
+            }
+        } catch (error) {
+            console.error('AI Insights error:', error);
+            setAIInsightsError(error.message || 'Failed to generate AI insights. Please try again.');
+        } finally {
+            setAIInsightsLoading(false);
         }
     };
 
@@ -2603,6 +3356,7 @@ const CrossBrandComparator = () => {
                     medications={medications}
                     onExport={handleExport}
                     onShare={handleShare}
+                    onAIInsights={handleAIInsights}
                 />
 
                 {/* Search Bar with Autocomplete */}
@@ -2750,15 +3504,6 @@ const CrossBrandComparator = () => {
                 <div className="bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl p-4 mb-6 flex flex-wrap items-center gap-3">
                     {/* Demo Button - Primary CTA */}
                     <button
-                        onClick={loadDemoData}
-                        className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 animate-pulse"
-                        style={{ animationDuration: '2s' }}
-                    >
-                        <SparklesIcon className="h-5 w-5" />
-                        ✨ Load Demo
-                    </button>
-                    <div className="w-px h-8 bg-slate-300 mx-2"></div>
-                    <button
                         onClick={() => setBatchCompareMode(!batchCompareMode)}
                         className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 ${batchCompareMode ? 'bg-cyan-500 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                             }`}
@@ -2833,8 +3578,6 @@ const CrossBrandComparator = () => {
                     <AdvancedFilters
                         filterGeneric={filterGeneric}
                         setFilterGeneric={setFilterGeneric}
-                        filterAvailability={filterAvailability}
-                        setFilterAvailability={setFilterAvailability}
                         filterRating={filterRating}
                         setFilterRating={setFilterRating}
                         priceRange={priceRange}
@@ -2849,7 +3592,6 @@ const CrossBrandComparator = () => {
                         setShowSustainability={setShowSustainability}
                         onClearFilters={() => {
                             setFilterGeneric('all');
-                            setFilterAvailability('all');
                             setFilterRating(0);
                             setPriceRange([0, 100]);
                             setShowFavorites(false);
@@ -3036,7 +3778,6 @@ const CrossBrandComparator = () => {
                                 <button
                                     onClick={() => {
                                         setFilterGeneric('all');
-                                        setFilterAvailability('all');
                                         setFilterRating(0);
                                         setPriceRange([0, 100]);
                                         setShowFavorites(false);
@@ -3102,6 +3843,20 @@ const CrossBrandComparator = () => {
                     notifications={notifications}
                     onClose={() => setShowNotifications(false)}
                     onClearAll={() => setNotifications([])}
+                />
+            )}
+
+            {/* AI Insights Modal */}
+            {showAIInsights && (
+                <AIInsightsModal
+                    insights={aiInsights}
+                    loading={aiInsightsLoading}
+                    error={aiInsightsError}
+                    onClose={() => {
+                        setShowAIInsights(false);
+                        setAIInsights(null);
+                        setAIInsightsError(null);
+                    }}
                 />
             )}
 

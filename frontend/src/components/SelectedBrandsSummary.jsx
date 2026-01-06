@@ -48,12 +48,7 @@ const SelectedBrandsSummary = ({ selectedBrands, totalSavings, handleBrandSelect
                     </div>
                     <div className="flex items-center justify-between text-sm">
                         <span className="text-slate-600">${brand.price}</span>
-                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${brand.availability === 'In Stock' ? 'bg-emerald-100 text-emerald-800' :
-                            brand.availability === 'Limited Stock' ? 'bg-amber-100 text-amber-800' :
-                                'bg-red-100 text-red-800'
-                            }`}>
-                            {brand.availability}
-                        </span>
+                        <span className="text-xs text-slate-500">{brand.packSize}</span>
                     </div>
                 </div>
             ))}

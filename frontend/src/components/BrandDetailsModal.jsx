@@ -3,7 +3,6 @@ import React from 'react';
 import { StarIcon as StarSolid, HeartIcon as HeartSolid } from '@heroicons/react/24/solid';
 import {
     XMarkIcon,
-    TruckIcon,
     ShieldCheckIcon,
     BeakerIcon,
     ClockIcon,
@@ -20,14 +19,6 @@ import {
 
 const BrandDetailsModal = ({ brand, onClose }) => {
     if (!brand) return null;
-
-    const getAvailabilityStyles = (availability) => {
-        if (availability === 'In Stock') return { bg: 'bg-emerald-100', text: 'text-emerald-700', dot: 'bg-emerald-500' };
-        if (availability === 'Limited Stock') return { bg: 'bg-amber-100', text: 'text-amber-700', dot: 'bg-amber-500' };
-        return { bg: 'bg-red-100', text: 'text-red-700', dot: 'bg-red-500' };
-    };
-
-    const availabilityStyles = getAvailabilityStyles(brand.availability);
 
     return (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -96,24 +87,10 @@ const BrandDetailsModal = ({ brand, onClose }) => {
                         <p className="text-slate-700">{brand.description}</p>
                     </div>
 
-                    {/* Availability & Savings */}
-                    <div className="grid grid-cols-2 gap-4 mb-6">
-                        <div className={`p-4 rounded-xl ${availabilityStyles.bg}`}>
-                            <div className="flex items-center gap-2 mb-2">
-                                <TruckIcon className={`h-5 w-5 ${availabilityStyles.text}`} />
-                                <span className={`font-semibold ${availabilityStyles.text}`}>Availability</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <span className={`w-2 h-2 rounded-full ${availabilityStyles.dot} animate-pulse`}></span>
-                                <span className={`font-bold ${availabilityStyles.text}`}>{brand.availability}</span>
-                            </div>
-                            {brand.stockLevel && (
-                                <p className="text-sm text-slate-500 mt-1">{brand.stockLevel} units in stock</p>
-                            )}
-                        </div>
-
-                        {brand.savings > 0 && (
-                            <div className="p-4 rounded-xl bg-emerald-50">
+                    {/* Savings */}
+                    {brand.savings > 0 && (
+                        <div className="mb-6">
+                            <div className="p-4 rounded-xl bg-emerald-50 max-w-sm">
                                 <div className="flex items-center gap-2 mb-2">
                                     <CurrencyDollarIcon className="h-5 w-5 text-emerald-600" />
                                     <span className="font-semibold text-emerald-700">Potential Savings</span>
@@ -121,8 +98,8 @@ const BrandDetailsModal = ({ brand, onClose }) => {
                                 <p className="text-2xl font-black text-emerald-600">${brand.savings.toFixed(2)}</p>
                                 <p className="text-sm text-emerald-600">compared to brand name</p>
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
 
                     {/* Side Effects */}
                     {brand.sideEffects && brand.sideEffects.length > 0 && (

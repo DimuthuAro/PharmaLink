@@ -4,8 +4,6 @@ import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
 const AdvancedFilters = ({
     filterGeneric,
     setFilterGeneric,
-    filterAvailability,
-    setFilterAvailability,
     filterRating,
     setFilterRating,
     priceRange,
@@ -32,18 +30,6 @@ const AdvancedFilters = ({
                     <option value="all">All Brands</option>
                     <option value="brand">Brand Name Only</option>
                     <option value="generic">Generic Only</option>
-                </select>
-            </div>
-            <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Availability</label>
-                <select
-                    value={filterAvailability}
-                    onChange={e => setFilterAvailability(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                    <option value="all">All</option>
-                    <option value="in-stock">In Stock Only</option>
-                    <option value="limited">Limited Stock</option>
                 </select>
             </div>
             <div>

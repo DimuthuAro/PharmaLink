@@ -49,7 +49,7 @@ const EnhancedComparisonTable = ({ selectedBrands }) => {
     const bestCompliance = getBestValue('patientCompliance', 'highest');
 
     const exportToCSV = () => {
-        const headers = ['Brand', 'Manufacturer', 'Price', 'Pack Size', 'Rating', 'Reviews', 'Efficacy', 'Compliance', 'Savings', 'Availability', 'Generic'];
+        const headers = ['Brand', 'Manufacturer', 'Price', 'Pack Size', 'Rating', 'Reviews', 'Efficacy', 'Compliance', 'Savings', 'Generic'];
         const rows = selectedBrands.map(brand => [
             brand.name,
             brand.manufacturer,
@@ -60,7 +60,6 @@ const EnhancedComparisonTable = ({ selectedBrands }) => {
             brand.efficacyScore,
             brand.patientCompliance,
             brand.savings,
-            brand.availability,
             brand.isGeneric ? 'Yes' : 'No'
         ]);
         const csvContent = [
@@ -163,7 +162,6 @@ const EnhancedComparisonTable = ({ selectedBrands }) => {
                             <th className="px-6 py-4 text-right text-sm font-bold text-slate-700">
                                 <SortButton column="savings" label="Savings" />
                             </th>
-                            <th className="px-6 py-4 text-center text-sm font-bold text-slate-700">Availability</th>
                             {showAllMetrics && (
                                 <>
                                     <th className="px-6 py-4 text-center text-sm font-bold text-slate-700">Generic</th>
@@ -234,22 +232,6 @@ const EnhancedComparisonTable = ({ selectedBrands }) => {
                                     ) : (
                                         <span className="text-slate-400">—</span>
                                     )}
-                                </td>
-                                <td className="px-6 py-4 text-center">
-                                    <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold ${brand.availability === 'In Stock'
-                                        ? 'bg-emerald-100 text-emerald-700'
-                                        : brand.availability === 'Limited Stock'
-                                            ? 'bg-amber-100 text-amber-700'
-                                            : 'bg-red-100 text-red-700'
-                                        }`}>
-                                        <span className={`w-2 h-2 rounded-full ${brand.availability === 'In Stock'
-                                            ? 'bg-emerald-500'
-                                            : brand.availability === 'Limited Stock'
-                                                ? 'bg-amber-500'
-                                                : 'bg-red-500'
-                                            }`}></span>
-                                        {brand.availability}
-                                    </span>
                                 </td>
                                 {showAllMetrics && (
                                     <>

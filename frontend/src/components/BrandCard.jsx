@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { StarIcon as StarSolid, HeartIcon as HeartSolid, SparklesIcon as SparklesSolid } from '@heroicons/react/24/solid';
 import {
-    TruckIcon,
     ClockIcon,
     ShieldCheckIcon,
     ChartBarIcon,
@@ -20,12 +19,6 @@ import {
 const BrandCard = ({ brand, onSelect, onFavoriteToggle, isSelected, setShowDetails }) => {
     const [showSideEffects, setShowSideEffects] = useState(false);
 
-    const getAvailabilityStyles = (availability) => {
-        if (availability === 'In Stock') return { bg: 'bg-emerald-100', text: 'text-emerald-700', dot: 'bg-emerald-500' };
-        if (availability === 'Limited Stock') return { bg: 'bg-amber-100', text: 'text-amber-700', dot: 'bg-amber-500' };
-        return { bg: 'bg-red-100', text: 'text-red-700', dot: 'bg-red-500' };
-    };
-
     const getEfficacyColor = (score) => {
         if (score >= 90) return 'from-emerald-500 to-teal-600';
         if (score >= 80) return 'from-blue-500 to-indigo-600';
@@ -41,7 +34,6 @@ const BrandCard = ({ brand, onSelect, onFavoriteToggle, isSelected, setShowDetai
     };
 
     const priceChange = getPriceChange();
-    const availabilityStyles = getAvailabilityStyles(brand.availability);
 
     return (
         <div
@@ -129,15 +121,6 @@ const BrandCard = ({ brand, onSelect, onFavoriteToggle, isSelected, setShowDetai
                         <div className="text-sm font-bold text-blue-600">{brand.patientCompliance}%</div>
                         <p className="text-xs text-slate-500">Compliance</p>
                     </div>
-                </div>
-
-                {/* Availability */}
-                <div className={`flex items-center gap-2 px-3 py-2 rounded-xl ${availabilityStyles.bg} mb-4`}>
-                    <span className={`w-2 h-2 rounded-full ${availabilityStyles.dot} animate-pulse`}></span>
-                    <span className={`text-sm font-semibold ${availabilityStyles.text}`}>{brand.availability}</span>
-                    {brand.stockLevel && brand.stockLevel < 100 && (
-                        <span className="text-xs text-slate-500">({brand.stockLevel} left)</span>
-                    )}
                 </div>
 
                 {/* Description */}
