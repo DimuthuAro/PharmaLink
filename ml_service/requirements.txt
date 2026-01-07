@@ -42,6 +42,9 @@ safetensors>=0.4.0
 # Environment variables
 python-dotenv>=1.0.0
 
+# Utilities
+tqdm>=4.65.0
+
 # Optional: PaddleOCR (uncomment if needed - requires paddlepaddle)
 # paddlepaddle>=2.5.0
 # paddleocr>=2.7.0

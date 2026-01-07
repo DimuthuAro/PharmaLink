@@ -13,9 +13,30 @@ import re
 import numpy as np
 import cv2
 from PIL import Image, ImageEnhance, ImageFilter
-from transformers import AutoModel, AutoTokenizer
-import torch
-import easyocr
+try:
+    from transformers import AutoModel, AutoTokenizer
+    TRANSFORMERS_AVAILABLE = True
+except Exception:
+    AutoModel = None
+    AutoTokenizer = None
+    TRANSFORMERS_AVAILABLE = False
+    print("⚠️ transformers not available. DeepSeek-OCR features will be disabled.")
+
+try:
+    import torch
+    TORCH_AVAILABLE = True
+except Exception:
+    torch = None
+    TORCH_AVAILABLE = False
+    print("⚠️ torch not available. GPU features disabled.")
+
+try:
+    import easyocr
+    EASYOCR_AVAILABLE = True
+except Exception:
+    easyocr = None
+    EASYOCR_AVAILABLE = False
+    print("⚠️ easyocr not available. EasyOCR endpoints will be limited.")
 
 # Load environment variables from .env file
 from dotenv import load_dotenv
@@ -58,8 +79,19 @@ print("="*60)
 print("\n" + "="*60)
 print("📝 Loading EasyOCR reader...")
 print("="*60)
-easyocr_reader = easyocr.Reader(['en'], gpu=torch.cuda.is_available())
-print("✅ EasyOCR loaded")
+easyocr_reader = None
+if EASYOCR_AVAILABLE:
+    try:
+        easyocr_gpu = False
+        if TORCH_AVAILABLE and getattr(torch, 'cuda', None) is not None and torch.cuda.is_available():
+            easyocr_gpu = True
+        easyocr_reader = easyocr.Reader(['en'], gpu=easyocr_gpu)
+        print("✅ EasyOCR loaded")
+    except Exception as e:
+        easyocr_reader = None
+        print(f"⚠️ EasyOCR failed to initialize: {e}")
+else:
+    print("⚠️ EasyOCR not available in the environment.")
 print("="*60)
 
 # Initialize Google Gemini client
@@ -77,6 +109,11 @@ if GEMINI_AVAILABLE:
 
 # Initialize DeepSeek-OCR model (OPTIONAL - set to False to skip 7GB download)
 ENABLE_DEEPSEEK_OCR = False  # Set to True when you want to use DeepSeek-OCR
+
+# If transformers are not available, ensure DeepSeek remains disabled
+if ENABLE_DEEPSEEK_OCR and not TRANSFORMERS_AVAILABLE:
+    print("⚠️ Cannot enable DeepSeek-OCR because transformers is missing. Forcing disabled.")
+    ENABLE_DEEPSEEK_OCR = False
 
 ocr_model = None
 ocr_tokenizer = None
@@ -440,7 +477,7 @@ async def interpret_with_rules(extracted_text: str) -> Dict[str, Any]:
 
 
 # =============================================================================
-# OCR HELPER FUNCTIONS  
+# OCR HELPER FUNCTIONS
 # =============================================================================
 
 async def run_deepseek_ocr(image: Image.Image) -> str:
