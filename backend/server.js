@@ -1,117 +1,195 @@
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
-const compression = require('compression');
-const rateLimit = require('express-rate-limit');
-const { createProxyMiddleware } = require('http-proxy-middleware');
-require('dotenv').config();
+const express = require("express");
+const cors = require("cors");
+const helmet = require("helmet");
+const morgan = require("morgan");
+const compression = require("compression");
+const rateLimit = require("express-rate-limit");
+const { createProxyMiddleware } = require("http-proxy-middleware");
+const path = require("path");
 
-const logger = require('./shared_infrastructure/logger');
-const connectDB = require('./config/database');
+// Load .env (Windows-safe)
+require("dotenv").config({ path: path.join(__dirname, ".env") });
+
+// Local infra
+const connectDB = require("./config/database");
+
+// Logger (fallback to console if your logger file is missing)
+let logger;
+try {
+  logger = require("./shared_infrastructure/logger");
+} catch (e) {
+  logger = {
+    info: console.log,
+    warn: console.warn,
+    error: console.error,
+    stream: { write: (msg) => console.log(msg.trim()) }
+  };
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Security middleware
+/* =========================
+   SECURITY & CORE MIDDLEWARE
+========================= */
+
+// Security headers
 app.use(helmet());
 
-// CORS configuration
-app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+// CORS
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     credentials: true
-}));
+  })
+);
 
-// Compression middleware
+// Compression
 app.use(compression());
 
-// Logging middleware
-app.use(morgan('combined', { stream: logger.stream }));
+// Logging
+app.use(morgan("combined", { stream: logger.stream }));
 
 // Rate limiting
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 1000, // limit each IP to 1000 requests per windowMs
-    message: 'Too many requests from this IP, please try again later.',
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 1000,
+    message: "Too many requests from this IP, please try again later.",
     standardHeaders: true,
     legacyHeaders: false
-});
-app.use(limiter);
+  })
+);
 
-// Body parsing middleware
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+/* =========================
+   BODY PARSING
+========================= */
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// Connect to MongoDB
+/* =========================
+   DATABASE
+========================= */
 connectDB();
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-    res.status(200).json({
-        status: 'OK',
-        timestamp: new Date().toISOString(),
-        services: {
-            database: 'connected',
-            redis: 'connected',
-            messageQueue: 'connected'
-        }
-    });
+/* =========================
+   ROUTES
+========================= */
+const userRoutes = require("./routes/user");
+//const interactionRoutes = require("./routes/interactions");
+
+app.use("/api/users", userRoutes);
+//app.use("/api/interactions", interactionRoutes);
+
+/* =========================
+   HEALTH
+========================= */
+app.get("/health", async (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    timestamp: new Date().toISOString()
+  });
 });
 
-// API Routes - Proxy to microservices
-app.use('/api/drug-interactions', createProxyMiddleware({
-    target: `http://localhost:${process.env.DRUG_INTERACTION_PORT || 3001}`,
-    changeOrigin: true,
-    pathRewrite: { '^/api/drug-interactions': '' }
-}));
+/* =========================
+   MICROSERVICE PROXIES
+========================= */
 
-app.use('/api/advisory', createProxyMiddleware({
-    target: `http://localhost:${process.env.ADVISORY_PORT || 3002}`,
+// helper to build a safe proxy (with good error message)
+function proxyTo(target, basePath) {
+  return createProxyMiddleware({
+    target,
     changeOrigin: true,
-    pathRewrite: { '^/api/advisory': '' }
-}));
+    pathRewrite: { [`^${basePath}`]: "" },
+    proxyTimeout: 60_000,
+    timeout: 60_000,
+    onError(err, req, res) {
+      logger.error(`[proxy error] ${basePath} -> ${target}`, err.message);
+      if (!res.headersSent) {
+        res.status(502).json({
+          error: "Microservice unavailable",
+          service: basePath,
+          target,
+          details: err.message
+        });
+      }
+    }
+  });
+}
 
-app.use('/api/comparator', createProxyMiddleware({
-    target: `http://localhost:${process.env.COMPARATOR_PORT || 3003}`,
-    changeOrigin: true,
-    pathRewrite: { '^/api/comparator': '' }
-}));
+// drug interaction microservice
+app.use(
+  "/api/drug-interactions",
+  proxyTo(
+    `http://localhost:${process.env.DRUG_INTERACTION_PORT || 3001}`,
+    "/api/drug-interactions"
+  )
+);
 
-app.use('/api/prescription', createProxyMiddleware({
-    target: `http://localhost:${process.env.PRESCRIPTION_PORT || 3004}`,
-    changeOrigin: true,
-    pathRewrite: { '^/api/prescription': '' }
-}));
+// personalized advisory microservice (YOUR PART)
+app.use(
+  "/api/advisory",
+  proxyTo(
+    `http://localhost:${process.env.ADVISORY_PORT || 3002}`,
+    "/api/advisory"
+  )
+);
 
-// Error handling middleware
+// crossbrand comparator microservice
+app.use(
+  "/api/comparator",
+  proxyTo(
+    `http://localhost:${process.env.COMPARATOR_PORT || 3003}`,
+    "/api/comparator"
+  )
+);
+
+// prescription interpreter microservice
+app.use(
+  "/api/prescription",
+  proxyTo(
+    `http://localhost:${process.env.PRESCRIPTION_PORT || 3004}`,
+    "/api/prescription"
+  )
+);
+
+/* =========================
+   GLOBAL ERROR HANDLER
+========================= */
 app.use((err, req, res, next) => {
-    logger.error(err.stack);
-    res.status(500).json({
-        error: 'Something went wrong!',
-        message: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
-    });
+  logger.error(err.stack || err);
+  res.status(500).json({
+    error: "Something went wrong",
+    message: process.env.NODE_ENV === "development" ? err.message : "Internal server error"
+  });
 });
 
-// 404 handler
-app.use('*', (req, res) => {
-    res.status(404).json({
-        error: 'Route not found',
-        message: `The route ${req.originalUrl} does not exist`
-    });
+/* =========================
+   404 HANDLER
+========================= */
+app.use("*", (req, res) => {
+  res.status(404).json({
+    error: "Route not found",
+    path: req.originalUrl
+  });
 });
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-    logger.info('SIGTERM signal received. Closing HTTP server.');
-    server.close(() => {
-        logger.info('HTTP server closed.');
-        process.exit(0);
-    });
-});
-
+/* =========================
+   START SERVER
+========================= */
 const server = app.listen(PORT, () => {
-    logger.info(`Pharmalink Backend API Gateway listening on port ${PORT}`);
-    logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  logger.info(`Pharmalink Backend Gateway running on port ${PORT}`);
+  logger.info(`Environment: ${process.env.NODE_ENV || "development"}`);
+});
+
+process.on("SIGTERM", () => {
+  logger.info("SIGTERM received. Shutting down...");
+  server.close(() => process.exit(0));
+});
+
+process.on("SIGINT", () => {
+  logger.info("SIGINT received. Shutting down...");
+  server.close(() => process.exit(0));
 });
 
 module.exports = app;
