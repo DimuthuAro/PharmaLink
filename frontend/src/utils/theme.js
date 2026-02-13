@@ -1,5 +1,7 @@
 const KEY = "pharmalink_theme"; // "light" | "dark"
 
+
+
 export const getTheme = () => {
   const saved = localStorage.getItem(KEY);
   if (saved === "dark" || saved === "light") return saved;
