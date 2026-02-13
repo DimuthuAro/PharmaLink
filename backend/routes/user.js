@@ -7,28 +7,36 @@ const auth = require("../middleware/auth");
 
 const router = express.Router();
 
-// REGISTER
 router.post("/register", async (req, res) => {
   try {
-    const { fullName, email, password } = req.body;
-    if (!fullName || !email || !password) {
-      return res.status(400).json({ error: "fullName, email, password required" });
+    const { fullName, email, password, age, phone } = req.body;
+
+    if (!fullName || !email || !password || !age || !phone) {
+      return res.status(400).json({ error: "fullName, email, password , age , phone required" });
     }
 
     const exists = await User.findOne({ email: email.toLowerCase() });
     if (exists) return res.status(409).json({ error: "Email already exists" });
 
     const passwordHash = await bcrypt.hash(password, 10);
-    const user = await User.create({ fullName, email: email.toLowerCase(), passwordHash });
+
+    const user = await User.create({
+      fullName,
+      email: email.toLowerCase(),
+      passwordHash,
+      age: Number(age),
+      phone: phone, 
+    });
 
     res.status(201).json({
       message: "User created",
-      user: { id: user._id, fullName: user.fullName, email: user.email }
+      user: { id: user._id, fullName: user.fullName, email: user.email, age: user.age, phone: user.phone }
     });
   } catch (e) {
     res.status(500).json({ error: "Register failed", details: String(e) });
   }
 });
+
 
 // LOGIN
 router.post("/login", async (req, res) => {
@@ -76,6 +84,7 @@ router.put("/me", auth, async (req, res) => {
     // block sensitive fields
     delete updates.passwordHash;
     delete updates.email;
+    
 
     const user = await User.findByIdAndUpdate(req.user.userId, updates, {
       new: true,

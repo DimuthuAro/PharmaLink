@@ -61,12 +61,12 @@ async function resolveDrugNamesFromIndices(drug_indices) {
 }
 
 /**
- * ✅ 1) FOOD-DRUG CHECK (saved)
+ * 1) FOOD-DRUG CHECK (saved)
  * POST /food-drug/check
  * body: { drug_index, food_name }
  */
 /**
- * ✅ 1) FOOD-DRUG CHECK (saved)
+ * 1) FOOD-DRUG CHECK (saved)
  * POST /food-drug/check
  * body: { drug_name, food_name, safe_food_limit? }
  */
@@ -98,86 +98,166 @@ router.post("/food-drug/check", auth, async (req, res) => {
 });
 
 /**
- * ✅ 2) MEAL PLAN GENERATION (saved + update profile)
+ * 2) MEAL PLAN GENERATION (saved + update profile)
  * POST /meal-plan/generate
  *
  * body supports BOTH:
  *  - drug_indices:[0,1]
  *  - drug_names:["Panadol","Amoxicillin"]
  */
-// ✅ UPDATED: /meal-plan/generate route
+// UPDATED: /meal-plan/generate route
 // - Accepts ONLY drug_names from frontend (still supports drug_indices if you send it)
 // - Sends ONLY drug_names to FastAPI (because your FastAPI expects drug_names)
 // - Still stores BOTH indices + names in MongoDB for history/profile
+
+// PharmaLink/backend/microservices/personalized_advisory_microservice/routes/interactions.js
 
 router.post("/meal-plan/generate", auth, async (req, res) => {
   try {
     const body = req.body || {};
 
+    // ----------------------------
+    // 1) Validate + normalize input
+    // ----------------------------
     const drug_names_raw = Array.isArray(body.drug_names) ? body.drug_names : [];
     const drug_names = normList(drug_names_raw, false);
 
-    if (drug_names.length === 0) {
+    if (!drug_names.length) {
       return res.status(400).json({ error: "drug_names required (non-empty array)" });
     }
 
-    // ✅ payload matches FastAPI MealPlanRequest exactly
-    const payload = {
+    const prefs = body.preferences || {};
+    const vegetarian = body.vegetarian ?? prefs.vegetarian ?? false;
+    const diabetic_friendly = body.diabetic_friendly ?? prefs.diabeticFriendly ?? false;
+    const low_sodium = body.low_sodium ?? prefs.lowSodium ?? false;
+
+    const days = Number(body.days ?? 3);
+    const meals_per_day = Number(body.meals_per_day ?? 3);
+    const calories_per_day = Number(body.calories_per_day ?? 1800);
+
+    const allergies = normList(body.allergies, true);
+
+    // meal_types optional; if not given, auto based on meals_per_day
+    const defaultMealTypes = ["breakfast", "lunch", "dinner"];
+    const meal_types =
+      Array.isArray(body.meal_types) && body.meal_types.length
+        ? body.meal_types.map(String)
+        : defaultMealTypes.slice(0, Math.max(1, Math.min(3, meals_per_day)));
+
+    // Guard values
+    const safeDays = Number.isFinite(days) && days > 0 ? Math.min(days, 30) : 3;
+    const safeMealsPerDay =
+      Number.isFinite(meals_per_day) && meals_per_day > 0 ? Math.min(meals_per_day, 3) : 3;
+    const safeCaloriesPerDay =
+      Number.isFinite(calories_per_day) && calories_per_day > 0 ? Math.min(calories_per_day, 6000) : 1800;
+
+    // ----------------------------
+    // 2) Call FastAPI ONCE (days × meals_per_day returned)
+    //    FastAPI endpoint: POST /ml-meal-plan-generate
+    // ----------------------------
+    const plan = await generateMealPlan({
       drug_names,
+      days: safeDays,
+      meals_per_day: safeMealsPerDay,
+      calories_per_day: safeCaloriesPerDay,
+      meal_types,
+      allergies,
+      vegetarian: !!vegetarian,
+      diabetic_friendly: !!diabetic_friendly,
+      low_sodium: !!low_sodium,
+      debug_score: false,
+    });
 
-      days: Number(body.days ?? 3),
-      meals_per_day: Number(body.meals_per_day ?? 3),
-      calories_per_day: Number(body.calories_per_day ?? 1800),
-      meal_types: body.meal_types ?? null,
+    // plan should look like:
+    // {
+    //   drug_names: [...],
+    //   drug_indices: [...],
+    //   days: [{ day: 1, meals: [...] }, ...]
+    // }
 
-      allergies: normList(body.allergies, true),
-      vegetarian: !!body.vegetarian,
-      diabetic_friendly: !!body.diabetic_friendly,
-      low_sodium: !!body.low_sodium
+    const result = {
+      drug_names: plan?.drug_names ?? drug_names,
+      drug_indices: plan?.drug_indices ?? [],
+      days: plan?.days ?? [],
+      preferences: {
+        vegetarian: !!vegetarian,
+        diabeticFriendly: !!diabetic_friendly,
+        lowSodium: !!low_sodium,
+      },
+      allergies,
+      calories_per_day: safeCaloriesPerDay,
+      meals_per_day: safeMealsPerDay,
+      meal_types,
     };
 
-    // ✅ call FastAPI
-    const result = await generateMealPlan(payload);
-
-    // ✅ save interaction
+    // ----------------------------
+    // 3) Save interaction history
+    // ----------------------------
     const doc = await Interaction.create({
       userId: req.user.userId,
       type: "meal_plan",
-      input: payload,
-      result
+      input: {
+        drug_names,
+        days: safeDays,
+        meals_per_day: safeMealsPerDay,
+        calories_per_day: safeCaloriesPerDay,
+        allergies,
+        preferences: {
+          vegetarian: !!vegetarian,
+          diabeticFriendly: !!diabetic_friendly,
+          lowSodium: !!low_sodium,
+        },
+        meal_types,
+      },
+      result,
     });
 
-    // ✅ update user profile (store names only)
-    await User.findByIdAndUpdate(
-      req.user.userId,
-      {
-        allergies: payload.allergies,
-        dietaryPreferences: {
-          vegetarian: payload.vegetarian,
-          diabeticFriendly: payload.diabetic_friendly,
-          lowSodium: payload.low_sodium
-        },
-        activeMedicationNames: drug_names
+    // ----------------------------
+    // 4) Update user profile
+    // ----------------------------
+await User.findByIdAndUpdate(
+  req.user.userId,
+  {
+    $set: {
+      allergies,
+      dietaryPreferences: {
+        vegetarian: !!vegetarian,
+        diabeticFriendly: !!diabetic_friendly,
+        lowSodium: !!low_sodium,
       },
-      { new: true, runValidators: true }
-    );
+    },
+    $addToSet: {
+      activeMedicationNames: { $each: drug_names },
+    },
+  },
+  { new: true, runValidators: true }
+);
 
-    res.json({
+
+    // ----------------------------
+    // 5) Respond
+    // ----------------------------
+    return res.json({
       saved: true,
       interactionId: doc._id,
       activeMedicationNames: drug_names,
-      result
+      result,
     });
   } catch (e) {
-    res.status(500).json({ error: "Meal plan generation failed", details: String(e) });
+    return res.status(500).json({
+      error: "Meal plan generation failed",
+      details: String(e?.message || e),
+    });
   }
 });
 
 
 
 
+
+
 /**
- * ✅ 3) DRUG IMAGE PREDICTION (saved)
+ * 3) DRUG IMAGE PREDICTION (saved)
  * POST /drug-image/predict (multipart)
  * file field: "file"
  */
@@ -242,7 +322,7 @@ router.post(
 );
 
 /**
- * ✅ 4) HISTORY (filtered)
+ * 4) HISTORY (filtered)
  * GET /history?type=food_drug|meal_plan|drug_image_prediction
  */
 router.get("/history", auth, async (req, res) => {
@@ -272,21 +352,83 @@ router.get("/history", auth, async (req, res) => {
 });
 
 /**
- * ✅ 5) STORED IMAGE
+ * 5) STORED IMAGE
  * GET /history/:id/image
  */
 router.get("/history/:id/image", auth, async (req, res) => {
   try {
-    const item = await Interaction.findOne({ _id: req.params.id, userId: req.user.userId })
-      .select("input.uploadedImage");
+    const item = await Interaction.findOne({
+      _id: req.params.id,
+      userId: req.user.userId,
+      type: "drug_image_prediction"
+    }).select("input.uploadedImage");
 
-    if (!item?.input?.uploadedImage?.data) return res.status(404).json({ error: "No image found" });
+    const img = item?.input?.uploadedImage;
+    if (!img?.data) return res.status(404).json({ error: "No image found" });
 
-    res.set("Content-Type", item.input.uploadedImage.contentType || "application/octet-stream");
-    res.send(item.input.uploadedImage.data);
+    // ✅ Convert BSON Binary -> Buffer safely
+    const buf = Buffer.isBuffer(img.data)
+      ? img.data
+      : Buffer.from(img.data.buffer || img.data);
+
+    res.setHeader("Content-Type", img.contentType || "image/png");
+    res.setHeader("Content-Length", buf.length);
+
+    return res.status(200).end(buf);
   } catch (e) {
-    res.status(500).json({ error: "Failed to load image", details: String(e) });
+    return res.status(500).json({ error: "Failed to load image", details: String(e) });
   }
 });
+
+// 6) DELETE ONE HISTORY ITEM
+// DELETE /history/:id
+router.delete("/history/:id", auth, async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const deleted = await Interaction.findOneAndDelete({
+      _id: id,
+      userId: req.user.userId,
+    });
+
+    if (!deleted) return res.status(404).json({ error: "History item not found" });
+
+    res.json({ deleted: true, id });
+  } catch (e) {
+    res.status(500).json({ error: "Failed to delete history item", details: String(e) });
+  }
+});
+
+// 7) CLEAR HISTORY (by type OR all)
+// DELETE /history?type=food_drug|meal_plan|drug_image_prediction
+router.delete("/history", auth, async (req, res) => {
+  try {
+    const { type } = req.query;
+
+    const q = { userId: req.user.userId };
+
+    const allowed = ["food_drug", "meal_plan", "drug_image_prediction"];
+    if (type) {
+      if (!allowed.includes(String(type))) {
+        return res.status(400).json({
+          error: "Invalid type. Use food_drug|meal_plan|drug_image_prediction",
+        });
+      }
+      q.type = String(type);
+    }
+
+    const r = await Interaction.deleteMany(q);
+
+    res.json({
+      cleared: true,
+      type: type || "all",
+      deletedCount: r.deletedCount || 0,
+    });
+  } catch (e) {
+    res.status(500).json({ error: "Failed to clear history", details: String(e) });
+  }
+});
+
+
 
 module.exports = router;

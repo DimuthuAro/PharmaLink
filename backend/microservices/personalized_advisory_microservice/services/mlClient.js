@@ -1,46 +1,108 @@
 // PharmaLink/backend/microservices/personalized_advisory_microservice/services/mlClient.js
 const axios = require("axios");
+const FormData = require("form-data");
 
-const ML = axios.create({
-  baseURL: process.env.ML_API_BASE || "http://127.0.0.1:8000",
-  timeout: 60000
+const FASTAPI_BASE = process.env.FASTAPI_BASE || "http://127.0.0.1:8000";
+
+const http = axios.create({
+  baseURL: FASTAPI_BASE,
+  timeout: 120000,
+  headers: { "Content-Type": "application/json" },
 });
 
-// 1) Food-drug interaction by ML
-async function checkFoodDrug({ drug_name, food_name, safe_food_limit }) {
-  const { data } = await ML.post("/ml-food-drug-risk", { drug_name, food_name, safe_food_limit });
-  // returns: {drug, food, severity, message, reasons, explanation}
-  return data;
+function extractAxiosError(err) {
+  const status = err?.response?.status;
+  const data = err?.response?.data;
+  const detail =
+    data?.detail ||
+    data?.error ||
+    data?.details ||
+    (typeof data === "string" ? data : null);
+
+  const msg = detail || err?.message || "FastAPI request failed";
+  return { status, msg, data };
 }
 
-// 2) Meal plan generation (multi-drug) -> your FastAPI already has POST /meal-plan
+async function checkFoodDrug({ drug_name, food_name, safe_food_limit = 10 }) {
+  try {
+    const res = await http.post("/ml-food-drug-risk", {
+      drug_name,
+      food_name,
+      safe_food_limit: Number(safe_food_limit || 10),
+    });
+    return res.data;
+  } catch (err) {
+    const e = extractAxiosError(err);
+    throw new Error(`FastAPI /ml-food-drug-risk failed (${e.status || "?"}): ${e.msg}`);
+  }
+}
+
 async function generateMealPlan(payload) {
-  const { data } = await ML.post("/meal-plan", payload);
-  return data;
+  try {
+    // FastAPI expects JSON body for POST /ml-meal-plan-generate
+    const body = {
+      drug_names: Array.isArray(payload.drug_names) ? payload.drug_names : [],
+      days: Number(payload.days ?? 3),
+      meals_per_day: Number(payload.meals_per_day ?? 3),
+      calories_per_day: Number(payload.calories_per_day ?? 1800),
+      meal_types: Array.isArray(payload.meal_types) ? payload.meal_types : undefined,
+      allergies: Array.isArray(payload.allergies) ? payload.allergies : [],
+      vegetarian: !!payload.vegetarian,
+      diabetic_friendly: !!payload.diabetic_friendly,
+      low_sodium: !!payload.low_sodium,
+      debug_score: !!payload.debug_score,
+    };
+
+    if (!body.drug_names.length) {
+      throw new Error("drug_names is required for /ml-meal-plan-generate");
+    }
+
+    const res = await http.post("/ml-meal-plan-generate", body);
+    return res.data;
+  } catch (err) {
+    const e = extractAxiosError(err);
+    throw new Error(`FastAPI /ml-meal-plan-generate failed (${e.status || "?"}): ${e.msg}`);
+  }
 }
 
-// Drug list to resolve indices -> names
-async function listDrugs({ q = "", limit = 200 } = {}) {
-  const { data } = await ML.get("/drugs", { params: { q, limit } });
-  return data; // [{index,name,contains}]
+
+
+
+
+
+async function predictDrugFromImage({ fileBuffer, filename, mimeType, topk = 3 }) {
+  try {
+    const form = new FormData();
+    form.append("file", fileBuffer, { filename, contentType: mimeType });
+    form.append("topk", String(topk));
+
+    const res = await axios.post(`${FASTAPI_BASE}/predict-drug-from-image`, form, {
+      headers: form.getHeaders(),
+      timeout: 120000,
+    });
+
+    return res.data;
+  } catch (err) {
+    const e = extractAxiosError(err);
+    throw new Error(`FastAPI /predict-drug-from-image failed (${e.status || "?"}): ${e.msg}`);
+  }
 }
 
-// 3) Drug image prediction
-async function predictDrugFromImage({ fileBuffer, filename, mimeType, topk }) {
-  const FormData = require("form-data");
-  const form = new FormData();
-  form.append("file", fileBuffer, { filename: filename || "image.png", contentType: mimeType || "image/png" });
-  form.append("topk", String(topk));
-
-  const { data } = await ML.post("/predict-drug-from-image", form, {
-    headers: form.getHeaders()
-  });
-  return data; // { predictions: [...] }
+async function listDrugs({ q = "", limit = 50 }) {
+  try {
+    const res = await http.get("/drugs", {
+      params: { q, limit: Number(limit || 50) },
+    });
+    return res.data;
+  } catch (err) {
+    const e = extractAxiosError(err);
+    throw new Error(`FastAPI /drugs failed (${e.status || "?"}): ${e.msg}`);
+  }
 }
 
 module.exports = {
   checkFoodDrug,
   generateMealPlan,
   predictDrugFromImage,
-  listDrugs
+  listDrugs,
 };
