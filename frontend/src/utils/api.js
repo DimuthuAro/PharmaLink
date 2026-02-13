@@ -1,50 +1,47 @@
-// src/utils/api.js
-import axios from "axios";
+// PharmaLink/frontend/src/utils/api.js
+const AUTH_API = import.meta.env.VITE_AUTH_API || "http://localhost:3000";
+const ADVISORY_API = import.meta.env.VITE_ADVISORY_API || "http://localhost:3002";
+const ML_API = import.meta.env.VITE_ML_API || "http://127.0.0.1:8000";
 
-// Use env var if you want, else default to local FastAPI
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+export async function authRequest(path, opts) {
+  return apiBaseRequest(AUTH_API, path, opts);
+}
 
-export const api = axios.create({
-  baseURL: API_BASE_URL,
-});
+export async function advisoryRequest(path, opts) {
+  return apiBaseRequest(ADVISORY_API, path, opts);
+}
 
-// ---- Drug + food lookup ----
-export const fetchDrugs = async (query = "") => {
-  const res = await api.get("/drugs", {
-    params: { q: query, limit: 50 },
+export async function mlRequest(path, opts) {
+  return apiBaseRequest(ML_API, path, opts);
+}
+
+async function apiBaseRequest(base, path, { method="GET", body, token } = {}) {
+  const headers = {};
+  if (token) headers.Authorization = `Bearer ${token}`;
+  if (body !== undefined) headers["Content-Type"] = "application/json";
+
+  const res = await fetch(`${base}${path}`, {
+    method,
+    headers,
+    body: body !== undefined ? JSON.stringify(body) : undefined
   });
-  return res.data;
-};
 
-export const fetchFoods = async (query = "") => {
-  const res = await api.get("/foods", {
-    params: { q: query, limit: 50 },
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw data;
+  return data;
+}
+
+export async function apiUpload(path, { formData, token, method = "POST" }) {
+  const headers = {};
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  const res = await fetch(`${ADVISORY_API}${path}`, {
+    method,
+    headers,
+    body: formData,
   });
-  return res.data;
-};
 
-// ---- Risk endpoints ----
-export const checkDrugRisk = async (drugIndex) => {
-  const res = await api.post("/drug-risk", { drug_index: drugIndex });
-  return res.data;
-};
-
-export const checkFoodDrugRisk = async (drugIndex, foodName) => {
-  const res = await api.post("/food-drug-risk", {
-    drug_index: drugIndex,
-    food_name: foodName,
-  });
-  return res.data;
-};
-
-export const fetchSafeFoods = async (drugIndex, topN = 10) => {
-  const res = await api.get(`/safe-foods/${drugIndex}`, {
-    params: { top_n: topN },
-  });
-  return res.data;
-};
-
-export const generateMealPlan = async (payload) => {
-  const res = await api.post("/meal-plan", payload);
-  return res.data;
-};
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw data;
+  return data;
+}
