@@ -1,94 +1,59 @@
-// src/auth/auth.jsx
-import { createContext, useContext, useState, useEffect } from 'react';
-import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
+import { createContext, useContext, useMemo, useState } from "react";
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within an AuthProvider");
+  return ctx;
 };
 
-const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    const savedAuth = localStorage.getItem('pharmalink_auth');
-    return savedAuth ? JSON.parse(savedAuth) : false;
-  });
-  
+const USER_KEY = "pharmalink_user";
+const TOKEN_KEY = "pharmalink_token";
+
+export const AuthProvider = ({ children }) => {
+  const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY) || "");
   const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem('pharmalink_user');
-    return savedUser ? JSON.parse(savedUser) : null;
+    const raw = localStorage.getItem(USER_KEY);
+    return raw ? JSON.parse(raw) : null;
   });
 
-  const login = (userData) => {
-    setIsAuthenticated(true);
-    setUser(userData);
-    localStorage.setItem('pharmalink_auth', 'true');
-    localStorage.setItem('pharmalink_user', JSON.stringify(userData));
+  const isAuthenticated = !!token;
+
+  const login = ({ token, user }) => {
+    setToken(token);
+    setUser(user);
+    localStorage.setItem(TOKEN_KEY, token);
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
   };
 
   const logout = () => {
-    setIsAuthenticated(false);
+    setToken("");
     setUser(null);
-    localStorage.removeItem('pharmalink_auth');
-    localStorage.removeItem('pharmalink_user');
-    localStorage.removeItem('pharmalink_remember');
-    localStorage.removeItem('pharmalink_email');
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
   };
 
-  const contextValue = {
-    isAuthenticated,
-    setIsAuthenticated,
-    user,
-    login,
-    logout
-  };
-
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({ token, user, isAuthenticated, login, logout, setUser }),
+    [token, user, isAuthenticated]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-const UnauthorizedComponent = () => {
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      window.location.href = '/login';
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="text-center">
-        <div className="mx-auto h-12 w-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
-          <ExclamationCircleIcon className="h-8 w-8 text-red-600" />
-        </div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
-        <p className="text-gray-600 mb-4">You need to log in to access this page.</p>
-        <p className="text-sm text-gray-500">Redirecting to login page...</p>
-        <div className="mt-4">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto"></div>
-        </div>
-      </div>
-    </div>
-  )
-};
-
-const ProtectedRoute = ({ element }) => {
+// ProtectedRoute component
+export const ProtectedRoute = ({ element }) => {
   const { isAuthenticated } = useAuth();
-  return isAuthenticated ? element : <UnauthorizedComponent />;
+  if (!isAuthenticated) {
+    window.location.href = "/login";
+    return null;
+  }
+  return element;
 };
 
-const createProtectedRoutes = (routes) => {
-  return routes.map(route => ({
-    path: route.path,
-    element: <ProtectedRoute element={route.element} />
+export const createProtectedRoutes = (routes) =>
+  routes.map((r) => ({
+    path: r.path,
+    element: <ProtectedRoute element={r.element} />,
   }));
-};
-
-export { AuthProvider, createProtectedRoutes };
