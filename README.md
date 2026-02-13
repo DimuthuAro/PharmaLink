@@ -127,7 +127,7 @@ npm run start:dev
 - **Accessibility Support** with ARIA labels
 - **Mobile-Responsive** design
 
-## 🔧 Backend Services
+## Backend Services
 
 ### **API Gateway (Port 3000)**
 Central entry point for all client requests with routing and load balancing.
@@ -176,7 +176,7 @@ OCR-powered prescription reading and interpretation.
 - Prescription validation
 - Data extraction and structuring
 
-## 🔌 API Documentation
+## API Documentation
 
 ### Authentication Example
 
@@ -210,7 +210,7 @@ curl -X POST http://localhost:3000/api/prescription/interpret \
   -F "patientInfo={\"name\":\"John Doe\",\"dob\":\"1980-01-01\"}"
 ```
 
-## 🛠️ Development
+## Development
 
 ### Frontend Development
 
