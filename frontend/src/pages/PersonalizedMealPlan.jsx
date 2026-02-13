@@ -1,958 +1,940 @@
-import React, { useEffect, useMemo, useState } from "react";
+// PharmaLink/frontend/src/pages/PersonalizedMealPlan.jsx
+import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../auth/auth.jsx";
-import BrandLogo from "../components/brandLogo.jsx";
-import UserAvatar from "../components/UserAvatar.jsx";
-
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import { useAuth } from "../auth/auth";
+import { advisoryRequest } from "../utils/api";
+import AutoComplete from "../components/AutoComplete";
+import BrandLogo from "../components/brandLogo2.jsx";
 
 import {
+  HomeIcon,
+  UserCircleIcon as UserCircle,
+  ArrowRightOnRectangleIcon,
   ShieldCheckIcon,
+  ClipboardDocumentListIcon,
+  ClockIcon,
+  BeakerIcon,
   ExclamationTriangleIcon,
   CheckCircleIcon,
-  ChevronDownIcon,
-  ArrowDownTrayIcon,
-  UserCircleIcon,
-  Cog6ToothIcon,
-  ArrowRightOnRectangleIcon,
+  SparklesIcon,
+  FireIcon,
+  CalendarDaysIcon,
+  HeartIcon,
+  XMarkIcon,
+  PhotoIcon,
 } from "@heroicons/react/24/outline";
 
-import { fetchDrugs, generateMealPlan } from "../utils/api.js";
-import AutoComplete from "../components/AutoComplete.jsx";
+// --- helpers ---
+const uniq = (arr) =>
+  Array.from(new Set((arr || []).map((x) => String(x).trim()).filter(Boolean)));
 
-const ALLERGY_OPTIONS = [
-  { key: "peanut", label: "Peanut" },
-  { key: "tree_nut", label: "Tree nuts" },
-  { key: "milk", label: "Milk / Dairy" },
-  { key: "egg", label: "Egg" },
-  { key: "fish", label: "Fish" },
-  { key: "shellfish", label: "Shellfish" },
-  { key: "soy", label: "Soy" },
-  { key: "wheat", label: "Wheat / Gluten" },
-  { key: "sesame", label: "Sesame" },
-];
+function isAlcoholFood(foodObj) {
+  const name = String(foodObj?.food || "").toLowerCase();
 
-const PROFILE_LOG_KEY = "pharmlink_profile_log_v1";
-
-const STORAGE_KEYS = {
-  drugs: "pharmlink_user_drugs",
-  allergies: "pharmlink_user_allergies",
-};
-
-const PersonalizedMealPlan = () => {
-  const navigate = useNavigate();
-  const { user, logout, isAuthenticated } = useAuth();
-
-  // ----------------- AUTH GUARD -----------------
-  useEffect(() => {
-    if (isAuthenticated === false) navigate("/login");
-  }, [isAuthenticated, navigate]);
-
-  // ----------------- STATE -----------------
-  const [selectedDrugs, setSelectedDrugs] = useState([]); // [{index, name}]
-  const [currentDrug, setCurrentDrug] = useState(null);
-
-  const [caloriesPerDay, setCaloriesPerDay] = useState(2000);
-  const [globalRestrictions, setGlobalRestrictions] = useState({
-    noAlcohol: true,
-    vegetarian: false,
-  });
-
-  // ----------------- ALLERGIES (persisted) -----------------
-  const [allergies, setAllergies] = useState(() => {
-    const initial = {};
-    ALLERGY_OPTIONS.forEach((a) => (initial[a.key] = false));
-
-    // load saved allergies (if any)
-    try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEYS.allergies) || "[]");
-      if (Array.isArray(saved)) {
-        saved.forEach((k) => {
-          if (k in initial) initial[k] = true;
-        });
-      }
-    } catch {
-      // ignore
-    }
-
-    return initial;
-  });
-
-  const [days, setDays] = useState(3);
-  const [mealsPerDay, setMealsPerDay] = useState(3);
-
-  const [mealPlan, setMealPlan] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  // Day selector (-1 = All days)
-  const [activeDay, setActiveDay] = useState(-1);
-
-  // Export dropdown UI state
-  const [exportOpen, setExportOpen] = useState(false);
-
-  // User menu dropdown UI state
-  const [showUserMenu, setShowUserMenu] = useState(false);
-
-  // ----------------- HEADER HELPERS -----------------
-  const initials = useMemo(() => {
-    const name = user?.name?.trim() || "User";
-    return name
-      .split(" ")
-      .filter(Boolean)
-      .map((n) => n[0])
-      .slice(0, 2)
-      .join("")
-      .toUpperCase();
-  }, [user?.name]);
-
-  const roleLabel = useMemo(() => {
-    const r = (user?.role || "").toLowerCase();
-    if (!r) return "Healthcare Professional";
-    return r.charAt(0).toUpperCase() + r.slice(1);
-  }, [user?.role]);
-
-  const handleLogout = () => {
-    try {
-      logout?.();
-    } finally {
-      navigate("/");
-    }
-  };
-
-  // Close export dropdown on outside click
-  useEffect(() => {
-    if (!exportOpen) return;
-    const onDocClick = () => setExportOpen(false);
-    document.addEventListener("click", onDocClick);
-    return () => document.removeEventListener("click", onDocClick);
-  }, [exportOpen]);
-
-  // Close user menu on outside click + ESC
-  useEffect(() => {
-    if (!showUserMenu) return;
-
-    const onKeyDown = (e) => {
-      if (e.key === "Escape") setShowUserMenu(false);
-    };
-
-    const onMouseDown = (e) => {
-      if (!e.target.closest("#user-menu-wrapper")) setShowUserMenu(false);
-    };
-
-    document.addEventListener("keydown", onKeyDown);
-    document.addEventListener("mousedown", onMouseDown);
-
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      document.removeEventListener("mousedown", onMouseDown);
-    };
-  }, [showUserMenu]);
-
-  // ----------------- HELPERS -----------------
-  const handleAddDrug = () => {
-    if (!currentDrug) return;
-    if (selectedDrugs.find((d) => d.index === currentDrug.index)) return;
-    setSelectedDrugs((prev) => [...prev, currentDrug]);
-    setCurrentDrug(null);
-  };
-
-  const handleRemoveDrug = (index) => {
-    setSelectedDrugs((prev) => prev.filter((d) => d.index !== index));
-  };
-
-  const aggregateMeal = (meal) =>
-    meal.items.reduce(
-      (acc, item) => ({
-        energy: acc.energy + (item.energy || 0),
-        protein: acc.protein + (item.protein || 0),
-        fat: acc.fat + (item.fat || 0),
-        carbs: acc.carbs + (item.carbs || 0),
-      }),
-      { energy: 0, protein: 0, fat: 0, carbs: 0 }
+  const perDrug = foodObj?.explanation?.per_drug;
+  if (Array.isArray(perDrug) && perDrug.length > 0) {
+    const anyAlcohol = perDrug.some(
+      (d) => Number(d?.explanation?.food_signals?.is_alcohol) === 1
     );
+    if (anyAlcohol) return true;
+  }
 
-  const aggregateDay = (day) =>
-    day.meals.reduce(
-      (acc, meal) => {
-        const m = aggregateMeal(meal);
-        return {
-          energy: acc.energy + m.energy,
-          protein: acc.protein + m.protein,
-          fat: acc.fat + m.fat,
-          carbs: acc.carbs + m.carbs,
-        };
-      },
-      { energy: 0, protein: 0, fat: 0, carbs: 0 }
-    );
+  const signal = foodObj?.explanation?.food_signals?.is_alcohol;
+  if (Number(signal) === 1) return true;
 
-  // ----------------- API CALL -----------------
-  const handleGenerate = async () => {
-    try {
-      setError("");
-      setLoading(true);
-      setMealPlan(null);
+  return [
+    "wine",
+    "beer",
+    "vodka",
+    "whisky",
+    "whiskey",
+    "rum",
+    "arrack",
+    "gin",
+    "brandy",
+  ].some((k) => name.includes(k));
+}
 
-      if (selectedDrugs.length === 0) {
-        setError("Please add at least one active medication.");
-        setLoading(false);
-        return;
-      }
-
-      // convert allergy boolean map => array of selected allergy keys
-      const selectedAllergies = Object.entries(allergies)
-        .filter(([, v]) => v)
-        .map(([k]) => k);
-
-      const payload = {
-        drug_indices: selectedDrugs.map((d) => d.index),
-        dietary_restrictions: [
-          globalRestrictions.noAlcohol && "no_alcohol",
-          globalRestrictions.vegetarian && "vegetarian",
-        ].filter(Boolean),
-        allergies: selectedAllergies, // backend can ignore if not implemented yet
-        days,
-        meals_per_day: mealsPerDay,
-        calories_per_day: caloriesPerDay,
-      };
-
-      const res = await generateMealPlan(payload);
-      setMealPlan(res);
-
-      // Persist for Profile page (with date)
-      try {
-        const timestamp = new Date().toISOString();
-
-        const entry = {
-          id: `${Date.now()}_${Math.random().toString(16).slice(2)}`,
-          timestamp, // ISO date+time
-          drugs: selectedDrugs.map((d) => ({ name: d.name, index: d.index })),
-          allergies: selectedAllergies,
-        };
-    
-        const raw = localStorage.getItem(PROFILE_LOG_KEY);
-        const prev = raw ? JSON.parse(raw) : [];
-        const arr = Array.isArray(prev) ? prev : [];
-
-        const next = [entry, ...arr]; // newest first
-        localStorage.setItem(PROFILE_LOG_KEY, JSON.stringify(next));
-        window.dispatchEvent(new Event("pharmlink_profile_log_updated"));
-
-        localStorage.setItem(STORAGE_KEYS.drugs, JSON.stringify(entry.drugs));
-        localStorage.setItem(STORAGE_KEYS.allergies, JSON.stringify(entry.allergies));
-      } catch {
-        // ignore
-      }
-
-      // auto select Day 1 after generating
-      setActiveDay(1);
-    } catch (err) {
-      setError(err.message || "Failed to generate meal plan.");
-    } finally {
-      setLoading(false);
-    }
+function severityLabel(sev) {
+  const n = Number(sev ?? 0);
+  if (n === 2)
+    return {
+      text: "High Risk",
+      cls: "bg-red-50 border-red-300 text-red-800",
+      dotCls: "bg-red-500",
+    };
+  if (n === 1)
+    return {
+      text: "Moderate",
+      cls: "bg-amber-50 border-amber-300 text-amber-800",
+      dotCls: "bg-amber-500",
+    };
+  return {
+    text: "Safe",
+    cls: "bg-emerald-50 border-emerald-300 text-emerald-800",
+    dotCls: "bg-emerald-500",
   };
+}
 
-  // ----------------- EXPORTS -----------------
-  const exportJSON = () => {
-    if (!mealPlan) return;
-    const blob = new Blob([JSON.stringify(mealPlan, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "pharmlink-meal-plan.json";
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const exportCSV = () => {
-    if (!mealPlan?.days?.length) return;
-
-    const rows = [];
-    mealPlan.days.forEach((day) => {
-      day.meals.forEach((meal) => {
-        meal.items.forEach((item) => {
-          rows.push({
-            Day: day.day,
-            Meal: meal.name,
-            Food: item.food,
-            Calories: item.energy ?? 0,
-            Protein_g: item.protein ?? 0,
-            Fat_g: item.fat ?? 0,
-            Carbs_g: item.carbs ?? 0,
-          });
-        });
-      });
-    });
-
-    const headers = Object.keys(rows[0] || {});
-    const csv = [
-      headers.join(","),
-      ...rows.map((r) =>
-        headers
-          .map((h) => {
-            const val = r[h] ?? "";
-            const safe = String(val).replace(/"/g, '""');
-            return `"${safe}"`;
-          })
-          .join(",")
-      ),
-    ].join("\n");
-
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "pharmlink-meal-plan.csv";
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const exportPDF = () => {
-    if (!mealPlan?.days?.length) return;
-
-    const doc = new jsPDF();
-    doc.setFontSize(16);
-    doc.text("PharmaLink Meal Plan", 14, 15);
-
-    doc.setFontSize(10);
-    doc.text(`Generated for: ${user?.name || "User"}`, 14, 22);
-    doc.text(`Calories/day: ${caloriesPerDay}`, 14, 27);
-    doc.text(`Days: ${mealPlan.days.length}`, 14, 32);
-
-    let startY = 38;
-
-    mealPlan.days.forEach((day, idx) => {
-      doc.setFontSize(13);
-      doc.text(`Day ${day.day}`, 14, startY);
-      startY += 5;
-
-      const body = [];
-      day.meals.forEach((meal) => {
-        meal.items.forEach((item) => {
-          body.push([
-            meal.name,
-            item.food,
-            Math.round(item.energy ?? 0),
-            Number(item.protein ?? 0).toFixed(1),
-            Number(item.fat ?? 0).toFixed(1),
-            Number(item.carbs ?? 0).toFixed(1),
-          ]);
-        });
-      });
-
-      autoTable(doc, {
-        startY,
-        head: [["Meal", "Food", "kcal", "Protein(g)", "Fat(g)", "Carbs(g)"]],
-        body,
-        styles: { fontSize: 9 },
-        headStyles: { fillColor: [37, 99, 235] },
-      });
-
-      startY = doc.lastAutoTable.finalY + 10;
-
-      if (idx < mealPlan.days.length - 1 && startY > 260) {
-        doc.addPage();
-        startY = 15;
-      }
-    });
-
-    doc.save("pharmlink-meal-plan.pdf");
-  };
-
-  // days list
-  const daysList = useMemo(() => {
-    if (!mealPlan?.days?.length) return [];
-    return mealPlan.days;
-  }, [mealPlan]);
-
-  // visible days (either one day or all)
-  const visibleDays = useMemo(() => {
-    if (!daysList.length) return [];
-    if (activeDay === -1) return daysList;
-    return daysList.filter((d) => d.day === activeDay);
-  }, [daysList, activeDay]);
-
-  // ----------------- RENDER -----------------
+function Chip({ name, onRemove }) {
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
-      {/* HEADER */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center">
-          <div className="flex items-center gap-3">
-            <BrandLogo className="h-7 w-7" />
-          </div>
+    <span className="group inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 text-sm font-medium text-slate-700 hover:bg-slate-200 transition-colors">
+      {name}
+      <button
+        type="button"
+        onClick={onRemove}
+        className="flex items-center justify-center h-4 w-4 rounded hover:bg-slate-300 transition-colors"
+        aria-label="remove"
+        title="Remove"
+      >
+        <XMarkIcon className="h-3 w-3" />
+      </button>
+    </span>
+  );
+}
 
-          <div className="flex-1" />
+function toTitleCase(str) {
+  return String(str || "")
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
 
-          <div className="flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-2">
-              <button
-                onClick={() => navigate("/dashboard")}
-                className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
-              >
-                Dashboard
-              </button>
-              <button
-                onClick={() => navigate("/advisory")}
-                className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
-              >
-                Food–Drug Check
-              </button>
-              <button
-                onClick={() => navigate("/history")}
-                className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
-              >
-                History
-              </button>
-            </div>
+function prettyFoodName(name) {
+  let s = toTitleCase(name);
+  s = s.replace(/\bKcal\b/g, "kcal");
+  s = s.replace(/\bMg\b/g, "mg");
+  s = s.replace(/\bG\b/g, "g");
+  return s;
+}
 
-            {/* user menu */}
-            <div id="user-menu-wrapper" className="relative">
-              <button
-                type="button"
-                className="flex items-center gap-3 rounded-xl px-2 py-1.5 hover:bg-slate-50 transition border border-transparent hover:border-slate-200 cursor-pointer"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowUserMenu((s) => !s);
-                }}
-                aria-haspopup="menu"
-                aria-expanded={showUserMenu}
-              >
-                <UserAvatar user={user} size={36} />
+function resolveImageUrl(img) {
+  const v = String(img || "").trim();
+  if (!v) return "";
 
-                <div className="hidden sm:flex flex-col items-start leading-tight">
-                  <span className="text-sm font-semibold text-slate-900">
-                    {user?.name || "User"}
-                  </span>
-                  <span className="text-xs text-slate-500">{roleLabel}</span>
-                </div>
+  if (v.startsWith("http://") || v.startsWith("https://")) return v;
 
-                <svg
-                  className={`hidden sm:block h-4 w-4 text-slate-400 transition-transform ${
-                    showUserMenu ? "rotate-180" : ""
-                  }`}
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
+  const FASTAPI = import.meta.env.VITE_FASTAPI_BASE || "http://localhost:8000";
 
-              {showUserMenu && (
-                <div
-                  className="absolute right-0 mt-3 w-[320px] rounded-2xl bg-white shadow-xl border border-slate-200 overflow-hidden z-50"
-                  role="menu"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <div className="absolute -top-2 right-6 h-4 w-4 rotate-45 bg-white border-l border-t border-slate-200" />
+  if (v.startsWith("/")) return `${FASTAPI}${v}`;
 
-                  <div className="p-4 bg-slate-50/70 border-b border-slate-200">
-                    <div className="flex items-center gap-3">
-                      <div className="h-12 w-12 rounded-2xl overflow-hidden bg-blue-600 flex items-center justify-center">
-                        {user?.avatar ? (
-                          <img
-                            src={user.avatar}
-                            alt={user?.name || "User"}
-                            className="h-full w-full object-cover"
-                          />
-                        ) : (
-                          <span className="text-white font-extrabold">{initials}</span>
-                        )}
-                      </div>
+  return `${FASTAPI}/${v}`;
+}
 
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <p className="font-bold text-slate-900 truncate">
-                            {user?.name || "User"}
-                          </p>
-                          <span className="inline-flex items-center rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
-                            <ShieldCheckIcon className="h-3.5 w-3.5 mr-1" />
-                            Secure
-                          </span>
-                        </div>
-                        <p className="text-sm text-slate-600 truncate">
-                          {user?.email || "user@example.com"}
-                        </p>
-                        <p className="text-xs text-slate-500 mt-0.5">{roleLabel}</p>
-                      </div>
-                    </div>
-                  </div>
+function Toggle({ label, value, onChange }) {
+  return (
+    <label className="flex items-center justify-between gap-3 p-3.5 rounded-lg border border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50 transition-all cursor-pointer">
+      <span className="text-sm font-medium text-slate-700">
+        {label}
+      </span>
+      <button
+        type="button"
+        onClick={() => onChange(!value)}
+        className={`w-11 h-6 rounded-full relative transition-all duration-200 ${
+          value
+            ? "bg-[#2f2971]"
+            : "bg-slate-300"
+        }`}
+        aria-pressed={value}
+      >
+        <span
+          className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all duration-200 ${
+            value ? "left-5" : "left-0.5"
+          }`}
+        />
+      </button>
+    </label>
+  );
+}
 
-                  <div className="p-2">
-                    <button
-                      type="button"
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition cursor-pointer"
-                      onClick={() => {
-                        setShowUserMenu(false);
-                        navigate("/profile");
-                      }}
-                      role="menuitem"
-                    >
-                      <UserCircleIcon className="h-5 w-5 text-slate-400" />
-                      Profile
-                    </button>
+function extractExplanationPoints(item) {
+  const perDrug = item?.explanation?.per_drug;
+  if (Array.isArray(perDrug) && perDrug.length > 0) {
+    const pts = [];
+    for (const d of perDrug) {
+      const arr = d?.explanation?.explanation_points;
+      if (Array.isArray(arr)) pts.push(...arr);
+    }
+    return Array.from(new Set(pts.map((x) => String(x).trim()).filter(Boolean)));
+  }
 
-                    <button
-                      type="button"
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition cursor-pointer"
-                      onClick={() => {
-                        setShowUserMenu(false);
-                        navigate("/settings");
-                      }}
-                      role="menuitem"
-                    >
-                      <Cog6ToothIcon className="h-5 w-5 text-slate-400" />
-                      Account settings
-                    </button>
+  const old = item?.explanation?.explanation_points;
+  if (Array.isArray(old)) return old;
 
-                    <div className="my-2 h-px bg-slate-200" />
+  return [];
+}
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowUserMenu(false);
-                        handleLogout();
-                      }}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 transition cursor-pointer"
-                      role="menuitem"
-                    >
-                      <ArrowRightOnRectangleIcon className="h-5 w-5" />
-                      Sign out
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
+function FoodItemCard({ label, item, hideAlcohol }) {
+  const alcohol = isAlcoholFood(item);
+  const sev = severityLabel(item?.severity);
+
+  if (hideAlcohol && alcohol) {
+    return (
+      <div className="relative p-4 rounded-lg border border-slate-200 bg-slate-50">
+        <div className="absolute top-3 right-3">
+          <div className="h-7 w-7 rounded-full bg-slate-200 flex items-center justify-center">
+            <ExclamationTriangleIcon className="h-4 w-4 text-slate-400" />
           </div>
         </div>
-      </header>
+        {label ? (
+          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+            {label}
+          </div>
+        ) : null}
+        <div className="mt-1 text-sm font-semibold text-slate-700">
+          Alcohol Item Hidden
+        </div>
+        <div className="text-xs text-slate-500 mt-1">
+          Disable "Hide alcohol" to view this item
+        </div>
+      </div>
+    );
+  }
 
-      {/* PAGE TITLE */}
-      <div className="bg-blue-50 border-b border-blue-100">
-        <div className="max-w-6xl mx-auto px-4 py-7">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-sm">
-              <ShieldCheckIcon className="h-5 w-5" />
+  const allergens = (item?.allergens_detected || []).map((a) =>
+    String(a).toLowerCase()
+  );
+  const points = extractExplanationPoints(item);
+
+  const imgUrl = item?.image ? resolveImageUrl(item.image) : "";
+
+  return (
+    <div className="group relative p-4 rounded-lg border border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm transition-all">
+      <div className="relative">
+        {label ? (
+          <div className="flex items-center justify-between mb-3">
+            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              {label}
             </div>
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-                Generate New Meal Plan
-              </h1>
-              <p className="text-sm text-slate-600 mt-1">
-                Create interaction-aware meals based on active medications, calories,
-                preferences, and allergies.
-              </p>
+            <div className="h-7 w-7 rounded-lg bg-slate-100 flex items-center justify-center">
+              <BeakerIcon className="h-4 w-4 text-slate-600" />
+            </div>
+          </div>
+        ) : null}
+
+        <div className="text-sm font-semibold text-slate-900 mb-2">
+          {prettyFoodName(item?.food) || "-"}
+        </div>
+
+        {imgUrl ? (
+          <div className="mb-3 overflow-hidden rounded-lg border border-slate-200">
+            <img
+              src={imgUrl}
+              alt={prettyFoodName(item?.food)}
+              className="h-32 w-full object-cover"
+              loading="lazy"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
+            />
+          </div>
+        ) : null}
+
+        {item?.quantity ? (
+          <div className="mb-2 text-xs font-medium text-slate-600">
+            Quantity:{" "}
+            <span className="font-semibold text-slate-800">
+              {String(item.quantity)}
+            </span>
+          </div>
+        ) : null}
+
+        <div className="flex items-center gap-3 text-xs text-slate-600 mb-3">
+          {item?.food_type && (
+            <span className="inline-flex items-center gap-1 px-2 py-1 rounded bg-slate-100 font-medium">
+              {item.food_type}
+            </span>
+          )}
+          <span className="inline-flex items-center gap-1">
+            <FireIcon className="h-3.5 w-3.5" />
+            {Math.round(item?.energy ?? 0)} kcal
+          </span>
+        </div>
+
+        <div className="flex flex-wrap gap-2 mb-3">
+          <span
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-semibold ${sev.cls}`}
+          >
+            <span className={`h-1.5 w-1.5 rounded-full ${sev.dotCls}`} />
+            {sev.text}
+          </span>
+
+          {alcohol && (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-red-300 bg-red-50 text-xs font-semibold text-red-800">
+              <ExclamationTriangleIcon className="h-3.5 w-3.5" />
+              Alcohol
+            </span>
+          )}
+        </div>
+
+        {allergens.length > 0 && (
+          <div className="p-3 rounded-lg bg-red-50 border border-red-200 mb-3">
+            <div className="text-xs font-semibold text-red-900 mb-1">
+              Allergens Detected:
+            </div>
+            <div className="text-xs font-medium text-red-700">
+              {allergens.join(", ")}
+            </div>
+          </div>
+        )}
+
+        {points.length > 0 && (
+          <div className="pt-3 border-t border-slate-200">
+            <div className="text-xs font-semibold text-slate-700 mb-2">
+              Safety Notes:
+            </div>
+            <ul className="text-xs text-slate-600 space-y-1.5">
+              {points.slice(0, 3).map((p, i) => (
+                <li key={i} className="flex items-start gap-2">
+                  <span className="text-slate-400 mt-0.5">•</span>
+                  <span>{p}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function MealCard({ meal, hideAlcohol }) {
+  const items = [meal?.main, meal?.protein, meal?.vegetable].filter(Boolean);
+
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-[#2f2971] to-[#3d3086] px-5 py-4 rounded-t-lg">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-base font-semibold text-white capitalize">
+              {meal?.name}
+            </div>
+            <div className="text-xs text-white/80 mt-1 flex items-center gap-4">
+              <span className="flex items-center gap-1">
+                <FireIcon className="h-3.5 w-3.5" />
+                Target: {Math.round(meal?.target_kcal ?? 0)} kcal
+              </span>
+              <span className="flex items-center gap-1">
+                <CheckCircleIcon className="h-3.5 w-3.5" />
+                Est: {Math.round(meal?.estimated_kcal ?? 0)} kcal
+              </span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* MAIN */}
-      <main className="max-w-6xl mx-auto px-4 py-8 grid gap-8 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,2fr)]">
-        {/* LEFT COLUMN */}
-        <section className="space-y-5">
-          {/* Active medications */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
-            <h2 className="text-sm font-semibold tracking-wide text-slate-900 mb-1">
-              Step 1 — Active medications
-            </h2>
-            <p className="text-[11px] text-slate-500 mb-3">
-              Your meal plan respects food–drug interactions for these medicines.
-            </p>
-
-            {error && (
-              <div className="mb-3 flex items-start space-x-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
-                <ExclamationTriangleIcon className="h-4 w-4 mt-0.5" />
-                <span>{error}</span>
-              </div>
-            )}
-
-            <AutoComplete
-              label="Add a drug"
-              placeholder="Type drug name…"
-              fetcher={fetchDrugs}
-              value={currentDrug?.name || ""}
-              onSelect={(d) => setCurrentDrug(d)}
-            />
-
-            <button
-              onClick={handleAddDrug}
-              className="mt-2 inline-flex items-center px-3 py-1.5 rounded-full bg-slate-100 text-xs font-medium text-slate-800 hover:bg-slate-200 cursor-pointer"
-            >
-              + Add to list
-            </button>
-
-            <ul className="mt-3 space-y-1 text-xs max-h-36 overflow-y-auto">
-              {selectedDrugs.length === 0 && (
-                <li className="text-slate-400">No drugs added yet. Add at least one.</li>
-              )}
-              {selectedDrugs.map((d) => (
-                <li
-                  key={d.index}
-                  className="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-md px-2 py-1"
-                >
-                  <span className="truncate">{d.name}</span>
-                  <button
-                    className="text-[11px] text-red-500 hover:underline cursor-pointer"
-                    onClick={() => handleRemoveDrug(d.index)}
-                  >
-                    remove
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Calories + prefs */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
-            <h2 className="text-sm font-semibold text-slate-900">Step 2 — Calories</h2>
-            <p className="text-[11px] text-slate-500 mb-2">
-              Target calories per day for this plan.
-            </p>
-
-            <input
-              type="number"
-              min={100}
-              value={caloriesPerDay}
-              onChange={(e) => setCaloriesPerDay(Number(e.target.value) || 0)}
-              className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm mb-4"
-            />
-
-            <div className="border-t border-slate-200 pt-3 mt-1">
-              <h3 className="text-xs font-semibold text-slate-900 mb-2">
-                General preferences
-              </h3>
-
-              <div className="space-y-2 text-xs">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={globalRestrictions.noAlcohol}
-                    onChange={(e) =>
-                      setGlobalRestrictions((r) => ({ ...r, noAlcohol: e.target.checked }))
-                    }
-                  />
-                  <span>No alcohol</span>
-                </label>
-
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={globalRestrictions.vegetarian}
-                    onChange={(e) =>
-                      setGlobalRestrictions((r) => ({ ...r, vegetarian: e.target.checked }))
-                    }
-                  />
-                  <span>Vegetarian</span>
-                </label>
-              </div>
-
-              {/* Allergies */}
-              <div className="border-t border-slate-200 pt-3 mt-3">
-                <h3 className="text-xs font-semibold text-slate-900 mb-2">Allergies</h3>
-                <p className="text-[11px] text-slate-500 mb-2">
-                  Foods containing these allergens will be excluded.
-                </p>
-
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  {ALLERGY_OPTIONS.map((a) => (
-                    <label key={a.key} className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={!!allergies[a.key]}
-                        onChange={(e) =>
-                          setAllergies((prev) => ({ ...prev, [a.key]: e.target.checked }))
-                        }
-                      />
-                      <span>{a.label}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-3 flex gap-3 text-xs">
-                <div>
-                  <label className="block text-slate-600 mb-1">Days</label>
-                  <input
-                    type="number"
-                    min={1}
-                    max={7}
-                    value={days}
-                    onChange={(e) => setDays(Number(e.target.value) || 1)}
-                    className="w-16 rounded-md border border-slate-300 px-2 py-1 cursor-pointer"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-slate-600 mb-1">Meals / day</label>
-                  <input
-                    type="number"
-                    min={1}
-                    max={5}
-                    value={mealsPerDay}
-                    onChange={(e) => setMealsPerDay(Number(e.target.value) || 3)}
-                    className="w-16 rounded-md border border-slate-300 px-2 py-1 cursor-pointer"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <button
-              onClick={handleGenerate}
-              disabled={loading}
-              className="mt-4 w-full inline-flex items-center justify-center rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:bg-slate-400 cursor-pointer"
-            >
-              {loading ? "Generating meal plan..." : "Generate Meal Plan"}
-            </button>
-
-            {/* Export dropdown */}
-            {mealPlan && (
-              <div className="mt-2 relative">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setExportOpen((s) => !s);
-                  }}
-                  className="cursor-pointer w-full inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50"
-                >
-                  <ArrowDownTrayIcon className="h-4 w-4" />
-                  Export as…
-                  <ChevronDownIcon
-                    className={`h-4 w-4 transition ${exportOpen ? "rotate-180" : ""}`}
-                  />
-                </button>
-
-                {exportOpen && (
-                  <div
-                    className="absolute z-20 mt-2 w-full rounded-xl border border-slate-200 bg-white shadow-lg overflow-hidden"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <button
-                      type="button"
-                      className="cursor-pointer w-full text-left px-4 py-2.5 text-xs hover:bg-slate-50"
-                      onClick={() => {
-                        exportJSON();
-                        setExportOpen(false);
-                      }}
-                    >
-                      Export as JSON
-                    </button>
-                    <button
-                      type="button"
-                      className="cursor-pointer w-full text-left px-4 py-2.5 text-xs hover:bg-slate-50"
-                      onClick={() => {
-                        exportCSV();
-                        setExportOpen(false);
-                      }}
-                    >
-                      Export as CSV
-                    </button>
-                    <button
-                      type="button"
-                      className="cursor-pointer w-full text-left px-4 py-2.5 text-xs hover:bg-slate-50"
-                      onClick={() => {
-                        exportPDF();
-                        setExportOpen(false);
-                      }}
-                    >
-                      Export as PDF
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* RIGHT COLUMN */}
-        <section className="space-y-5">
-          {!mealPlan ? (
-            <div className="h-full flex items-center justify-center text-sm text-slate-500">
-              Configure your medications, calories and preferences, then click{" "}
-              <span className="font-semibold ml-1">Generate Meal Plan</span>.
-            </div>
-          ) : (
-            <>
-              {/* Day Selector */}
-              <div className="sticky top-4 z-10 bg-slate-50 pb-2">
-                <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
-                      Quick Day View
-                    </p>
-
-                    <button
-                      type="button"
-                      onClick={() => setActiveDay(-1)}
-                      className={`text-[11px] font-semibold px-3 py-1 rounded-full border transition cursor-pointer ${
-                        activeDay === -1
-                          ? "bg-blue-600 text-white border-blue-600"
-                          : "bg-white text-slate-700 border-slate-300 hover:bg-slate-50"
-                      }`}
-                    >
-                      All Days
-                    </button>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    {daysList.map((d) => (
-                      <button
-                        key={d.day}
-                        type="button"
-                        onClick={() => setActiveDay(d.day)}
-                        className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition cursor-pointer ${
-                          activeDay === d.day
-                            ? "bg-emerald-600 text-white border-emerald-600"
-                            : "bg-white text-slate-700 border-slate-300 hover:bg-slate-50"
-                        }`}
-                      >
-                        Day {d.day}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Render selected day(s) */}
-              {visibleDays.map((day) => {
-                const totals = aggregateDay(day);
-
-                return (
-                  <div
-                    key={day.day}
-                    className="bg-white rounded-xl shadow-sm border border-slate-200 p-4"
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-xl font-extrabold tracking-tight text-slate-900">
-                        DAY {day.day}
-                      </h3>
-
-                      <span className="inline-flex items-center text-[11px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
-                        <CheckCircleIcon className="h-3.5 w-3.5 mr-1" />
-                        Interaction-safe meals
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4 text-sm">
-                      <div>
-                        <p className="text-xs text-slate-500 uppercase tracking-wide">
-                          Calories
-                        </p>
-                        <p className="text-lg font-semibold text-slate-900">
-                          {totals.energy.toFixed(0)}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-slate-500 uppercase tracking-wide">
-                          Protein
-                        </p>
-                        <p className="text-lg font-semibold text-slate-900">
-                          {totals.protein.toFixed(1)}g
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-slate-500 uppercase tracking-wide">Fat</p>
-                        <p className="text-lg font-semibold text-slate-900">
-                          {totals.fat.toFixed(1)}g
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-slate-500 uppercase tracking-wide">
-                          Carbohydrates
-                        </p>
-                        <p className="text-lg font-semibold text-slate-900">
-                          {totals.carbs.toFixed(1)}g
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-5">
-                      {day.meals.map((meal, idx) => {
-                        const mm = aggregateMeal(meal);
-
-                        return (
-                          <div key={idx} className="border-t border-slate-200 pt-4">
-                            <h4 className="text-lg font-extrabold text-slate-900 uppercase tracking-wide mb-2">
-                              {meal.name}
-                            </h4>
-
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-3 text-xs">
-                              <div>
-                                <p className="text-[11px] text-slate-500 uppercase">
-                                  Calories
-                                </p>
-                                <p className="text-sm font-semibold text-slate-900">
-                                  {mm.energy.toFixed(0)}
-                                </p>
-                              </div>
-                              <div>
-                                <p className="text-[11px] text-slate-500 uppercase">
-                                  Protein
-                                </p>
-                                <p className="text-sm font-semibold text-slate-900">
-                                  {mm.protein.toFixed(1)}g
-                                </p>
-                              </div>
-                              <div>
-                                <p className="text-[11px] text-slate-500 uppercase">Fat</p>
-                                <p className="text-sm font-semibold text-slate-900">
-                                  {mm.fat.toFixed(1)}g
-                                </p>
-                              </div>
-                              <div>
-                                <p className="text-[11px] text-slate-500 uppercase">
-                                  Carbohydrates
-                                </p>
-                                <p className="text-sm font-semibold text-slate-900">
-                                  {mm.carbs.toFixed(1)}g
-                                </p>
-                              </div>
-                            </div>
-
-                            <div className="space-y-2">
-                              {meal.items.map((item, i) => (
-                                <div
-                                  key={i}
-                                  className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs"
-                                >
-                                  <p className="font-semibold text-slate-900">{item.food}</p>
-                                  <p className="text-[11px] text-slate-500 mt-0.5">
-                                    {Number(item.energy ?? 0).toFixed(0)} kcal ·{" "}
-                                    {Number(item.protein ?? 0).toFixed(1)}g protein ·{" "}
-                                    {Number(item.fat ?? 0).toFixed(1)}g fat ·{" "}
-                                    {Number(item.carbs ?? 0).toFixed(1)}g carbs
-                                  </p>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-            </>
-          )}
-        </section>
-      </main>
-
-      <footer className="mt-10 mb-4 text-[11px] text-slate-500 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-3 max-w-6xl mx-auto px-4 w-full">
-        <span>© {new Date().getFullYear()} PharmaLink. For academic/research use.</span>
-        <span>Always consult a qualified healthcare professional.</span>
-      </footer>
+      {/* Body */}
+      <div className="p-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {items.map((obj, idx) => (
+            <FoodItemCard key={idx} item={obj} hideAlcohol={hideAlcohol} />
+          ))}
+        </div>
+      </div>
     </div>
   );
-};
+}
 
-export default PersonalizedMealPlan;
+export default function PersonalizedMealPlan() {
+  const navigate = useNavigate();
+  const { token, logout, isAuthenticated } = useAuth();
+
+  const [activeTab, setActiveTab] = useState("meal-plan");
+
+  // form state
+  const [drugInput, setDrugInput] = useState("");
+  const [drugNames, setDrugNames] = useState([]);
+
+  const [allergyInput, setAllergyInput] = useState("");
+  const [allergies, setAllergies] = useState([]);
+
+  const [days, setDays] = useState(2);
+  const [mealsPerDay, setMealsPerDay] = useState(3);
+  const [caloriesPerDay, setCaloriesPerDay] = useState(1800);
+
+  const [vegetarian, setVegetarian] = useState(false);
+  const [diabeticFriendly, setDiabeticFriendly] = useState(false);
+  const [lowSodium, setLowSodium] = useState(false);
+
+  const [hideAlcohol, setHideAlcohol] = useState(true);
+
+  // result
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+  const [result, setResult] = useState(null);
+  const [activeDay, setActiveDay] = useState(1);
+
+  useEffect(() => {
+    if (isAuthenticated === false) navigate("/login");
+  }, [isAuthenticated, navigate]);
+
+  const handleNavigation = useCallback((path) => navigate(path), [navigate]);
+  const handleLogout = useCallback(() => {
+    logout?.();
+    navigate("/");
+  }, [logout, navigate]);
+
+  async function fetchDrugs(q) {
+    const qq = String(q || "").trim();
+    if (!qq) return [];
+
+    const FASTAPI =
+      import.meta.env.VITE_FASTAPI_BASE || "http://localhost:8000";
+    try {
+      const res = await fetch(
+        `${FASTAPI}/drugs?q=${encodeURIComponent(qq)}&limit=20`
+      );
+      const data = await res.json().catch(() => []);
+      return Array.isArray(data) ? data : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function addDrug(name) {
+    const n = String(name || "").trim();
+    if (!n) return;
+    setDrugNames((prev) => uniq([...prev, n]));
+    setDrugInput("");
+  }
+
+  function addAllergy() {
+    const n = String(allergyInput || "").trim().toLowerCase();
+    if (!n) return;
+    setAllergies((prev) => uniq([...prev, n]));
+    setAllergyInput("");
+  }
+
+  async function generate() {
+    setErr("");
+    setResult(null);
+
+    if (!token) {
+      setErr("Please login first (missing token).");
+      return;
+    }
+
+    try {
+      if (drugNames.length === 0) throw { error: "Please add at least 1 drug" };
+
+      const mpd = Math.max(1, Math.min(3, Number(mealsPerDay || 3)));
+
+      const body = {
+        drug_names: drugNames,
+        days: Math.max(1, Number(days || 2)),
+        meals_per_day: mpd,
+        calories_per_day: Math.max(600, Number(caloriesPerDay || 1800)),
+        allergies: (allergies || [])
+          .map((x) => String(x).toLowerCase().trim())
+          .filter(Boolean),
+        preferences: {
+          vegetarian,
+          diabeticFriendly,
+          lowSodium,
+        },
+      };
+
+      setLoading(true);
+      const data = await advisoryRequest("/meal-plan/generate", {
+        method: "POST",
+        body,
+        token,
+      });
+
+      setResult(data?.result || null);
+      setActiveDay(1);
+    } catch (e) {
+      setErr(
+        e?.error || e?.details || e?.message || "Meal plan generation failed"
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const daysList = result?.days || [];
+  const activeDayData = daysList.find(
+    (d) => Number(d.day) === Number(activeDay)
+  );
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
+      <div className="flex">
+        {/* SIDEBAR */}
+        <aside className="hidden md:flex w-72 min-h-screen bg-gradient-to-b from-[#2f2971] via-[#2a246a] to-[#251f5e] text-white flex-col shadow-2xl">
+          <div className="h-16 flex items-center gap-3 px-6 border-b border-white/10">
+            <div
+              className="shrink-0 flex items-center cursor-pointer group"
+              onClick={() => handleNavigation("/")}
+            >
+              <div className="transform group-hover:scale-105 transition-transform duration-200">
+                <BrandLogo />
+              </div>
+            </div>
+          </div>
+
+          <nav className="px-4 py-6 space-y-2">
+            <button
+              onClick={() => {
+                setActiveTab("dashboard");
+                handleNavigation("/dashboard");
+              }}
+              className={`relative w-full flex items-center gap-3 px-6 py-3 text-sm font-semibold transition
+                ${
+                  activeTab === "dashboard"
+                    ? "bg-white text-[#2f2971] rounded-r-full -ml-4 pl-10"
+                    : "text-white hover:bg-white/10 rounded-r-full -ml-4 pl-10"
+                }`}
+            >
+              <HomeIcon className="h-5 w-5" />
+              Dashboard
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveTab("food-drug");
+                handleNavigation("/advisory");
+              }}
+              className={`relative w-full flex items-center gap-3 px-6 py-3.5 text-sm font-semibold transition-all duration-200
+                ${
+                  activeTab === "food-drug"
+                    ? "bg-white text-[#2f2971] rounded-r-full -ml-4 pl-10"
+                    : "text-white hover:bg-white/10 rounded-r-full -ml-4 pl-10"
+                }`}
+            >
+              <ShieldCheckIcon className="h-5 w-5" />
+              Food Drug Interaction
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveTab("meal-plan");
+                handleNavigation("/meal-plan");
+              }}
+              className={`relative w-full flex items-center gap-3 px-6 py-3.5 text-sm font-semibold transition-all duration-200
+                ${
+                  activeTab === "meal-plan"
+                    ? "bg-white text-[#2f2971] rounded-r-full -ml-4 pl-10"
+                    : "text-white hover:bg-white/10 rounded-r-full -ml-4 pl-10"
+                }`}
+            >
+              <ClipboardDocumentListIcon className="h-5 w-5" />
+              Meal Plan Advisor
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveTab("drug-image");
+                handleNavigation("/drug-image");
+              }}
+              className={`relative w-full flex items-center gap-3 px-6 py-3.5 text-sm font-semibold transition-all duration-200
+                ${
+                  activeTab === "drug-image"
+                    ? "bg-white text-[#2f2971] rounded-r-full -ml-4 pl-10"
+                    : "text-white hover:bg-white/10 rounded-r-full -ml-4 pl-10"
+                }`}
+            >
+              <ShieldCheckIcon className="h-5 w-5" />
+              Drug Image Analyzer
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveTab("history");
+                handleNavigation("/history");
+              }}
+              className={`relative w-full flex items-center gap-3 px-6 py-3.5 text-sm font-semibold transition-all duration-200
+                ${
+                  activeTab === "history"
+                    ? "bg-white text-[#2f2971] rounded-r-full -ml-4 pl-10"
+                    : "text-white hover:bg-white/10 rounded-r-full -ml-4 pl-10"
+                }`}
+            >
+              <ClockIcon className="h-5 w-5" />
+              History
+            </button>
+
+            <div className="mt-6 pt-6 border-t border-white/10 space-y-2">
+              <button
+                onClick={() => {
+                  setActiveTab("profile");
+                  navigate("/profile");
+                }}
+                className={`relative w-full flex items-center gap-3 px-6 py-3.5 text-sm font-semibold transition-all duration-200
+                  ${
+                    activeTab === "profile"
+                      ? "bg-white text-[#2f2971] rounded-r-full -ml-4 pl-10"
+                      : "text-white hover:bg-white/10 rounded-r-full -ml-4 pl-10"
+                  }`}
+              >
+                <UserCircle className="h-5 w-5" />
+                My Profile
+              </button>
+
+
+              <button
+                onClick={handleLogout}
+                className="relative w-full flex items-center gap-3 px-6 py-3.5 text-sm font-semibold transition-all duration-200 text-white hover:bg-red-500/20 rounded-r-full -ml-4 pl-10"
+              >
+                <ArrowRightOnRectangleIcon className="h-5 w-5" />
+                Sign Out
+              </button>
+            </div>
+          </nav>
+        </aside>
+
+        {/* MAIN */}
+        <div className="flex-1">
+          {/* TOP HEADER */}
+          <header className="h-16 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 flex items-center px-4 md:px-6 sticky top-0 z-40 shadow-sm">
+            <div className="leading-tight">
+              <div className="text-base md:text-lg font-extrabold text-[#2f2971]">
+                Health Advisory Center
+              </div>
+              <div className="text-xs text-slate-500">
+                Smart Healthcare Tools for Food–Drug Safety, Personalized
+                Nutrition & Pill Identification
+              </div>
+            </div>
+          </header>
+
+          {/* CONTENT */}
+          <main className="p-4 md:p-6 lg:p-8">
+            <div className="max-w-5xl mx-auto">
+              {/* Page Header */}
+              <div className="mb-8">
+                <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-2">
+                  Meal Plan Advisor
+                </h1>
+                <p className="text-sm text-slate-600">
+                  Create safe, personalized meal plans that avoid risky food-drug
+                  interactions based on your medications and dietary preferences.
+                </p>
+              </div>
+
+              {/* Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* LEFT PANEL */}
+                <div className="lg:col-span-1 space-y-5">
+                  {/* Drugs */}
+                  <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-5">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-[#2f2971] to-[#3d3086] flex items-center justify-center">
+                        <BeakerIcon className="h-5 w-5 text-white" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-semibold text-slate-900">
+                          Medications
+                        </div>
+                        <div className="text-xs text-slate-500">
+                          {drugNames.length} added
+                        </div>
+                      </div>
+                    </div>
+
+                    <AutoComplete
+                      label={null}
+                      placeholder="Type medication name..."
+                      fetcher={fetchDrugs}
+                      value={drugInput}
+                      onChange={setDrugInput}
+                      onSelect={(item) => addDrug(item?.name)}
+                    />
+
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {drugNames.map((d) => (
+                        <Chip
+                          key={d}
+                          name={d}
+                          onRemove={() =>
+                            setDrugNames((p) => p.filter((x) => x !== d))
+                          }
+                        />
+                      ))}
+                    </div>
+
+                    <div className="mt-4 p-3 rounded-lg bg-amber-50 border border-amber-200">
+                      <p className="text-xs text-amber-800 flex items-start gap-2">
+                        <ExclamationTriangleIcon className="h-4 w-4 shrink-0 mt-0.5" />
+                        <span>AI-assisted. Always verify with your pharmacist.</span>
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Allergies */}
+                  <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-5">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center">
+                        <ExclamationTriangleIcon className="h-5 w-5 text-white" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-semibold text-slate-900">
+                          Allergies
+                        </div>
+                        <div className="text-xs text-slate-500">
+                          {allergies.length} listed
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <input
+                        value={allergyInput}
+                        onChange={(e) => setAllergyInput(e.target.value)}
+                        placeholder="e.g. dairy, peanuts..."
+                        className="flex-1 px-3 py-2 rounded-lg border border-slate-200 text-sm focus:border-[#2f2971] focus:ring-1 focus:ring-[#2f2971] focus:outline-none transition-colors"
+                      />
+                      <button
+                        type="button"
+                        onClick={addAllergy}
+                        className="px-4 py-2 rounded-lg border border-slate-200 text-sm font-semibold hover:bg-slate-50 hover:border-slate-300 transition-all"
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {allergies.map((a) => (
+                        <Chip
+                          key={a}
+                          name={a}
+                          onRemove={() =>
+                            setAllergies((p) => p.filter((x) => x !== a))
+                          }
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Targets */}
+                  <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-5 space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-[#2f2971] to-[#3d3086] flex items-center justify-center">
+                        <CalendarDaysIcon className="h-5 w-5 text-white" />
+                      </div>
+                      <div className="text-sm font-semibold text-slate-900">
+                        Plan Settings
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-3">
+                      <label className="text-xs font-medium text-slate-600">
+                        Days
+                        <input
+                          type="number"
+                          min={1}
+                          max={14}
+                          value={days}
+                          onChange={(e) => setDays(e.target.value)}
+                          className="mt-1.5 w-full px-3 py-2 rounded-lg border border-slate-200 text-sm font-semibold focus:border-[#2f2971] focus:ring-1 focus:ring-[#2f2971] focus:outline-none transition-colors"
+                        />
+                      </label>
+
+                      <label className="text-xs font-medium text-slate-600">
+                        Meals/day
+                        <input
+                          type="number"
+                          min={1}
+                          max={3}
+                          value={mealsPerDay}
+                          onChange={(e) => setMealsPerDay(e.target.value)}
+                          className="mt-1.5 w-full px-3 py-2 rounded-lg border border-slate-200 text-sm font-semibold focus:border-[#2f2971] focus:ring-1 focus:ring-[#2f2971] focus:outline-none transition-colors"
+                        />
+                      </label>
+
+                      <label className="text-xs font-medium text-slate-600">
+                        kcal/day
+                        <input
+                          type="number"
+                          min={800}
+                          max={3500}
+                          value={caloriesPerDay}
+                          onChange={(e) => setCaloriesPerDay(e.target.value)}
+                          className="mt-1.5 w-full px-3 py-2 rounded-lg border border-slate-200 text-sm font-semibold focus:border-[#2f2971] focus:ring-1 focus:ring-[#2f2971] focus:outline-none transition-colors"
+                        />
+                      </label>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      <Toggle
+                        label="Vegetarian Diet"
+                        value={vegetarian}
+                        onChange={setVegetarian}
+                      />
+                      <Toggle
+                        label="Diabetic Friendly"
+                        value={diabeticFriendly}
+                        onChange={setDiabeticFriendly}
+                      />
+                      <Toggle
+                        label="Low Sodium"
+                        value={lowSodium}
+                        onChange={setLowSodium}
+                      />
+                    </div>
+
+                    <label className="flex items-center gap-3 p-3.5 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer hover:bg-slate-100 transition-colors">
+                      <input
+                        type="checkbox"
+                        checked={hideAlcohol}
+                        onChange={(e) => setHideAlcohol(e.target.checked)}
+                        className="h-4 w-4 rounded border-slate-300 text-[#2f2971] focus:ring-[#2f2971]"
+                      />
+                      <span className="text-sm font-medium text-slate-700">
+                        Hide alcohol items (recommended)
+                      </span>
+                    </label>
+
+                    <button
+                      onClick={generate}
+                      disabled={loading}
+                      className={`w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-semibold text-sm shadow-sm text-white transition-all
+                        ${
+                          loading
+                            ? "bg-slate-400 cursor-not-allowed"
+                            : "bg-gradient-to-r from-[#2f2971] to-[#3d3086] hover:from-[#3d3086] hover:to-[#2f2971] shadow-purple-500/50 hover:shadow-xl hover:shadow-purple-500/50"
+                        }`}
+                    >
+                      {loading ? (
+                        <>
+                          <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
+                          Generating Plan...
+                        </>
+                      ) : (
+                        <>
+                          <SparklesIcon className="h-5 w-5 group-hover:rotate-12 transition-transform" />
+                          Generate Meal Plan
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  {err && (
+                    <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+                      <div className="flex items-start gap-3">
+                        <div className="shrink-0 h-8 w-8 rounded-lg bg-red-100 flex items-center justify-center">
+                          <ExclamationTriangleIcon className="h-4 w-4 text-red-600" />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="text-sm font-semibold text-red-900 mb-1">
+                            Error
+                          </h4>
+                          <p className="text-sm text-red-700">{err}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* RIGHT PANEL */}
+                <div className="lg:col-span-2">
+                  <div className="bg-white rounded-lg border border-slate-200 shadow-sm">
+                    {/* Header */}
+                    <div className="bg-gradient-to-r from-[#2f2971] to-[#3d3086] px-6 py-5 rounded-t-lg">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-lg bg-white/10 flex items-center justify-center">
+                          <HeartIcon className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                          <div className="text-lg font-semibold text-white">
+                            Your Meal Plan
+                          </div>
+                          {result?.drug_names?.length ? (
+                            <div className="text-xs text-white/80 mt-0.5">
+                              Medications: {result.drug_names.join(", ")}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Body */}
+                    <div className="p-6">
+                      {!result ? (
+                        <div className="text-center py-16">
+                          <div className="inline-flex items-center justify-center h-16 w-16 rounded-lg bg-slate-100 mb-4">
+                            <ClipboardDocumentListIcon className="h-8 w-8 text-slate-400" />
+                          </div>
+                          <h3 className="text-base font-semibold text-slate-900 mb-2">
+                            No Meal Plan Generated Yet
+                          </h3>
+                          <p className="text-sm text-slate-600 max-w-md mx-auto">
+                            Add your medications, set your preferences, and click
+                            "Generate Meal Plan" to create your personalized
+                            nutrition plan.
+                          </p>
+                        </div>
+                      ) : (
+                        <>
+                          {/* Day Tabs */}
+                          <div className="flex gap-2 flex-wrap mb-6">
+                            {daysList.map((d) => (
+                              <button
+                                key={d.day}
+                                onClick={() => setActiveDay(d.day)}
+                                className={`px-5 py-2.5 rounded-lg text-sm font-semibold border transition-all
+                                  ${
+                                    Number(activeDay) === Number(d.day)
+                                      ? "bg-gradient-to-r from-[#2f2971] to-[#3d3086] text-white border-[#2f2971] shadow-sm"
+                                      : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                                  }`}
+                              >
+                                Day {d.day}
+                              </button>
+                            ))}
+                          </div>
+
+                          {/* Meals */}
+                          <div className="space-y-5">
+                            {(activeDayData?.meals || []).map((m, idx) => (
+                              <MealCard
+                                key={idx}
+                                meal={m}
+                                hideAlcohol={hideAlcohol}
+                              />
+                            ))}
+                          </div>
+
+                          {/* Disclaimer */}
+                          <div className="mt-6 p-4 rounded-lg bg-amber-50 border border-amber-200">
+                            <div className="flex items-start gap-3">
+                              <ExclamationTriangleIcon className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+                              <div className="text-xs text-amber-800">
+                                <strong>Medical Disclaimer:</strong> This is an
+                                AI-assisted recommendation tool. If you have any
+                                medical conditions or concerns, please consult
+                                with your doctor or pharmacist before making
+                                dietary changes.
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <footer className="mt-12 pt-6 border-t border-slate-200">
+                <div className="flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500">
+                  <div className="flex items-center gap-2">
+                    <span>
+                      © {new Date().getFullYear()} PharmaLink. All rights
+                      reserved.
+                    </span>
+                  </div>
+                  <span>For academic and research purposes only.</span>
+                </div>
+              </footer>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+  );
+}

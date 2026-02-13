@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../auth/auth.jsx";
 import BrandLogo from "../components/brandLogo.jsx";
 import LoginImg from "../assets/Loginn.jpeg";
+import { useAuth } from "../auth/auth.jsx";
+import { authRequest } from "../utils/api.js";
 
 import {
   EyeIcon,
@@ -10,7 +11,6 @@ import {
   LockClosedIcon,
   EnvelopeIcon,
   PhoneIcon,
-  BuildingOfficeIcon,
   UserIcon,
   ShieldCheckIcon,
   ExclamationCircleIcon,
@@ -25,9 +25,8 @@ const Register = () => {
     firstName: "",
     lastName: "",
     email: "",
+    age: "",
     phone: "",
-    organization: "",
-    role: "doctor",
     password: "",
     confirmPassword: "",
     acceptTerms: false,
@@ -40,12 +39,10 @@ const Register = () => {
   const [errors, setErrors] = useState({});
   const [passwordStrength, setPasswordStrength] = useState(0);
 
-  // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) navigate("/dashboard");
   }, [isAuthenticated, navigate]);
 
-  // --- password strength
   const calculatePasswordStrength = (password) => {
     let strength = 0;
     if (password.length >= 8) strength++;
@@ -53,7 +50,7 @@ const Register = () => {
     if (/[a-z]/.test(password)) strength++;
     if (/\d/.test(password)) strength++;
     if (/[^A-Za-z0-9]/.test(password)) strength++;
-    return strength; // 0..5
+    return strength;
   };
 
   const getStrength = useMemo(() => {
@@ -64,8 +61,7 @@ const Register = () => {
     return { label: "Strong", bar: "bg-emerald-500", text: "text-emerald-600", pct: 100 };
   }, [passwordStrength]);
 
-  // --- validation
-  const validateForm = () => {
+    const validateForm = () => {
     const newErrors = {};
 
     if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
@@ -74,10 +70,12 @@ const Register = () => {
     if (!formData.email) newErrors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Enter a valid email address";
 
+    if (!formData.age) newErrors.age = "Age is required";
+    else if (!/^\d+$/.test(String(formData.age)) || Number(formData.age) <= 0)
+      newErrors.age = "Enter a valid age";
+
     if (!formData.phone) newErrors.phone = "Phone number is required";
     else if (!/^\+?[\d\s\-\(\)]{10,}$/.test(formData.phone)) newErrors.phone = "Enter a valid phone number";
-
-    if (!formData.organization.trim()) newErrors.organization = "Organization is required";
 
     if (!formData.password) newErrors.password = "Password is required";
     else if (formData.password.length < 8) newErrors.password = "Password must be at least 8 characters";
@@ -109,24 +107,42 @@ const Register = () => {
 
     setIsLoading(true);
     try {
-      await new Promise((r) => setTimeout(r, 900));
+      const fullName = `${formData.firstName} ${formData.lastName}`.trim();
 
-      const newUser = {
-        id: Date.now(),
-        name: `${formData.firstName} ${formData.lastName}`,
-        email: formData.email,
-        role: formData.role,
-        organization: formData.organization,
-        phone: formData.phone,
-        avatar: null,
-        createdAt: new Date().toISOString(),
-        lastLogin: new Date().toISOString(),
-      };
+      // Your backend register route expects: fullName,email,password
+      await authRequest("/api/users/register", {
+        method: "POST",
+        body: {
+          fullName,
+          email: formData.email,
+          password: formData.password,
+          age: Number(formData.age),
+          phone: formData.phone, // keep as string (better for leading 0 / +94)
+        },
+      });
 
-      login(newUser);
+      // Auto login after register
+      const data = await authRequest("/api/users/login", {
+        method: "POST",
+        body: { email: formData.email, password: formData.password },
+      });
+
+      login({
+        token: data.token,
+        user: {
+          id: data.user.id,
+          name: data.user.fullName,
+          email: data.user.email,
+          phone: formData.phone,
+          age: Number(formData.age),
+          createdAt: new Date().toISOString(),
+          lastLogin: new Date().toISOString(),
+        },
+      });
+
       navigate("/dashboard");
-    } catch {
-      setErrors({ general: "Registration failed. Please try again." });
+    } catch (err) {
+      setErrors({ general: err?.error || "Registration failed. Please try again." });
     } finally {
       setIsLoading(false);
     }
@@ -136,7 +152,6 @@ const Register = () => {
 
   return (
     <div className="h-screen overflow-hidden grid lg:grid-cols-2 bg-slate-50">
-      {/* LEFT (Image / Branding) */}
       <div className="hidden lg:flex relative h-screen">
         <img src={LoginImg} alt="Healthcare technology" className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-linear-to-tr from-slate-950/85 via-slate-900/55 to-slate-900/10" />
@@ -144,7 +159,6 @@ const Register = () => {
 
         <div className="relative z-10 p-10 flex flex-col justify-between h-full text-white">
           <div />
-
           <div className="max-w-xl">
             <h1 className="text-4xl font-extrabold leading-tight tracking-tight drop-shadow-[0_6px_18px_rgba(0,0,0,0.45)]">
               Create your PharmaLink account.
@@ -152,28 +166,14 @@ const Register = () => {
             <p className="mt-4 text-base leading-7 text-white/80 max-w-lg">
               Join a secure workspace for interaction checks, nutrition-aware guidance, and prescription validation.
             </p>
-
-            <div className="mt-6 grid grid-cols-2 gap-3 max-w-lg">
-              <div className="rounded-2xl border border-white/15 bg-white/10 backdrop-blur p-4">
-                <p className="text-sm font-semibold">Enterprise security</p>
-                <p className="text-xs text-white/75 mt-1">Built for clinical workflows and privacy.</p>
-              </div>
-              <div className="rounded-2xl border border-white/15 bg-white/10 backdrop-blur p-4">
-                <p className="text-sm font-semibold">Faster onboarding</p>
-                <p className="text-xs text-white/75 mt-1">Get started in less than 1 minute.</p>
-              </div>
-            </div>
           </div>
-
           <p className="text-xs text-white/60">© {new Date().getFullYear()} PharmaLink — For academic/research use.</p>
         </div>
       </div>
 
-      {/* RIGHT (Form) — only this side scrolls */}
       <div className="h-screen overflow-hidden flex items-center justify-center px-4 py-6">
         <div className="w-full max-w-md h-full overflow-y-auto pr-2">
           <div className="bg-white border border-slate-200 shadow-sm rounded-3xl p-6">
-            {/* Top row: logo + secure */}
             <div className="flex items-center justify-between gap-3 mb-5">
               <div className="flex items-center gap-3">
                 <BrandLogo className="h-7 w-7" />
@@ -184,14 +184,12 @@ const Register = () => {
               </span>
             </div>
 
-            {/* Divider line + centered title */}
             <div className="mb-5 text-center">
               <div className="mx-auto mb-3 h-px w-11/12 bg-slate-200" />
               <h2 className="text-2xl font-extrabold text-slate-900">Create account</h2>
               <p className="text-sm text-slate-600 mt-1">Set up your PharmaLink profile</p>
             </div>
 
-            {/* General error */}
             {errors.general && (
               <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 flex items-center gap-2">
                 <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
@@ -200,7 +198,6 @@ const Register = () => {
             )}
 
             <form className="space-y-4" onSubmit={handleSubmit}>
-              {/* Name */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-semibold text-slate-800 mb-2">First name</label>
@@ -254,59 +251,39 @@ const Register = () => {
                 {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email}</p>}
               </div>
 
+              {/* Age */}
+              <div>
+                <label className="block text-sm font-semibold text-slate-800 mb-2">Age</label>
+                <input
+                  name="age"
+                  value={formData.age}
+                  onChange={handleInputChange}
+                  placeholder="e.g. 24"
+                  className={`w-full rounded-2xl border px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 ${
+                    errors.age ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"
+                  }`}
+                />
+                {errors.age && <p className="mt-1 text-xs text-red-600">{errors.age}</p>}
+              </div>
+
               {/* Phone + Org */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1  gap-3">
                 <div>
                   <label className="block text-sm font-semibold text-slate-800 mb-2">Phone</label>
                   <div className="relative">
                     <PhoneIcon className="h-5 w-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                    <input
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      placeholder="+1 555 123 4567"
-                      className={`w-full rounded-2xl border px-10 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 ${
-                        errors.phone ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"
-                      }`}
-                    />
+                  <input
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder="+94 7X XXX XXXX"
+                    className={`w-full rounded-2xl border px-10 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 ${
+                      errors.phone ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"
+                    }`}
+                  />
                   </div>
                   {errors.phone && <p className="mt-1 text-xs text-red-600">{errors.phone}</p>}
                 </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-slate-800 mb-2">Organization</label>
-                  <div className="relative">
-                    <BuildingOfficeIcon className="h-5 w-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                    <input
-                      name="organization"
-                      value={formData.organization}
-                      onChange={handleInputChange}
-                      placeholder="Hospital / Clinic"
-                      className={`w-full rounded-2xl border px-10 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 ${
-                        errors.organization ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"
-                      }`}
-                    />
-                  </div>
-                  {errors.organization && <p className="mt-1 text-xs text-red-600">{errors.organization}</p>}
-                </div>
-              </div>
-
-              {/* Role */}
-              <div>
-                <label className="block text-sm font-semibold text-slate-800 mb-2">Professional role</label>
-                <select
-                  name="role"
-                  value={formData.role}
-                  onChange={handleInputChange}
-                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="doctor">Doctor / Physician</option>
-                  <option value="pharmacist">Pharmacist</option>
-                  <option value="nurse">Nurse</option>
-                  <option value="admin">Healthcare Administrator</option>
-                  <option value="researcher">Medical Researcher</option>
-                  <option value="other">Other</option>
-                </select>
               </div>
 
               {/* Passwords */}
@@ -339,10 +316,7 @@ const Register = () => {
                     <div className="mt-2">
                       <div className="flex items-center gap-2">
                         <div className="flex-1 bg-slate-200 rounded-full h-2">
-                          <div
-                            className={`h-2 rounded-full transition-all ${getStrength.bar}`}
-                            style={{ width: `${getStrength.pct}%` }}
-                          />
+                          <div className={`h-2 rounded-full transition-all ${getStrength.bar}`} style={{ width: `${getStrength.pct}%` }} />
                         </div>
                         <span className={`text-xs font-semibold ${getStrength.text}`}>{getStrength.label}</span>
                       </div>
@@ -434,7 +408,6 @@ const Register = () => {
                 </label>
               </div>
 
-              {/* Create */}
               <button
                 type="submit"
                 disabled={isLoading}
@@ -442,19 +415,9 @@ const Register = () => {
                   isLoading ? "bg-slate-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 active:scale-[0.99]"
                 }`}
               >
-                <span className="inline-flex items-center justify-center gap-2">
-                  {isLoading ? (
-                    <>
-                      <span className="h-4 w-4 rounded-full border-2 border-white/60 border-t-white animate-spin" />
-                      Creating account...
-                    </>
-                  ) : (
-                    "Create account"
-                  )}
-                </span>
+                {isLoading ? "Creating account..." : "Create account"}
               </button>
 
-              {/* Already have */}
               <div className="pt-2 text-center">
                 <p className="text-xs text-slate-500">
                   Already have an account?{" "}
@@ -466,9 +429,8 @@ const Register = () => {
             </form>
           </div>
 
-          {/* Mobile footer */}
           <div className="mt-4 text-center text-xs text-slate-500 lg:hidden">
-            © {new Date().getFullYear()} PharmaLink. Always consult a qualified healthcare professional.
+            © {new Date().getFullYear()} PharmaLink.
           </div>
         </div>
       </div>

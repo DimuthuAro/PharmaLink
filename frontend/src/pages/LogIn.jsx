@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../auth/auth.jsx";
 import BrandLogo from "../components/brandLogo.jsx";
 import LoginImg from "../assets/Loginn.jpeg";
-import { USERS } from "../data/users.js";
+import { useAuth } from "../auth/auth.jsx";
+import { authRequest } from "../utils/api.js";
 
 import {
   EyeIcon,
@@ -12,14 +12,12 @@ import {
   EnvelopeIcon,
   ShieldCheckIcon,
   ExclamationCircleIcon,
-  ChevronDownIcon,
 } from "@heroicons/react/24/outline";
 
 const LogIn = () => {
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
 
-  // ---------------- UI + FORM STATE ----------------
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -29,25 +27,7 @@ const LogIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const [loginAttempts, setLoginAttempts] = useState(0);
-  const [isLocked, setIsLocked] = useState(false);
 
-  // Demo accordion
-  const [showDemo, setShowDemo] = useState(false);
-
-  // ---------------- DEMO USERS ----------------
-  const demoUsers = useMemo(
-    () =>
-      USERS.map((u) => ({
-        key: u.role,
-        role: u.role.charAt(0).toUpperCase() + u.role.slice(1),
-        email: u.email,
-        password: u.password,
-      })),
-    []
-  );
-
-  // ---------------- EFFECTS ----------------
   useEffect(() => {
     if (isAuthenticated) navigate("/dashboard");
   }, [isAuthenticated, navigate]);
@@ -60,16 +40,13 @@ const LogIn = () => {
     }
   }, []);
 
-  // ---------------- HELPERS ----------------
   const validateForm = () => {
     const newErrors = {};
     if (!formData.email) newErrors.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(formData.email))
-      newErrors.email = "Enter a valid email address";
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Enter a valid email address";
 
     if (!formData.password) newErrors.password = "Password is required";
-    else if (formData.password.length < 6)
-      newErrors.password = "Password must be at least 6 characters";
+    else if (formData.password.length < 1) newErrors.password = "Password must be at least 6 characters";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -81,67 +58,32 @@ const LogIn = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
-
-    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
-    if (errors.general) setErrors((prev) => ({ ...prev, general: "" }));
+    if (errors[name]) setErrors((p) => ({ ...p, [name]: "" }));
+    if (errors.general) setErrors((p) => ({ ...p, general: "" }));
   };
 
-  const fillDemoCredentials = (key) => {
-    const u = demoUsers.find((x) => x.key === key);
-    if (!u) return;
-    setFormData((p) => ({ ...p, email: u.email, password: u.password }));
-    setErrors({});
-  };
-
-  // ---------------- SUBMIT ----------------
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (isLocked) {
-      setErrors({
-        general: "Account temporarily locked. Try again in 30 seconds.",
-      });
-      return;
-    }
-
     if (!validateForm()) return;
 
     setIsLoading(true);
-
     try {
-      await new Promise((r) => setTimeout(r, 900)); // simulate delay
+      const data = await authRequest("/api/users/login", {
+        method: "POST",
+        body: { email: formData.email, password: formData.password },
+      });
 
-      // Use USERS list
-      const found = USERS.find(
-        (u) => u.email === formData.email && u.password === formData.password
-      );
-
-      if (!found) {
-        setLoginAttempts((p) => p + 1);
-
-        // lock after 3 total tries
-        if (loginAttempts >= 2) {
-          setIsLocked(true);
-          setErrors({
-            general: "Too many failed attempts. Locked for 30 seconds.",
-          });
-          setTimeout(() => setIsLocked(false), 30000);
-        } else {
-          setErrors({ general: "Invalid email or password. Please try again." });
-        }
-        return;
-      }
-
-      // Success: store full user including avatar
-login({
-  id: found.id,
-  name: found.name,
-  email: found.email,
-  role: found.role,
-  phone: found.phone,
-  avatar: found.avatar,
-  lastLogin: new Date().toISOString(),
-});
+      // backend returns: { token, user: { id, fullName, email } }
+      login({
+        token: data.token,
+        user: {
+          id: data.user.id,
+          name: data.user.fullName,
+          email: data.user.email,
+          role: "user",
+          lastLogin: new Date().toISOString(),
+        },
+      });
 
       if (formData.rememberMe) {
         localStorage.setItem("pharmalink_remember", "true");
@@ -152,8 +94,8 @@ login({
       }
 
       navigate("/dashboard");
-    } catch {
-      setErrors({ general: "Something went wrong. Please try again." });
+    } catch (err) {
+      setErrors({ general: err?.error || "Invalid email or password. Please try again." });
     } finally {
       setIsLoading(false);
     }
@@ -161,52 +103,27 @@ login({
 
   return (
     <div className="h-screen overflow-hidden grid lg:grid-cols-2 bg-slate-50">
-      {/* LEFT (Image / Branding) */}
+      {/* LEFT */}
       <div className="hidden lg:flex relative h-screen">
-        <img
-          src={LoginImg}
-          alt="Healthcare technology"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
+        <img src={LoginImg} alt="Healthcare technology" className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-linear-to-tr from-slate-950/85 via-slate-900/55 to-slate-900/10" />
         <div className="absolute inset-0 backdrop-blur-[1px]" />
 
         <div className="relative z-10 p-10 flex flex-col justify-between h-full text-white">
           <div />
-
           <div className="max-w-xl">
-            <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-white drop-shadow-[0_6px_18px_rgba(0,0,0,0.45)]">
+            <h1 className="text-4xl font-extrabold leading-tight tracking-tight">
               Sign in to continue your clinical workflow.
             </h1>
-
             <p className="mt-4 text-base leading-7 text-white/80 max-w-lg">
-              Centralize interaction checks, nutrition-aware guidance, brand
-              comparison, and prescription validation in one secure workspace.
+              Centralize interaction checks, nutrition-aware guidance, brand comparison, and prescription validation.
             </p>
-
-            <div className="mt-6 grid grid-cols-2 gap-3 max-w-lg">
-              <div className="rounded-2xl border border-white/15 bg-white/10 backdrop-blur p-4">
-                <p className="text-sm font-semibold">Built for speed</p>
-                <p className="text-xs text-white/75 mt-1">
-                  Predictable flows, faster decisions.
-                </p>
-              </div>
-              <div className="rounded-2xl border border-white/15 bg-white/10 backdrop-blur p-4">
-                <p className="text-sm font-semibold">Interaction-aware</p>
-                <p className="text-xs text-white/75 mt-1">
-                  Safer, evidence-informed checks.
-                </p>
-              </div>
-            </div>
           </div>
-
-          <p className="text-xs text-white/60">
-            © {new Date().getFullYear()} PharmaLink — For academic/research use.
-          </p>
+          <p className="text-xs text-white/60">© {new Date().getFullYear()} PharmaLink — For academic/research use.</p>
         </div>
       </div>
 
-      {/* RIGHT (Form) */}
+      {/* RIGHT */}
       <div className="h-screen overflow-hidden flex items-center justify-center px-4 py-6">
         <div className="w-full max-w-md max-h-[calc(100vh-48px)] overflow-auto">
           <div className="bg-white border border-slate-200 shadow-sm rounded-3xl p-6">
@@ -221,60 +138,9 @@ login({
             </div>
 
             <div className="mb-4 text-center">
-              <div className="mx-auto mb-3 h-px w-95 bg-slate-200"></div>
-              <h2 className="text-2xl font-extrabold text-slate-900">
-                Welcome back
-              </h2>
-              <p className="text-sm text-slate-600 mt-1">
-                Sign in to your account
-              </p>
-            </div>
-
-            {/* Demo accordion */}
-            <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50">
-              <button
-                type="button"
-                onClick={() => setShowDemo((s) => !s)}
-                className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-slate-800"
-              >
-                <span>Demo credentials</span>
-                <ChevronDownIcon
-                  className={`h-5 w-5 transition-transform ${
-                    showDemo ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-
-              {showDemo && (
-                <div className="px-4 pb-4">
-                  <p className="text-xs text-slate-500 mb-3">
-                    Click one to auto-fill email + password.
-                  </p>
-
-                  <div className="space-y-2">
-                    {demoUsers.map((u) => (
-                      <button
-                        key={u.key}
-                        type="button"
-                        onClick={() => fillDemoCredentials(u.key)}
-                        className="w-full text-left rounded-xl border border-slate-200 bg-white px-3 py-3 hover:bg-slate-50 transition"
-                      >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-sm font-semibold text-slate-900">
-                              {u.role}
-                            </p>
-                            <p className="text-xs text-slate-600">{u.email}</p>
-                          </div>
-                          <span className="text-xs text-slate-500">
-                            {u.password}
-                          </span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
+              <div className="mx-auto mb-3 h-px w-11/12 bg-slate-200"></div>
+              <h2 className="text-2xl font-extrabold text-slate-900">Welcome back</h2>
+              <p className="text-sm text-slate-600 mt-1">Sign in to your account</p>
             </div>
 
             <form className="mt-5 space-y-4" onSubmit={handleSubmit}>
@@ -287,9 +153,7 @@ login({
 
               {/* Email */}
               <div>
-                <label className="block text-sm font-semibold text-slate-800 mb-2">
-                  Email address
-                </label>
+                <label className="block text-sm font-semibold text-slate-800 mb-2">Email address</label>
                 <div className="relative">
                   <EnvelopeIcon className="h-5 w-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
@@ -300,22 +164,16 @@ login({
                     onChange={handleInputChange}
                     placeholder="you@hospital.org"
                     className={`w-full rounded-2xl border px-10 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 ${
-                      errors.email
-                        ? "border-red-300 bg-red-50"
-                        : "border-slate-200 bg-white"
+                      errors.email ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"
                     }`}
                   />
                 </div>
-                {errors.email && (
-                  <p className="mt-1 text-xs text-red-600">{errors.email}</p>
-                )}
+                {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email}</p>}
               </div>
 
               {/* Password */}
               <div>
-                <label className="block text-sm font-semibold text-slate-800 mb-2">
-                  Password
-                </label>
+                <label className="block text-sm font-semibold text-slate-800 mb-2">Password</label>
                 <div className="relative">
                   <LockClosedIcon className="h-5 w-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
@@ -326,9 +184,7 @@ login({
                     onChange={handleInputChange}
                     placeholder="Enter your password"
                     className={`w-full rounded-2xl border px-10 py-3 pr-11 text-sm outline-none focus:ring-2 focus:ring-blue-500 ${
-                      errors.password
-                        ? "border-red-300 bg-red-50"
-                        : "border-slate-200 bg-white"
+                      errors.password ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"
                     }`}
                   />
                   <button
@@ -337,21 +193,13 @@ login({
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                     aria-label="Toggle password visibility"
                   >
-                    {showPassword ? (
-                      <EyeSlashIcon className="h-5 w-5" />
-                    ) : (
-                      <EyeIcon className="h-5 w-5" />
-                    )}
+                    {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
                   </button>
                 </div>
-                {errors.password && (
-                  <p className="mt-1 text-xs text-red-600">
-                    {errors.password}
-                  </p>
-                )}
+                {errors.password && <p className="mt-1 text-xs text-red-600">{errors.password}</p>}
               </div>
 
-              {/* Remember + Forgot */}
+              {/* Remember */}
               <div className="flex items-center justify-between">
                 <label className="flex items-center gap-2 text-sm text-slate-700">
                   <input
@@ -363,38 +211,21 @@ login({
                   />
                   Remember me
                 </label>
-
-                <Link
-                  to="/forgot-password"
-                  className="text-sm font-semibold text-blue-600 hover:text-blue-700"
-                >
+                <Link to="/forgot-password" className="text-sm font-semibold text-blue-600 hover:text-blue-700">
                   Forgot password?
                 </Link>
               </div>
 
-              {/* Submit */}
               <button
                 type="submit"
-                disabled={isLoading || isLocked}
+                disabled={isLoading}
                 className={`w-full rounded-2xl py-3 text-sm font-semibold text-white shadow-sm transition ${
-                  isLoading || isLocked
-                    ? "bg-slate-400 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700 active:scale-[0.99]"
+                  isLoading ? "bg-slate-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 active:scale-[0.99]"
                 }`}
               >
-                <span className="inline-flex items-center justify-center gap-2">
-                  {isLoading ? (
-                    <>
-                      <span className="h-4 w-4 rounded-full border-2 border-white/60 border-t-white animate-spin" />
-                      Signing in...
-                    </>
-                  ) : (
-                    "Sign in"
-                  )}
-                </span>
+                {isLoading ? "Signing in..." : "Sign in"}
               </button>
 
-              {/* Create account */}
               <div className="pt-2">
                 <Link
                   to="/register"
@@ -403,24 +234,11 @@ login({
                   Create new account
                 </Link>
               </div>
-
-              <p className="text-[11px] text-slate-500 text-center pt-1">
-                By continuing, you agree to our{" "}
-                <Link to="/terms" className="text-slate-700 hover:underline">
-                  Terms
-                </Link>{" "}
-                and{" "}
-                <Link to="/privacy" className="text-slate-700 hover:underline">
-                  Privacy Policy
-                </Link>
-                .
-              </p>
             </form>
           </div>
 
           <div className="mt-4 text-center text-xs text-slate-500 lg:hidden">
-            © {new Date().getFullYear()} PharmaLink. Always consult a qualified
-            healthcare professional.
+            © {new Date().getFullYear()} PharmaLink.
           </div>
         </div>
       </div>
