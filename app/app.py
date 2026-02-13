@@ -20,12 +20,13 @@ from torchvision import transforms, models
 from fastapi import FastAPI, HTTPException, Query, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from fastapi.staticfiles import StaticFiles
 
 
 # =========================================================
 # PATHS
 # =========================================================
-BASE_DIR = Path(__file__).resolve().parent.parent  # if app.py is inside PharmaLink/
+BASE_DIR = Path(__file__).resolve().parent.parent  # PharmaLink/
 DATA_DIR = BASE_DIR / "data"
 MODEL_DIR = BASE_DIR / "model"
 
@@ -39,34 +40,38 @@ print("MODEL_DIR:", MODEL_DIR, "exists:", MODEL_DIR.exists())
 # =========================================================
 USE_PURE_ML = True
 
-# Cluster model (optional)
 CLUSTER_MODEL_NAME = "food_cluster_model.pkl"
 SEVERITY_MODEL_NAME = "severity_model.pkl"
 REASON_MODEL_NAME = "reason_model.pkl"
 
-# Food type model
 FOODTYPE_MODEL_NAME = "food_type_model.pkl"
-FOODTYPE_CONF_THRESHOLD = 0.55  # if low confidence -> keep existing
+FOODTYPE_CONF_THRESHOLD = 0.55
 
-# Preference models
 VEG_MODEL_NAME = "vegetarian_model.pkl"
 DIAB_MODEL_NAME = "diabetic_model.pkl"
 LOWNA_MODEL_NAME = "low_sodium_model.pkl"
 PREF_PROBA_THRESHOLD = 0.50
 
-# Drug pill image model
 DRUG_VISION_WEIGHTS = MODEL_DIR / "drug_classifier_best.pth"
 DRUG_VISION_CLASSES = MODEL_DIR / "class_names.json"
+
 DRUG_VISION_INFO_CSV = DATA_DIR / "drug_vision_infoo.csv"
 
 
 # =========================================================
-# LOAD CSVs
+# CSV LOADERS
 # =========================================================
 def _read_csv(path: Path) -> pd.DataFrame:
     if not path.exists():
         raise FileNotFoundError(f"Missing required file: {path}")
-    df = pd.read_csv(path)
+
+    try:
+        df = pd.read_csv(path)
+    except pd.errors.ParserError as e:
+        print(f"WARNING: CSV parse error in {path}: {e}")
+        print("Falling back to python engine + skipping bad lines...")
+        df = pd.read_csv(path, engine="python", on_bad_lines="skip")
+
     if df.empty:
         raise ValueError(f"CSV loaded but is empty: {path}")
     return df
@@ -81,13 +86,40 @@ def _read_csv_optional(path: Path) -> Optional[pd.DataFrame]:
     return df
 
 
-drug_clean = _read_csv(DATA_DIR / "drug_clean.csv")
-food_subset = _read_csv(DATA_DIR / "food_subset.csv")
-meal_foods_raw = _read_csv(DATA_DIR / "new_foodset.csv")
+def _find_csv(filename: str, required: bool = True) -> Optional[Path]:
+    """
+    Robust lookup:
+      1) PharmaLink/data/<file>
+      2) PharmaLink/<file>
+      3) CWD/<file>
+    """
+    candidates = [
+        DATA_DIR / filename,
+        BASE_DIR / filename,
+        Path.cwd() / filename,
+    ]
+    for p in candidates:
+        if p.exists():
+            return p
+    if required:
+        raise FileNotFoundError(f"Missing required file '{filename}'. Tried: {candidates}")
+    return None
 
 
 # =========================================================
-# NORMALIZE FOOD COLUMNS
+# LOAD CSVs
+# =========================================================
+drug_clean = _read_csv(_find_csv("drug_clean.csv"))
+food_subset = _read_csv(_find_csv("food_subset.csv"))
+
+new_food_path = _find_csv("new_foodset.csv", required=True)
+meal_foods_raw = _read_csv(new_food_path)
+
+print("Loaded new_foodset.csv from:", new_food_path)
+
+
+# =========================================================
+# NORMALIZE FOODS
 # =========================================================
 meal_foods = meal_foods_raw.rename(
     columns={
@@ -121,6 +153,12 @@ meal_foods = meal_foods_raw.rename(
         "Food_type": "food_type",
         "Food Type": "food_type",
         "food_type": "food_type",
+        "Diet_Type": "diet_type",
+        "diet_type": "diet_type",
+        "Quantity": "quantity",
+        "quantity": "quantity",
+        "Image": "image",
+        "image": "image",
     }
 )
 
@@ -131,36 +169,81 @@ core_cols = [
     "calcium", "iron", "vitamin_c", "vitamin_a", "vitamin_k_proxy",
     "is_alcohol", "is_leafy_green",
     "meal_type", "food_type",
+    "diet_type", "category",
+    "quantity","image",
 ]
-
-for c in core_cols:
-    if c not in food_subset.columns:
-        food_subset[c] = 0
-    if c not in meal_foods.columns:
-        meal_foods[c] = 0
-
-food_subset[core_cols] = food_subset[core_cols].fillna(0)
-meal_foods[core_cols] = meal_foods[core_cols].fillna(0)
-
-unified_foods = pd.concat([food_subset, meal_foods], ignore_index=True)
-unified_foods["Food"] = unified_foods["Food"].astype(str).str.strip()
-unified_foods = unified_foods[unified_foods["Food"] != ""]
-unified_foods = unified_foods.drop_duplicates(subset=["Food"], keep="first").reset_index(drop=True)
 
 num_cols = [
     "energy", "protein", "fat", "carbs", "fiber",
     "sugars", "sodium",
     "calcium", "iron", "vitamin_c", "vitamin_a", "vitamin_k_proxy",
 ]
-for c in num_cols:
-    unified_foods[c] = pd.to_numeric(unified_foods[c], errors="coerce").fillna(0.0)
 
-for c in ["is_alcohol", "is_leafy_green"]:
-    unified_foods[c] = pd.to_numeric(unified_foods[c], errors="coerce").fillna(0).astype(int)
+flag_cols = ["is_alcohol", "is_leafy_green"]
+text_cols = ["Food", "category", "meal_type", "food_type", "diet_type",]
+raw_text_cols = ["quantity", "image"]
 
-unified_foods["meal_type"] = unified_foods["meal_type"].astype(str).str.strip().str.lower()
-unified_foods["food_type"] = unified_foods["food_type"].astype(str).str.strip().str.lower()
-unified_foods.loc[unified_foods["food_type"].isin(["0", "nan", "none", ""]), "food_type"] = "unknown"
+
+def _ensure_cols(df: pd.DataFrame, cols: List[str]) -> pd.DataFrame:
+    df = df.copy()
+    for c in cols:
+        if c not in df.columns:
+            df[c] = None
+    return df
+
+
+food_subset = _ensure_cols(food_subset, core_cols)
+meal_foods = _ensure_cols(meal_foods, core_cols)
+
+
+def _clean_food_df(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.copy()
+
+    # numeric columns
+    for c in num_cols:
+        if c in df.columns:
+            df[c] = pd.to_numeric(df[c], errors="coerce").fillna(0.0)
+
+    # flag columns
+    for c in flag_cols:
+        if c in df.columns:
+            df[c] = pd.to_numeric(df[c], errors="coerce").fillna(0).astype(int)
+
+    # normal text (lower)
+    for c in text_cols:
+        if c in df.columns:
+            df[c] = df[c].fillna("").astype(str).str.strip().str.lower()
+
+    # raw text (keep original case)
+    for c in raw_text_cols:
+        if c in df.columns:
+            df[c] = df[c].where(df[c].notna(), "")  # NaN -> ""
+            df[c] = df[c].astype(str).str.strip()
+            df.loc[df[c].str.lower().isin(["nan", "none"]), c] = ""
+
+    # normalize unknown tags
+    for c in ["food_type", "meal_type", "diet_type"]:
+        if c in df.columns:
+            df.loc[df[c].isin(["0", "nan", "none", ""]), c] = "unknown"
+
+    df["Food"] = df["Food"].astype(str).str.strip()
+    df = df[df["Food"] != ""].copy()
+    return df
+
+
+
+food_subset = _clean_food_df(food_subset)
+meal_foods = _clean_food_df(meal_foods)
+
+# unified foods (food_subset + new_foodset)
+unified_foods = pd.concat([food_subset[core_cols], meal_foods[core_cols]], ignore_index=True)
+unified_foods = unified_foods.drop_duplicates(subset=["Food"], keep="first").reset_index(drop=True)
+unified_foods = _clean_food_df(unified_foods)
+
+# meal-plan foods ONLY (new_foodset)
+mealplan_foods = meal_foods[core_cols].copy()
+mealplan_foods = mealplan_foods.drop_duplicates(subset=["Food"], keep="first").reset_index(drop=True)
+mealplan_foods = _clean_food_df(mealplan_foods)
 
 
 # =========================================================
@@ -174,7 +257,7 @@ for c in cat_cols:
 
 
 # =========================================================
-# ALLERGEN LOOKUP (optional dataset)
+# ALLERGEN LOOKUP
 # =========================================================
 def normalize_food_name(name: str) -> str:
     return str(name).strip().lower()
@@ -188,16 +271,15 @@ if allergen_df_path.exists():
         allergen_df["Food Product"] = allergen_df["Food Product"].astype(str).str.strip().str.lower()
         allergen_df["Allergens"] = allergen_df["Allergens"].astype(str).fillna("").str.strip().str.lower()
         for _, r in allergen_df.iterrows():
-            name = r["Food Product"]
+            nm = r["Food Product"]
             allergens = [a.strip() for a in str(r["Allergens"]).split(",") if a.strip()]
-            if name:
-                allergen_lookup[name] = set(allergens)
+            if nm:
+                allergen_lookup[nm] = set(allergens)
 
 
 # =========================================================
 # LOAD MODELS
 # =========================================================
-# Cluster model
 cluster_model = None
 cluster_path = MODEL_DIR / CLUSTER_MODEL_NAME
 if cluster_path.exists():
@@ -210,16 +292,23 @@ if cluster_path.exists():
 else:
     print("WARNING: food_cluster_model.pkl not found (cluster variety disabled).")
 
-# Add cluster_id to foods (safe even if model missing)
 unified_foods["cluster_id"] = -1
+mealplan_foods["cluster_id"] = -1
+
 if cluster_model is not None:
     try:
         unified_foods["cluster_id"] = cluster_model.predict(unified_foods["Food"].astype(str).tolist())
     except Exception as e:
-        print("WARNING: failed to assign cluster_id:", repr(e))
+        print("WARNING: failed to assign unified cluster_id:", repr(e))
         unified_foods["cluster_id"] = -1
 
-# Severity/reason models (required)
+    try:
+        mealplan_foods["cluster_id"] = cluster_model.predict(mealplan_foods["Food"].astype(str).tolist())
+    except Exception as e:
+        print("WARNING: failed to assign mealplan cluster_id:", repr(e))
+        mealplan_foods["cluster_id"] = -1
+
+
 severity_model_path = MODEL_DIR / SEVERITY_MODEL_NAME
 reason_model_path = MODEL_DIR / REASON_MODEL_NAME
 
@@ -231,7 +320,6 @@ if not reason_model_path.exists():
 severity_model = joblib.load(severity_model_path)
 reason_model = joblib.load(reason_model_path)
 
-# Food type classifier (optional but recommended)
 food_type_model = None
 foodtype_model_path = MODEL_DIR / FOODTYPE_MODEL_NAME
 if foodtype_model_path.exists():
@@ -240,7 +328,6 @@ if foodtype_model_path.exists():
 else:
     print("WARNING: food_type_model.pkl not found (food_type autofix disabled).")
 
-# Preference models (optional but recommended)
 vegetarian_model = None
 diabetic_model = None
 low_sodium_model = None
@@ -267,7 +354,6 @@ if low_path.exists():
 else:
     print("WARNING: low_sodium_model.pkl not found (will fallback to rule).")
 
-# optional allergen ML fallback
 allergen_model = None
 allergen_mlb = None
 allergen_model_path = MODEL_DIR / "allergen_model.pkl"
@@ -276,13 +362,9 @@ if allergen_model_path.exists() and allergen_mlb_path.exists():
     allergen_model = joblib.load(allergen_model_path)
     allergen_mlb = joblib.load(allergen_mlb_path)
 
-# Drug image enrichment CSV (optional but recommended)
 drug_vision_info = _read_csv_optional(DRUG_VISION_INFO_CSV)
 if drug_vision_info is not None:
-    print("drug_vision_info columns:", list(drug_vision_info.columns))
-    print("drug_vision_info sample:", drug_vision_info.head(2).to_dict("records"))
     drug_vision_info.columns = [c.strip().lower() for c in drug_vision_info.columns]
-
     if "brand_name" not in drug_vision_info.columns:
         print("WARNING: drug_vision_info.csv must contain column: brand_name")
         drug_vision_info = None
@@ -292,7 +374,6 @@ if drug_vision_info is not None:
 else:
     print("drug_vision_info.csv not found (image enrichment disabled)")
 
-# Drug pill image model
 drug_vision_model = None
 drug_vision_classes: List[str] = []
 drug_vision_device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -344,7 +425,178 @@ ALL_REASON_TAGS = [
     "high_fat_empty_stomach",
     "iron_levothyroxine",
     "vitk_warfarin",
+    "glycemic_control",
+    "high_fiber_absorption",
 ]
+
+
+REASON_UI: Dict[str, Dict[str, str]] = {
+    "glycemic_control": {
+        "title": "Blood Sugar Control",
+        "template": (
+            "High-carbohydrate foods, such as {food_name}, may raise blood sugar levels. "
+            "When taking {drug_name}, this can affect how well your medicine controls your glucose. "
+            "{portion_advice}"
+        ),
+        "advice": "Keep portions moderate and monitor blood sugar after meals."
+    },
+
+    "high_fiber_absorption": {
+        "title": "High Fiber – Slower Absorption",
+        "template": (
+            "High-fiber foods, such as {food_name} which has about {fiber_g}g of fiber, "
+            "may slow the absorption of some medicines, including {drug_name}. "
+            "This can affect how well the medicine works."
+        ),
+        "advice": "If you notice changes, separate timing and consult a pharmacist."
+    },
+
+    "calcium_antibiotic": {
+        "title": "Calcium – Reduced Antibiotic Absorption",
+        "template": (
+            "Foods high in calcium (about {calcium_mg} mg in {food_name}) can reduce absorption of "
+            "some antibiotics like {drug_name}."
+        ),
+        "advice": "Separate the antibiotic and high-calcium foods by 2–4 hours."
+    },
+
+    "iron_levothyroxine": {
+        "title": "Iron – Reduced Thyroid Medicine Absorption",
+        "template": (
+            "{food_name} contains iron (about {iron_mg} mg), which may reduce absorption of {drug_name}."
+        ),
+        "advice": "Take thyroid medicine on an empty stomach and separate iron by ~4 hours."
+    },
+
+    "vitk_warfarin": {
+        "title": "Vitamin K – Warfarin Control",
+        "template": (
+            "{food_name} has vitamin K / leafy signals (vitK≈{vitk} ), which may affect {drug_name} effectiveness."
+        ),
+        "advice": "Keep vitamin K intake consistent and follow INR monitoring."
+    },
+
+    "cns_alcohol": {
+        "title": "Alcohol + Sedating Medicines",
+        "template": (
+            "{food_name} contains alcohol, which can increase drowsiness and side effects when taken with {drug_name}."
+        ),
+        "advice": "Avoid alcohol while using this medicine."
+    },
+}
+
+def _pretty_food(food_row: pd.Series) -> str:
+    return str(food_row.get("Food", "")).strip()
+
+def _pretty_drug(drug_row: pd.Series) -> str:
+    name = str(drug_row.get("Name", "")).strip()
+    if name:
+        return name
+    return str(drug_row.get("Contains", "")).strip() or "this medicine"
+
+def _format_reason_template(tag: str, drug_row: pd.Series, food_row: pd.Series) -> str:
+    meta = REASON_UI.get(tag, {})
+    tpl = meta.get("template", "{food_name} + {drug_name} may require caution.")
+
+    food_name = _pretty_food(food_row)
+    drug_name = _pretty_drug(drug_row)
+
+    fiber_g = round(float(food_row.get("fiber", 0.0)), 1)
+    calcium_mg = round(float(food_row.get("calcium", 0.0)), 1)
+    iron_mg = round(float(food_row.get("iron", 0.0)), 1)
+    vitk_val = float(food_row.get("vitamin_k_proxy", 0.0))
+    vitk = f"{vitk_val:.0f}" if vitk_val else "unknown"
+
+    carbs = float(food_row.get("carbs", 0.0))
+    portion_advice = "Try smaller portions and avoid eating it alone."
+    if carbs >= 45:
+        portion_advice = "Prefer a smaller portion and pair with protein/vegetables."
+
+    try:
+        return tpl.format(
+            food_name=food_name,
+            drug_name=drug_name,
+            fiber_g=fiber_g,
+            calcium_mg=calcium_mg,
+            iron_mg=iron_mg,
+            vitk=vitk,
+            portion_advice=portion_advice,
+        )
+    except Exception:
+        return f"{food_name} + {drug_name}: use with caution."
+
+def build_reason_details(drug_row: pd.Series, food_row: pd.Series, reasons: List[str]) -> List[Dict[str, str]]:
+    out: List[Dict[str, str]] = []
+    for tag in reasons or []:
+        meta = REASON_UI.get(tag, {})
+        title = meta.get("title", tag.replace("_", " ").title())
+        advice = meta.get("advice", "Follow professional advice and medicine instructions.")
+        generated = _format_reason_template(tag, drug_row, food_row)
+        out.append({
+            "tag": tag,
+            "title": title,
+            "generated_text": generated,   # ✅ මේකම ඔයාට ඕන sentence එක
+            "advice": advice,
+        })
+    return out
+
+
+ANTIDIABETIC_KEYWORDS = [
+    "metformin", "glimepiride", "gliclazide", "glipizide", "glyburide",
+    "insulin", "antidiabetic", "anti-diabetic", "diabetes", "hypoglyc"
+]
+
+HIGH_CARB_KEYWORDS = ["cassava", "manioc", "tapioca", "rice", "bread", "noodles", "pasta", "potato", "yam"]
+
+def drug_looks_antidiabetic(drug_row: pd.Series) -> bool:
+    txt = (
+        str(drug_row.get("Name", "")) + " " +
+        str(drug_row.get("Contains", "")) + " " +
+        str(drug_row.get("combined_text", ""))
+    ).lower()
+    return any(k in txt for k in ANTIDIABETIC_KEYWORDS)
+
+def food_is_high_carb(food_row: pd.Series) -> bool:
+    name = str(food_row.get("Food", "")).lower()
+    carbs = float(food_row.get("carbs", 0.0))
+    fiber = float(food_row.get("fiber", 0.0))
+
+    if any(k in name for k in HIGH_CARB_KEYWORDS):
+        return True
+    if carbs >= 30 and fiber < 5:
+        return True
+    return False
+
+def apply_rule_overrides(drug_row, food_row, sev_ml: int, reasons: List[str]):
+    sev = int(sev_ml)
+    rs = list(reasons)
+
+
+    # inside apply_rule_overrides
+    vitk = float(food_row.get("vitamin_k_proxy", 0.0))
+    leafy = int(food_row.get("is_leafy_green", 0))
+    
+    if ("warfarin" in str(drug_row.get("Contains","")).lower() or "anticoagulant" in str(drug_row.get("combined_text","")).lower()) and (vitk >= 100 or leafy == 1):
+        sev = max(sev, 1)
+        if "vitk_warfarin" not in rs:
+            rs.append("vitk_warfarin")
+
+    # 1) Diabetes + high-carb
+    if drug_looks_antidiabetic(drug_row) and food_is_high_carb(food_row):
+        sev = max(sev, 1)
+        if "glycemic_control" not in rs:
+            rs.append("glycemic_control")
+
+    # 2) High fiber -> slow absorption (dynamic explanation use කරගන්න)
+    fiber = float(food_row.get("fiber", 0.0))
+    if fiber >= 5.0:
+        if "high_fiber_absorption" not in rs:
+            rs.append("high_fiber_absorption")
+
+    return sev, rs
+
+
+
 
 risk_map = {
     0: "Safe – No major interaction identified.",
@@ -354,7 +606,7 @@ risk_map = {
 
 
 # =========================================================
-# DRUG NAME -> INDEX RESOLUTION (for /meal-plan + /ml-food-drug-risk)
+# DRUG NAME -> INDEX RESOLUTION
 # =========================================================
 def _norm_drug(s: str) -> str:
     s = str(s).strip().lower()
@@ -388,12 +640,10 @@ def resolve_indices_from_names(drug_names: List[str]) -> List[int]:
             continue
         k = _norm_drug(raw)
 
-        # exact
         if k in _DRUG_NAME_INDEX:
             out.append(_DRUG_NAME_INDEX[k])
             continue
 
-        # fuzzy
         close = get_close_matches(k, keys, n=1, cutoff=0.8)
         if close:
             out.append(_DRUG_NAME_INDEX[close[0]])
@@ -401,7 +651,6 @@ def resolve_indices_from_names(drug_names: List[str]) -> List[int]:
 
         raise HTTPException(status_code=404, detail=f"Drug name not found: '{raw}'")
 
-    # de-dup keep order
     seen = set()
     dedup: List[int] = []
     for x in out:
@@ -483,7 +732,7 @@ def apply_food_type_autofix(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
     if "food_type" not in df.columns:
         df["food_type"] = "unknown"
-    bad = df["food_type"].isin(["unknown", "", "0", "nan", "none"])
+    bad = df["food_type"].astype(str).str.strip().str.lower().isin(["unknown", "", "0", "nan", "none"])
     if bad.any() and food_type_model is not None:
         def fix_one(name: str) -> str:
             label, conf = predict_food_type_safe(name)
@@ -492,7 +741,9 @@ def apply_food_type_autofix(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+# Apply to both
 unified_foods = apply_food_type_autofix(unified_foods)
+mealplan_foods = apply_food_type_autofix(mealplan_foods)
 
 
 # =========================================================
@@ -518,20 +769,28 @@ def violates_allergy(food_allergens: List[str], avoid_set: Set[str]) -> bool:
 
 
 # =========================================================
-# FALLBACK RULE LABELS (only used if preference models missing)
+# FALLBACK RULE LABELS
 # =========================================================
 MEAT_KEYWORDS = [
-    "chicken", "beef", "pork", "mutton", "lamb", "fish", "tuna", "salmon", "shrimp",
-    "bacon", "sausage", "ham", "anchovy",
-    "bison", "turkey", "duck", "crab", "prawn", "steak", "burger"
+    "chicken", "beef", "pork", "mutton", "lamb",
+    "fish", "tuna", "salmon", "anchovy", "sardine",
+    "shrimp", "prawn", "crab", "lobster",
+    "bacon", "sausage", "ham", "steak", "burger",
+    "turkey", "duck"
 ]
+EGG_KEYWORDS = ["egg", "omelet", "omelette", "boiled egg", "fried egg", "scrambled"]
+
 HIGH_SUGAR_KEYWORDS = ["cake", "cookie", "soda", "cola", "candy", "ice cream", "chocolate", "sweet", "syrup"]
 HIGH_SODIUM_KEYWORDS = ["pickle", "canned", "processed", "instant", "soy sauce", "chips", "noodles", "salted"]
 
 
 def rule_is_vegetarian(food_name: str) -> bool:
     s = normalize_food_name(food_name)
-    return not any(k in s for k in MEAT_KEYWORDS)
+    if any(k in s for k in MEAT_KEYWORDS):
+        return False
+    if any(k in s for k in EGG_KEYWORDS):
+        return False
+    return True
 
 
 def rule_is_diabetic_friendly(food_row: pd.Series) -> bool:
@@ -558,7 +817,7 @@ def rule_is_low_sodium(food_row: pd.Series) -> bool:
 
 
 # =========================================================
-# PREFERENCE ML PREDICTION (FAST: batch)
+# PREFERENCE ML PREDICTION
 # =========================================================
 PREF_NUM = ["energy", "carbs", "fiber", "sugars", "sodium", "fat", "protein"]
 
@@ -582,7 +841,15 @@ def _pref_features_df(df: pd.DataFrame) -> pd.DataFrame:
 def add_preference_columns(df: pd.DataFrame) -> pd.DataFrame:
     out = df.copy()
 
-    out["pref_vegetarian"] = out["Food"].apply(rule_is_vegetarian)
+    # Vegetarian: diet_type if known else fallback rules
+    if "diet_type" in out.columns:
+        dt = out["diet_type"].astype(str).str.strip().str.lower()
+        pref_from_dt = dt.isin(["veg", "vegetarian"])
+        fallback = out["Food"].apply(rule_is_vegetarian)
+        out["pref_vegetarian"] = pref_from_dt.where(dt != "unknown", fallback)
+    else:
+        out["pref_vegetarian"] = out["Food"].apply(rule_is_vegetarian)
+
     out["pref_diabetic"] = out.apply(rule_is_diabetic_friendly, axis=1)
     out["pref_low_sodium"] = out.apply(rule_is_low_sodium, axis=1)
 
@@ -750,17 +1017,30 @@ def explain_features(drug_row: pd.Series, food_row: pd.Series) -> dict:
 
 
 # =========================================================
-# REALISTIC SRI LANKAN MEAL: main + protein + vegetable
+# SRI LANKAN PLATE PICKING
 # =========================================================
 ROLE_MAP = {
     "main": "main",
+    "rice": "main",
+    "grain": "main",
+    "bread": "main",
+    "pasta": "main",
+
     "protein": "protein",
-    "curry": "protein",
+    "meat": "protein",
+    "fish": "protein",
+    "egg": "protein",
+    "legume": "protein",
+    "pulse": "protein",
+
     "vegetable": "vegetable",
-    "side": "side",
-    "unknown": "side",
-    "drink": "side",
+
+    "drink": "drink",
     "dessert": "side",
+    "side": "side",
+    "snack": "side",
+    "condiment": "side",
+    "unknown": "main",
 }
 
 
@@ -795,28 +1075,34 @@ def pick_srilankan_plate(safe_df: pd.DataFrame, target_kcal: float) -> Dict[str,
     chosen_prot = pick_near(prots, prot_target)
     chosen_veg = pick_near(vegs, veg_target)
 
-    used = set()
+    used: Set[str] = set()
     for r in [chosen_main, chosen_prot, chosen_veg]:
         if r is not None:
             used.add(str(r["Food_norm"]))
 
-    def pick_fallback(exclude: Set[str], tgt: float) -> Optional[pd.Series]:
+    def pick_fallback(exclude, tgt, allowed_roles):
         pool = df[~df["Food_norm"].isin(exclude)].copy()
+        pool = pool[pool["role"] != "drink"]
+        pool = pool[pool["role"].isin(list(allowed_roles))]
         if pool.empty:
             return None
         pool["diff"] = (pool["energy"] - tgt).abs()
         return pool.sort_values("diff").iloc[0]
 
     if chosen_main is None:
-        chosen_main = pick_fallback(used, main_target)
+        # if no "main" in dataset after filtering, allow any non-drink item
+        chosen_main = pick_fallback(used, main_target, {"main", "protein", "vegetable", "side"})
         if chosen_main is not None:
             used.add(str(chosen_main["Food_norm"]))
+
+
     if chosen_prot is None:
-        chosen_prot = pick_fallback(used, prot_target)
+        chosen_prot = pick_fallback(used, prot_target, {"protein", "vegetable", "side"})
         if chosen_prot is not None:
             used.add(str(chosen_prot["Food_norm"]))
+
     if chosen_veg is None:
-        chosen_veg = pick_fallback(used, veg_target)
+        chosen_veg = pick_fallback(used, veg_target, {"vegetable", "side"})
         if chosen_veg is not None:
             used.add(str(chosen_veg["Food_norm"]))
 
@@ -849,7 +1135,6 @@ def pick_best_scored_plate(
         df_rand = safe_df.sample(frac=1.0, random_state=seed).reset_index(drop=True)
 
         plate = pick_srilankan_plate(df_rand, target_kcal)
-
         items = [plate.get("main"), plate.get("protein"), plate.get("vegetable")]
         items = [x for x in items if x is not None]
         if not items:
@@ -857,7 +1142,6 @@ def pick_best_scored_plate(
 
         names = [str(x["Food"]) for x in items]
         total_kcal = sum(float(x.get("energy", 0.0)) for x in items)
-
         max_sev = max(int(x.get("pred_severity", x.get("max_severity", 0))) for x in items)
 
         plate_is_veg = all(bool(x.get("pref_vegetarian", False)) for x in items)
@@ -911,7 +1195,6 @@ def pick_best_scored_plate(
             filtered = filtered[filtered["pref_low_sodium"] == True]
         if filtered.empty:
             filtered = safe_df
-
         best_plate = pick_srilankan_plate(filtered, target_kcal)
         best_debug = {"note": "fallback_used"}
 
@@ -919,9 +1202,203 @@ def pick_best_scored_plate(
 
 
 # =========================================================
+# MULTI-DRUG SAFETY (MAX severity <= 1)
+# =========================================================
+def compute_safe_foods_for_all_drugs(
+    drug_indices: List[int],
+    base_foods: pd.DataFrame,
+) -> pd.DataFrame:
+    if base_foods.empty:
+        return base_foods
+
+    foods = base_foods.copy().reset_index(drop=True)
+    foods["max_severity"] = 0
+
+    for idx in drug_indices:
+        if idx < 0 or idx >= len(drug_clean):
+            raise HTTPException(status_code=404, detail=f"Drug index {idx} out of range")
+        drug_row = drug_clean.iloc[idx]
+        sevs = predict_severity_batch(drug_row, foods)
+        foods["max_severity"] = foods[["max_severity"]].join(pd.Series(sevs, name="sev")).max(axis=1)
+
+    return foods[foods["max_severity"] <= 1].copy()
+
+
+def predict_reasons_multi(drug_indices: List[int], food_row: pd.Series) -> List[str]:
+    reasons: Set[str] = set()
+    for idx in drug_indices:
+        drug_row = drug_clean.iloc[idx]
+        for r in predict_reasons_one(drug_row, food_row):
+            reasons.add(r)
+    return sorted(list(reasons))
+
+
+def explain_features_multi(drug_indices: List[int], food_row: pd.Series) -> Dict[str, Any]:
+    per_drug = []
+    for idx in drug_indices:
+        drug_row = drug_clean.iloc[idx]
+        per_drug.append({
+            "drug": str(drug_row.get("Name", f"drug#{idx}")),
+            "explanation": explain_features(drug_row, food_row),
+        })
+    return {"per_drug": per_drug}
+
+
+# =========================================================
+# CORE: build 1 meal for many drugs (variety across days)
+# =========================================================
+def build_one_meal_for_drugs(
+    drug_indices: List[int],
+    meal_type: str,
+    calories_target: float,
+    avoid_set: Set[str],
+    vegetarian: bool,
+    diabetic_friendly: bool,
+    low_sodium: bool,
+    exclude_foods: Set[str],
+    exclude_clusters: Set[int],
+    foods_source: pd.DataFrame = unified_foods,
+) -> Dict[str, Any]:
+    mt = meal_type.strip().lower()
+
+    pool = foods_source[
+        foods_source["meal_type"].astype(str).str.lower().str.contains(mt, na=False)
+    ].copy()
+    if pool.empty:
+        pool = foods_source.copy()
+
+    pool = quality_filter(pool)
+
+    pool["Food_norm"] = pool["Food"].astype(str).str.strip().str.lower()
+    if exclude_foods:
+        pool = pool[~pool["Food_norm"].isin(exclude_foods)]
+
+    if exclude_clusters:
+        pool = pool[~pool["cluster_id"].fillna(-1).astype(int).isin(exclude_clusters)]
+
+    if pool.empty:
+        return {"message": "No foods available after exclusions.", "meal": None}
+
+    seed = secrets.randbits(32)
+    pool = pool.sample(n=min(len(pool), 900), random_state=seed).reset_index(drop=True)
+
+    safe_df = compute_safe_foods_for_all_drugs(drug_indices, pool) if drug_indices else pool.copy()
+    if safe_df.empty:
+        return {"message": "No safe foods found for these drugs.", "meal": None}
+
+    if drug_indices:
+        safe_df["max_severity"] = safe_df.get("max_severity", 0)
+
+    if avoid_set:
+        kept = []
+        for _, rr in safe_df.iterrows():
+            al = resolve_allergens(rr["Food"])
+            if not violates_allergy(al, avoid_set):
+                kept.append(rr)
+        safe_df = pd.DataFrame(kept) if kept else pd.DataFrame(columns=safe_df.columns)
+        if safe_df.empty:
+            return {"message": "No foods left after allergy filtering.", "meal": None}
+
+    safe_df = add_preference_columns(safe_df)
+
+    if vegetarian:
+        safe_df = safe_df[safe_df["pref_vegetarian"] == True]
+    if diabetic_friendly:
+        safe_df = safe_df[safe_df["pref_diabetic"] == True]
+    if low_sodium:
+        safe_df = safe_df[safe_df["pref_low_sodium"] == True]
+
+    if safe_df.empty:
+        return {"message": "No foods left after preference filtering.", "meal": None}
+
+    safe_df = safe_df.copy()
+    safe_df["pred_severity"] = safe_df.get("max_severity", 0) if drug_indices else 0
+
+    chosen, score_debug = pick_best_scored_plate(
+        safe_df=safe_df,
+        target_kcal=calories_target,
+        used_foods=exclude_foods,
+        used_clusters=exclude_clusters,
+        want_veg=vegetarian,
+        want_diabetic=diabetic_friendly,
+        want_low_sodium=low_sodium,
+        num_candidates=70,
+    )
+
+    def pack_item(r: Optional[pd.Series]) -> Optional[Dict[str, Any]]:
+        if r is None:
+            return None
+        q = str(r.get("quantity") or "").strip()
+        img = str(r.get("image") or "").strip()
+        allergens = resolve_allergens(r["Food"])
+        prefs = {
+            "vegetarian": bool(r.get("pref_vegetarian", False)),
+            "diabetic_friendly": bool(r.get("pref_diabetic", False)),
+            "low_sodium": bool(r.get("pref_low_sodium", False)),
+        }
+        return {
+            "food": str(r["Food"]),
+            "food_type": str(r.get("food_type", "unknown")),
+            "diet_type": str(r.get("diet_type", "unknown")),
+            "energy": safe_float(r.get("energy")),
+            "quantity": q if q else None,
+            "image": img if img else None, 
+            "severity": int(r.get("max_severity", r.get("pred_severity", 0))),
+            "reasons": predict_reasons_multi(drug_indices, r) if drug_indices else [],
+            "allergens_detected": allergens,
+            "preferences": prefs,
+            "explanation": explain_features_multi(drug_indices, r) if drug_indices else {"note": "no-drug mode"},
+            "cluster_id": int(r.get("cluster_id", -1)),
+        }
+
+    main_item = pack_item(chosen.get("main"))
+    prot_item = pack_item(chosen.get("protein"))
+    veg_item = pack_item(chosen.get("vegetable"))
+
+    if main_item is None:
+        return {"message": "Could not build plate (no main found).", "meal": None}
+
+    total = float(main_item["energy"])
+    if prot_item:
+        total += float(prot_item["energy"])
+    if veg_item:
+        total += float(veg_item["energy"])
+
+    return {
+        "message": "ok",
+        "target_kcal": float(calories_target),
+        "estimated_kcal": float(round(total, 1)),
+        "score_debug": score_debug,
+        "meal": {"main": main_item, "protein": prot_item, "vegetable": veg_item},
+    }
+
+
+# =========================================================
+# DRUG IMAGE PREDICTION
+# =========================================================
+def predict_drug_from_image_core(img: Image.Image, topk: int = 3):
+    if drug_vision_model is None:
+        raise HTTPException(status_code=500, detail="Drug vision model not loaded.")
+
+    x = drug_vision_tfms(img.convert("RGB")).unsqueeze(0).to(drug_vision_device)
+
+    with torch.no_grad():
+        logits = drug_vision_model(x)
+        probs = F.softmax(logits, dim=1)[0].cpu()
+
+    k = min(int(topk), len(drug_vision_classes))
+    confs, idxs = torch.topk(probs, k=k)
+
+    out = []
+    for conf, idx in zip(confs.tolist(), idxs.tolist()):
+        out.append({"drug_name": drug_vision_classes[idx], "confidence": round(float(conf), 4)})
+    return out
+
+
+# =========================================================
 # FASTAPI APP
 # =========================================================
-app = FastAPI(title="PharmaLink Meal Plan API", version="4.1.0")
+app = FastAPI(title="PharmaLink Meal Plan API", version="4.3.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -930,6 +1407,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+STATIC_DIR = DATA_DIR / "static"
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 # =========================================================
 # API MODELS
@@ -944,6 +1423,12 @@ class SafeFoodItem(BaseModel):
     food: str
     food_type: str
     energy: float
+    protein: float = 0.0
+    carbs: float = 0.0
+    fat: float = 0.0
+    fiber: float = 0.0
+    sugars: float = 0.0
+    sodium: float = 0.0
     severity: int
     reasons: List[str] = []
     explanation: Dict[str, Any] = {}
@@ -960,6 +1445,7 @@ class FoodDrugResponse(BaseModel):
 
 
 class MealPlanRequest(BaseModel):
+    # ✅ drug_names OPTIONAL now
     drug_names: List[str] = Field(default_factory=list)
 
     days: int = 3
@@ -967,9 +1453,11 @@ class MealPlanRequest(BaseModel):
     calories_per_day: int = 1800
     meal_types: Optional[List[str]] = None
     allergies: List[str] = Field(default_factory=list)
+
     vegetarian: bool = False
     diabetic_friendly: bool = False
     low_sodium: bool = False
+    debug_score: bool = False
 
 
 class MealItem(BaseModel):
@@ -977,6 +1465,8 @@ class MealItem(BaseModel):
     food_type: str
     energy: float
     severity: int
+    quantity: Optional[str] = None   
+    image: Optional[str] = None 
     reasons: List[str] = []
     allergens_detected: List[str] = []
     preferences: Dict[str, bool] = {}
@@ -1004,7 +1494,7 @@ class MealPlanResponse(BaseModel):
 
 
 # =========================================================
-# SAFE FOODS SUGGESTION (for HIGH RISK)
+# SAFE FOODS SUGGESTION (SINGLE DRUG)
 # =========================================================
 def suggest_safe_foods_for_drug(drug_row: pd.Series, limit: int = 10) -> List[Dict[str, Any]]:
     pool = unified_foods.copy()
@@ -1012,13 +1502,12 @@ def suggest_safe_foods_for_drug(drug_row: pd.Series, limit: int = 10) -> List[Di
 
     pool["pred_severity"] = predict_severity_batch(drug_row, pool)
 
-    safe_df = pool[pool["pred_severity"] <= 1].copy()
+    safe_df = pool[pool["pred_severity"] == 0].copy()
     if safe_df.empty:
         return []
 
-    # simple ranking: severity0 first, then higher protein, then closer to ~300kcal
     if "protein" not in safe_df.columns:
-        safe_df["protein"] = 0
+        safe_df["protein"] = 0.0
 
     safe_df["rank_score"] = (
         (safe_df["pred_severity"] * 10)
@@ -1034,173 +1523,16 @@ def suggest_safe_foods_for_drug(drug_row: pd.Series, limit: int = 10) -> List[Di
             "food": str(r["Food"]),
             "food_type": str(r.get("food_type", "unknown")),
             "energy": safe_float(r.get("energy")),
+            "protein": safe_float(r.get("protein")),
+            "carbs": safe_float(r.get("carbs")),
+            "fat": safe_float(r.get("fat")),
+            "fiber": safe_float(r.get("fiber")),
+            "sugars": safe_float(r.get("sugars")),
+            "sodium": safe_float(r.get("sodium")),
             "severity": int(r.get("pred_severity", 0)),
             "reasons": predict_reasons_one(drug_row, r),
             "explanation": explain_features(drug_row, r),
         })
-    return out
-
-
-# =========================================================
-# CORE: build 1 meal for 1 drug
-# =========================================================
-def build_one_srilankan_meal_for_drug(
-    drug_row: pd.Series,
-    meal_type: str,
-    calories_target: float,
-    avoid_set: Set[str],
-    vegetarian: bool,
-    diabetic_friendly: bool,
-    low_sodium: bool,
-    exclude_foods: Set[str],
-    exclude_clusters: Set[int],
-) -> Dict[str, Any]:
-    mt = meal_type.strip().lower()
-
-    pool = unified_foods[
-        unified_foods["meal_type"].astype(str).str.lower().str.contains(mt, na=False)
-    ].copy()
-    if pool.empty:
-        pool = unified_foods.copy()
-
-    pool = quality_filter(pool)
-
-    pool["Food_norm"] = pool["Food"].astype(str).str.strip().str.lower()
-    if exclude_foods:
-        pool = pool[~pool["Food_norm"].isin(exclude_foods)]
-
-    if exclude_clusters:
-        pool = pool[~pool["cluster_id"].fillna(-1).astype(int).isin(exclude_clusters)]
-
-    if pool.empty:
-        return {"message": "No foods available after exclusions.", "meal": None}
-
-    seed = secrets.randbits(32)
-    pool = pool.sample(n=min(len(pool), 800), random_state=seed).reset_index(drop=True)
-
-    pool["pred_severity"] = predict_severity_batch(drug_row, pool)
-    safe_df = pool[pool["pred_severity"] <= 1].copy()
-    if safe_df.empty:
-        return {"message": "No safe foods found.", "meal": None}
-
-    if avoid_set:
-        kept = []
-        for _, rr in safe_df.iterrows():
-            al = resolve_allergens(rr["Food"])
-            if not violates_allergy(al, avoid_set):
-                kept.append(rr)
-        safe_df = pd.DataFrame(kept) if kept else pd.DataFrame(columns=safe_df.columns)
-        if safe_df.empty:
-            return {"message": "No foods left after allergy filtering.", "meal": None}
-
-    safe_df = add_preference_columns(safe_df)
-
-    if vegetarian:
-        safe_df = safe_df[safe_df["pref_vegetarian"] == True]
-    if diabetic_friendly:
-        safe_df = safe_df[safe_df["pref_diabetic"] == True]
-    if low_sodium:
-        safe_df = safe_df[safe_df["pref_low_sodium"] == True]
-
-    if safe_df.empty:
-        return {"message": "No foods left after preference filtering.", "meal": None}
-
-    chosen, score_debug = pick_best_scored_plate(
-        safe_df=safe_df,
-        target_kcal=calories_target,
-        used_foods=exclude_foods,
-        used_clusters=exclude_clusters,
-        want_veg=vegetarian,
-        want_diabetic=diabetic_friendly,
-        want_low_sodium=low_sodium,
-        num_candidates=60
-    )
-
-    def pack_item(r: Optional[pd.Series]) -> Optional[Dict[str, Any]]:
-        if r is None:
-            return None
-        allergens = resolve_allergens(r["Food"])
-        prefs = {
-            "vegetarian": bool(r.get("pref_vegetarian", False)),
-            "diabetic_friendly": bool(r.get("pref_diabetic", False)),
-            "low_sodium": bool(r.get("pref_low_sodium", False)),
-        }
-        return {
-            "food": str(r["Food"]),
-            "food_type": str(r.get("food_type", "unknown")),
-            "energy": safe_float(r.get("energy")),
-            "severity": int(r.get("pred_severity", 0)),
-            "reasons": predict_reasons_one(drug_row, r),
-            "allergens_detected": allergens,
-            "preferences": prefs,
-            "explanation": explain_features(drug_row, r),
-            "cluster_id": int(r.get("cluster_id", -1)),
-        }
-
-    main_item = pack_item(chosen.get("main"))
-    prot_item = pack_item(chosen.get("protein"))
-    veg_item = pack_item(chosen.get("vegetable"))
-
-    if main_item is None:
-        return {"message": "Could not build plate (no main found).", "meal": None}
-
-    total = float(main_item["energy"])
-    if prot_item:
-        total += float(prot_item["energy"])
-    if veg_item:
-        total += float(veg_item["energy"])
-
-    return {
-        "message": "ok",
-        "target_kcal": float(calories_target),
-        "estimated_kcal": float(round(total, 1)),
-        "score_debug": score_debug,
-        "meal": {"main": main_item, "protein": prot_item, "vegetable": veg_item},
-    }
-
-
-# =========================================================
-# MULTI-DRUG SAFETY (MAX severity <= 1)
-# =========================================================
-def compute_safe_foods_for_all_drugs(
-    drug_indices: List[int],
-    base_foods: pd.DataFrame,
-) -> pd.DataFrame:
-    if base_foods.empty:
-        return base_foods
-
-    foods = base_foods.copy().reset_index(drop=True)
-    foods["max_severity"] = 0
-
-    for idx in drug_indices:
-        if idx < 0 or idx >= len(drug_clean):
-            raise HTTPException(status_code=404, detail=f"Drug index {idx} out of range")
-        drug_row = drug_clean.iloc[idx]
-        sevs = predict_severity_batch(drug_row, foods)
-        foods["max_severity"] = foods[["max_severity"]].join(pd.Series(sevs, name="sev")).max(axis=1)
-
-    return foods[foods["max_severity"] <= 1].copy()
-
-
-# =========================================================
-# DRUG IMAGE PREDICTION
-# =========================================================
-def predict_drug_from_image_core(img: Image.Image, topk: int = 3):
-    if drug_vision_model is None:
-        raise HTTPException(status_code=500, detail="Drug vision model not loaded.")
-
-    x = drug_vision_tfms(img.convert("RGB")).unsqueeze(0).to(drug_vision_device)
-
-    with torch.no_grad():
-        logits = drug_vision_model(x)
-        probs = F.softmax(logits, dim=1)[0].cpu()
-
-    k = min(int(topk), len(drug_vision_classes))
-    confs, idxs = torch.topk(probs, k=k)
-
-    out = []
-    for conf, idx in zip(confs.tolist(), idxs.tolist()):
-        out.append({"drug_name": drug_vision_classes[idx], "confidence": round(float(conf), 4)})
     return out
 
 
@@ -1217,6 +1549,9 @@ def root():
         "veg_model_loaded": bool(vegetarian_model is not None),
         "diabetic_model_loaded": bool(diabetic_model is not None),
         "low_sodium_model_loaded": bool(low_sodium_model is not None),
+        "new_foodset_path": str(new_food_path),
+        "unified_foods_count": int(len(unified_foods)),
+        "mealplan_foods_count": int(len(mealplan_foods)),
     }
 
 
@@ -1232,6 +1567,7 @@ def list_drugs(q: Optional[str] = None, limit: int = 50):
 
 @app.get("/foods")
 def list_foods(q: Optional[str] = None, limit: int = 50):
+    # unified foods (food_subset + new_foodset)
     df = unified_foods
     if q:
         mask = df["Food"].astype(str).str.lower().str.contains(q.lower(), na=False)
@@ -1241,11 +1577,28 @@ def list_foods(q: Optional[str] = None, limit: int = 50):
         "name": str(r["Food"]),
         "meal_type": str(r.get("meal_type", "")),
         "food_type": str(r.get("food_type", "")),
+        "diet_type": str(r.get("diet_type", "")),
         "cluster_id": int(r.get("cluster_id", -1)),
     } for _, r in df.iterrows()]
 
 
-# ✅ FOOD-DRUG by NAME + safe foods if high risk
+@app.get("/foods-mealplan")
+def list_mealplan_foods(q: Optional[str] = None, limit: int = 50):
+    # ✅ meal-plan foods ONLY (new_foodset)
+    df = mealplan_foods
+    if q:
+        mask = df["Food"].astype(str).str.lower().str.contains(q.lower(), na=False)
+        df = df[mask]
+    df = df.head(limit)
+    return [{
+        "name": str(r["Food"]),
+        "meal_type": str(r.get("meal_type", "")),
+        "food_type": str(r.get("food_type", "")),
+        "diet_type": str(r.get("diet_type", "")),
+        "cluster_id": int(r.get("cluster_id", -1)),
+    } for _, r in df.iterrows()]
+
+
 @app.post("/ml-food-drug-risk", response_model=FoodDrugResponse)
 def ml_food_drug_risk(body: FoodDrugRequest):
     if not body.drug_name or not body.food_name:
@@ -1264,9 +1617,16 @@ def ml_food_drug_risk(body: FoodDrugRequest):
 
     food_row = matches.iloc[0]
     sev_ml, reasons_ml = ml_predict_one(drug_row, food_row)
+    sev_ml, reasons_ml = apply_rule_overrides(drug_row, food_row, sev_ml, reasons_ml)
+
+
+    exp = explain_features(drug_row, food_row)
+    exp["reason_details"] = build_reason_details(drug_row, food_row, reasons_ml)
+
+
 
     safe_foods: List[Dict[str, Any]] = []
-    if int(sev_ml) == 2:
+    if int(sev_ml) >= 1:
         safe_foods = suggest_safe_foods_for_drug(drug_row, limit=int(body.safe_food_limit or 10))
 
     return FoodDrugResponse(
@@ -1275,9 +1635,10 @@ def ml_food_drug_risk(body: FoodDrugRequest):
         severity=int(sev_ml),
         message=risk_map[int(sev_ml)],
         reasons=reasons_ml,
-        explanation=explain_features(drug_row, food_row),
+        explanation=exp,   # ✅ updated
         safe_foods=safe_foods
     )
+
 
 
 @app.get("/ml-meal-plan")
@@ -1294,13 +1655,12 @@ def ml_meal_plan(
     if drug_index < 0 or drug_index >= len(drug_clean):
         raise HTTPException(status_code=404, detail="Drug index out of range")
 
-    drug_row = drug_clean.iloc[drug_index]
     avoid_set: Set[str] = set()
     if avoid_allergens:
         avoid_set = {a.strip().lower() for a in avoid_allergens.split(",") if a.strip()}
 
-    result = build_one_srilankan_meal_for_drug(
-        drug_row=drug_row,
+    result = build_one_meal_for_drugs(
+        drug_indices=[drug_index],
         meal_type=meal_type,
         calories_target=float(calories_target),
         avoid_set=avoid_set,
@@ -1309,279 +1669,121 @@ def ml_meal_plan(
         low_sodium=low_sodium,
         exclude_foods=set(),
         exclude_clusters=set(),
+        foods_source=mealplan_foods,  # meal plan dataset
     )
 
     out = {
-        "drug": str(drug_row["Name"]),
+        "drug": str(drug_clean.iloc[drug_index]["Name"]),
         "meal_type": meal_type,
         "target_kcal": calories_target,
         "estimated_kcal": result.get("estimated_kcal", 0),
         "meal": result["meal"],
         "message": result["message"],
     }
-
     if debug_score:
         out["score_debug"] = result.get("score_debug", {})
-
     return out
 
 
-@app.get("/ml-meal-plan-days")
-def ml_meal_plan_days(
-    drug_index: int = Query(...),
-    meal_type: str = Query("lunch"),
-    days: int = Query(7, ge=1, le=30),
-    calories_target: int = Query(650),
-    avoid_allergens: Optional[str] = Query(None),
-    vegetarian: bool = Query(False),
-    diabetic_friendly: bool = Query(False),
-    low_sodium: bool = Query(False),
-):
-    if drug_index < 0 or drug_index >= len(drug_clean):
-        raise HTTPException(status_code=404, detail="Drug index out of range")
+@app.post("/ml-meal-plan-generate", response_model=MealPlanResponse)
+def ml_meal_plan_generate(body: MealPlanRequest):
+    # ✅ drug_names optional now (no-drug mode ok)
 
-    drug_row = drug_clean.iloc[drug_index]
+    if body.days <= 0 or body.days > 30:
+        raise HTTPException(status_code=400, detail="days must be between 1 and 30")
 
-    avoid_set: Set[str] = set()
-    if avoid_allergens:
-        avoid_set = {a.strip().lower() for a in avoid_allergens.split(",") if a.strip()}
+    # ✅ FIX: 1..6 and message match
+    if body.meals_per_day <= 0 or body.meals_per_day > 6:
+        raise HTTPException(status_code=400, detail="meals_per_day must be between 1 and 6")
 
-    used_foods_global: Set[str] = set()
-    used_clusters_global: Set[int] = set()
-    plans = []
+    if body.calories_per_day <= 0:
+        raise HTTPException(status_code=400, detail="calories_per_day must be > 0")
 
-    for d in range(1, days + 1):
-        res = build_one_srilankan_meal_for_drug(
-            drug_row=drug_row,
-            meal_type=meal_type,
-            calories_target=float(calories_target),
-            avoid_set=avoid_set,
-            vegetarian=vegetarian,
-            diabetic_friendly=diabetic_friendly,
-            low_sodium=low_sodium,
-            exclude_foods=used_foods_global,
-            exclude_clusters=used_clusters_global,
-        )
-        plans.append({"day": d, **res})
+    drug_indices = resolve_indices_from_names(body.drug_names) if body.drug_names else []
+    # if user provided drug_names but none valid -> error
+    if body.drug_names and not drug_indices:
+        raise HTTPException(status_code=404, detail="No valid drug names found")
 
-        if res.get("meal"):
-            m = res["meal"]
-            for k in ["main", "protein", "vegetable"]:
-                if m.get(k) and m[k].get("food"):
-                    used_foods_global.add(normalize_food_name(m[k]["food"]))
-                    cid = int(m[k].get("cluster_id", -1))
-                    if cid != -1:
-                        used_clusters_global.add(cid)
-
-    return {
-        "drug": str(drug_row["Name"]),
-        "meal_type": meal_type,
-        "days": days,
-        "target_kcal": calories_target,
-        "plans": plans,
-        "note": "score_debug is included per day inside plans"
-    }
-
-
-@app.post("/meal-plan", response_model=MealPlanResponse)
-def create_meal_plan(body: MealPlanRequest):
-    if not body.drug_names:
-        raise HTTPException(status_code=400, detail="At least one active medication name is required.")
-
-    drug_indices = resolve_indices_from_names(body.drug_names)
-    if not drug_indices:
-        raise HTTPException(status_code=400, detail="No valid drug names provided.")
-
-    days = max(1, int(body.days))
-    meals_per_day = max(1, min(int(body.meals_per_day), 5))
-    calories_per_day = float(body.calories_per_day or 1800)
-
-    if meals_per_day == 3:
-        default_types = ["breakfast", "lunch", "dinner"]
-        fractions = [0.30, 0.40, 0.30]
-    elif meals_per_day == 4:
-        default_types = ["breakfast", "lunch", "dinner", "snack"]
-        fractions = [0.25, 0.35, 0.30, 0.10]
+    if body.meal_types and len(body.meal_types) > 0:
+        meal_types = [str(x).strip().lower() for x in body.meal_types if str(x).strip()]
     else:
-        default_types = ["breakfast", "lunch", "dinner"][:meals_per_day]
-        if len(default_types) < meals_per_day:
-            default_types += [f"meal{i+1}" for i in range(len(default_types), meals_per_day)]
-        fractions = [1.0 / meals_per_day] * meals_per_day
+        meal_types = ["breakfast", "lunch", "dinner", "snack", "snack2", "supper"]
+    meal_types = meal_types[:body.meals_per_day]
 
-    meal_types = [m.lower() for m in (body.meal_types or default_types)]
-    avoid_set = {a.strip().lower() for a in body.allergies if a.strip()}
+    avoid_set = {a.strip().lower() for a in body.allergies if a and a.strip()}
+    per_meal_kcal = float(body.calories_per_day) / float(body.meals_per_day)
 
-    used_foods_global: Set[str] = set()
-    used_clusters_global: Set[int] = set()
+    used_foods: Set[str] = set()
+    used_clusters: Set[int] = set()
 
-    day_plans: List[DayPlan] = []
+    days_out: List[DayPlan] = []
 
-    for d in range(1, days + 1):
-        used_today_foods: Set[str] = set()
-        used_today_clusters: Set[int] = set()
+    for d in range(1, body.days + 1):
         meals_out: List[Meal] = []
 
-        for i in range(meals_per_day):
-            mt = meal_types[i] if i < len(meal_types) else f"meal{i+1}"
-            target_meal_kcal = calories_per_day * (fractions[i] if i < len(fractions) else (1.0 / meals_per_day))
-
-            base = unified_foods[unified_foods["meal_type"].astype(str).str.contains(mt, na=False)].copy()
-            if base.empty:
-                base = unified_foods.copy()
-
-            base = quality_filter(base)
-
-            base["Food_norm"] = base["Food"].astype(str).str.strip().str.lower()
-            avoid_foods_now = used_today_foods.union(used_foods_global)
-            avoid_clusters_now = used_today_clusters.union(used_clusters_global)
-
-            base_pref = base[~base["Food_norm"].isin(avoid_foods_now)].copy()
-            if not base_pref.empty and avoid_clusters_now:
-                base_pref = base_pref[~base_pref["cluster_id"].fillna(-1).astype(int).isin(avoid_clusters_now)].copy()
-
-            if base_pref.empty:
-                base_pref = base[~base["Food_norm"].isin(used_today_foods)].copy()
-            if base_pref.empty:
-                base_pref = base.copy()
-
-            seed = secrets.randbits(32)
-            base_pref = base_pref.sample(n=min(len(base_pref), 900), random_state=seed).reset_index(drop=True)
-
-            safe_all = compute_safe_foods_for_all_drugs(drug_indices, base_pref)
-            if safe_all.empty:
-                empty = MealItem(food="", food_type="", energy=0.0, severity=0,
-                                 reasons=[], allergens_detected=[], preferences={}, explanation={})
-                meals_out.append(Meal(
-                    name=mt.title(),
-                    target_kcal=round(target_meal_kcal, 1),
-                    estimated_kcal=0.0,
-                    main=empty,
-                    protein=None,
-                    vegetable=None,
-                ))
-                continue
-
-            if avoid_set:
-                kept = []
-                for _, rr in safe_all.iterrows():
-                    al = resolve_allergens(rr["Food"])
-                    if not violates_allergy(al, avoid_set):
-                        kept.append(rr)
-                safe_all = pd.DataFrame(kept) if kept else pd.DataFrame(columns=safe_all.columns)
-                if safe_all.empty:
-                    empty = MealItem(food="", food_type="", energy=0.0, severity=0,
-                                     reasons=[], allergens_detected=[], preferences={}, explanation={})
-                    meals_out.append(Meal(
-                        name=mt.title(),
-                        target_kcal=round(target_meal_kcal, 1),
-                        estimated_kcal=0.0,
-                        main=empty,
-                        protein=None,
-                        vegetable=None,
-                    ))
-                    continue
-
-            safe_all = add_preference_columns(safe_all)
-            if body.vegetarian:
-                safe_all = safe_all[safe_all["pref_vegetarian"] == True]
-            if body.diabetic_friendly:
-                safe_all = safe_all[safe_all["pref_diabetic"] == True]
-            if body.low_sodium:
-                safe_all = safe_all[safe_all["pref_low_sodium"] == True]
-
-            if safe_all.empty:
-                empty = MealItem(food="", food_type="", energy=0.0, severity=0,
-                                 reasons=[], allergens_detected=[], preferences={}, explanation={})
-                meals_out.append(Meal(
-                    name=mt.title(),
-                    target_kcal=round(target_meal_kcal, 1),
-                    estimated_kcal=0.0,
-                    main=empty,
-                    protein=None,
-                    vegetable=None,
-                ))
-                continue
-
-            plate, _score_debug = pick_best_scored_plate(
-                safe_df=safe_all,
-                target_kcal=float(target_meal_kcal),
-                used_foods=used_today_foods.union(used_foods_global),
-                used_clusters=used_today_clusters.union(used_clusters_global),
-                want_veg=body.vegetarian,
-                want_diabetic=body.diabetic_friendly,
-                want_low_sodium=body.low_sodium,
-                num_candidates=60
+        for mt in meal_types:
+            res = build_one_meal_for_drugs(
+                drug_indices=drug_indices,
+                meal_type=mt,
+                calories_target=per_meal_kcal,
+                avoid_set=avoid_set,
+                vegetarian=body.vegetarian,
+                diabetic_friendly=body.diabetic_friendly,
+                low_sodium=body.low_sodium,
+                exclude_foods=used_foods,
+                exclude_clusters=used_clusters,
+                foods_source=mealplan_foods,  # ✅ always generate from new_foodset
             )
 
-            display_drug_row = drug_clean.iloc[drug_indices[0]]
-
-            def pack(r: Optional[pd.Series]) -> Optional[MealItem]:
-                if r is None:
-                    return None
-                prefs = {
-                    "vegetarian": bool(r.get("pref_vegetarian", False)),
-                    "diabetic_friendly": bool(r.get("pref_diabetic", False)),
-                    "low_sodium": bool(r.get("pref_low_sodium", False)),
-                }
-                return MealItem(
-                    food=str(r["Food"]),
-                    food_type=str(r.get("food_type", "unknown")),
-                    energy=safe_float(r.get("energy")),
-                    severity=int(r.get("max_severity", 0)),
-                    reasons=predict_reasons_one(display_drug_row, r),
-                    allergens_detected=resolve_allergens(r["Food"]),
-                    preferences=prefs,
-                    explanation=explain_features(display_drug_row, r),
+            if not res.get("meal"):
+                raise HTTPException(
+                    status_code=404,
+                    detail=f"Could not generate meal for day {d}, meal '{mt}': {res.get('message')}"
                 )
 
-            main_item = pack(plate["main"])
-            prot_item = pack(plate["protein"])
-            veg_item = pack(plate["vegetable"])
+            meal_dict = res["meal"]
 
-            if main_item is None:
-                empty = MealItem(food="", food_type="", energy=0.0, severity=0,
-                                 reasons=[], allergens_detected=[], preferences={}, explanation={})
-                meals_out.append(Meal(
-                    name=mt.title(),
-                    target_kcal=round(target_meal_kcal, 1),
-                    estimated_kcal=0.0,
-                    main=empty,
-                    protein=None,
-                    vegetable=None,
-                ))
-                continue
+            for key in ["main", "protein", "vegetable"]:
+                it = meal_dict.get(key)
+                if it:
+                    used_foods.add(normalize_food_name(it["food"]))
+                    cid = int(it.get("cluster_id", -1))
+                    if cid != -1:
+                        used_clusters.add(cid)
 
-            est = float(main_item.energy) + (float(prot_item.energy) if prot_item else 0.0) + (float(veg_item.energy) if veg_item else 0.0)
+            def to_meal_item(it: Dict[str, Any]) -> MealItem:
+                return MealItem(
+                    food=str(it["food"]),
+                    food_type=str(it.get("food_type", "unknown")),
+                    energy=float(it.get("energy", 0.0)),
+                    severity=int(it.get("severity", 0)),
+                    quantity=(str(it.get("quantity")).strip() if it.get("quantity") else None),
+                    image=(str(it.get("image")).strip() if it.get("image") else None),
+                    reasons=list(it.get("reasons", [])),
+                    allergens_detected=list(it.get("allergens_detected", [])),
+                    preferences=dict(it.get("preferences", {})),
+                    explanation=dict(it.get("explanation", {})),
+                )
+
+            main_item = to_meal_item(meal_dict["main"])
+            prot_item = to_meal_item(meal_dict["protein"]) if meal_dict.get("protein") else None
+            veg_item = to_meal_item(meal_dict["vegetable"]) if meal_dict.get("vegetable") else None
 
             meals_out.append(Meal(
-                name=mt.title(),
-                target_kcal=round(target_meal_kcal, 1),
-                estimated_kcal=round(est, 1),
+                name=f"{mt}",
+                target_kcal=float(res.get("target_kcal", per_meal_kcal)),
+                estimated_kcal=float(res.get("estimated_kcal", 0.0)),
                 main=main_item,
                 protein=prot_item,
                 vegetable=veg_item,
             ))
 
-            def _add_used_from_series(s: Optional[pd.Series]):
-                if s is None:
-                    return
-                used_today_foods.add(normalize_food_name(str(s.get("Food", ""))))
-                cid = int(s.get("cluster_id", -1))
-                if cid != -1:
-                    used_today_clusters.add(cid)
-
-            _add_used_from_series(plate.get("main"))
-            _add_used_from_series(plate.get("protein"))
-            _add_used_from_series(plate.get("vegetable"))
-
-        used_foods_global.update(used_today_foods)
-        used_clusters_global.update(used_today_clusters)
-        day_plans.append(DayPlan(day=d, meals=meals_out))
+        days_out.append(DayPlan(day=d, meals=meals_out))
 
     return MealPlanResponse(
-        drug_names=indices_to_names(drug_indices),
+        drug_names=body.drug_names,
         drug_indices=drug_indices,
-        days=day_plans
+        days=days_out
     )
 
 
@@ -1592,32 +1794,50 @@ def _norm(s: str) -> str:
 
 
 @app.post("/predict-drug-from-image")
-async def predict_drug_from_image_api(file: UploadFile = File(...), topk: int = 3):
+async def predict_drug_from_image_api(
+    file: UploadFile = File(...),
+    topk: int = 1,   # default topk=1
+):
+    # validate image file
     if not file.content_type or not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="Upload a valid image.")
 
     img_bytes = await file.read()
     try:
-        img = Image.open(io.BytesIO(img_bytes))
+        img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
     except Exception:
         raise HTTPException(status_code=400, detail="Invalid image data.")
 
-    preds = predict_drug_from_image_core(img, topk=topk)
+    # ✅ sanitize topk (force >=1)
+    try:
+        topk_int = int(topk)
+    except Exception:
+        topk_int = 1
+    if topk_int <= 0:
+        topk_int = 1
 
+    # ✅ predict (but we will still return only 1)
+    preds = predict_drug_from_image_core(img, topk=topk_int)
+
+    # ✅ enrich predictions (if drug_vision_info.csv exists)
     enriched: List[Dict[str, Any]] = []
+
+    # cache _brand_key only once (avoid recompute each request)
+    if drug_vision_info is not None and "_brand_key" not in drug_vision_info.columns:
+        drug_vision_info["_brand_key"] = drug_vision_info["brand_name"].apply(_norm)
+
     for p in preds:
-        pred_name = str(p["drug_name"])
+        pred_name = str(p.get("drug_name", ""))
         key = _norm(pred_name)
 
+        # no csv => return raw prediction
         if drug_vision_info is None:
             enriched.append(p)
             continue
 
-        if "_brand_key" not in drug_vision_info.columns:
-            drug_vision_info["_brand_key"] = drug_vision_info["brand_name"].apply(_norm)
-
         m = drug_vision_info[drug_vision_info["_brand_key"] == key]
 
+        # fallback: fuzzy match
         if m.empty:
             choices = drug_vision_info["_brand_key"].tolist()
             close = get_close_matches(key, choices, n=1, cutoff=0.8)
@@ -1625,9 +1845,13 @@ async def predict_drug_from_image_api(file: UploadFile = File(...), topk: int = 
                 m = drug_vision_info[drug_vision_info["_brand_key"] == close[0]]
 
         if not m.empty:
-            row = m.iloc[0].drop(labels=[c for c in ["_brand_key"] if c in m.columns]).to_dict()
+            row = m.iloc[0].drop(
+                labels=[c for c in ["_brand_key"] if c in m.columns],
+                errors="ignore"
+            ).to_dict()
             enriched.append({**p, **row})
         else:
             enriched.append(p)
 
-    return {"predictions": enriched}
+    # ALWAYS return ONLY 1 prediction
+    return {"predictions": enriched[:1]}
