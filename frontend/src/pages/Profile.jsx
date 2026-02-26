@@ -486,7 +486,7 @@ const Profile = () => {
                   }`}
               >
                 <UserCircleIcon className="h-5 w-5" />
-                Profile
+                MY Profile
               </button>
 
               <button

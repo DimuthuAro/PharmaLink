@@ -68,3 +68,18 @@ export function predictDrugImage({ token, file, topk = 3 }) {
     method: "POST",
   });
 }
+
+
+/** Recommend Drugs From Symptoms */
+export function recommendDrugsFromSymptoms({
+  token,
+  symptoms,
+  top_k_diseases = 3,
+  patient = {},
+}) {
+  return advisoryRequest("/symptoms/recommend-drugs", {
+    method: "POST",
+    token,
+    body: { symptoms, top_k_diseases, patient },
+  });
+}
