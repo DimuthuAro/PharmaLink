@@ -1,7 +1,7 @@
 // src/pages/LandingPage.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import BandLogo from '../components/brandLogo';
+import BandLogo from '../components/brandLogo2';
 import HeroImage from '../assets/pharmlink-hero.jpeg';
 import intearction from '../assets/interaction.jpeg';
 import nutrition from '../assets/nutrition.jpeg';
@@ -23,7 +23,7 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-linear-to-b from-sky-50 via-white to-slate-50">
       {/* Top nav */}
-      <header className="border-b border-slate-200 bg-white/80 backdrop-blur">
+      <header className="border-b border-slate-200 bg-[#2f2971] backdrop-blur">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center space-x-2">
@@ -31,16 +31,16 @@ const LandingPage = () => {
           </div>
 
           {/* Right actions */}
-          <div className="flex items-center space-x-6 text-sm">
+          <div className="flex items-center space-x-3 text-sm">
             <button
               onClick={() => navigate("/login")}
-              className="text-sm text-slate-700 hover:text-slate-900"
+              className="px-4 py-2 rounded-lg  font-bold text-white hover:text-[#9893c6]"
             >
               Log in
             </button>
             <button
               onClick={() => navigate("/register")}
-              className="px-4 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-sm"
+              className="px-4 py-2 rounded-lg bg-white text-[#2f2971] font-bold hover:bg-white/45 hover:text-white"
             >
               Get started
             </button>
@@ -56,20 +56,20 @@ const LandingPage = () => {
 
           {/* Left: text */}
           <div className="relative z-20">
-            <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-700">
+            <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#2f2971]">
               AI-powered clinical decision support
             </span>
 
             <h1 className="mt-4 text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
               Smarter, safer{" "}
-              <span className="text-blue-600">medication journeys</span> for
+              <span className="text-[#3a3385]">medication journeys</span> for
               every patient.
             </h1>
 
             <p className="mt-4 text-sm md:text-base text-slate-600 leading-relaxed">
               PharmaLink is an integrated platform for{" "}
               <span className="font-semibold">drug interaction checks</span>,{" "}
-              <span className="font-semibold">nutrition-aware guidance</span>,{" "}
+              <span className="font-semibold">health advice</span>,{" "}
               <span className="font-semibold">cross-brand comparison</span>, and{" "}
               <span className="font-semibold">
                 AI-assisted prescription validation
@@ -97,7 +97,7 @@ const LandingPage = () => {
             <div className="mt-6 flex flex-wrap gap-3">
               <button
                 onClick={() => navigate("/login")}
-                className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
+                className="inline-flex items-center rounded-lg bg-[#2f2971] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#2f2971d9]"
               >
                 Start now
                 <ArrowRightIcon className="h-4 w-4 ml-1" />
@@ -138,7 +138,7 @@ const LandingPage = () => {
               <div className="p-3 md:p-4 space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <ShieldCheckIcon className="h-5 w-5 text-blue-600" />
+                    <ShieldCheckIcon className="h-5 w-5 text-[#2f2971]" />
                     <p className="text-sm font-semibold text-slate-900">
                       Real-time safety assistant
                     </p>
@@ -184,8 +184,8 @@ const LandingPage = () => {
                 </span>
               </div>
               <div className="p-5">
-                <h3 className="text-base font-semibold text-slate-900">
-                  1. Drug Interaction & Allergy Detection
+                <h3 className="text-base font-extrabold text-[#2f2971] text-center">
+                  Drug Interaction & Allergy Detection
                 </h3>
                 <p className="mt-1 text-sm text-slate-600">
                   Detect potential interactions and allergy risks before
@@ -204,12 +204,12 @@ const LandingPage = () => {
                   className="w-full h-40 object-cover group-hover:scale-[1.02] transition-transform"
                 />
                 <span className="absolute left-3 top-3 text-[11px] px-2 py-0.5 rounded-full bg-white/90 text-emerald-700 border border-emerald-100">
-                  Diet-aware
+                  Health-aware
                 </span>
               </div>
               <div className="p-5">
-                <h3 className="text-base font-semibold text-slate-900">
-                  2. AI-Powered Nutritional Advisory
+                <h3 className="text-base font-extrabold text-[#2f2971] text-center">
+                  Health Advisory Center
                 </h3>
                 <p className="mt-1 text-sm text-slate-600">
                   Align diet with medication plans, suggesting safer food
@@ -232,8 +232,8 @@ const LandingPage = () => {
                 </span>
               </div>
               <div className="p-5">
-                <h3 className="text-base font-semibold text-slate-900">
-                  3. Cross-Brand Drug Comparator
+                <h3 className="text-base font-extrabold text-[#2f2971] text-center">
+                  Cross-Brand Drug Comparator
                 </h3>
                 <p className="mt-1 text-sm text-slate-600">
                   Compare equivalent medicines across brands to improve
@@ -256,8 +256,8 @@ const LandingPage = () => {
                 </span>
               </div>
               <div className="p-5">
-                <h3 className="text-base font-semibold text-slate-900">
-                  4. AI-Powered Prescription Interpretation
+                <h3 className="text-base font-extrabold text-[#2f2971] text-center">
+                  AI-Powered Prescription Interpretation
                 </h3>
                 <p className="mt-1 text-sm text-slate-600">
                   Interpret handwritten prescriptions, validate doses, and flag
@@ -343,8 +343,8 @@ const LandingPage = () => {
 
         {/* Tiny footer */}
         <footer className="mt-10 mb-4 text-[11px] text-slate-500 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-3">
-          <span>© {new Date().getFullYear()} PharmaLink. For academic/research use.</span>
-          <span>Always consult a qualified healthcare professional.</span>
+          <span>© {new Date().getFullYear()} PharmaLink. All rights reserved.</span>
+          <span>For academic and research purposes only. Always consult a healthcare professional.</span>
         </footer>
       </main>
     </div>

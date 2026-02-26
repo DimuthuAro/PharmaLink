@@ -19,6 +19,10 @@ import {
   TrashIcon,
   ArrowUturnLeftIcon,
   XMarkIcon,
+  SparklesIcon,
+  BeakerIcon,
+  HeartIcon,
+  ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
 
 /* ----------------------------- Tabs / Types ------------------------------ */
@@ -26,6 +30,7 @@ const TYPES = [
   { key: "food_drug", label: "Food–Drug", icon: ShieldCheckIcon },
   { key: "meal_plan", label: "Meal Plans", icon: ClipboardDocumentListIcon },
   { key: "drug_image_prediction", label: "Drug Image", icon: PhotoIcon },
+  { key: "symptom_drug_reco", label: "Drug Recommender", icon: SparklesIcon },
 ];
 
 /* ------------------------------ Risk styles ------------------------------ */
@@ -81,6 +86,25 @@ function uniqStrings(arr) {
   return Array.from(
     new Set((arr || []).map((x) => String(x).trim()).filter(Boolean))
   );
+}
+
+function titleCase(str) {
+  return String(str || "")
+    .replace(/[_-]+/g, " ")
+    .trim()
+    .toLowerCase()
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+// removes "R1:", "R13 -", "R2." etc
+function stripRulePrefix(s) {
+  return String(s || "").replace(/^R\d+\s*[:.\-]\s*/i, "").trim();
+}
+
+function capSentence(s) {
+  const t = stripRulePrefix(s);
+  if (!t) return "";
+  return t.charAt(0).toUpperCase() + t.slice(1);
 }
 
 /* --------------------------- Details Modal UI --------------------------- */
@@ -177,6 +201,7 @@ function DetailsModal({
                   {type === "food_drug" && `${drugName} + ${foodName}`}
                   {type === "meal_plan" && "Meal Plan Generated"}
                   {type === "drug_image_prediction" && "Drug Image Analysis"}
+                  {type === "symptom_drug_reco" && "Drug Recommendations From Symptoms"}
                 </h3>
 
                 {type === "food_drug" && meta && (
@@ -400,6 +425,150 @@ function DetailsModal({
               </Section>
             </div>
           )}
+          {/* SYMPTOM DRUG RECOMMENDER */}
+{type === "symptom_drug_reco" && (() => {
+  const inputSymptoms = Array.isArray(item?.input?.symptoms) ? item.input.symptoms : [];
+  const diseases = Array.isArray(item?.result?.predicted_disease_recommendations)
+    ? item.result.predicted_disease_recommendations
+    : [];
+  const symptomRecos = Array.isArray(item?.result?.direct_symptom_recommendations)
+    ? item.result.direct_symptom_recommendations
+    : [];
+
+  const DrugCols = ({ r }) => (
+    <div className="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+        <div className="flex items-center gap-2 text-xs font-extrabold text-slate-500 uppercase">
+          <BeakerIcon className="h-4 w-4" />
+          First Line
+        </div>
+        <div className="mt-1 text-sm text-slate-700">
+          {(r?.first_line_drugs || []).map(titleCase).join(", ") || "—"}
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+        <div className="flex items-center gap-2 text-xs font-extrabold text-slate-500 uppercase">
+          <BeakerIcon className="h-4 w-4" />
+          Second Line
+        </div>
+        <div className="mt-1 text-sm text-slate-700">
+          {(r?.second_line_drugs || []).map(titleCase).join(", ") || "—"}
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+        <div className="flex items-center gap-2 text-xs font-extrabold text-slate-500 uppercase">
+          <ExclamationTriangleIcon className="h-4 w-4" />
+          Avoid
+        </div>
+        <div className="mt-1 text-sm text-slate-700">
+          {(r?.avoid_drugs || []).map(titleCase).join(", ") || "—"}
+        </div>
+      </div>
+    </div>
+  );
+
+  const Warnings = ({ r }) => {
+    const warns = Array.isArray(r?.safety_warnings) ? r.safety_warnings : [];
+    if (!warns.length) return null;
+
+    return (
+      <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4">
+        <div className="flex items-center gap-2 text-xs font-extrabold text-amber-800 uppercase">
+          <ExclamationCircleIcon className="h-4 w-4" />
+          Safety Warnings
+        </div>
+        <ul className="mt-2 space-y-2 text-sm text-amber-900">
+          {warns.map((w, i) => (
+            <li key={i} className="flex items-start gap-2">
+              <span className="mt-1 h-2 w-2 rounded-full bg-amber-600 shrink-0" />
+              <span className="leading-relaxed">{capSentence(w)}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+
+  return (
+    <div className="space-y-5">
+      <Section title="Symptoms (Input)">
+        {inputSymptoms.length ? (
+          <div className="flex flex-wrap gap-2">
+            {inputSymptoms.map((s, i) => (
+              <Pill key={i} tone="purple">{titleCase(s)}</Pill>
+            ))}
+          </div>
+        ) : (
+          <div className="text-sm text-slate-600">—</div>
+        )}
+      </Section>
+
+      <Section title="Predicted Disease Recommendations">
+        {diseases.length ? (
+          <div className="space-y-4">
+            {diseases.slice(0, 6).map((r, i) => (
+              <div key={i} className="rounded-2xl border border-slate-200 bg-white p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <BeakerIcon className="h-5 w-5 text-[#2f2971]" />
+                      <div className="text-base font-extrabold text-slate-900">
+                        {r?.disease ? titleCase(r.disease) : "—"}
+                      </div>
+                    </div>
+                    {typeof r?.prob === "number" && (
+                      <div className="text-xs text-slate-500 mt-1">
+                        Match: {(r.prob * 100).toFixed(1)}%
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <DrugCols r={r} />
+                <Warnings r={r} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-sm text-slate-600">No disease recommendations saved.</div>
+        )}
+      </Section>
+
+      <Section title="Direct Symptom Recommendations">
+        {symptomRecos.length ? (
+          <div className="space-y-4">
+            {symptomRecos.slice(0, 6).map((r, i) => (
+              <div key={i} className="rounded-2xl border border-slate-200 bg-white p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <HeartIcon className="h-5 w-5 text-[#2f2971]" />
+                      <div className="text-base font-extrabold text-slate-900">
+                        {r?.symptom ? titleCase(r.symptom) : "—"}
+                      </div>
+                    </div>
+                    {typeof r?.prob === "number" && (
+                      <div className="text-xs text-slate-500 mt-1">
+                        Match: {(r.prob * 100).toFixed(0)}%
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <DrugCols r={r} />
+                <Warnings r={r} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-sm text-slate-600">No symptom recommendations saved.</div>
+        )}
+      </Section>
+    </div>
+  );
+})()}
         </div>
 
         {/* Footer actions */}
@@ -721,6 +890,23 @@ export default function History() {
 
             <button
               onClick={() => {
+                setActiveTab("symptom-drug");
+                handleNavigation("/symptom-drug");
+              }}
+              className={`relative w-full flex items-center gap-3 px-6 py-3.5 text-sm font-semibold transition-all duration-200
+                ${
+                  activeTab === "symptom-drug"
+                    ? "bg-white text-[#2f2971] rounded-r-full -ml-4 pl-10"
+                    : "text-white hover:bg-white/10 rounded-r-full -ml-4 pl-10"
+                }`}
+            >
+              <SparklesIcon className="h-5 w-5" />
+              Drug Recommender
+            </button>
+
+
+            <button
+              onClick={() => {
                 setActiveTab("history");
                 handleNavigation("/history");
               }}
@@ -868,7 +1054,7 @@ export default function History() {
                     appear here.
                   </p>
                   <button
-                    onClick={() => navigate("/advisory")}
+                    onClick={() => navigate("/symptom-drug")}
                     className="px-6 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-[#2f2971] to-[#3d3086] hover:shadow-lg transition-shadow"
                   >
                     Get Started
@@ -1018,7 +1204,7 @@ function HistoryCard({ item, type, onOpenDetails, onViewImage, onRecheck, onDele
             )}
 
             {type === "meal_plan" && (
-              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shrink-0">
+              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#6059b3] to-[#2f2971] flex items-center justify-center shrink-0">
                 <ClipboardDocumentListIcon className="h-6 w-6 text-white" />
               </div>
             )}
@@ -1026,6 +1212,12 @@ function HistoryCard({ item, type, onOpenDetails, onViewImage, onRecheck, onDele
             {type === "drug_image_prediction" && (
               <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#6059b3] to-[#2f2971] flex items-center justify-center shrink-0">
                 <PhotoIcon className="h-6 w-6 text-white" />
+              </div>
+            )}
+
+            {type === "symptom_drug_reco" && (
+              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#6059b3] to-[#2f2971] flex items-center justify-center shrink-0">
+                <SparklesIcon className="h-6 w-6 text-white" />
               </div>
             )}
 
@@ -1039,6 +1231,7 @@ function HistoryCard({ item, type, onOpenDetails, onViewImage, onRecheck, onDele
                       return `${text}`;
                     })()}
                 {type === "drug_image_prediction" && (item?.input?.uploadedImage?.filename || "Drug Image")}
+                {type === "symptom_drug_reco" &&((item?.input?.symptoms || []).map(titleCase).join(", ") || "Drug Recommender")}
               </h3>
 
               <div className="flex items-center gap-2 text-xs text-slate-500">
@@ -1099,6 +1292,39 @@ function HistoryCard({ item, type, onOpenDetails, onViewImage, onRecheck, onDele
               )}
             </div>
           )}
+
+{type === "symptom_drug_reco" && (() => {
+  const diseases = item?.result?.predicted_disease_recommendations || [];
+  const symptoms = item?.result?.direct_symptom_recommendations || [];
+  const top = diseases[0];
+
+  return (
+    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <div className="text-xs text-slate-500 mb-1">Top Disease</div>
+          <div className="text-lg font-bold text-slate-900">
+            {top?.disease ? titleCase(top.disease) : "—"}
+          </div>
+          {typeof top?.prob === "number" && (
+            <div className="text-sm text-slate-600 mt-1">
+              Match: {(top.prob * 100).toFixed(1)}%
+            </div>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-1 items-end">
+          <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-700">
+            Diseases: {diseases.length}
+          </span>
+          <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-700">
+            Symptoms: {symptoms.length}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+})()}
         </div>
 
         {/* Actions */}

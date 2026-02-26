@@ -544,6 +544,22 @@ export default function PersonalizedMealPlan() {
 
             <button
               onClick={() => {
+                setActiveTab("symptom-drug");
+                handleNavigation("/symptom-drug");
+              }}
+              className={`relative w-full flex items-center gap-3 px-6 py-3.5 text-sm font-semibold transition-all duration-200
+                ${
+                  activeTab === "symptom-drug"
+                    ? "bg-white text-[#2f2971] rounded-r-full -ml-4 pl-10"
+                    : "text-white hover:bg-white/10 rounded-r-full -ml-4 pl-10"
+                }`}
+            >
+              <SparklesIcon className="h-5 w-5" />
+              Drug Recommender
+            </button>
+
+            <button
+              onClick={() => {
                 setActiveTab("history");
                 handleNavigation("/history");
               }}

@@ -8,9 +8,7 @@ import drugImg from "../assets/drug-interaction.png";
 import healthImg from "../assets/food-drug.jpeg";
 import comparatorImg from "../assets/comparator.jpeg";
 import prescriptionImg from "../assets/prescriptionn.jpeg";
-
 import {
-  
   ShieldCheckIcon as ShieldCheck,
   LightBulbIcon as LightBulb,
   ScaleIcon as Scale,
@@ -32,21 +30,21 @@ import {
 
 // Loading component
 const LoadingSpinner = () => (
-  <div className="animate-pulse">
-    <div className="h-4 bg-slate-200 rounded w-3/4 mb-2"></div>
-    <div className="h-8 bg-slate-200 rounded w-1/2"></div>
+  <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="flex flex-col items-center gap-4">
+      <div className="w-12 h-12 border-4 border-[#2f2971] border-t-transparent rounded-full animate-spin"></div>
+      <p className="text-sm font-medium text-slate-600">Loading dashboard...</p>
+    </div>
   </div>
 );
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, logout, isAuthenticated } = useAuth();
-
   const [activeTab, setActiveTab] = useState("overview");
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [showUserMenu, setShowUserMenu] = useState(false);
-
   const [stats, setStats] = useState({
     prescriptionsProcessed: 0,
     interactionsChecked: 0,
@@ -72,7 +70,6 @@ const Dashboard = () => {
       });
       setIsLoading(false);
     };
-
     fetchDashboardData();
   }, []);
 
@@ -99,22 +96,19 @@ const Dashboard = () => {
   // Close user menu when clicking outside
   useEffect(() => {
     if (!showUserMenu) return;
-
     const onKeyDown = (e) => e.key === "Escape" && setShowUserMenu(false);
     const onMouseDown = (e) => {
       if (!e.target.closest("#user-menu-wrapper")) setShowUserMenu(false);
     };
-
     document.addEventListener("keydown", onKeyDown);
     document.addEventListener("mousedown", onMouseDown);
-
     return () => {
       document.removeEventListener("keydown", onKeyDown);
       document.removeEventListener("mousedown", onMouseDown);
     };
   }, [showUserMenu]);
 
-  // Better quick actions with images + gradients
+  // Quick actions
   const quickActions = useMemo(
     () => [
       {
@@ -125,8 +119,7 @@ const Dashboard = () => {
         path: "/interaction-check",
         stats: `${stats.interactionsChecked.toLocaleString()} checks`,
         priority: "high",
-        image: drugImg, 
-        tint: "from-indigo-600/25 via-blue-600/10 to-transparent",
+        image: drugImg,
       },
       {
         id: 2,
@@ -136,8 +129,7 @@ const Dashboard = () => {
         path: "/advisory",
         stats: "AI-Powered",
         priority: "medium",
-        image: healthImg, 
-        tint: "from-violet-600/25 via-fuchsia-600/10 to-transparent",
+        image: healthImg,
       },
       {
         id: 3,
@@ -148,7 +140,6 @@ const Dashboard = () => {
         stats: "Save up to 80%",
         priority: "medium",
         image: comparatorImg,
-        tint: "from-indigo-600/20 via-sky-600/10 to-transparent",
       },
       {
         id: 4,
@@ -159,7 +150,6 @@ const Dashboard = () => {
         stats: `${stats.accuracyRate}% accuracy`,
         priority: "high",
         image: prescriptionImg,
-        tint: "from-emerald-600/20 via-green-600/10 to-transparent",
       },
     ],
     [stats]
@@ -195,7 +185,6 @@ const Dashboard = () => {
     []
   );
 
-  // Fix labels/values mix-up
   const formattedStats = useMemo(
     () => [
       {
@@ -244,218 +233,225 @@ const Dashboard = () => {
   }, [user?.role]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
-      <div className="flex">
-        {/* SIDEBAR */}
-        <aside className="hidden md:flex w-72 min-h-screen bg-gradient-to-b from-[#2f2971] via-[#2a246a] to-[#251f5e] text-white flex-col shadow-2xl">
+    <div className="flex h-screen bg-slate-50 overflow-hidden">
+      {/* SIDEBAR */}
+      <aside className="hidden md:flex w-72 min-h-screen bg-gradient-to-b from-[#2f2971] via-[#2a246a] to-[#251f5e] text-white flex-col shadow-2xl">
           <div className="h-16 flex items-center gap-3 px-6 border-b border-white/10">
             <div
-              className="shrink-0 flex items-center cursor-pointer"
+              className="shrink-0 flex items-center cursor-pointer group"
               onClick={() => handleNavigation("/")}
             >
-            <div className="transform group-hover:scale-105 transition-transform duration-200">
+              <div className="transform group-hover:scale-105 transition-transform duration-200">
                 <BrandLogo />
               </div>
             </div>
           </div>
 
-          <nav className="px-4 py-6 space-y-2">
-            <button
-              onClick={() => handleTabChange("overview")}
-              className={`relative w-full flex items-center gap-3 px-6 py-3 text-sm font-semibold transition
-                ${
-                  activeTab === "overview"
-                    ? "bg-white text-[#2f2971] rounded-r-full -ml-4 pl-10"
-                    : "text-white hover:bg-white/10 rounded-r-full -ml-4 pl-10"
-                }`}
-            >
-              <HomeIcon className="h-5 w-5" />
-              Dashboard
-            </button>
+        {/* Navigation */}
+        <nav className="px-4 py-6 space-y-2">
+          <button
+            onClick={() => handleTabChange("overview")}
+            className={`relative w-full flex items-center gap-3 px-6 py-3.5 text-sm font-semibold transition-all duration-200 ${
+              activeTab === "overview"
+                ? "bg-white text-[#2f2971] rounded-r-full shadow-lg -ml-4 pl-10"
+                : "text-white/90 hover:bg-white/10 rounded-r-full -ml-4 pl-10"
+            }`}
+          >
+            <HomeIcon className="w-5 h-5" />
+            Dashboard
+          </button>
 
-            <button
-              onClick={() => handleTabChange("patients")}
-              className={`relative w-full flex items-center gap-3 px-6 py-3 text-sm font-semibold transition
-                ${
-                  activeTab === "patients"
-                    ? "bg-white text-[#2f2971] rounded-r-full -ml-4 pl-10"
-                    : "text-white hover:bg-white/10 rounded-r-full -ml-4 pl-10"
-                }`}
-            >
-              <ChartBarIcon className="h-5 w-5" />
-              Overview
-            </button>
+          <button
+            onClick={() => handleTabChange("patients")}
+            className={`relative w-full flex items-center gap-3 px-6 py-3.5 text-sm font-semibold transition-all duration-200 ${
+              activeTab === "patients"
+                ? "bg-white text-[#2f2971] rounded-r-full shadow-lg -ml-4 pl-10"
+                : "text-white/90 hover:bg-white/10 rounded-r-full -ml-4 pl-10"
+            }`}
+          >
+            <ChartBarIcon className="w-5 h-5" />
+            Overview
+          </button>
 
-            <button
-              onClick={() => handleTabChange("messages")}
-              className={`relative w-full flex items-center gap-3 px-6 py-3 text-sm font-semibold transition
-                ${
-                  activeTab === "messages"
-                    ? "bg-white text-[#2f2971] rounded-r-full -ml-4 pl-10"
-                    : "text-white hover:bg-white/10 rounded-r-full -ml-4 pl-10"
-                }`}
-            >
-              <ChatBubbleLeftRightIcon className="h-5 w-5" />
-              Messages
-            </button>
+          <button
+            onClick={() => handleTabChange("messages")}
+            className={`relative w-full flex items-center gap-3 px-6 py-3.5 text-sm font-semibold transition-all duration-200 ${
+              activeTab === "messages"
+                ? "bg-white text-[#2f2971] rounded-r-full shadow-lg -ml-4 pl-10"
+                : "text-white/90 hover:bg-white/10 rounded-r-full -ml-4 pl-10"
+            }`}
+          >
+            <ChatBubbleLeftRightIcon className="w-5 h-5" />
+            Messages
+          </button>
 
-            <button
-              onClick={() => handleTabChange("help")}
-              className={`relative w-full flex items-center gap-3 px-6 py-3 text-sm font-semibold transition
-                ${
-                  activeTab === "help"
-                    ? "bg-white text-[#2f2971] rounded-r-full -ml-4 pl-10"
-                    : "text-white hover:bg-white/10 rounded-r-full -ml-4 pl-10"
-                }`}
-            >
-              <QuestionMarkCircleIcon className="h-5 w-5" />
-              Help & Support
-            </button>
+          <button
+            onClick={() => handleTabChange("help")}
+            className={`relative w-full flex items-center gap-3 px-6 py-3.5 text-sm font-semibold transition-all duration-200 ${
+              activeTab === "help"
+                ? "bg-white text-[#2f2971] rounded-r-full shadow-lg -ml-4 pl-10"
+                : "text-white/90 hover:bg-white/10 rounded-r-full -ml-4 pl-10"
+            }`}
+          >
+            <QuestionMarkCircleIcon className="w-5 h-5" />
+            Help & Support
+          </button>
+        </nav>
 
-            <div className="mt-3 border-t border-white/10 pt-3 space-y-1">
-             <button
-                onClick={() => {
-                  setActiveTab("profile");
-                  navigate("/profile");
-                }}
-                className={`relative w-full flex items-center gap-3 px-6 py-3.5 text-sm font-semibold transition-all duration-200
-                  ${
-                    activeTab === "profile"
-                    ? "bg-white text-[#2f2971] rounded-r-full -ml-4 pl-10"
-                    : "text-white hover:bg-white/10 rounded-r-full -ml-4 pl-10"
-                  }`}
-              >
-                <UserCircle className="h-5 w-5" />
-                Profile
-              </button>
+        {/* Bottom actions */}
+        <div className="px-4 pb-6 space-y-2 border-t border-white/10 pt-4">
+          <button
+            onClick={() => {
+              setActiveTab("profile");
+              navigate("/profile");
+            }}
+            className={`relative w-full flex items-center gap-3 px-6 py-3.5 text-sm font-semibold transition-all duration-200 ${
+              activeTab === "profile"
+                ? "bg-white text-[#2f2971] rounded-r-full shadow-lg -ml-4 pl-10"
+                : "text-white/90 hover:bg-white/10 rounded-r-full -ml-4 pl-10"
+            }`}
+          >
+            <UserCircle className="w-5 h-5" />
+            My Profile
+          </button>
 
+          <button
+            onClick={handleLogout}
+            className="relative w-full flex items-center gap-3 px-6 py-3.5 text-sm font-semibold text-white/90 hover:bg-red-500/20 rounded-r-full transition-all duration-200 -ml-4 pl-10"
+          >
+            <ArrowRightOnRectangleIcon className="w-5 h-5" />
+            Sign Out
+          </button>
+        </div>
+      </aside>
 
-              <button
-                onClick={handleLogout}
-                className=" relative w-full flex items-center gap-3 px-6 py-3.5 text-sm font-semibold transition-all duration-200 text-white hover:bg-red-500/20 rounded-r-full -ml-4 pl-10"
-              >
-                <ArrowRightOnRectangleIcon className="h-5 w-5" />
-                Sign Out
-              </button>
+      {/* MAIN */}
+      <main className="flex-1 flex flex-col overflow-hidden">
+        {/* TOP BAR */}
+        <header className="bg-white border-b border-slate-200 shadow-sm">
+          <div className="flex items-center justify-between px-8 py-4">
+            {/* Search */}
+            <div className="flex-1 max-w-xl">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={handleSearch}
+                  placeholder="Search patients, prescriptions, drugs..."
+                  className="w-full pl-12 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#2f2971]/20 focus:border-[#2f2971] transition"
+                />
+              </div>
             </div>
-          </nav>
-        </aside>
 
-        {/* MAIN */}
-        <div className="flex-1">
-          {/* TOP BAR */}
-          <header className="h-16 bg-white border-b border-slate-200 flex items-center px-4 md:px-6 sticky top-0 z-40">
-            <div className="flex-1" />
-
-            <div className="hidden sm:block w-[420px] max-w-[55vw] relative">
-              <Search className="h-5 w-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
-              <input
-                value={searchQuery}
-                onChange={handleSearch}
-                placeholder="Search here"
-                className="w-full pl-11 pr-4 py-2.5 rounded-full border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-
-            <div className="flex items-center gap-3 ml-4">
-              <button
-                className="relative p-2 rounded-full hover:bg-slate-100"
-                aria-label="Notifications"
-              >
-                <Bell className="h-6 w-6 text-slate-500" />
-                <span className="absolute top-1 right-1 h-2 w-2 bg-rose-500 rounded-full" />
+            {/* Right side */}
+            <div className="flex items-center gap-4">
+              {/* Notifications */}
+              <button className="relative p-2.5 text-slate-600 hover:bg-slate-100 rounded-xl transition">
+                <Bell className="w-5 h-5" />
+                <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
 
               {/* USER MENU */}
               <div id="user-menu-wrapper" className="relative">
                 <button
-                  type="button"
-                  className="flex items-center gap-3 rounded-full pl-1 pr-3 py-1 hover:bg-slate-50 border border-transparent hover:border-slate-200 transition"
                   onClick={(e) => {
                     e.stopPropagation();
                     setShowUserMenu((s) => !s);
                   }}
+                  className="flex items-center gap-3 pl-3 pr-4 py-2 hover:bg-slate-50 rounded-xl transition group"
                   aria-haspopup="menu"
                   aria-expanded={showUserMenu}
                 >
-                  <UserAvatar user={user} size={34} />
-                  <div className="hidden sm:flex flex-col items-start leading-tight">
-                    <span className="text-sm font-bold text-slate-900">
-                      {user?.name || "User"}
-                    </span>
-                    <span className="text-xs text-slate-500">{roleLabel}</span>
+                  <div className="flex items-center gap-3">
+                    {user?.avatar ? (
+                      <img
+                        src={user.avatar}
+                        alt={user.name}
+                        className="w-9 h-9 rounded-full object-cover border-2 border-slate-200"
+                      />
+                    ) : (
+                      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#2f2971] to-[#1e1a4a] flex items-center justify-center text-white text-sm font-bold border-2 border-slate-200">
+                        {initials}
+                      </div>
+                    )}
+                    <div className="text-left">
+                      <p className="text-sm font-semibold text-slate-900">
+                        {user?.name || "User"}
+                      </p>
+                      <p className="text-xs text-slate-500">{roleLabel}</p>
+                    </div>
                   </div>
+                  <ChevronRightIcon
+                    className={`w-4 h-4 text-slate-400 transition-transform ${
+                      showUserMenu ? "rotate-90" : ""
+                    }`}
+                  />
                 </button>
 
                 {showUserMenu && (
                   <div
-                    className="absolute right-0 mt-3 w-[320px] rounded-2xl bg-white shadow-xl border border-slate-200 overflow-hidden z-50"
-                    role="menu"
                     onClick={(e) => e.stopPropagation()}
+                    className="absolute top-full right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200"
                   >
-                    <div className="absolute -top-2 right-6 h-4 w-4 rotate-45 bg-white border-l border-t border-slate-200" />
-
-                    <div className="p-4 bg-slate-50/70 border-b border-slate-200">
+                    {/* User info header */}
+                    <div className="p-4 bg-gradient-to-br from-slate-50 to-white border-b border-slate-100">
                       <div className="flex items-center gap-3">
-                        <div className="h-12 w-12 rounded-2xl overflow-hidden bg-indigo-600 flex items-center justify-center">
-                          {user?.avatar ? (
-                            <img
-                              src={user.avatar}
-                              alt={user?.name || "User"}
-                              className="h-full w-full object-cover"
-                            />
-                          ) : (
-                            <span className="text-white font-extrabold">
-                              {initials}
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="min-w-0">
-                          <p className="font-bold text-slate-900 truncate">
+                        {user?.avatar ? (
+                          <img
+                            src={user.avatar}
+                            alt={user.name}
+                            className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#2f2971] to-[#1e1a4a] flex items-center justify-center text-white text-base font-bold border-2 border-white shadow-md">
+                            {initials}
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold text-slate-900 truncate">
                             {user?.name || "User"}
                           </p>
-                          <p className="text-sm text-slate-600 truncate">
+                          <p className="text-xs text-slate-500 truncate">
                             {user?.email || "user@example.com"}
                           </p>
-                          <p className="text-xs text-slate-500 mt-0.5">
+                          <p className="text-xs text-[#2f2971] font-medium mt-0.5">
                             {roleLabel}
                           </p>
                         </div>
                       </div>
                     </div>
 
+                    {/* Menu items */}
                     <div className="p-2">
                       <button
-                        type="button"
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition"
                         onClick={() => {
                           setShowUserMenu(false);
                           handleNavigation("/profile");
                         }}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
                         role="menuitem"
                       >
-                        <UserCircle className="h-5 w-5 text-slate-400" />
+                        <UserCircle className="w-5 h-5 text-slate-400" />
                         Profile
                       </button>
 
                       <button
-                        type="button"
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition"
                         onClick={() => {
                           setShowUserMenu(false);
                           handleNavigation("/settings");
                         }}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
                         role="menuitem"
                       >
-                        <Cog6ToothIcon className="h-5 w-5 text-slate-400" />
+                        <Cog6ToothIcon className="w-5 h-5 text-slate-400" />
                         Account settings
                       </button>
+                    </div>
 
-                      <div className="my-2 h-px bg-slate-200" />
-
+                    {/* Sign out */}
+                    <div className="p-2 border-t border-slate-100">
                       <button
-                        type="button"
                         onClick={() => {
                           setShowUserMenu(false);
                           handleLogout();
@@ -463,7 +459,7 @@ const Dashboard = () => {
                         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 transition"
                         role="menuitem"
                       >
-                        <ArrowRightOnRectangleIcon className="h-5 w-5" />
+                        <ArrowRightOnRectangleIcon className="w-5 h-5" />
                         Sign out
                       </button>
                     </div>
@@ -471,249 +467,211 @@ const Dashboard = () => {
                 )}
               </div>
             </div>
-          </header>
+          </div>
+        </header>
 
-          {/* CONTENT */}
-          <main className="p-4 md:p-6">
+        {/* CONTENT */}
+        <div className="flex-1 overflow-y-auto px-8 py-6">
+          <div className="max-w-7xl mx-auto space-y-6">
             {/* WELCOME */}
-            <div className="mb-5">
-              <h1 className="text-xl md:text-2xl font-extrabold text-slate-900">
+            <div className="bg-gradient-to-br from-[#2f2971] to-[#1e1a4a] rounded-2xl p-8 text-white shadow-lg">
+              <h1 className="text-3xl font-bold mb-2">
                 Welcome back, {user?.name?.split(" ")[0] || "User"}
               </h1>
-              <p className="text-sm text-slate-600 mt-1">
+              <p className="text-white/80 text-sm">
                 Welcome to your healthcare management dashboard.
               </p>
             </div>
 
             {/* TOP STATS */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {formattedStats.map((s, idx) => (
                 <div
                   key={idx}
-                  className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6"
+                  className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="text-sm font-semibold text-slate-600 truncate">
-                        {s.label}
-                      </p>
-
-                      <p className="mt-2 text-3xl font-extrabold text-slate-900">
-                        {isLoading ? <span className="opacity-60">…</span> : s.value}
-                      </p>
-                    </div>
-
-                    <div className="shrink-0 text-sm font-bold text-emerald-600">
+                  <div className="flex items-start justify-between mb-4">
+                    <p className="text-sm font-medium text-slate-600">{s.label}</p>
+                    <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-lg">
                       {s.change}
-                    </div>
+                    </span>
                   </div>
-
-                  <div className="mt-5 h-3 w-full rounded-full bg-slate-200 overflow-hidden">
+                  <p className="text-3xl font-bold text-slate-900 mb-4">
+                    {isLoading ? "…" : s.value}
+                  </p>
+                  <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
                     <div
-                      className="h-full rounded-full bg-[#2a246a] transition-all duration-700"
-                      style={{
-                        width: isLoading ? "0%" : `${s.progress}%`,
-                      }}
-                    />
+                      className="bg-gradient-to-r from-[#2f2971] to-[#4a42a0] h-full rounded-full transition-all duration-1000"
+                      style={{ width: `${s.progress}%` }}
+                    ></div>
                   </div>
                 </div>
               ))}
             </div>
 
             {/* QUICK ACTIONS + METRICS */}
-            <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* QUICK ACTIONS */}
-              <section className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-4">
-                <div className="text-sm font-extrabold text-slate-900">
-                  Quick Actions
-                </div>
-                <div className="text-xs text-slate-500 mt-1">
-                  Jump into core workflows (interaction checks, advisory & more).
+              <div className="lg:col-span-2 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-lg font-bold text-slate-900">Quick Actions</h2>
+                    <p className="text-sm text-slate-500 mt-0.5">
+                      Jump into core workflows (interaction checks, advisory & more).
+                    </p>
+                  </div>
                 </div>
 
-                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {quickActions.map((a) => {
                     const Icon = a.icon;
-
                     return (
                       <button
                         key={a.id}
                         onClick={() => handleNavigation(a.path)}
-                        className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm
-                                   hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 text-left"
+                        className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-left"
                       >
-                        {/* image header */}
-                        <div className="relative h-28">
+                        {/* Image header */}
+                        <div className="relative h-36 overflow-hidden bg-slate-100">
                           <img
                             src={a.image}
                             alt={a.title}
-                            className="h-full w-full object-cover"
-                            loading="lazy"
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                           />
+                          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-slate-900/20 to-transparent"></div>
 
-                          {/* soft gradient overlay */}
-                          <div
-                            className={`absolute inset-0 bg-gradient-to-br ${a.tint}`}
-                          />
-
-                          {/* icon badge */}
-                          <div
-                            className="absolute left-4 top-4 inline-flex items-center justify-center h-11 w-11 rounded-2xl
-                                       bg-white/85 backdrop-blur border border-white/60 shadow-sm"
-                          >
-                            <Icon className="h-6 w-6 text-slate-800" />
+                          {/* Icon badge */}
+                          <div className="absolute bottom-3 left-3">
+                            <div className="w-12 h-12 rounded-xl bg-white shadow-lg flex items-center justify-center">
+                              <Icon className="w-6 h-6 text-[#2f2971]" />
+                            </div>
                           </div>
 
-                          {/* priority badge */}
+                          {/* Priority badge */}
                           {a.priority === "high" && (
-                            <div className="absolute right-4 top-4">
-                              <span
-                                className="inline-flex items-center rounded-full bg-rose-50 border border-rose-200
-                                           px-2.5 py-1 text-[11px] font-extrabold text-rose-700"
-                              >
+                            <div className="absolute top-3 right-3">
+                              <span className="px-2.5 py-1 bg-red-500 text-white text-xs font-bold rounded-lg shadow-lg">
                                 Priority
                               </span>
                             </div>
                           )}
                         </div>
 
-                        {/* body */}
-                        <div className="p-4">
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="min-w-0">
-                              <h3 className="text-sm font-extrabold text-slate-900 leading-snug">
-                                {a.title}
-                              </h3>
-                              <p className="mt-1 text-xs text-slate-600 line-clamp-2">
-                                {a.description}
-                              </p>
-                            </div>
+                        {/* Body */}
+                        <div className="p-5">
+                          <h3 className="text-base font-bold text-slate-900 mb-1.5 group-hover:text-[#2f2971] transition">
+                            {a.title}
+                          </h3>
+                          <p className="text-sm text-slate-600 leading-relaxed mb-4">
+                            {a.description}
+                          </p>
 
-                            <ChevronRightIcon className="h-5 w-5 text-slate-300 group-hover:text-slate-600 transition mt-0.5" />
-                          </div>
-
-                          {/* footer */}
-                          <div className="mt-4 flex items-center justify-between">
-                            <span className="text-[11px] font-bold text-slate-600">
-                              {a.stats}
-                            </span>
-
-                            <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-blue-700">
+                          {/* Footer */}
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="font-semibold text-slate-500">{a.stats}</span>
+                            <span className="flex items-center gap-1 text-[#2f2971] font-semibold group-hover:gap-2 transition-all">
                               Open
-                              <span className="inline-block transition-transform group-hover:translate-x-0.5">
-                                →
-                              </span>
+                              <ChevronRightIcon className="w-3.5 h-3.5" />
                             </span>
                           </div>
                         </div>
 
-                        {/* hover ring */}
-                        <div
-                          className="pointer-events-none absolute inset-0 rounded-3xl ring-0 ring-blue-500/0
-                                     group-hover:ring-2 group-hover:ring-blue-500/30 transition"
-                        />
+                        {/* Hover ring */}
+                        <div className="absolute inset-0 rounded-2xl ring-2 ring-[#2f2971] opacity-0 group-hover:opacity-100 transition pointer-events-none"></div>
                       </button>
                     );
                   })}
                 </div>
-              </section>
+              </div>
 
               {/* SYSTEM PERFORMANCE */}
-              <aside className="bg-white rounded-2xl border border-slate-200 p-4">
-                <div className="text-sm font-extrabold text-slate-900">
-                  System Performance
-                </div>
-                <div className="text-xs text-slate-500 mt-1">
-                  Live platform metrics snapshot.
+              <div className="space-y-4">
+                <div>
+                  <h2 className="text-lg font-bold text-slate-900">System Performance</h2>
+                  <p className="text-sm text-slate-500 mt-0.5">Live platform metrics snapshot.</p>
                 </div>
 
-                <div className="mt-4 space-y-2">
+                <div className="space-y-3">
                   {systemMetrics.map((m, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2"
+                      className="bg-white rounded-xl p-4 shadow-sm border border-slate-100 hover:shadow-md transition"
                     >
-                      <div className="flex items-center gap-2 min-w-0">
-                        <m.icon className="h-4 w-4 text-slate-600" />
-                        <span className="text-xs font-bold text-slate-800 truncate">
-                          {m.name}
-                        </span>
+                      <div className="flex items-start justify-between mb-2">
+                        <p className="text-xs font-medium text-slate-600">{m.name}</p>
+                        <m.icon className="w-4 h-4 text-emerald-600" />
                       </div>
-                      <div className="text-right">
-                        <div className="text-xs font-extrabold text-slate-900">
-                          {m.value}
-                        </div>
-                        <div className="text-[10px] text-slate-500">{m.change}</div>
+                      <div className="flex items-end justify-between">
+                        <p className="text-2xl font-bold text-slate-900">{m.value}</p>
+                        <span className="text-xs font-semibold text-emerald-600">
+                          {m.change}
+                        </span>
                       </div>
                     </div>
                   ))}
                 </div>
-              </aside>
+              </div>
             </div>
 
             {/* ALERT */}
-            <div className="mt-6 rounded-2xl border border-rose-200 bg-rose-50 p-4">
-              <div className="flex items-start gap-3">
-                <ExclamationTriangleIcon className="h-6 w-6 text-rose-600 mt-0.5" />
-                <div className="flex-1">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="text-sm font-extrabold text-rose-800">
-                      High Priority Alert{" "}
-                      <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">
-                        Urgent
-                      </span>
+            <div className="bg-gradient-to-br from-red-50 to-orange-50 border-2 border-red-200 rounded-2xl p-6 shadow-sm">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center">
+                  <ExclamationTriangleIcon className="w-6 h-6 text-red-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between mb-2">
+                    <div>
+                      <h3 className="text-base font-bold text-red-900">
+                        High Priority Alert{" "}
+                        <span className="ml-2 px-2.5 py-1 bg-red-600 text-white text-xs font-bold rounded-lg">
+                          Urgent
+                        </span>
+                      </h3>
                     </div>
-                    <button
-                      className="text-rose-500 hover:text-rose-700"
-                      aria-label="Dismiss alert"
-                    >
+                    <button className="text-red-400 hover:text-red-600 transition text-lg font-bold">
                       ×
                     </button>
                   </div>
-
-                  <p className="text-sm text-rose-700 mt-2">
-                    <b>3 potential drug interactions</b> detected in the last hour
-                    requiring immediate review.
+                  <p className="text-sm text-red-800 mb-4">
+                    3 potential drug interactions detected in the last hour requiring immediate review.
                   </p>
-
-                  <div className="mt-3 flex flex-col sm:flex-row gap-2">
+                  <div className="flex gap-3">
                     <button
-                      className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-rose-300 bg-white text-rose-700 font-bold text-sm hover:bg-rose-50"
                       onClick={() => handleNavigation("/interaction-check")}
+                      className="px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded-xl hover:bg-red-700 transition shadow-sm"
                     >
-                      <ShieldCheck className="h-4 w-4" />
                       Review Interactions
                     </button>
-                    <button className="text-sm font-bold text-rose-700 hover:underline text-left">
+                    <button className="px-4 py-2 bg-white text-red-600 text-sm font-semibold rounded-xl hover:bg-red-50 transition border border-red-200">
                       View Details →
                     </button>
                   </div>
                 </div>
               </div>
             </div>
-
-            <footer className="mt-10 mb-4 text-[11px] text-slate-500 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-3">
-              <span>© {new Date().getFullYear()} PharmaLink. For academic/research use.</span>
-              <span>Always consult a qualified healthcare professional.</span>
-            </footer>
-          </main>
+          </div>
         </div>
-      </div>
+
+        {/* FOOTER */}
+        <footer className="bg-white border-t border-slate-200 px-8 py-4">
+          <div className="flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500">
+                <div className="flex items-center gap-2">
+                  <span>
+                    © {new Date().getFullYear()} PharmaLink. All rights reserved.
+                  </span>
+                </div>
+                <span>For academic and research purposes only.</span>
+              </div>
+              
+        </footer>
+      </main>
     </div>
   );
 };
 
 const DashboardWithSuspense = () => (
-  <Suspense
-    fallback={
-      <div className="min-h-screen bg-slate-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-slate-600">Loading dashboard...</p>
-        </div>
-      </div>
-    }
-  >
+  <Suspense fallback={<LoadingSpinner />}>
     <Dashboard />
   </Suspense>
 );
