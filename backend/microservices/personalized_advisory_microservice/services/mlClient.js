@@ -100,9 +100,32 @@ async function listDrugs({ q = "", limit = 50 }) {
   }
 }
 
+async function recommendDrugsFromSymptoms(payload) {
+  try {
+    const body = {
+      symptoms: Array.isArray(payload?.symptoms) ? payload.symptoms : [],
+      top_k_diseases: Number(payload?.top_k_diseases ?? 3),
+      patient: payload?.patient || {},
+    };
+
+    if (!body.symptoms.length) {
+      throw new Error("symptoms is required (non-empty array) for /recommend-drugs-from-symptoms");
+    }
+
+    const res = await http.post("/recommend-drugs-from-symptoms", body);
+    return res.data; // { results: [...] }
+  } catch (err) {
+    const e = extractAxiosError(err);
+    throw new Error(
+      `FastAPI /recommend-drugs-from-symptoms failed (${e.status || "?"}): ${e.msg}`
+    );
+  }
+}
+
 module.exports = {
   checkFoodDrug,
   generateMealPlan,
   predictDrugFromImage,
   listDrugs,
+  recommendDrugsFromSymptoms,
 };

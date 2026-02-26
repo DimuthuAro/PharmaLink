@@ -10,7 +10,8 @@ const {
   checkFoodDrug,
   generateMealPlan,
   predictDrugFromImage,
-  listDrugs
+  listDrugs,
+  recommendDrugsFromSymptoms,
 } = require("../services/mlClient");
 
 const router = express.Router();
@@ -332,10 +333,10 @@ router.get("/history", auth, async (req, res) => {
     const q = { userId: req.user.userId };
 
     // type filter (optional)
-    const allowed = ["food_drug", "meal_plan", "drug_image_prediction"];
+    const allowed = ["food_drug", "meal_plan", "drug_image_prediction", "symptom_drug_reco"];
     if (type) {
       if (!allowed.includes(String(type))) {
-        return res.status(400).json({ error: "Invalid type. Use food_drug|meal_plan|drug_image_prediction" });
+        return res.status(400).json({ error: "Invalid type. Use food_drug|meal_plan|drug_image_prediction|symptom_drug_reco" });
       }
       q.type = String(type);
     }
@@ -366,7 +367,7 @@ router.get("/history/:id/image", auth, async (req, res) => {
     const img = item?.input?.uploadedImage;
     if (!img?.data) return res.status(404).json({ error: "No image found" });
 
-    // ✅ Convert BSON Binary -> Buffer safely
+    // Convert BSON Binary -> Buffer safely
     const buf = Buffer.isBuffer(img.data)
       ? img.data
       : Buffer.from(img.data.buffer || img.data);
@@ -407,11 +408,11 @@ router.delete("/history", auth, async (req, res) => {
 
     const q = { userId: req.user.userId };
 
-    const allowed = ["food_drug", "meal_plan", "drug_image_prediction"];
+    const allowed = ["food_drug", "meal_plan", "drug_image_prediction", "symptom_drug_reco"];
     if (type) {
       if (!allowed.includes(String(type))) {
         return res.status(400).json({
-          error: "Invalid type. Use food_drug|meal_plan|drug_image_prediction",
+          error: "Invalid type. Use food_drug|meal_plan|drug_image_prediction|symptom_drug_reco",
         });
       }
       q.type = String(type);
@@ -430,5 +431,50 @@ router.delete("/history", auth, async (req, res) => {
 });
 
 
+/**
+ * 8) RECOMMEND DRUGS FROM SYMPTOMS (saved)
+ * POST /symptoms/recommend-drugs
+ * body: { symptoms:[], top_k_diseases?:3, patient?:{...} }
+ */
+router.post("/symptoms/recommend-drugs", auth, async (req, res) => {
+  try {
+    const body = req.body || {};
+
+    const symptoms = Array.isArray(body.symptoms)
+      ? body.symptoms.map(s => String(s).trim()).filter(Boolean)
+      : [];
+
+    if (!symptoms.length) {
+      return res.status(400).json({ error: "symptoms required (non-empty array)" });
+    }
+
+    const payload = {
+      symptoms,
+      top_k_diseases: Number(body.top_k_diseases ?? 3),
+      patient: body.patient || {}
+    };
+
+    const result = await recommendDrugsFromSymptoms(payload);
+
+    // save to history
+    const doc = await Interaction.create({
+      userId: req.user.userId,
+      type: "symptom_drug_reco",
+      input: payload,
+      result
+    });
+
+    return res.json({
+      saved: true,
+      interactionId: doc._id,
+      ...result
+    });
+  } catch (e) {
+    return res.status(500).json({
+      error: "Recommend drugs failed",
+      details: String(e?.response?.data?.detail || e?.message || e)
+    });
+  }
+});
 
 module.exports = router;
