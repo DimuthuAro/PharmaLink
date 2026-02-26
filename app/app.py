@@ -22,6 +22,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from fastapi.staticfiles import StaticFiles
 
+import numpy as np
+
 
 # =========================================================
 # PATHS
@@ -51,6 +53,9 @@ VEG_MODEL_NAME = "vegetarian_model.pkl"
 DIAB_MODEL_NAME = "diabetic_model.pkl"
 LOWNA_MODEL_NAME = "low_sodium_model.pkl"
 PREF_PROBA_THRESHOLD = 0.50
+
+SYMPTOM_MODEL_NAME = "symptom_classifier.pkl"
+SYMPTOM_FEATURES_NAME = "symptom_feature_cols.pkl"
 
 DRUG_VISION_WEIGHTS = MODEL_DIR / "drug_classifier_best.pth"
 DRUG_VISION_CLASSES = MODEL_DIR / "class_names.json"
@@ -116,6 +121,49 @@ new_food_path = _find_csv("new_foodset.csv", required=True)
 meal_foods_raw = _read_csv(new_food_path)
 
 print("Loaded new_foodset.csv from:", new_food_path)
+
+# =========================================================
+# LOAD RECOMMENDER CSVs
+# =========================================================
+symptom_drug_reco = _read_csv(_find_csv("symptom_drug_reco.csv", required=True))
+contra_rules = _read_csv(_find_csv("contra_rules.csv", required=True))
+
+# normalize columns (lower)
+symptom_drug_reco.columns = [c.strip().lower() for c in symptom_drug_reco.columns]
+contra_rules.columns = [c.strip().lower() for c in contra_rules.columns]
+
+# basic required cols check
+req_cols = ["symptom", "first_line_drugs", "second_line_drugs", "avoid_drugs"]
+for c in req_cols:
+    if c not in symptom_drug_reco.columns:
+        raise RuntimeError(f"symptom_drug_reco.csv missing column: {c}")
+
+for c in ["rule_id", "condition", "avoid_drugs", "message"]:
+    if c not in contra_rules.columns:
+        raise RuntimeError(f"contra_rules.csv missing column: {c}")
+
+# normalize symptom column
+symptom_drug_reco["symptom"] = symptom_drug_reco["symptom"].astype(str).str.strip().str.lower()
+
+disease_drug_reco = _read_csv(_find_csv("disease_drug_reco.csv", required=True))
+contra_rules = _read_csv(_find_csv("contra_rules.csv", required=True))
+
+# normalize columns (lower)
+disease_drug_reco.columns = [c.strip().lower() for c in disease_drug_reco.columns]
+contra_rules.columns = [c.strip().lower() for c in contra_rules.columns]
+
+# basic required cols check
+req_cols = ["disease", "first_line_drugs", "second_line_drugs", "avoid_drugs"]
+for c in req_cols:
+    if c not in disease_drug_reco.columns:
+        raise RuntimeError(f"disease_drug_reco.csv missing column: {c}")
+
+for c in ["rule_id", "condition", "avoid_drugs", "message"]:
+    if c not in contra_rules.columns:
+        raise RuntimeError(f"contra_rules.csv missing column: {c}")
+
+# normalize symptom column
+disease_drug_reco["disease"] = disease_drug_reco["disease"].astype(str).str.strip().str.lower()
 
 
 # =========================================================
@@ -403,6 +451,28 @@ if DRUG_VISION_CLASSES.exists() and DRUG_VISION_WEIGHTS.exists():
 else:
     print("Drug vision model not loaded. Missing weights or class_names.json")
 
+
+# -----------------------------
+# SYMPTOM MODEL (disease classifier)
+# -----------------------------
+symptom_model = None
+symptom_feature_cols: List[str] = []
+symptom_col_index: Dict[str, int] = {}
+
+symptom_model_path = MODEL_DIR / SYMPTOM_MODEL_NAME
+symptom_features_path = MODEL_DIR / SYMPTOM_FEATURES_NAME
+
+if symptom_model_path.exists() and symptom_features_path.exists():
+    try:
+        symptom_model = joblib.load(symptom_model_path)
+        symptom_feature_cols = joblib.load(symptom_features_path)
+        symptom_col_index = {c.strip().lower(): i for i, c in enumerate(symptom_feature_cols)}
+        print("Loaded symptom model + feature cols:", len(symptom_feature_cols))
+    except Exception as e:
+        print("WARNING: failed to load symptom model:", repr(e))
+        symptom_model = None
+else:
+    print("WARNING: symptom model files not found in model/.")
 
 # =========================================================
 # FEATURE LIST (severity/reason)
@@ -1445,7 +1515,7 @@ class FoodDrugResponse(BaseModel):
 
 
 class MealPlanRequest(BaseModel):
-    # ✅ drug_names OPTIONAL now
+    # drug_names OPTIONAL now
     drug_names: List[str] = Field(default_factory=list)
 
     days: int = 3
@@ -1492,6 +1562,55 @@ class MealPlanResponse(BaseModel):
     drug_indices: List[int]
     days: List[DayPlan]
 
+class SymptomPredictRequest(BaseModel):
+    symptoms: List[str] = Field(default_factory=list)
+    top_k: int = 5
+
+class SymptomPredictItem(BaseModel):
+    disease: str
+    prob: float
+
+class SymptomPredictResponse(BaseModel):
+    results: List[SymptomPredictItem]
+
+class PatientProfile(BaseModel):
+    age: Optional[int] = None
+    sex: Optional[str] = None  # "male"/"female"
+    pregnant: int = 0
+    diabetes: int = 0
+    hypertension: int = 0
+    asthma: int = 0
+    kidney_disease: int = 0
+    liver_disease: int = 0
+    allergy_penicillin: int = 0
+
+class RecommendDrugsRequest(BaseModel):
+    symptoms: List[str] = Field(default_factory=list)
+    top_k_diseases: int = 3
+    patient: PatientProfile = Field(default_factory=PatientProfile)
+
+class DiseaseDrugRecoItem(BaseModel):
+    disease: str
+    prob: float
+    first_line_drugs: List[str] = []
+    second_line_drugs: List[str] = []
+    avoid_drugs: List[str] = []
+    safety_warnings: List[str] = []
+
+class RecommendDrugsResponse(BaseModel):
+    results: List[DiseaseDrugRecoItem]
+
+class SymptomDrugRecoItem(BaseModel):
+    symptom: str
+    prob: float = 1.0
+    first_line_drugs: List[str] = []
+    second_line_drugs: List[str] = []
+    avoid_drugs: List[str] = []
+    safety_warnings: List[str] = []
+
+class CombinedRecoResponse(BaseModel):
+    direct_symptom_recommendations: List[SymptomDrugRecoItem] = []
+    predicted_disease_recommendations: List[DiseaseDrugRecoItem] = []
 
 # =========================================================
 # SAFE FOODS SUGGESTION (SINGLE DRUG)
@@ -1535,6 +1654,143 @@ def suggest_safe_foods_for_drug(drug_row: pd.Series, limit: int = 10) -> List[Di
         })
     return out
 
+def _split_pipe_list(s: Any) -> List[str]:
+    if s is None:
+        return []
+    txt = str(s).strip()
+    if not txt or txt.lower() in ["nan", "none"]:
+        return []
+    # accept both "|" and "," if user typed
+    txt = txt.replace(",", "|")
+    items = [x.strip().lower() for x in txt.split("|") if x.strip()]
+    # dedup keep order
+    seen = set()
+    out = []
+    for it in items:
+        if it not in seen:
+            seen.add(it)
+            out.append(it)
+    return out
+
+def _symptom_row_lookup(symptom_name: str) -> Optional[pd.Series]:
+    s = str(symptom_name).strip().lower()
+    if not s:
+        return None
+
+    m = symptom_drug_reco[symptom_drug_reco["symptom"] == s]
+    if not m.empty:
+        return m.iloc[0]
+
+    # fuzzy match (optional)
+    choices = symptom_drug_reco["symptom"].dropna().astype(str).tolist()
+    close = get_close_matches(s, choices, n=1, cutoff=0.85)
+    if close:
+        m2 = symptom_drug_reco[symptom_drug_reco["symptom"] == close[0]]
+        if not m2.empty:
+            return m2.iloc[0]
+
+    return None
+
+def _disease_row_lookup(disease_name: str) -> Optional[pd.Series]:
+    d = str(disease_name).strip().lower()
+    if not d:
+        return None
+
+    m = disease_drug_reco[disease_drug_reco["disease"] == d]
+    if not m.empty:
+        return m.iloc[0]
+
+    choices = disease_drug_reco["disease"].dropna().astype(str).tolist()
+    close = get_close_matches(d, choices, n=1, cutoff=0.80)
+    if close:
+        m2 = disease_drug_reco[disease_drug_reco["disease"] == close[0]]
+        if not m2.empty:
+            return m2.iloc[0]
+
+    return None
+
+def _eval_condition(condition: str, patient: PatientProfile) -> bool:
+    """
+    super-simple condition parser:
+      examples:
+        pregnant=1
+        diabetes=1
+        kidney_disease=1
+        age>=65
+        sex=female
+    """
+    cond = str(condition).strip().lower()
+    if not cond:
+        return False
+
+    # age comparisons
+    m = re.match(r"age\s*(>=|<=|>|<|==)\s*(\d+)", cond)
+    if m:
+        op, num = m.group(1), int(m.group(2))
+        if patient.age is None:
+            return False
+        a = int(patient.age)
+        if op == ">=": return a >= num
+        if op == "<=": return a <= num
+        if op == ">":  return a > num
+        if op == "<":  return a < num
+        if op == "==": return a == num
+        return False
+
+    # sex
+    m = re.match(r"sex\s*=\s*(male|female)", cond)
+    if m:
+        want = m.group(1)
+        return str(patient.sex or "").strip().lower() == want
+
+    # boolean flags like pregnant=1
+    m = re.match(r"([a-z_]+)\s*=\s*(0|1)", cond)
+    if m:
+        field, val = m.group(1), int(m.group(2))
+        if not hasattr(patient, field):
+            return False
+        return int(getattr(patient, field) or 0) == val
+
+    return False
+
+def apply_contra_safety(drug_list: List[str], patient: PatientProfile) -> Tuple[List[str], List[str]]:
+    """
+    returns: (filtered_drugs, warnings)
+    """
+    drugs = [d.strip().lower() for d in drug_list if str(d).strip()]
+    if not drugs:
+        return [], []
+
+    avoid_union: Set[str] = set()
+    warnings: List[str] = []
+
+    for _, r in contra_rules.iterrows():
+        cond = str(r.get("condition", "")).strip()
+        if _eval_condition(cond, patient):
+            avoid = _split_pipe_list(r.get("avoid_drugs", ""))
+            avoid_union.update(avoid)
+            msg = str(r.get("message", "")).strip()
+            rid = str(r.get("rule_id", "")).strip()
+            if msg:
+                warnings.append(f"{rid}: {msg}" if rid else msg)
+
+    filtered = [d for d in drugs if d not in avoid_union]
+    return filtered, warnings
+
+def _build_symptom_input(symptoms: List[str]) -> pd.DataFrame:
+    """
+    Build model input with correct feature names to avoid sklearn warning.
+    """
+    x = np.zeros(len(symptom_feature_cols), dtype=np.uint8)
+
+    for s in symptoms or []:
+        key = str(s).strip().lower()
+        if key in symptom_col_index:
+            x[symptom_col_index[key]] = 1
+
+    # IMPORTANT: use DataFrame with column names
+    X_df = pd.DataFrame([x], columns=symptom_feature_cols)
+    return X_df
 
 # =========================================================
 # ENDPOINTS
@@ -1584,7 +1840,7 @@ def list_foods(q: Optional[str] = None, limit: int = 50):
 
 @app.get("/foods-mealplan")
 def list_mealplan_foods(q: Optional[str] = None, limit: int = 50):
-    # ✅ meal-plan foods ONLY (new_foodset)
+    # meal-plan foods ONLY (new_foodset)
     df = mealplan_foods
     if q:
         mask = df["Food"].astype(str).str.lower().str.contains(q.lower(), na=False)
@@ -1635,7 +1891,7 @@ def ml_food_drug_risk(body: FoodDrugRequest):
         severity=int(sev_ml),
         message=risk_map[int(sev_ml)],
         reasons=reasons_ml,
-        explanation=exp,   # ✅ updated
+        explanation=exp,   # updated
         safe_foods=safe_foods
     )
 
@@ -1687,12 +1943,12 @@ def ml_meal_plan(
 
 @app.post("/ml-meal-plan-generate", response_model=MealPlanResponse)
 def ml_meal_plan_generate(body: MealPlanRequest):
-    # ✅ drug_names optional now (no-drug mode ok)
+    # drug_names optional now (no-drug mode ok)
 
     if body.days <= 0 or body.days > 30:
         raise HTTPException(status_code=400, detail="days must be between 1 and 30")
 
-    # ✅ FIX: 1..6 and message match
+    # FIX: 1..6 and message match
     if body.meals_per_day <= 0 or body.meals_per_day > 6:
         raise HTTPException(status_code=400, detail="meals_per_day must be between 1 and 6")
 
@@ -1732,7 +1988,7 @@ def ml_meal_plan_generate(body: MealPlanRequest):
                 low_sodium=body.low_sodium,
                 exclude_foods=used_foods,
                 exclude_clusters=used_clusters,
-                foods_source=mealplan_foods,  # ✅ always generate from new_foodset
+                foods_source=mealplan_foods,  # always generate from new_foodset
             )
 
             if not res.get("meal"):
@@ -1808,7 +2064,7 @@ async def predict_drug_from_image_api(
     except Exception:
         raise HTTPException(status_code=400, detail="Invalid image data.")
 
-    # ✅ sanitize topk (force >=1)
+    # sanitize topk (force >=1)
     try:
         topk_int = int(topk)
     except Exception:
@@ -1816,10 +2072,10 @@ async def predict_drug_from_image_api(
     if topk_int <= 0:
         topk_int = 1
 
-    # ✅ predict (but we will still return only 1)
+    #  predict (but we will still return only 1)
     preds = predict_drug_from_image_core(img, topk=topk_int)
 
-    # ✅ enrich predictions (if drug_vision_info.csv exists)
+    #  enrich predictions (if drug_vision_info.csv exists)
     enriched: List[Dict[str, Any]] = []
 
     # cache _brand_key only once (avoid recompute each request)
@@ -1855,3 +2111,91 @@ async def predict_drug_from_image_api(
 
     # ALWAYS return ONLY 1 prediction
     return {"predictions": enriched[:1]}
+
+
+@app.post("/symptom-predict", response_model=SymptomPredictResponse)
+def symptom_predict(body: SymptomPredictRequest):
+    if symptom_model is None:
+        raise HTTPException(status_code=500, detail="Symptom model not loaded. Check model files in /model folder.")
+
+    X_df = _build_symptom_input(body.symptoms)
+
+    probs = symptom_model.predict_proba(X_df)[0]
+    classes = symptom_model.classes_
+
+    top_k = int(body.top_k or 5)
+    top_k = max(1, min(top_k, 20))
+
+    top_idx = np.argsort(probs)[::-1][:top_k]
+
+    results = [{"disease": str(classes[i]), "prob": float(round(probs[i], 4))} for i in top_idx]
+    return {"results": results}
+
+@app.post("/recommend-drugs-from-symptoms", response_model=CombinedRecoResponse)
+def recommend_drugs_from_sypmtoms(body: RecommendDrugsRequest):
+
+    input_symptoms = [str(s).strip().lower() for s in (body.symptoms or []) if str(s).strip()]
+    if not input_symptoms:
+        return {"direct_symptom_recommendations": [], "predicted_disease_recommendations": []}
+
+    # -------------------------
+    # A) DIRECT: symptom -> drugs
+    # -------------------------
+    direct_out = []
+    for sym in input_symptoms:
+        row = _symptom_row_lookup(sym)
+
+        first_line = _split_pipe_list(row.get("first_line_drugs")) if row is not None else []
+        second_line = _split_pipe_list(row.get("second_line_drugs")) if row is not None else []
+        avoid_drugs = _split_pipe_list(row.get("avoid_drugs")) if row is not None else []
+
+        combined = first_line + second_line
+        safe_drugs, warnings = apply_contra_safety(combined, body.patient)
+
+        direct_out.append({
+            "symptom": sym,
+            "prob": 1.0,
+            "first_line_drugs": [d for d in first_line if d in safe_drugs],
+            "second_line_drugs": [d for d in second_line if d in safe_drugs],
+            "avoid_drugs": avoid_drugs,
+            "safety_warnings": warnings,
+        })
+
+    # -------------------------
+    # B) PREDICT: symptoms -> diseases -> drugs
+    # -------------------------
+    disease_out = []
+    if symptom_model is not None:
+        X_df = _build_symptom_input(input_symptoms)
+        probs = symptom_model.predict_proba(X_df)[0]
+        classes = symptom_model.classes_
+
+        k = int(body.top_k_diseases or 3)
+        k = max(1, min(k, 10))
+        top_idx = np.argsort(probs)[::-1][:k]
+
+        for i in top_idx:
+            dis = str(classes[i]).strip().lower()
+            prob = float(round(probs[i], 4))
+
+            row = _disease_row_lookup(dis)
+            first_line = _split_pipe_list(row.get("first_line_drugs")) if row is not None else []
+            second_line = _split_pipe_list(row.get("second_line_drugs")) if row is not None else []
+            avoid_drugs = _split_pipe_list(row.get("avoid_drugs")) if row is not None else []
+
+            combined = first_line + second_line
+            safe_drugs, warnings = apply_contra_safety(combined, body.patient)
+
+            disease_out.append({
+                "disease": dis,
+                "prob": prob,
+                "first_line_drugs": [d for d in first_line if d in safe_drugs],
+                "second_line_drugs": [d for d in second_line if d in safe_drugs],
+                "avoid_drugs": avoid_drugs,
+                "safety_warnings": warnings,
+            })
+
+    return {
+        "direct_symptom_recommendations": direct_out,
+        "predicted_disease_recommendations": disease_out
+    }
