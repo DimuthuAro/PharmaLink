@@ -7,7 +7,7 @@ const InteractionSchema = new mongoose.Schema(
 
     type: {
       type: String,
-      enum: ["food_drug", "meal_plan", "drug_image_prediction"],
+      enum: ["food_drug", "meal_plan", "drug_image_prediction", "symptom_drug_reco"],
       required: true
     },
 
