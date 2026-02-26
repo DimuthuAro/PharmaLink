@@ -17,7 +17,7 @@ const BrandLogo = ({ withText = true, size = 36 }) => {
       {withText && (
         <div className="leading-tight select-none">
           <p className="text-lg font-extrabold tracking-tight text-slate-900">
-            Pharm<span className="text-blue-600">Link</span>
+            Pharm<span className="text-[#3d3686]">Link</span>
           </p>
           <p className="text-[10px] uppercase tracking-wide text-slate-400 -mt-0.5">
             Drug availability & accessibility

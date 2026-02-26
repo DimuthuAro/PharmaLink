@@ -11,6 +11,7 @@ import MealPlan from '../pages/PersonalizedMealPlan.jsx'
 import Profile from '../pages/Profile.jsx'
 import Settings from '../pages/Setting.jsx'
 import DrugImagePredict from '../pages/DrugImagePredict.jsx'
+import SymptomDrugRecommend from '../pages/SymptomDrugRecommend.jsx'
 
 const unprotected_routes = [
   { path: '/login', element: <LogIn /> },
@@ -26,7 +27,8 @@ const protected_routes = createProtectedRoutes([
   { path: "/meal-plan", element: <MealPlan /> },
   { path: "/drug-image", element: <DrugImagePredict/>},
   { path: "/profile", element: <Profile /> },
-  { path: "/settings", element: <Settings/>}
+  { path: "/settings", element: <Settings/>},
+  { path: "/symptom-drug", element: <SymptomDrugRecommend/>}
 ])
 
 export { unprotected_routes, protected_routes }
