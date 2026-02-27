@@ -1,0 +1,38 @@
+# ML Service - Ignore large model files
+*.pkl
+*.joblib
+*.h5
+*.pth
+*.ckpt
+*.safetensors
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# EasyOCR cache
+.EasyOCR/

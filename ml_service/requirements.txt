@@ -14,6 +14,9 @@ opencv-python-headless>=4.8.0
 # OCR Engines (Pre-trained models)
 easyocr>=1.7.0
 
+# Model Management
+requests>=2.31.0  # For downloading models from URLs
+
 # Optional: PaddleOCR (uncomment if needed - requires paddlepaddle)
 # paddlepaddle>=2.5.0
 # paddleocr>=2.7.0
