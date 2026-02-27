@@ -1,16 +1,20 @@
 // src/pages/FoodDrugInteraction.jsx
-import React, { useEffect, useState, useMemo } from "react";
-import { useNavigate ,useLocation} from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../auth/auth.jsx";
 import BrandLogo from "../components/brandLogo.jsx";
-import {
+import UserAvatar from "../components/UserAvatar.jsx";
 
+import {
   ShieldCheckIcon,
   LightBulbIcon,
   ArrowPathIcon,
   ExclamationTriangleIcon,
   CheckCircleIcon,
   MagnifyingGlassIcon,
+  Cog6ToothIcon,
+  ArrowRightOnRectangleIcon,
+  UserCircleIcon,
 } from "@heroicons/react/24/outline";
 
 import {
@@ -19,55 +23,49 @@ import {
   checkFoodDrugRisk,
   fetchSafeFoods,
 } from "../utils/api.js";
-import {
-  loadHistory,
-  addHistoryEntry,
-} from "../utils/historyUtils.js";
+
+import { loadHistory, addHistoryEntry } from "../utils/historyUtils.js";
 
 const riskColors = {
-  0: "bg-green-50 text-green-800 border-green-200",
-  1: "bg-amber-50 text-amber-800 border-amber-200",
-  2: "bg-red-50 text-red-800 border-red-200",
+  0: "bg-emerald-50 text-emerald-900 border-emerald-200",
+  1: "bg-amber-50 text-amber-900 border-amber-200",
+  2: "bg-rose-50 text-rose-900 border-rose-200",
 };
 
-const riskLabel = (r) =>
-  r === 0 ? "Safe" : r === 1 ? "Moderate" : "High";
+const riskBadge = (r) => (r === 0 ? "Safe" : r === 1 ? "Moderate risk" : "High risk");
 
-
-// ⬇️ ONE SINGLE AutoComplete component
+/** ONE AutoComplete component */
 const AutoComplete = ({ label, placeholder, fetcher, onSelect, value }) => {
   const [query, setQuery] = useState(value || "");
   const [options, setOptions] = useState([]);
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // when parent changes value (eg. from History) update local text
-  useEffect(() => {
-    setQuery(value || "");
-  }, [value]);
+  useEffect(() => setQuery(value || ""), [value]);
 
   const handleSearch = async (val) => {
     setQuery(val);
 
-    if (val.trim().length === 0) {
+    if (!val.trim()) {
       setOptions([]);
       setShow(false);
       return;
     }
 
     setShow(true);
-
     try {
       setLoading(true);
       const res = await fetcher(val);
-      setOptions(res);
+      setOptions(res || []);
+    } catch {
+      setOptions([]);
     } finally {
       setLoading(false);
     }
   };
 
   const handleSelect = (item) => {
-    const labelText = item.name || item.Food;
+    const labelText = item?.name || item?.Food || "";
     setQuery(labelText);
     setShow(false);
     setOptions([]);
@@ -76,17 +74,17 @@ const AutoComplete = ({ label, placeholder, fetcher, onSelect, value }) => {
 
   return (
     <div className="relative">
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+      <label className="block text-sm font-semibold text-slate-800 mb-2">
         {label}
       </label>
 
       <div className="relative">
-        <MagnifyingGlassIcon className="h-4 w-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+        <MagnifyingGlassIcon className="h-4 w-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
         <input
           value={query}
           onChange={(e) => handleSearch(e.target.value)}
           placeholder={placeholder}
-          className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full pl-9 pr-3 py-3 border border-slate-200 rounded-2xl text-sm bg-white outline-none focus:ring-2 focus:ring-blue-500"
           onBlur={() => setTimeout(() => setShow(false), 150)}
           onFocus={() => {
             if (options.length > 0) setShow(true);
@@ -94,32 +92,38 @@ const AutoComplete = ({ label, placeholder, fetcher, onSelect, value }) => {
         />
       </div>
 
-      {show && options.length > 0 && (
-        <div className="absolute z-20 mt-1 w-full bg-white shadow-lg rounded-lg border border-gray-200 max-h-56 overflow-auto">
+      {show && (
+        <div className="absolute z-30 mt-2 w-full bg-white shadow-lg rounded-2xl border border-slate-200 overflow-hidden">
           {loading ? (
-            <div className="p-3 text-sm text-gray-500">Searching…</div>
+            <div className="p-3 text-sm text-slate-500">Searching…</div>
+          ) : options.length === 0 ? (
+            <div className="p-3 text-sm text-slate-500">No results</div>
           ) : (
-            options.map((item) => (
-              <button
-                key={item.index || item.name}
-                type="button"
-                className="w-full text-left px-3 py-2 text-sm hover:bg-blue-50"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={() => handleSelect(item)}
-              >
-                <span className="font-medium">{item.name || item.Food}</span>
-
-                {item.contains && (
-                  <span className="block text-xs text-gray-500">
-                    {item.contains}
+            <div className="max-h-60 overflow-auto">
+              {options.map((item) => (
+                <button
+                  key={item.index ?? item.name ?? item.Food}
+                  type="button"
+                  className="w-full text-left px-3 py-2 text-sm hover:bg-blue-50"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => handleSelect(item)}
+                >
+                  <span className="font-semibold text-slate-900">
+                    {item.name || item.Food}
                   </span>
-                )}
 
-                {item.is_alcohol === 1 && (
-                  <span className="ml-2 text-xs text-red-500">Alcohol</span>
-                )}
-              </button>
-            ))
+                  {item.contains && (
+                    <span className="block text-xs text-slate-500">{item.contains}</span>
+                  )}
+
+                  {(item.is_alcohol === 1 || item.is_alcohol === true) && (
+                    <span className="ml-2 text-xs text-rose-600 font-semibold">
+                      Alcohol
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
           )}
         </div>
       )}
@@ -127,141 +131,103 @@ const AutoComplete = ({ label, placeholder, fetcher, onSelect, value }) => {
   );
 };
 
-
 const FoodDrugInteraction = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, user } = useAuth();
   const location = useLocation();
+  const { isAuthenticated, user, logout } = useAuth();
 
-  const [drugSearch, setDrugSearch] = useState("");
-  const [foodSearch, setFoodSearch] = useState("");
-  const [drugOptions, setDrugOptions] = useState([]);
-  const [foodOptions, setFoodOptions] = useState([]);
   const [selectedDrugIndex, setSelectedDrugIndex] = useState(null);
   const [selectedDrugName, setSelectedDrugName] = useState("");
   const [selectedFoodName, setSelectedFoodName] = useState("");
+
   const [result, setResult] = useState(null);
   const [safeFoods, setSafeFoods] = useState([]);
   const [history, setHistory] = useState([]);
+
   const [loadingCheck, setLoadingCheck] = useState(false);
-  const [loadingLists, setLoadingLists] = useState(false);
   const [error, setError] = useState("");
 
-  // redirect if user not logged in (extra safety)
+  const [showUserMenu, setShowUserMenu] = useState(false);
+
+  const initials = useMemo(() => {
+    const name = user?.name?.trim() || "User";
+    return name
+      .split(" ")
+      .filter(Boolean)
+      .map((n) => n[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase();
+  }, [user?.name]);
+
+  const roleLabel = useMemo(() => {
+    const r = (user?.role || "").toLowerCase();
+    if (!r) return "Healthcare Professional";
+    return r.charAt(0).toUpperCase() + r.slice(1);
+  }, [user?.role]);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login");
-    }
+    if (!isAuthenticated) navigate("/login");
   }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (!showUserMenu) return;
+
+    const onKeyDown = (e) => e.key === "Escape" && setShowUserMenu(false);
+    const onMouseDown = (e) => {
+      if (!e.target.closest("#user-menu-wrapper")) setShowUserMenu(false);
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("mousedown", onMouseDown);
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("mousedown", onMouseDown);
+    };
+  }, [showUserMenu]);
 
   useEffect(() => {
     const state = location.state;
     if (state?.fromHistory) {
-      const {drugIndex, drugName, foodName} = state;
+      const { drugIndex, drugName, foodName } = state;
+      if (typeof drugIndex === "number") setSelectedDrugIndex(drugIndex);
+      if (drugName) setSelectedDrugName(drugName);
+      if (foodName) setSelectedFoodName(foodName);
 
-      if (typeof drugIndex === "number") {
-        setSelectedDrugIndex(drugIndex);
-      }
-      if (drugName) {
-        setSelectedDrugName(drugName);
-        //setDrugSearch(drugName);
-      }
-      if (foodName) {
-        setSelectedFoodName(foodName);
-        //setFoodSearch(foodName);
+      setResult(null);
+      setSafeFoods([]);
+      setError("");
     }
-
-    //navigate("/interaction-check", { replace: true, state: {}});
-    }
-  }, [location.state, navigate]);
-
-  // load initial drugs + foods + history
-  useEffect(() => {
-    const init = async () => {
-      try {
-        setLoadingLists(true);
-        const [drugs, foods] = await Promise.all([
-          fetchDrugs(""),
-          fetchFoods(""),
-        ]);
-        setDrugOptions(drugs);
-        setFoodOptions(foods);
-      } catch (e) {
-        console.error(e);
-        setError("Unable to load drug/food lists. Check backend.");
-      } finally {
-        setLoadingLists(false);
-      }
-    };
-    init();
-  }, []);
+  }, [location.state]);
 
   useEffect(() => {
-    if (user?.email) {
-      setHistory(loadHistory(user.email));
-    }
+    if (user?.email) setHistory(loadHistory(user.email));
   }, [user?.email]);
-
-const handleSelectDrug = (idx, name) => {
-  setSelectedDrugIndex(idx);
-  setSelectedDrugName(name);
-  setDrugSearch(name);   // 👈 show in drug input
-  setResult(null);
-  setSafeFoods([]);
-};
-
-
-const handleSelectFood = (name) => {
-  setSelectedFoodName(name);
-  setFoodSearch(name);   // 👈 show in food input
-  setResult(null);
-};
-
-
-  const handleSearchDrug = async (e) => {
-    const q = e.target.value;
-    setDrugSearch(q);
-    try {
-      const drugs = await fetchDrugs(q);
-      setDrugOptions(drugs);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleSearchFood = async (e) => {
-    const q = e.target.value;
-    setFoodSearch(q);
-    try {
-      const foods = await fetchFoods(q);
-      setFoodOptions(foods);
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   const handleCheck = async () => {
     if (selectedDrugIndex == null || !selectedFoodName) {
       setError("Please select both a drug and a food item.");
       return;
     }
+
     setError("");
     setLoadingCheck(true);
+
     try {
-      const res = await checkFoodDrugRisk(
-        selectedDrugIndex,
-        selectedFoodName
-      );
+      const res = await checkFoodDrugRisk(selectedDrugIndex, selectedFoodName);
       setResult(res);
 
-      const safe = await fetchSafeFoods(selectedDrugIndex, 20);
-      //setSafeFoods(safe.foods || []);
-
-      const nonAlcoholic = (safe.foods || []).filter(
+      const safe = await fetchSafeFoods(selectedDrugIndex, 50);
+      const nonAlcoholic = (safe?.foods || []).filter(
         (f) => f.is_alcohol !== 1 && f.is_alcohol !== true
       );
-
-      setSafeFoods(nonAlcoholic.slice(0, 5));
+      setSafeFoods(nonAlcoholic);
 
       if (user?.email) {
         const updated = addHistoryEntry(user.email, {
@@ -282,186 +248,313 @@ const handleSelectFood = (name) => {
     }
   };
 
-  const formattedHistory = useMemo(
-    () =>
-      history.map((h) => ({
-        ...h,
-        time: new Date(h.timestamp).toLocaleString(),
-      })),
-    [history]
-  );
-
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* simple header bar */}
-      <header className="bg-white border-b border-gray-200">
-  <div className="max-w-6xl mx-auto px-4 py-4">
-    <div className="flex items-center justify-between">
-      <div className="flex items-center space-x-3">
-        <LightBulbIcon className="h-7 w-7 text-blue-600" />
-        <div>
-          <h1 className="text-lg font-bold text-gray-900">
-            Food–Drug Interaction Check
-          </h1>
-          <p className="text-xs text-gray-500">
-            Logged in as {user?.name || "User"}
-          </p>
-        </div>
-      </div>
-
-      <div className="flex items-center space-x-6">
-        <button
-          onClick={() => navigate("/dashboard")}
-          className="inline-flex items-center rounded-md px-3 py-1.5 text-sm text-blue-600 hover:text-blue-700 hover:bg-gray-100 transition cursor-pointer"
-        >
-        Dashboard
-        </button>
-       <button
-          onClick={() => navigate("/meal-plan")}
-          className="inline-flex items-center rounded-md px-3 py-1.5 text-sm text-blue-600 hover:text-blue-700 hover:bg-gray-100 transition cursor-pointer"
-        >
-         Meal Plan 
-        </button>
-        <button
-          onClick={() => navigate("/history")}
-          className="inline-flex items-center rounded-md px-3 py-1.5 text-sm text-blue-600 hover:text-blue-700 hover:bg-gray-100 transition cursor-pointer"
-        >
-          History 
-        </button>
-      </div>
-    </div>
-  </div>
-</header>
-
-
-      <main className="flex-1 max-w-6xl mx-auto px-4 py-8 grid gap-6 lg:grid-cols-3">
-        {/* LEFT: form + result */}
-        <section className="lg:col-span-2 space-y-6">
-          {/* selectors */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
-            <h2 className="text-base md:text-lg font-semibold text-gray-900 mb-4">
-              Select Drug and Food
-            </h2>
-
-            {error && (
-              <div className="mb-4 flex items-start space-x-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-                <ExclamationTriangleIcon className="h-5 w-5 mt-0.5" />
-                <span>{error}</span>
-              </div>
-            )}
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <AutoComplete
-                label="Drug"
-                placeholder="Type drug name…"
-                fetcher={(q) => fetchDrugs(q)}
-                value={selectedDrugName}   
-                onSelect={(d) => {
-                setSelectedDrugIndex(d.index);
-                setSelectedDrugName(d.name);
-                setResult(null);
-                setSafeFoods([]);
-                }}
-              />
-
-              <AutoComplete
-                label="Food"
-                placeholder="Type food name…"
-                fetcher={(q) => fetchFoods(q)}
-                value={selectedFoodName} 
-                onSelect={(f) => {
-                 setSelectedFoodName(f.name);
-                 setResult(null);
-                }}
-              />
-            </div>
-
-            <div className="mt-4 flex justify-end">
-              <button
-                onClick={handleCheck}
-                disabled={loadingCheck}
-                className="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400"
-              >
-                {loadingCheck ? (
-                  <>
-                    <ArrowPathIcon className="h-4 w-4 mr-2 animate-spin" />
-                    Checking…
-                  </>
-                ) : (
-                  <>
-                    <ShieldCheckIcon className="h-4 w-4 mr-2" />
-                    Check interaction
-                  </>
-                )}
-              </button>
-            </div>
+    <div className="min-h-screen bg-slate-50 flex flex-col">
+      {/* HEADER */}
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center">
+          <div className="flex items-center gap-3">
+            <BrandLogo className="h-7 w-7" />
           </div>
 
-          {/* result card */}
-          {result && (
-            <div
-              className={`rounded-xl border px-4 py-4 md:px-6 md:py-5 shadow-sm ${riskColors[result.risk]}`}
-            >
-              <div className="flex items-start space-x-3">
-                {result.risk === 0 ? (
-                  <CheckCircleIcon className="h-6 w-6 mt-0.5 text-green-600" />
-                ) : (
-                  <ExclamationTriangleIcon className="h-6 w-6 mt-0.5 text-red-600" />
-                )}
+          <div className="flex-1" />
+
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="hidden md:flex items-center gap-1">
+              <button
+                onClick={() => navigate("/dashboard")}
+                className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+              >
+                Dashboard
+              </button>
+              <button
+                onClick={() => navigate("/meal-plan")}
+                className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+              >
+                Meal Plan
+              </button>
+              <button
+                onClick={() => navigate("/history")}
+                className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+              >
+                History
+              </button>
+            </div>
+
+            {/* ✅ USER DROPDOWN WITH IMAGE */}
+            <div id="user-menu-wrapper" className="relative">
+              <button
+                type="button"
+                className="flex items-center gap-3 rounded-xl px-2 py-1.5 hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-200"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowUserMenu((s) => !s);
+                }}
+              >
+                <UserAvatar user={user} size={36} />
+
+                <div className="hidden sm:flex flex-col items-start leading-tight">
+                  <span className="text-sm font-semibold text-slate-900">
+                    {user?.name || "User"}
+                  </span>
+                  <span className="text-xs text-slate-500">{roleLabel}</span>
+                </div>
+
+                <svg
+                  className={`hidden sm:block h-4 w-4 text-slate-400 transition-transform ${
+                    showUserMenu ? "rotate-180" : ""
+                  }`}
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+
+              {showUserMenu && (
+                <div className="absolute right-0 mt-3 w-[320px] rounded-2xl bg-white shadow-xl border border-slate-200 overflow-hidden z-50">
+                  <div className="absolute -top-2 right-6 h-4 w-4 rotate-45 bg-white border-l border-t border-slate-200" />
+
+                  <div className="p-4 bg-slate-50/70 border-b border-slate-200">
+                    <div className="flex items-center gap-3">
+                      <div className="h-12 w-12 rounded-2xl overflow-hidden bg-blue-600 flex items-center justify-center">
+                        {user?.avatar ? (
+                          <img
+                            src={user.avatar}
+                            alt={user?.name || "User"}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-white font-extrabold">{initials}</span>
+                        )}
+                      </div>
+
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p className="font-bold text-slate-900 truncate">
+                            {user?.name || "User"}
+                          </p>
+                          <span className="inline-flex items-center rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
+                            <ShieldCheckIcon className="h-3.5 w-3.5 mr-1" />
+                            Secure
+                          </span>
+                        </div>
+                        <p className="text-sm text-slate-600 truncate">
+                          {user?.email || "user@example.com"}
+                        </p>
+                        <p className="text-xs text-slate-500 mt-0.5">{roleLabel}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-2">
+                    <button
+                      type="button"
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50"
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        navigate("/profile");
+                      }}
+                    >
+                      <UserCircleIcon className="h-5 w-5 text-slate-400" />
+                      Profile
+                    </button>
+
+                    <button
+                      type="button"
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50"
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        navigate("/settings");
+                      }}
+                    >
+                      <Cog6ToothIcon className="h-5 w-5 text-slate-400" />
+                      Account settings
+                    </button>
+
+                    <div className="my-2 h-px bg-slate-200" />
+
+                    <button
+                      type="button"
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50"
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        handleLogout();
+                      }}
+                    >
+                      <ArrowRightOnRectangleIcon className="h-5 w-5" />
+                      Sign out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* MAIN */}
+      <main className="flex-1 bg-blue-50">
+        <div className="max-w-6xl mx-auto px-4 py-8 grid gap-6 lg:grid-cols-3">
+          <section className="lg:col-span-2 space-y-6">
+            <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 md:p-7">
+              <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-wide">
-                    {riskLabel(result.risk)} risk
-                  </p>
-                  <h3 className="font-semibold text-sm md:text-base mt-1">
-                    {result.drug} + {result.food}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed">
-                    {result.message}
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-sm">
+                      <LightBulbIcon className="h-5 w-5" />
+                    </div>
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+                      Food–Drug Interaction Check
+                    </h2>
+                  </div>
+                  <p className="text-sm text-slate-600 mt-1">
+                    Search and select both inputs to evaluate potential interactions.
                   </p>
                 </div>
               </div>
-            </div>
-          )}
-       </section>
-       {/* RIGHT: safe foods instead of history */}
-  <aside className="space-y-4">
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
-      <h2 className="text-sm font-semibold text-gray-900 mb-3">
-        Suggested safer foods
-      </h2>
 
-      {safeFoods.length === 0 ? (
-        <p className="text-sm text-gray-500">
-          After you check an interaction, safer alternative foods for
-          the selected drug will appear here.
-        </p>
-      ) : (
-        <div className="grid gap-3">
-          {safeFoods.map((f) => (
-            <div
-              key={f.Food || f.food || f.name}
-              className="border border-gray-200 rounded-lg p-3 text-sm bg-gray-50"
-            >
-              <p className="font-medium text-gray-900">
-                {f.Food || f.food || f.name}
-              </p>
-              <p className="text-xs text-gray-500 mt-1">
-                Energy: {f.energy} kcal · Protein: {f.protein} g · Carbs:{" "}
-                {f.carbs} g
-              </p>
+              {error && (
+                <div className="mt-4 flex items-start gap-2 rounded-2xl border border-rose-200 bg-rose-50 px-3 py-3 text-sm text-rose-700">
+                  <ExclamationTriangleIcon className="h-5 w-5 mt-0.5" />
+                  <span>{error}</span>
+                </div>
+              )}
+
+              <div className="mt-5 grid gap-4 md:grid-cols-2">
+                <AutoComplete
+                  label="Drug"
+                  placeholder="Type drug name…"
+                  fetcher={(q) => fetchDrugs(q)}
+                  value={selectedDrugName}
+                  onSelect={(d) => {
+                    setSelectedDrugIndex(d.index);
+                    setSelectedDrugName(d.name);
+                    setResult(null);
+                    setSafeFoods([]);
+                  }}
+                />
+                <AutoComplete
+                  label="Food"
+                  placeholder="Type food name…"
+                  fetcher={(q) => fetchFoods(q)}
+                  value={selectedFoodName}
+                  onSelect={(f) => {
+                    setSelectedFoodName(f.name || f.Food);
+                    setResult(null);
+                  }}
+                />
+              </div>
+
+              <div className="mt-6 flex justify-end">
+                <button
+                  onClick={handleCheck}
+                  disabled={loadingCheck}
+                  className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:bg-slate-400"
+                >
+                  {loadingCheck ? (
+                    <>
+                      <ArrowPathIcon className="h-4 w-4 animate-spin" />
+                      Checking…
+                    </>
+                  ) : (
+                    <>
+                      <ShieldCheckIcon className="h-5 w-5" />
+                      Check interaction
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
-          ))}
+
+            {result && (
+              <div className={`rounded-3xl border shadow-sm p-5 md:p-7 ${riskColors[result.risk]}`}>
+                <div className="flex items-start gap-3">
+                  {result.risk === 0 ? (
+                    <CheckCircleIcon className="h-6 w-6 mt-0.5 text-emerald-600" />
+                  ) : (
+                    <ExclamationTriangleIcon className="h-6 w-6 mt-0.5 text-rose-600" />
+                  )}
+
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="inline-flex items-center rounded-full bg-white/70 px-3 py-1 text-xs font-extrabold">
+                        {riskBadge(result.risk)}
+                      </span>
+                      <span className="text-xs text-slate-700">Recommendation summary</span>
+                    </div>
+
+                    <h3 className="mt-3 text-base md:text-lg font-bold wrap-break-words">
+                      {result.drug} + {result.food}
+                    </h3>
+
+                    <p className="mt-2 text-sm text-slate-700 leading-relaxed">
+                      {result.message}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </section>
+
+          <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
+            <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 md:p-6">
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <h2 className="text-sm font-bold text-slate-900">Suggested safer foods</h2>
+                <span className="text-xs font-semibold rounded-full bg-slate-100 px-3 py-1 text-slate-600">
+                  Top picks
+                </span>
+              </div>
+
+              <p className="text-sm text-slate-600 mb-4">
+                After you check an interaction, we’ll show safer alternatives for the selected drug.
+              </p>
+
+              <div className="max-h-[420px] overflow-y-auto pr-1">
+                {safeFoods.length === 0 ? (
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+                    No suggestions yet. Run an interaction check to populate this panel.
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {safeFoods.map((f) => {
+                      const name = f.Food || f.food || f.name;
+                      return (
+                        <div key={name} className="rounded-2xl border border-green-200 bg-green-50 p-4">
+                          <div className="flex items-start justify-between gap-3">
+                            <p className="font-semibold text-green-900 text-sm leading-snug uppercase">
+                              {name}
+                            </p>
+                            <div className="text-right text-xs text-slate-600 shrink-0">
+                              <div className="font-semibold">{Number(f.energy || 0).toFixed(1)}</div>
+                              <div className="-mt-0.5">kcal</div>
+                            </div>
+                          </div>
+
+                          <div className="mt-2 text-xs text-slate-700 flex flex-wrap gap-x-4 gap-y-1">
+                            <span>Protein: <b>{Number(f.protein || 0).toFixed(2)} g</b></span>
+                            <span>Carbs: <b>{Number(f.carbs || 0).toFixed(2)} g</b></span>
+                            <span>Fat: <b>{Number(f.fat || 0).toFixed(2)} g</b></span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+          </aside>
         </div>
-      )}
-    </div>
-  </aside>
-  
       </main>
-      <footer className="mt-10 mb-4 text-[11px] text-slate-500 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-3 max-w-6xl mx-auto px-4 w-full">
-  <span>© {new Date().getFullYear()} PharmaLink. For academic/research use.</span>
-  <span>Always consult a qualified healthcare professional.</span>
-</footer>
 
+      <footer className="mt-8 mb-4 text-[11px] text-slate-500 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-3 max-w-6xl mx-auto px-4 w-full">
+        <span>© {new Date().getFullYear()} PharmaLink. For academic/research use.</span>
+        <span>Always consult a qualified healthcare professional.</span>
+      </footer>
     </div>
   );
 };
