@@ -2432,6 +2432,8 @@ const CrossBrandComparator = () => {
     const [showAutocomplete, setShowAutocomplete] = useState(false);
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
     const searchInputRef = useRef(null);
+    const [apiBrandSuggestions, setApiBrandSuggestions] = useState([]);
+    const [isSearchingAPI, setIsSearchingAPI] = useState(false);
     
     // AI Insights state
     const [showAIInsights, setShowAIInsights] = useState(false);
@@ -2439,32 +2441,81 @@ const CrossBrandComparator = () => {
     const [aiInsightsLoading, setAIInsightsLoading] = useState(false);
     const [aiInsightsError, setAIInsightsError] = useState(null);
 
-    // Generate autocomplete suggestions - shows all matching drugs and brands
+    // Fetch brand names from drug interaction microservice API
+    useEffect(() => {
+        if (!searchTerm || searchTerm.trim().length < 1) {
+            setApiBrandSuggestions([]);
+            return;
+        }
+        const controller = new AbortController();
+        const timer = setTimeout(async () => {
+            try {
+                setIsSearchingAPI(true);
+                const query = encodeURIComponent(searchTerm.trim());
+                const API_BASE = import.meta.env.VITE_DRUG_INTERACTION_API || 'http://localhost:3000/api/drug-interactions';
+                let results = [];
+                try {
+                    const res = await fetch(`${API_BASE}/search?query=${query}&limit=30`, { signal: controller.signal });
+                    if (!res.ok) throw new Error('API search failed');
+                    const data = await res.json();
+                    results = data.results || [];
+                } catch (err) {
+                    if (err.name === 'AbortError') throw err;
+                    // Fallback: ML service
+                    const ML_BASE = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+                    const fallbackRes = await fetch(`${ML_BASE}/drugs?q=${query}&limit=30`, { signal: controller.signal });
+                    if (fallbackRes.ok) {
+                        const d = await fallbackRes.json();
+                        results = (d || []).map(item => ({
+                            name: item.name,
+                            type: item.type || 'generic',
+                            genericName: item.generic || '',
+                            class: item.class || ''
+                        }));
+                    }
+                }
+                // Only keep brand names
+                setApiBrandSuggestions(results.filter(s => s.type === 'brand'));
+            } catch (err) {
+                if (err.name !== 'AbortError') console.error('Brand search error', err);
+            } finally {
+                setIsSearchingAPI(false);
+            }
+        }, 300);
+        return () => { clearTimeout(timer); controller.abort(); };
+    }, [searchTerm]);
+
+    // Generate autocomplete suggestions - API brands first, then local matches
     const autocompleteSuggestions = useMemo(() => {
         if (!searchTerm || searchTerm.length < 1) return [];
-        
-        const term = searchTerm.toLowerCase();
+
         const suggestions = [];
-        
-        // Add matching medications
-        medications.forEach(med => {
-            if (med.genericName.toLowerCase().includes(term) ||
-                med.category.toLowerCase().includes(term) ||
-                med.therapeuticClass.toLowerCase().includes(term)) {
+        const seen = new Set();
+
+        // 1) API brand results (from real drug database)
+        apiBrandSuggestions.forEach(brand => {
+            const key = brand.name.toLowerCase();
+            if (!seen.has(key)) {
+                seen.add(key);
                 suggestions.push({
-                    type: 'medication',
-                    id: med.id,
-                    name: med.genericName,
-                    subtitle: `${med.strength} • ${med.category} • ${med.brands.length} brands available`,
-                    category: med.category,
-                    icon: 'pill',
-                    medication: med
+                    type: 'api-brand',
+                    id: `api-${brand.name}`,
+                    name: brand.name,
+                    subtitle: [brand.genericName, brand.class].filter(Boolean).join(' • '),
+                    genericName: brand.genericName || '',
+                    category: brand.class || '',
+                    icon: 'tag'
                 });
             }
-            // Add matching brands
+        });
+
+        // 2) Local matching brands from sampleMedications
+        const term = searchTerm.toLowerCase();
+        medications.forEach(med => {
             med.brands.forEach(brand => {
-                if (brand.name.toLowerCase().includes(term) || 
-                    brand.manufacturer.toLowerCase().includes(term)) {
+                const key = brand.name.toLowerCase();
+                if (!seen.has(key) && (brand.name.toLowerCase().includes(term) || brand.manufacturer.toLowerCase().includes(term))) {
+                    seen.add(key);
                     suggestions.push({
                         type: 'brand',
                         id: `${med.id}-${brand.id}`,
@@ -2478,10 +2529,9 @@ const CrossBrandComparator = () => {
                 }
             });
         });
-        
-        // Return more suggestions (up to 12)
-        return suggestions.slice(0, 12);
-    }, [searchTerm, medications]);
+
+        return suggestions.slice(0, 15);
+    }, [searchTerm, medications, apiBrandSuggestions]);
 
     // Handle autocomplete selection
     const handleAutocompleteSelect = (suggestion) => {
@@ -2494,6 +2544,21 @@ const CrossBrandComparator = () => {
             // Also select the brand for comparison
             if (!selectedBrands.find(b => b.id === suggestion.brand.id)) {
                 setSelectedBrands(prev => [...prev, suggestion.brand]);
+            }
+        } else if (suggestion.type === 'api-brand') {
+            setSearchTerm(suggestion.name);
+            // Try to match against local medications by generic name
+            const genericLower = (suggestion.genericName || '').toLowerCase();
+            const matched = medications.find(med =>
+                med.genericName.toLowerCase() === genericLower ||
+                med.brands.some(b => b.name.toLowerCase() === suggestion.name.toLowerCase())
+            );
+            if (matched) {
+                setSelectedMedication(matched);
+                const matchedBrand = matched.brands.find(b => b.name.toLowerCase() === suggestion.name.toLowerCase());
+                if (matchedBrand && !selectedBrands.find(b => b.id === matchedBrand.id)) {
+                    setSelectedBrands(prev => [...prev, matchedBrand]);
+                }
             }
         }
         setShowAutocomplete(false);
@@ -3366,7 +3431,7 @@ const CrossBrandComparator = () => {
                         <input
                             ref={searchInputRef}
                             type="text"
-                            placeholder="Search medications by name, brand, manufacturer, or symptoms..."
+                            placeholder="Search brand names (e.g., Advil, Lipitor, Tylenol)..."
                             value={searchTerm}
                             onChange={(e) => {
                                 setSearchTerm(e.target.value);
@@ -3400,16 +3465,19 @@ const CrossBrandComparator = () => {
                         </div>
 
                         {/* Autocomplete Dropdown */}
-                        {showAutocomplete && autocompleteSuggestions.length > 0 && (
+                        {showAutocomplete && (autocompleteSuggestions.length > 0 || isSearchingAPI) && (
                             <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden z-50">
-                                <div className="p-3 border-b border-slate-100 bg-gradient-to-r from-blue-50 to-indigo-50">
+                                <div className="p-3 border-b border-slate-100 bg-gradient-to-r from-emerald-50 to-teal-50">
                                     <div className="flex items-center justify-between">
                                         <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">
-                                            💊 {autocompleteSuggestions.length} Results Found
+                                            🏷️ {autocompleteSuggestions.length} Brand{autocompleteSuggestions.length !== 1 ? 's' : ''} Found
                                         </span>
-                                        <span className="text-xs text-slate-500">
-                                            Search across {medications.length} medications & {medications.reduce((sum, m) => sum + m.brands.length, 0)} brands
-                                        </span>
+                                        {isSearchingAPI && (
+                                            <span className="text-xs text-blue-500 flex items-center gap-1">
+                                                <svg className="animate-spin h-3 w-3" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                                                Searching...
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
                                 <ul className="max-h-96 overflow-y-auto">
@@ -3419,36 +3487,31 @@ const CrossBrandComparator = () => {
                                             onClick={() => handleAutocompleteSelect(suggestion)}
                                             className={`px-4 py-3 cursor-pointer transition-all flex items-center gap-3 ${
                                                 highlightedIndex === index
-                                                    ? 'bg-blue-50 border-l-4 border-blue-500'
+                                                ? 'bg-emerald-50 border-l-4 border-emerald-500'
                                                     : 'hover:bg-slate-50 border-l-4 border-transparent'
                                             }`}
                                         >
-                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-md ${
-                                                suggestion.type === 'medication'
-                                                    ? 'bg-gradient-to-br from-blue-500 to-indigo-600'
-                                                    : 'bg-gradient-to-br from-emerald-500 to-teal-600'
-                                            }`}>
-                                                {suggestion.type === 'medication' ? (
-                                                    <BeakerIcon className="h-6 w-6 text-white" />
-                                                ) : (
-                                                    <TagIcon className="h-6 w-6 text-white" />
-                                                )}
+                                            <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-md bg-gradient-to-br from-emerald-500 to-teal-600">
+                                                <TagIcon className="h-6 w-6 text-white" />
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center gap-2 flex-wrap">
                                                     <span className="font-bold text-slate-900">
                                                         {suggestion.name}
                                                     </span>
-                                                    <span className={`px-2 py-0.5 text-xs font-bold rounded-full ${
-                                                        suggestion.type === 'medication'
-                                                            ? 'bg-blue-100 text-blue-700'
-                                                            : 'bg-emerald-100 text-emerald-700'
-                                                    }`}>
-                                                        {suggestion.type === 'medication' ? 'Medication' : 'Brand'}
+                                                    <span className="px-2 py-0.5 text-xs font-bold rounded-full bg-emerald-100 text-emerald-700">
+                                                        Brand
                                                     </span>
-                                                    <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-slate-100 text-slate-600">
-                                                        {suggestion.category}
-                                                    </span>
+                                                    {suggestion.genericName && (
+                                                        <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-blue-50 text-blue-600">
+                                                            {suggestion.genericName}
+                                                        </span>
+                                                    )}
+                                                    {suggestion.category && (
+                                                        <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-slate-100 text-slate-600">
+                                                            {suggestion.category}
+                                                        </span>
+                                                    )}
                                                 </div>
                                                 <p className="text-sm text-slate-500 truncate mt-0.5">
                                                     {suggestion.subtitle}
@@ -3466,9 +3529,9 @@ const CrossBrandComparator = () => {
                                         <kbd className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-xs ml-2">Enter</kbd>
                                         select
                                     </span>
-                                    <span className="text-xs text-blue-600 font-semibold flex items-center gap-1">
+                                    <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
                                         <SparklesSolid className="h-3 w-3" />
-                                        AI-Powered Search
+                                        Brand Name Search
                                     </span>
                                 </div>
                             </div>

@@ -1,0 +1,38 @@
+{
+  "model_type": "RandomForestClassifier",
+  "n_estimators": 200,
+  "features": [
+    "Calories",
+    "Protein",
+    "Fat",
+    "Carbs",
+    "Herbal_Risk",
+    "Alcohol_Risk",
+    "Iron_Rich",
+    "High_Fat",
+    "High_Protein",
+    "Therapeutic_Class",
+    "Action_Class"
+  ],
+  "numeric_features": [
+    "Calories",
+    "Protein",
+    "Fat",
+    "Carbs"
+  ],
+  "binary_features": [
+    "Herbal_Risk",
+    "Alcohol_Risk",
+    "Iron_Rich",
+    "High_Fat",
+    "High_Protein"
+  ],
+  "categorical_features": [
+    "Therapeutic_Class",
+    "Action_Class"
+  ],
+  "training_samples": 1515,
+  "test_samples": 379,
+  "accuracy": 0.9894459102902374,
+  "timestamp": "2026-02-27T14:49:29.551371"
+}

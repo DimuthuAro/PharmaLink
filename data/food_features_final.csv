@@ -1,0 +1,120 @@
+Food,Calories,Protein,Fat,Carbs,Herbal_Risk,Alcohol_Risk,Iron_Rich,High_Fat,High_Protein
+White Rice,110.0,2.0,0.0,24.0,False,False,False,False,False
+Brown Rice,90.0,2.0,1.0,19.0,False,False,False,False,False
+Red Rice,112.0,2.4,0.8,23.0,False,False,False,False,False
+White Bread,270.0,9.0,3.0,50.0,False,False,False,False,False
+Pasta,393.0,14.0,1.7,79.0,False,False,False,False,True
+Roast Paan,280.0,8.0,3.0,55.0,False,False,False,False,False
+Thati Paan,250.0,8.0,2.5,50.0,False,False,False,False,False
+Coconut Roti,284.0,6.7,6.3,49.2,False,False,False,False,False
+White Noodles,140.0,4.0,1.0,30.0,False,False,False,False,False
+Idiyappam,180.0,3.0,0.5,40.0,False,False,False,False,False
+Hoppers,120.0,3.0,4.0,20.0,False,False,False,False,False
+Kiribath,150.0,1.9,7.0,16.0,False,False,False,False,False
+Lunu Miris,12.0,0.87,0.04,1.43,False,False,False,False,False
+Boiled Cowpea,116.0,7.7,0.5,21.0,False,False,False,False,False
+Coconut Sambal,157.0,2.0,13.7,6.4,False,False,False,True,False
+Papadam,21.0,1.0,1.0,3.7,False,False,False,False,False
+Egg,70.0,6.0,5.0,0.4,False,False,False,False,False
+Dhal Curry with coconut milk,80.0,5.0,3.5,12.0,False,False,False,False,False
+Dhal Curry,100.0,7.0,2.0,14.0,False,False,False,False,False
+Yellow Rice,469.0,16.9,18.8,75.0,False,False,False,True,True
+Fried Halmesso,75.0,7.5,4.5,0.0,False,False,False,False,False
+Fried Karawala,85.0,9.0,5.0,0.0,False,False,False,False,False
+Kola Mallum,80.0,1.0,5.0,5.0,False,False,False,False,False
+Cucumber Salad,35.0,1.0,0.0,7.0,False,False,False,False,False
+Vegetable curry with coconut milk,120.0,1.0,9.0,10.0,False,False,False,False,False
+Vegetable curry with coconut oil,80.0,1.0,5.0,12.0,False,False,False,False,False
+Kiri Hodi,100.0,1.0,9.0,4.0,False,False,False,False,False
+Beetroot curry with coconut milk,89.0,2.0,4.7,11.0,False,False,False,False,False
+Soya meat curry with coconut milk,110.0,11.0,0.6,13.0,False,False,False,False,True
+Soya meat curry,84.0,6.0,4.0,8.0,False,False,False,False,False
+Boiled Potatoes,44.0,1.0,0.1,10.3,False,False,False,False,False
+Chicken Curry,180.0,27.0,8.0,0.0,False,False,False,False,True
+Chicken Gravy,25.0,3.5,1.5,0.0,False,False,False,False,False
+Vegetable Soup,30.0,1.5,0.3,6.0,False,False,False,False,False
+Egg Yolk,52.0,2.5,4.2,0.55,False,False,False,False,False
+Mango Chutney,60.0,0.5,0.0,15.0,False,False,False,False,False
+Mango Chutney with Sugar,200.0,0.5,0.0,50.0,False,False,False,False,False
+Boiled Jackfruit Seed,13.0,0.6,0.1,2.5,False,False,False,False,False
+Boiled Chickpeas,164.0,9.0,2.6,27.0,False,False,False,False,False
+Boiled Mung,105.0,7.0,0.4,19.0,False,False,False,False,False
+Boiled Sweet Potato,90.0,1.6,0.1,20.0,False,False,False,False,False
+Cucumber Flesh,6.0,0.3,0.05,1.5,False,False,False,False,False
+Tomato sauce,41.0,0.37,0.45,8.75,False,False,False,False,False
+White sugar,16.0,0.0,0.0,4.0,False,False,False,False,False
+Coconut Milk 1st 2nd 3rd extractions,15.0,0.2,1.4,1.0,False,False,False,False,False
+Coconut Milk 1st 2nd extractions,20.0,0.2,1.9,1.3,False,False,False,False,False
+Coconut Milk 1st extraction,30.0,0.3,2.7,1.5,False,False,False,False,False
+Roast Peanut,300.0,13.0,26.0,10.0,False,False,False,True,True
+Roast Green Pea,190.0,14.0,4.5,32.0,False,False,False,False,True
+Roasted Gram,200.0,12.0,2.0,30.0,False,False,False,False,True
+Orange,62.0,1.2,0.2,15.4,False,False,False,False,False
+Guava,37.0,1.0,0.2,9.2,False,False,False,False,False
+Kurumba,75.0,2.2,4.1,8.9,False,False,False,False,False
+Ambun Kesel,90.0,1.3,0.3,23.0,False,False,False,False,False
+Banana,90.0,1.0,0.0,23.0,False,False,False,False,False
+Ambul Kesel,45.0,0.5,0.1,11.0,False,False,False,False,False
+Cavendish Banana,134.0,1.7,0.5,34.2,False,False,False,False,False
+Raisins,299.0,3.1,0.5,79.2,False,False,False,False,False
+Jackfruit,33.0,0.6,0.2,8.2,False,False,False,False,False
+Avocado,80.0,1.0,7.4,4.3,False,False,False,False,False
+Watermelon,30.0,0.6,0.2,7.6,False,False,False,False,False
+Dodol,380.0,2.0,12.0,75.0,False,False,False,True,False
+Mun Kawum,450.0,5.0,18.0,70.0,False,False,False,True,False
+Aluwa,400.0,3.0,8.0,85.0,False,False,False,False,False
+Helapa,440.0,11.0,17.0,80.0,False,False,False,True,True
+Wandu,205.0,2.0,1.0,46.0,False,False,False,False,False
+Ada,280.0,5.0,2.0,61.0,False,False,False,False,False
+Samaposha Aggala,326.0,9.8,10.4,49.0,False,False,False,True,False
+Cream Bun,300.0,4.0,15.0,40.0,False,False,False,True,False
+Kibula Banis,175.0,3.0,4.0,30.0,False,False,False,False,False
+Saw Kanji,250.0,6.0,5.0,50.0,False,False,False,False,False
+Lavariya,310.0,4.0,10.0,65.0,False,False,False,False,False
+Vegetable Roll,120.0,3.0,4.0,18.0,False,False,False,False,False
+Jam Paan,300.0,7.0,8.0,55.0,False,False,False,False,False
+Gal Banis,400.0,7.0,13.0,65.0,False,False,False,True,False
+Coconut Cake,250.0,3.0,14.0,30.0,False,False,False,True,False
+Butter Cake,220.0,2.0,12.0,27.0,False,False,False,True,False
+Chocolate Cake,250.0,3.0,12.0,35.0,False,False,False,True,False
+Choco bar,60.0,0.5,4.0,6.0,False,False,False,False,False
+Dark chocolate,282.0,3.0,18.0,29.0,False,False,False,True,False
+Chocolate,104.4,0.6,5.5,12.9,False,False,False,False,False
+Fruit & Nut ice cream,230.0,3.9,9.0,34.0,False,False,False,False,False
+Chocolate ice cream,154.0,2.6,10.0,14.0,False,False,False,False,False
+Wonder choc ice cream,206.0,2.4,14.0,18.0,False,False,False,True,False
+Milk cream biscuit,56.0,0.6,2.5,8.5,False,False,False,False,False
+Lemon puff,59.0,0.7,2.3,8.7,False,False,False,False,False
+Marie biscuit,17.0,0.29,0.4,2.8,False,False,False,False,False
+Chocolate Marie biscuit,15.0,0.3,0.4,2.8,False,False,False,False,False
+Chocolate Cream Biscuit,53.0,1.0,2.0,8.0,False,False,False,False,False
+Orange cream biscuit,54.0,0.6,2.0,9.0,False,False,False,False,False
+Gold Marie biscuit,17.0,0.29,0.4,2.8,False,False,False,False,False
+Cream cracker biscuit,37.0,0.9,1.2,6.0,False,False,False,False,False
+Nice biscuit,42.0,0.63,1.6,6.6,False,False,False,False,False
+Hawaiian cookie,25.6,0.32,1.1,3.5,False,False,False,False,False
+Ginger Finger Biscuit,18.0,0.2,0.5,2.8,True,False,False,False,False
+Custard cream biscuit,54.0,0.6,2.0,9.0,False,False,False,False,False
+Batter Carol biscuit,26.0,0.4,0.75,4.2,False,False,False,False,False
+Pani Murukku,46.0,0.8,0.9,7.5,False,False,False,False,False
+Boondi,240.0,3.0,10.0,38.0,False,False,False,False,False
+Jelly Jujub,14.0,0.0,0.0,3.4,False,False,False,False,False
+Garlic Murukku,500.0,8.0,25.0,55.0,True,False,False,True,False
+Murukku,550.0,9.0,38.0,50.0,False,False,False,True,False
+Thala Bola,26.0,0.6,1.6,3.2,False,False,False,False,False
+Yogurt,90.0,5.0,3.0,10.0,False,False,False,False,False
+Kotmale Vanilla milk,124.0,3.4,3.0,21.0,False,False,False,False,False
+Necto,30.0,0.0,0.0,7.3,False,False,False,False,False
+Quinoa,120.0,4.0,2.0,21.0,False,False,False,False,False
+Oats,150.0,5.0,3.0,27.0,False,False,False,False,False
+Chicken Breast,165.0,31.0,3.6,0.0,False,False,False,False,True
+Salmon,208.0,20.0,13.0,0.0,False,False,False,True,True
+Tuna,132.0,29.0,0.6,0.0,False,False,False,False,True
+Whole Milk,130.0,7.0,7.0,10.0,False,False,False,False,False
+Skim Milk,80.0,8.0,0.0,12.0,False,False,False,False,False
+Greek Yogurt,100.0,10.0,5.0,4.0,False,False,False,False,False
+Apple,80.0,0.0,0.0,22.0,False,False,False,False,False
+Olive Oil,120.0,0.0,14.0,0.0,False,False,False,True,False
+Almonds,180.0,6.0,15.0,6.0,False,False,False,True,False
+Walnuts,190.0,4.0,18.0,4.0,False,False,False,True,False
+Peanut Butter,190.0,8.0,16.0,7.0,False,False,False,True,False

@@ -17,6 +17,13 @@ easyocr>=1.7.0
 # Model Management
 requests>=2.31.0  # For downloading models from URLs
 
+# Data Processing & Training
+pandas>=2.0.0
+openpyxl>=3.1.0  # For reading Excel files
+kaggle>=1.5.16  # For dataset downloads
+rapidfuzz>=3.0.0  # For fuzzy matching
+matplotlib>=3.7.0  # For visualization (optional)
+
 # Optional: PaddleOCR (uncomment if needed - requires paddlepaddle)
 # paddlepaddle>=2.5.0
 # paddleocr>=2.7.0

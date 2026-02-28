@@ -1,6 +1,6 @@
 // CrossBrandPredictor.jsx - Cross-Brand DDI Prediction Component
 // Displays formulation-aware drug interaction predictions
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import {
     BeakerIcon,
     ArrowTrendingUpIcon,
@@ -291,6 +291,73 @@ const CrossBrandPredictor = ({ initialDrug1 = '', initialDrug2 = '' }) => {
     const [result, setResult] = useState(null);
     const [showDetails, setShowDetails] = useState(false);
 
+    // Brand autocomplete state
+    const [suggestions1, setSuggestions1] = useState([]);
+    const [suggestions2, setSuggestions2] = useState([]);
+    const [showSuggestions1, setShowSuggestions1] = useState(false);
+    const [showSuggestions2, setShowSuggestions2] = useState(false);
+    const ref1 = useRef(null);
+    const ref2 = useRef(null);
+
+    // Brand search for Drug 1
+    useEffect(() => {
+        if (drug1.trim().length < 1) { setSuggestions1([]); return; }
+        const controller = new AbortController();
+        const timer = setTimeout(async () => {
+            try {
+                const q = encodeURIComponent(drug1.trim());
+                const API = import.meta.env.VITE_DRUG_INTERACTION_API || 'http://localhost:3000/api/drug-interactions';
+                let res = await fetch(`${API}/search?query=${q}&limit=30`, { signal: controller.signal });
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+                setSuggestions1((data.results || []).filter(s => s.type === 'brand'));
+                setShowSuggestions1(true);
+            } catch (err) {
+                if (err.name === 'AbortError') return;
+                // Fallback to ML service
+                try {
+                    const ML = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+                    const res = await fetch(`${ML}/drugs?q=${encodeURIComponent(drug1.trim())}&limit=30`, { signal: controller.signal });
+                    if (res.ok) {
+                        const d = await res.json();
+                        setSuggestions1((d || []).filter(s => s.type === 'brand').map(s => ({ name: s.name, type: 'brand', genericName: s.generic || '', class: s.class || '' })));
+                        setShowSuggestions1(true);
+                    }
+                } catch (_) { }
+            }
+        }, 300);
+        return () => { clearTimeout(timer); controller.abort(); };
+    }, [drug1]);
+
+    // Brand search for Drug 2
+    useEffect(() => {
+        if (drug2.trim().length < 1) { setSuggestions2([]); return; }
+        const controller = new AbortController();
+        const timer = setTimeout(async () => {
+            try {
+                const q = encodeURIComponent(drug2.trim());
+                const API = import.meta.env.VITE_DRUG_INTERACTION_API || 'http://localhost:3000/api/drug-interactions';
+                let res = await fetch(`${API}/search?query=${q}&limit=30`, { signal: controller.signal });
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+                setSuggestions2((data.results || []).filter(s => s.type === 'brand'));
+                setShowSuggestions2(true);
+            } catch (err) {
+                if (err.name === 'AbortError') return;
+                try {
+                    const ML = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+                    const res = await fetch(`${ML}/drugs?q=${encodeURIComponent(drug2.trim())}&limit=30`, { signal: controller.signal });
+                    if (res.ok) {
+                        const d = await res.json();
+                        setSuggestions2((d || []).filter(s => s.type === 'brand').map(s => ({ name: s.name, type: 'brand', genericName: s.generic || '', class: s.class || '' })));
+                        setShowSuggestions2(true);
+                    }
+                } catch (_) { }
+            }
+        }, 300);
+        return () => { clearTimeout(timer); controller.abort(); };
+    }, [drug2]);
+
     const predictInteraction = useCallback(async () => {
         if (!drug1.trim() || !drug2.trim()) {
             setError('Please enter both drug names');
@@ -363,7 +430,7 @@ const CrossBrandPredictor = ({ initialDrug1 = '', initialDrug2 = '' }) => {
                             <span className="w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-sm font-bold">1</span>
                             First Drug
                         </h3>
-                        <div>
+                        <div className="relative" ref={ref1}>
                             <label className="block text-sm font-medium text-gray-600 mb-1">
                                 Brand Name <span className="text-red-500">*</span>
                             </label>
@@ -373,7 +440,24 @@ const CrossBrandPredictor = ({ initialDrug1 = '', initialDrug2 = '' }) => {
                                 onChange={(e) => setDrug1(e.target.value)}
                                 placeholder="e.g., PAXIL CR, LIPITOR"
                                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                onFocus={() => suggestions1.length > 0 && setShowSuggestions1(true)}
+                                onBlur={() => setTimeout(() => setShowSuggestions1(false), 150)}
                             />
+                            {showSuggestions1 && suggestions1.length > 0 && (
+                                <ul className="absolute z-30 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-56 overflow-auto">
+                                    {suggestions1.map((s) => (
+                                        <li
+                                            key={s.name}
+                                            className="px-4 py-2 hover:bg-indigo-50 cursor-pointer text-sm"
+                                            onMouseDown={() => { setDrug1(s.name); setShowSuggestions1(false); }}
+                                        >
+                                            <span className="font-semibold text-gray-900">{s.name}</span>
+                                            {s.genericName && <span className="text-xs text-gray-500 ml-2">({s.genericName})</span>}
+                                            {s.class && <span className="block text-xs text-indigo-400">{s.class}</span>}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-600 mb-1">
@@ -395,7 +479,7 @@ const CrossBrandPredictor = ({ initialDrug1 = '', initialDrug2 = '' }) => {
                             <span className="w-6 h-6 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-sm font-bold">2</span>
                             Second Drug
                         </h3>
-                        <div>
+                        <div className="relative" ref={ref2}>
                             <label className="block text-sm font-medium text-gray-600 mb-1">
                                 Brand Name <span className="text-red-500">*</span>
                             </label>
@@ -405,7 +489,24 @@ const CrossBrandPredictor = ({ initialDrug1 = '', initialDrug2 = '' }) => {
                                 onChange={(e) => setDrug2(e.target.value)}
                                 placeholder="e.g., NOLVADEX, COUMADIN"
                                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                                onFocus={() => suggestions2.length > 0 && setShowSuggestions2(true)}
+                                onBlur={() => setTimeout(() => setShowSuggestions2(false), 150)}
                             />
+                            {showSuggestions2 && suggestions2.length > 0 && (
+                                <ul className="absolute z-30 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-56 overflow-auto">
+                                    {suggestions2.map((s) => (
+                                        <li
+                                            key={s.name}
+                                            className="px-4 py-2 hover:bg-purple-50 cursor-pointer text-sm"
+                                            onMouseDown={() => { setDrug2(s.name); setShowSuggestions2(false); }}
+                                        >
+                                            <span className="font-semibold text-gray-900">{s.name}</span>
+                                            {s.genericName && <span className="text-xs text-gray-500 ml-2">({s.genericName})</span>}
+                                            {s.class && <span className="block text-xs text-purple-400">{s.class}</span>}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-600 mb-1">

@@ -42,6 +42,8 @@ except ImportError:
     GOOGLE_GENAI_AVAILABLE = False
     logging.warning("google-genai library not found. Using local OCR only.")
 
+import pandas as pd
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -311,51 +313,266 @@ class FoodDrugResponse(BaseModel):
 # ---------------------------------------------------------
 # Production ML Prediction Functions (with Model Auto-Download)
 # ---------------------------------------------------------
+
+# Build brand→generic lookup from loaded drug index
+_brand_to_generic: Dict[str, str] = {}
+_drug_classes: Dict[str, str] = {}
+
+def _build_drug_lookups():
+    """Build reverse lookup tables from drug search index"""
+    for entry in _drug_index:
+        name_lower = entry.get("name", "").lower().strip()
+        if entry.get("type") == "brand" and entry.get("generic"):
+            generic = entry["generic"].lower().strip()
+            _brand_to_generic[name_lower] = generic
+            if entry.get("class"):
+                _drug_classes[generic] = entry["class"].upper().strip()
+        elif entry.get("type") == "generic":
+            _brand_to_generic[name_lower] = name_lower
+            if entry.get("class"):
+                _drug_classes[name_lower] = entry["class"].upper().strip()
+
+# NOTE: _build_drug_lookups() is called after _drug_index is loaded (see below)
+
+
+def _resolve_generic(drug_name: str) -> str:
+    """Resolve any drug name (brand or generic) to its generic/active ingredient."""
+    name = drug_name.lower().strip()
+    # Direct match
+    if name in _brand_to_generic:
+        return _brand_to_generic[name]
+    # Try stripping dosage info (e.g. "Aspirin 300mg Tablet" → "aspirin")
+    stripped = re.sub(r'\s+\d+\s*(mg|g|ml|mcg|iu)\b.*$', '', name, flags=re.IGNORECASE).strip()
+    if stripped in _brand_to_generic:
+        return _brand_to_generic[stripped]
+    # Try matching prefix against generics
+    for gen_name in _brand_to_generic.values():
+        if name.startswith(gen_name) or gen_name.startswith(name):
+            return gen_name
+    # Return original lowered name as fallback
+    return name
+
+
+# Comprehensive drug-drug interaction knowledge base
+# Sources: FDA drug safety communications, clinical pharmacology references
+DRUG_INTERACTION_DB = {
+    # ── Anticoagulants / Antiplatelets ────────────────────
+    ("aspirin", "warfarin"): {"severity": "severe", "confidence": 0.95, "desc": "Increased bleeding risk – both affect clotting"},
+    ("aspirin", "clopidogrel"): {"severity": "moderate", "confidence": 0.90, "desc": "Dual antiplatelet therapy – increased bleeding risk"},
+    ("aspirin", "heparin"): {"severity": "severe", "confidence": 0.93, "desc": "Significantly increased bleeding risk"},
+    ("aspirin", "enoxaparin"): {"severity": "severe", "confidence": 0.92, "desc": "Increased bleeding risk with combined anticoagulation"},
+    ("warfarin", "clopidogrel"): {"severity": "severe", "confidence": 0.94, "desc": "High bleeding risk – dual antithrombotic effect"},
+    ("warfarin", "heparin"): {"severity": "severe", "confidence": 0.95, "desc": "Excessive anticoagulation and bleeding risk"},
+    ("warfarin", "amoxicillin"): {"severity": "moderate", "confidence": 0.85, "desc": "Antibiotics may enhance anticoagulant effect"},
+    ("warfarin", "ciprofloxacin"): {"severity": "severe", "confidence": 0.91, "desc": "Fluoroquinolones potentiate warfarin – INR elevation"},
+    ("warfarin", "metronidazole"): {"severity": "severe", "confidence": 0.90, "desc": "Increased anticoagulant effect and bleeding risk"},
+    ("warfarin", "fluconazole"): {"severity": "severe", "confidence": 0.92, "desc": "Azole antifungals increase warfarin levels"},
+    ("warfarin", "omeprazole"): {"severity": "moderate", "confidence": 0.82, "desc": "May increase warfarin effect via CYP2C19 inhibition"},
+    ("warfarin", "acetaminophen"): {"severity": "moderate", "confidence": 0.80, "desc": "High-dose acetaminophen may increase INR"},
+    ("warfarin", "paracetamol"): {"severity": "moderate", "confidence": 0.80, "desc": "High-dose paracetamol may increase INR"},
+
+    # ── NSAIDs interactions ───────────────────────────────
+    ("aspirin", "ibuprofen"): {"severity": "moderate", "confidence": 0.90, "desc": "Increased GI bleeding risk; ibuprofen may block aspirin's cardioprotection"},
+    ("aspirin", "naproxen"): {"severity": "moderate", "confidence": 0.88, "desc": "Increased GI bleeding and renal risk"},
+    ("aspirin", "diclofenac"): {"severity": "moderate", "confidence": 0.88, "desc": "Increased GI bleeding risk with dual NSAIDs"},
+    ("ibuprofen", "naproxen"): {"severity": "moderate", "confidence": 0.90, "desc": "Do not combine NSAIDs – increased GI/renal toxicity"},
+    ("ibuprofen", "diclofenac"): {"severity": "moderate", "confidence": 0.90, "desc": "Do not combine NSAIDs – additive toxicity"},
+    ("ibuprofen", "warfarin"): {"severity": "severe", "confidence": 0.92, "desc": "NSAIDs increase bleeding risk with anticoagulants"},
+    ("ibuprofen", "lisinopril"): {"severity": "moderate", "confidence": 0.83, "desc": "NSAIDs reduce antihypertensive effect and increase renal risk"},
+    ("ibuprofen", "enalapril"): {"severity": "moderate", "confidence": 0.83, "desc": "NSAIDs reduce ACE inhibitor efficacy"},
+    ("ibuprofen", "losartan"): {"severity": "moderate", "confidence": 0.83, "desc": "NSAIDs reduce ARB efficacy and increase renal risk"},
+    ("ibuprofen", "methotrexate"): {"severity": "severe", "confidence": 0.93, "desc": "NSAIDs decrease methotrexate clearance – toxicity risk"},
+    ("ibuprofen", "lithium"): {"severity": "moderate", "confidence": 0.87, "desc": "NSAIDs increase lithium levels"},
+    ("diclofenac", "methotrexate"): {"severity": "severe", "confidence": 0.93, "desc": "NSAIDs decrease methotrexate clearance – toxicity risk"},
+    ("naproxen", "warfarin"): {"severity": "severe", "confidence": 0.91, "desc": "Increased bleeding risk"},
+
+    # ── ACE Inhibitors / ARBs / Potassium ─────────────────
+    ("lisinopril", "potassium"): {"severity": "moderate", "confidence": 0.85, "desc": "Risk of hyperkalemia"},
+    ("lisinopril", "spironolactone"): {"severity": "moderate", "confidence": 0.87, "desc": "Risk of hyperkalemia – both retain potassium"},
+    ("enalapril", "potassium"): {"severity": "moderate", "confidence": 0.85, "desc": "Risk of hyperkalemia"},
+    ("enalapril", "spironolactone"): {"severity": "moderate", "confidence": 0.87, "desc": "Risk of hyperkalemia"},
+    ("losartan", "potassium"): {"severity": "moderate", "confidence": 0.85, "desc": "Risk of hyperkalemia"},
+    ("losartan", "spironolactone"): {"severity": "moderate", "confidence": 0.86, "desc": "Risk of hyperkalemia"},
+    ("lisinopril", "losartan"): {"severity": "severe", "confidence": 0.88, "desc": "Dual RAAS blockade – hyperkalemia, hypotension, renal failure"},
+    ("enalapril", "losartan"): {"severity": "severe", "confidence": 0.88, "desc": "Dual RAAS blockade – avoid combination"},
+
+    # ── Statins ───────────────────────────────────────────
+    ("atorvastatin", "grapefruit"): {"severity": "severe", "confidence": 0.92, "desc": "Grapefruit increases statin levels – rhabdomyolysis risk"},
+    ("simvastatin", "grapefruit"): {"severity": "severe", "confidence": 0.93, "desc": "Grapefruit increases simvastatin levels – muscle toxicity"},
+    ("atorvastatin", "clarithromycin"): {"severity": "severe", "confidence": 0.90, "desc": "CYP3A4 inhibition increases statin toxicity risk"},
+    ("simvastatin", "clarithromycin"): {"severity": "severe", "confidence": 0.91, "desc": "CYP3A4 inhibition – rhabdomyolysis risk"},
+    ("atorvastatin", "erythromycin"): {"severity": "moderate", "confidence": 0.86, "desc": "Increased statin levels – monitor for muscle pain"},
+    ("simvastatin", "erythromycin"): {"severity": "severe", "confidence": 0.90, "desc": "Increased simvastatin levels – rhabdomyolysis risk"},
+    ("atorvastatin", "fluconazole"): {"severity": "moderate", "confidence": 0.85, "desc": "CYP3A4 inhibition increases statin levels"},
+    ("atorvastatin", "amlodipine"): {"severity": "mild", "confidence": 0.80, "desc": "Amlodipine may increase atorvastatin levels slightly"},
+    ("simvastatin", "amlodipine"): {"severity": "moderate", "confidence": 0.85, "desc": "Limit simvastatin to 20mg with amlodipine"},
+    ("rosuvastatin", "warfarin"): {"severity": "moderate", "confidence": 0.82, "desc": "Rosuvastatin may increase warfarin's anticoagulant effect"},
+
+    # ── Metformin / Diabetes ──────────────────────────────
+    ("metformin", "alcohol"): {"severity": "moderate", "confidence": 0.88, "desc": "Risk of lactic acidosis"},
+    ("metformin", "contrast dye"): {"severity": "severe", "confidence": 0.90, "desc": "Risk of lactic acidosis – hold metformin before contrast"},
+    ("metformin", "glimepiride"): {"severity": "moderate", "confidence": 0.82, "desc": "Additive hypoglycemia risk – monitor blood sugar"},
+    ("metformin", "glipizide"): {"severity": "moderate", "confidence": 0.82, "desc": "Additive hypoglycemia risk"},
+    ("metformin", "insulin"): {"severity": "moderate", "confidence": 0.85, "desc": "Increased risk of hypoglycemia"},
+    ("glimepiride", "insulin"): {"severity": "severe", "confidence": 0.88, "desc": "Significant hypoglycemia risk with dual therapy"},
+    ("glipizide", "insulin"): {"severity": "severe", "confidence": 0.88, "desc": "Significant hypoglycemia risk with dual therapy"},
+    ("metformin", "furosemide"): {"severity": "mild", "confidence": 0.78, "desc": "Furosemide may increase metformin levels"},
+
+    # ── Cardiovascular ────────────────────────────────────
+    ("atenolol", "amlodipine"): {"severity": "moderate", "confidence": 0.82, "desc": "Additive hypotension and bradycardia risk"},
+    ("metoprolol", "amlodipine"): {"severity": "moderate", "confidence": 0.82, "desc": "Additive hypotension and bradycardia risk"},
+    ("metoprolol", "verapamil"): {"severity": "severe", "confidence": 0.91, "desc": "Severe bradycardia and heart block risk"},
+    ("atenolol", "verapamil"): {"severity": "severe", "confidence": 0.91, "desc": "Severe bradycardia and heart block risk"},
+    ("metoprolol", "diltiazem"): {"severity": "severe", "confidence": 0.90, "desc": "Risk of severe bradycardia and AV block"},
+    ("atenolol", "diltiazem"): {"severity": "severe", "confidence": 0.90, "desc": "Risk of severe bradycardia and AV block"},
+    ("amlodipine", "diltiazem"): {"severity": "moderate", "confidence": 0.83, "desc": "Excessive vasodilation and hypotension"},
+    ("digoxin", "amiodarone"): {"severity": "severe", "confidence": 0.93, "desc": "Amiodarone increases digoxin levels – toxicity risk"},
+    ("digoxin", "verapamil"): {"severity": "severe", "confidence": 0.91, "desc": "Verapamil increases digoxin levels and AV block risk"},
+    ("digoxin", "furosemide"): {"severity": "moderate", "confidence": 0.85, "desc": "Diuretic-induced hypokalemia increases digoxin toxicity"},
+    ("digoxin", "hydrochlorothiazide"): {"severity": "moderate", "confidence": 0.84, "desc": "Hypokalemia increases digoxin toxicity"},
+    ("amiodarone", "warfarin"): {"severity": "severe", "confidence": 0.92, "desc": "Amiodarone potentiates warfarin – major bleeding risk"},
+
+    # ── Antidepressants / CNS ─────────────────────────────
+    ("fluoxetine", "tramadol"): {"severity": "severe", "confidence": 0.91, "desc": "Serotonin syndrome risk"},
+    ("sertraline", "tramadol"): {"severity": "severe", "confidence": 0.91, "desc": "Serotonin syndrome risk"},
+    ("fluoxetine", "sertraline"): {"severity": "severe", "confidence": 0.93, "desc": "Do not combine SSRIs – serotonin syndrome"},
+    ("fluoxetine", "paroxetine"): {"severity": "severe", "confidence": 0.93, "desc": "Do not combine SSRIs – serotonin syndrome"},
+    ("fluoxetine", "citalopram"): {"severity": "severe", "confidence": 0.93, "desc": "Do not combine SSRIs – serotonin syndrome"},
+    ("fluoxetine", "escitalopram"): {"severity": "severe", "confidence": 0.93, "desc": "Do not combine SSRIs – serotonin syndrome"},
+    ("sertraline", "paroxetine"): {"severity": "severe", "confidence": 0.93, "desc": "Do not combine SSRIs – serotonin syndrome"},
+    ("fluoxetine", "warfarin"): {"severity": "moderate", "confidence": 0.85, "desc": "SSRIs increase bleeding risk with warfarin"},
+    ("sertraline", "warfarin"): {"severity": "moderate", "confidence": 0.85, "desc": "SSRIs increase bleeding risk with warfarin"},
+    ("fluoxetine", "alprazolam"): {"severity": "moderate", "confidence": 0.83, "desc": "Fluoxetine increases alprazolam levels"},
+    ("diazepam", "alcohol"): {"severity": "severe", "confidence": 0.93, "desc": "CNS depression – respiratory failure risk"},
+    ("alprazolam", "alcohol"): {"severity": "severe", "confidence": 0.93, "desc": "CNS depression – respiratory failure risk"},
+    ("lorazepam", "alcohol"): {"severity": "severe", "confidence": 0.93, "desc": "CNS depression – respiratory failure risk"},
+    ("alprazolam", "opioid"): {"severity": "severe", "confidence": 0.95, "desc": "Respiratory depression – FDA black box warning"},
+    ("diazepam", "opioid"): {"severity": "severe", "confidence": 0.95, "desc": "Respiratory depression – FDA black box warning"},
+    ("amitriptyline", "tramadol"): {"severity": "severe", "confidence": 0.89, "desc": "Seizure and serotonin syndrome risk"},
+
+    # ── Antibiotics ───────────────────────────────────────
+    ("amoxicillin", "methotrexate"): {"severity": "severe", "confidence": 0.88, "desc": "Reduced methotrexate clearance – toxicity risk"},
+    ("ciprofloxacin", "antacid"): {"severity": "moderate", "confidence": 0.87, "desc": "Antacids reduce ciprofloxacin absorption significantly"},
+    ("ciprofloxacin", "calcium"): {"severity": "moderate", "confidence": 0.86, "desc": "Calcium reduces ciprofloxacin absorption"},
+    ("ciprofloxacin", "iron"): {"severity": "moderate", "confidence": 0.87, "desc": "Iron reduces fluoroquinolone absorption"},
+    ("ciprofloxacin", "theophylline"): {"severity": "severe", "confidence": 0.89, "desc": "Increased theophylline levels – seizure risk"},
+    ("azithromycin", "amiodarone"): {"severity": "severe", "confidence": 0.88, "desc": "QT prolongation risk – cardiac arrhythmia"},
+    ("azithromycin", "warfarin"): {"severity": "moderate", "confidence": 0.83, "desc": "May increase anticoagulant effect"},
+
+    # ── Proton Pump Inhibitors ────────────────────────────
+    ("clopidogrel", "omeprazole"): {"severity": "moderate", "confidence": 0.87, "desc": "Omeprazole reduces clopidogrel activation via CYP2C19"},
+    ("clopidogrel", "esomeprazole"): {"severity": "moderate", "confidence": 0.86, "desc": "Esomeprazole reduces clopidogrel efficacy"},
+    ("omeprazole", "methotrexate"): {"severity": "moderate", "confidence": 0.82, "desc": "PPIs may increase methotrexate levels"},
+    ("calcium", "levothyroxine"): {"severity": "mild", "confidence": 0.88, "desc": "Calcium reduces thyroid hormone absorption – separate by 4h"},
+    ("omeprazole", "levothyroxine"): {"severity": "mild", "confidence": 0.80, "desc": "PPIs reduce levothyroxine absorption"},
+
+    # ── Paracetamol / Acetaminophen ───────────────────────
+    ("paracetamol", "alcohol"): {"severity": "severe", "confidence": 0.92, "desc": "Hepatotoxicity risk – liver damage"},
+    ("acetaminophen", "alcohol"): {"severity": "severe", "confidence": 0.92, "desc": "Hepatotoxicity risk – liver damage"},
+    ("paracetamol", "ibuprofen"): {"severity": "mild", "confidence": 0.75, "desc": "Generally safe to combine at recommended doses with caution"},
+    ("paracetamol", "aspirin"): {"severity": "mild", "confidence": 0.78, "desc": "May be combined short-term; monitor for GI side effects"},
+    ("acetaminophen", "aspirin"): {"severity": "mild", "confidence": 0.78, "desc": "May be combined short-term; monitor for GI side effects"},
+
+    # ── Corticosteroids ───────────────────────────────────
+    ("prednisolone", "ibuprofen"): {"severity": "moderate", "confidence": 0.86, "desc": "Increased GI bleeding risk"},
+    ("prednisolone", "aspirin"): {"severity": "moderate", "confidence": 0.86, "desc": "Increased GI bleeding and ulcer risk"},
+    ("dexamethasone", "warfarin"): {"severity": "moderate", "confidence": 0.84, "desc": "Corticosteroids may alter warfarin response"},
+    ("prednisolone", "metformin"): {"severity": "moderate", "confidence": 0.82, "desc": "Corticosteroids raise blood glucose – may oppose metformin"},
+
+    # ── Thyroid ───────────────────────────────────────────
+    ("levothyroxine", "iron"): {"severity": "moderate", "confidence": 0.87, "desc": "Iron reduces levothyroxine absorption – separate by 4h"},
+    ("levothyroxine", "calcium"): {"severity": "mild", "confidence": 0.88, "desc": "Calcium reduces absorption – take 4 hours apart"},
+    ("levothyroxine", "antacid"): {"severity": "moderate", "confidence": 0.85, "desc": "Antacids reduce levothyroxine absorption"},
+
+    # ── Opioids ───────────────────────────────────────────
+    ("tramadol", "alcohol"): {"severity": "severe", "confidence": 0.93, "desc": "CNS and respiratory depression"},
+    ("morphine", "alcohol"): {"severity": "severe", "confidence": 0.95, "desc": "Critical CNS and respiratory depression"},
+    ("codeine", "alcohol"): {"severity": "severe", "confidence": 0.92, "desc": "CNS and respiratory depression"},
+    ("tramadol", "carbamazepine"): {"severity": "moderate", "confidence": 0.84, "desc": "Reduced tramadol efficacy and seizure risk"},
+
+    # ── Antiepileptics ────────────────────────────────────
+    ("carbamazepine", "valproate"): {"severity": "moderate", "confidence": 0.85, "desc": "Complex interaction – altered levels of both drugs"},
+    ("phenytoin", "valproate"): {"severity": "moderate", "confidence": 0.86, "desc": "Valproate increases free phenytoin levels"},
+    ("carbamazepine", "oral contraceptive"): {"severity": "severe", "confidence": 0.90, "desc": "Enzyme induction reduces contraceptive efficacy"},
+    ("phenytoin", "warfarin"): {"severity": "severe", "confidence": 0.88, "desc": "Complex interaction – monitor INR closely"},
+}
+
+# Class-based interaction rules for drugs not in the knowledge base
+CLASS_INTERACTIONS = {
+    # (class1, class2): { severity, desc }
+    ("BLOOD RELATED", "BLOOD RELATED"): {"severity": "moderate", "confidence": 0.78, "desc": "Multiple blood-affecting drugs – increased bleeding or clotting risk"},
+    ("HEART RELATED", "HEART RELATED"): {"severity": "moderate", "confidence": 0.76, "desc": "Multiple cardiac drugs – monitor for additive effects on heart rate/pressure"},
+    ("PAIN RELIEF", "BLOOD RELATED"): {"severity": "moderate", "confidence": 0.80, "desc": "Pain medications may affect blood clotting or interact with blood thinners"},
+    ("PAIN RELIEF", "PAIN RELIEF"): {"severity": "moderate", "confidence": 0.82, "desc": "Combining pain relievers increases risk of GI and renal side effects"},
+    ("NEURO/CNS", "NEURO/CNS"): {"severity": "moderate", "confidence": 0.80, "desc": "Multiple CNS-active drugs – additive sedation risk"},
+    ("ANTI DIABETIC", "ANTI DIABETIC"): {"severity": "moderate", "confidence": 0.80, "desc": "Multiple diabetes drugs – increased hypoglycemia risk"},
+    ("ANTI INFECTIVE", "BLOOD RELATED"): {"severity": "moderate", "confidence": 0.75, "desc": "Antibiotics may alter anticoagulant effectiveness"},
+}
+
+
+def _normalize_class(cls: str) -> str:
+    """Normalize drug class for fuzzy class-based matching."""
+    c = cls.upper().strip()
+    if any(k in c for k in ["BLOOD", "ANTICOAGUL", "ANTIPLATELET"]):
+        return "BLOOD RELATED"
+    if any(k in c for k in ["HEART", "CARDIAC", "CARDIO", "HYPERTENSION", "ANTI HYPERTENSIVE"]):
+        return "HEART RELATED"
+    if any(k in c for k in ["PAIN", "NSAID", "ANALGESIC", "ANTI INFLAMMATORY"]):
+        return "PAIN RELIEF"
+    if any(k in c for k in ["NEURO", "CNS", "PSYCHIATRIC", "PSYCHO", "ANTI DEPRESSANT", "ANTI EPILEPTIC", "SEDATIVE", "ANXIOLYTIC"]):
+        return "NEURO/CNS"
+    if any(k in c for k in ["DIABET", "HYPOGLYCEMIC", "INSULIN"]):
+        return "ANTI DIABETIC"
+    if any(k in c for k in ["ANTI INFECTIVE", "ANTIBIOTIC", "ANTI BACTERIAL", "ANTI FUNGAL", "ANTI VIRAL"]):
+        return "ANTI INFECTIVE"
+    return c
+
+
 def predict_drug_interaction(drug1: str, drug2: str) -> Dict:
     """
-    Predict interaction between two drugs using trained model
-    Falls back to knowledge base if model not available
+    Predict interaction between two drugs.
+    1. Resolve brand names to generic ingredients
+    2. Look up in comprehensive knowledge base
+    3. Fall back to drug-class-based inference
     """
-    # Try to use trained model first
-    model = model_downloader.get_model("drug_interaction")
-    
-    if model is not None:
-        try:
-            # Prepare features for model prediction
-            # Note: This requires the same preprocessing as training
-            # For now, using fallback. Implement feature engineering in production.
-            logger.debug("Model-based prediction (feature engineering required)")
-            pass  # TODO: Implement model inference with proper feature engineering
-        except Exception as e:
-            logger.warning(f"Model prediction failed: {e}. Using fallback.")
-    
-    # Fallback: Knowledge-based interaction database (production-ready)
-    # This database should be expanded with comprehensive drug interaction data
-    # Keys are sorted tuples (alphabetically) for consistent lookup
-    interaction_db = {
-        ("aspirin", "warfarin"): {"severity": "severe", "confidence": 0.95, "desc": "Increased bleeding risk"},
-        ("alcohol", "metformin"): {"severity": "moderate", "confidence": 0.88, "desc": "Risk of lactic acidosis"},
-        ("lisinopril", "potassium"): {"severity": "moderate", "confidence": 0.82, "desc": "Hyperkalemia risk"},
-        ("grapefruit", "simvastatin"): {"severity": "severe", "confidence": 0.91, "desc": "Increased drug toxicity"},
-        ("amoxicillin", "warfarin"): {"severity": "moderate", "confidence": 0.85, "desc": "May enhance anticoagulant effect"},
-        ("aspirin", "ibuprofen"): {"severity": "moderate", "confidence": 0.9, "desc": "Increased GI bleeding risk"},
-        ("clopidogrel", "omeprazole"): {"severity": "moderate", "confidence": 0.87, "desc": "Reduced antiplatelet effect"},
-        ("atorvastatin", "grapefruit"): {"severity": "severe", "confidence": 0.92, "desc": "Increased statin toxicity risk"},
-        ("ibuprofen", "lisinopril"): {"severity": "moderate", "confidence": 0.83, "desc": "Reduced antihypertensive effect"},
-        ("calcium", "levothyroxine"): {"severity": "mild", "confidence": 0.88, "desc": "Reduced thyroid hormone absorption"},
-    }
-    
-    key = tuple(sorted([drug1.lower(), drug2.lower()]))
-    
-    if key in interaction_db:
-        result = interaction_db[key]
-        return {
-            "severity": result["severity"],
-            "confidence": result["confidence"],
-            "description": result["desc"]
-        }
-    
-    # Default: no significant interaction found in database
+    # Step 1: Resolve to generic names
+    gen1 = _resolve_generic(drug1)
+    gen2 = _resolve_generic(drug2)
+    logger.info(f"Interaction check: '{drug1}'→'{gen1}' vs '{drug2}'→'{gen2}'")
+
+    # Step 2: Look up in knowledge base (sorted tuple key)
+    key = tuple(sorted([gen1, gen2]))
+    if key in DRUG_INTERACTION_DB:
+        r = DRUG_INTERACTION_DB[key]
+        return {"severity": r["severity"], "confidence": r["confidence"], "description": r["desc"]}
+
+    # Also try matching multi-ingredient generics (e.g. "aspirin+atorvastatin+clopidogrel")
+    for gen in [gen1, gen2]:
+        if "+" in gen:
+            parts = [p.strip() for p in gen.split("+")]
+            other = gen2 if gen == gen1 else gen1
+            for part in parts:
+                sub_key = tuple(sorted([part, other]))
+                if sub_key in DRUG_INTERACTION_DB:
+                    r = DRUG_INTERACTION_DB[sub_key]
+                    return {"severity": r["severity"], "confidence": r["confidence"], "description": r["desc"]}
+
+    # Step 3: Class-based inference
+    cls1 = _drug_classes.get(gen1, "")
+    cls2 = _drug_classes.get(gen2, "")
+    if cls1 and cls2:
+        norm1 = _normalize_class(cls1)
+        norm2 = _normalize_class(cls2)
+        cls_key = tuple(sorted([norm1, norm2]))
+        if cls_key in CLASS_INTERACTIONS:
+            r = CLASS_INTERACTIONS[cls_key]
+            return {
+                "severity": r["severity"],
+                "confidence": r["confidence"],
+                "description": f"{r['desc']} ({cls1} + {cls2})"
+            }
+
+    # No interaction found
     return {
         "severity": "none",
         "confidence": 0.75,
@@ -407,6 +624,176 @@ async def health_check():
         },
         "gpu_available": False  # Set True if using GPU
     }
+
+# ---------------------------------------------------------
+# Drug & Food Search Data (loaded once at startup)
+# ---------------------------------------------------------
+ARTIFACTS_DIR = Path(__file__).resolve().parent.parent / "artifacts"
+DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+
+# Load drug search index
+_drug_index: List[Dict] = []
+_drug_search_file = ARTIFACTS_DIR / "drug_search_index.json"
+if _drug_search_file.exists():
+    with open(_drug_search_file, "r", encoding="utf-8") as _f:
+        _drug_index = json.load(_f)
+    logger.info(f"Loaded {len(_drug_index)} drugs into search index")
+else:
+    logger.warning(f"Drug search index not found: {_drug_search_file}")
+
+# Load food data
+_food_list: List[Dict] = []
+_food_csv = DATA_DIR / "food_features_final.csv"
+_food_xlsx = ARTIFACTS_DIR / "SrilankanCommonFoods.xlsx"
+if _food_csv.exists():
+    _food_df = pd.read_csv(_food_csv)
+    _food_list = _food_df.to_dict(orient="records")
+    logger.info(f"Loaded {len(_food_list)} foods from food_features_final.csv")
+elif _food_xlsx.exists():
+    _food_df = pd.read_excel(_food_xlsx)
+    _food_list = _food_df.to_dict(orient="records")
+    logger.info(f"Loaded {len(_food_list)} foods from SrilankanCommonFoods.xlsx")
+else:
+    logger.warning("No food dataset found")
+
+# Load drug-food interaction data for risk checks
+_drug_interactions_data: List[Dict] = []
+_interactions_csv = DATA_DIR / "drug_interactions_final.csv"
+if _interactions_csv.exists():
+    _interactions_df = pd.read_csv(_interactions_csv)
+    _drug_interactions_data = _interactions_df.to_dict(orient="records")
+    logger.info(f"Loaded {len(_drug_interactions_data)} drug-food interaction records")
+
+# Build brand→generic lookups now that drug index is loaded
+_build_drug_lookups()
+logger.info(f"Built drug lookups: {len(_brand_to_generic)} brand→generic, {len(_drug_classes)} drug classes")
+
+@app.get("/drugs")
+async def search_drugs(q: str = "", limit: int = 50):
+    """Search drugs by name or generic ingredient."""
+    if not q.strip():
+        return _drug_index[:limit]
+    query = q.lower().strip()
+    results = []
+    seen = set()
+    # Prefix matches first
+    for d in _drug_index:
+        if len(results) >= limit:
+            break
+        lower = d["name"].lower()
+        if lower.startswith(query) and lower not in seen:
+            seen.add(lower)
+            results.append(d)
+    # Contains matches
+    if len(results) < limit:
+        for d in _drug_index:
+            if len(results) >= limit:
+                break
+            lower = d["name"].lower()
+            if query in lower and lower not in seen:
+                seen.add(lower)
+                results.append(d)
+    # Generic ingredient matches
+    if len(results) < limit:
+        for d in _drug_index:
+            if len(results) >= limit:
+                break
+            lower = d["name"].lower()
+            gen = (d.get("generic") or "").lower()
+            if gen and query in gen and lower not in seen:
+                seen.add(lower)
+                results.append(d)
+    return results
+
+@app.get("/foods")
+async def search_foods(q: str = "", limit: int = 50):
+    """Search foods by name."""
+    if not q.strip():
+        return _food_list[:limit]
+    query = q.lower().strip()
+    results = []
+    for f in _food_list:
+        if len(results) >= limit:
+            break
+        food_name = str(f.get("Food", "")).lower()
+        if query in food_name:
+            results.append(f)
+    return results
+
+@app.post("/drug-risk")
+async def drug_risk(data: Dict[str, Any]):
+    """Check drug risk based on drug index."""
+    drug_index = data.get("drug_index")
+    if drug_index is None or drug_index < 0 or drug_index >= len(_drug_index):
+        raise HTTPException(status_code=400, detail="Invalid drug_index")
+    drug = _drug_index[drug_index]
+    drug_name = (drug.get("generic") or drug.get("name", "")).lower()
+    # Check for known interactions
+    related = [r for r in _drug_interactions_data
+               if str(r.get("Active_Ingredient", "")).lower() == drug_name]
+    risk = 1 if related else 0
+    return {"drug": drug, "risk": risk, "interaction_count": len(related)}
+
+@app.post("/food-drug-risk")
+async def food_drug_risk(data: Dict[str, Any]):
+    """Check food-drug interaction risk."""
+    drug_index = data.get("drug_index")
+    food_name = data.get("food_name", "")
+    if drug_index is None or drug_index < 0 or drug_index >= len(_drug_index):
+        raise HTTPException(status_code=400, detail="Invalid drug_index")
+    drug = _drug_index[drug_index]
+    drug_name = (drug.get("generic") or drug.get("name", "")).lower()
+    food_lower = food_name.lower()
+    # Check interactions data
+    related = [r for r in _drug_interactions_data
+               if str(r.get("Active_Ingredient", "")).lower() == drug_name]
+    risk = 0
+    explanation = "No known interaction"
+    for r in related:
+        cat = str(r.get("interaction_category", "")).lower()
+        text = str(r.get("interaction_text", "")).lower()
+        if cat == "alcohol" and any(kw in food_lower for kw in ["beer", "wine", "spirits", "alcohol", "toddy", "arrack"]):
+            risk = 2
+            explanation = str(r.get("interaction_text", "Alcohol interaction"))
+            break
+        if cat == "herbal_anticoagulant" and any(kw in food_lower for kw in ["garlic", "ginger", "ginseng", "ginkgo"]):
+            risk = 2
+            explanation = str(r.get("interaction_text", "Herbal anticoagulant interaction"))
+            break
+        if cat == "iron_support" and "iron" in food_lower:
+            risk = 1
+            explanation = str(r.get("interaction_text", "Iron supplement interaction"))
+            break
+    return {"drug": drug["name"], "food": food_name, "risk": risk, "explanation": explanation}
+
+@app.get("/safe-foods/{drug_index}")
+async def safe_foods(drug_index: int, top_n: int = 10):
+    """Get safe foods for a given drug."""
+    if drug_index < 0 or drug_index >= len(_drug_index):
+        raise HTTPException(status_code=400, detail="Invalid drug_index")
+    drug = _drug_index[drug_index]
+    drug_name = (drug.get("generic") or drug.get("name", "")).lower()
+    related = [r for r in _drug_interactions_data
+               if str(r.get("Active_Ingredient", "")).lower() == drug_name]
+    # Get risky food keywords
+    risky_keywords = set()
+    for r in related:
+        cat = str(r.get("interaction_category", ""))
+        if cat == "alcohol":
+            risky_keywords.update(["beer", "wine", "spirits", "toddy", "arrack", "alcohol"])
+        elif cat == "herbal_anticoagulant":
+            risky_keywords.update(["garlic", "ginger", "ginseng", "ginkgo", "chamomile"])
+        elif cat == "iron_support":
+            risky_keywords.add("iron")
+    # Filter safe foods
+    safe = []
+    for f in _food_list:
+        fname = str(f.get("Food", "")).lower()
+        if not any(kw in fname for kw in risky_keywords):
+            safe.append(f)
+        if len(safe) >= top_n:
+            break
+    return safe
 
 @app.post("/predict/interactions", response_model=DrugInteractionResponse)
 async def predict_interactions(request: DrugInteractionRequest):

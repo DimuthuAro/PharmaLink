@@ -961,7 +961,7 @@ const InteractionCheck = () => {
     }, [savedResults]);
 
     useEffect(() => {
-        if (drugInput.trim().length < 2) {
+        if (drugInput.trim().length < 1) {
             setSuggestions([]);
             return undefined;
         }
@@ -970,12 +970,39 @@ const InteractionCheck = () => {
         const timer = setTimeout(async () => {
             try {
                 setIsSearching(true);
-                const res = await fetch(`${API_BASE}/search?query=${encodeURIComponent(drugInput.trim())}&limit=6`, {
-                    signal: controller.signal
-                });
-                if (!res.ok) throw new Error('Search failed');
-                const data = await res.json();
-                setSuggestions(data.results || []);
+                const query = encodeURIComponent(drugInput.trim());
+                let results = [];
+
+                // Try microservice search first
+                try {
+                    const res = await fetch(`${API_BASE}/search?query=${query}&limit=50`, {
+                        signal: controller.signal
+                    });
+                    if (!res.ok) throw new Error('Microservice search failed');
+                    const data = await res.json();
+                    results = data.results || [];
+                } catch (msErr) {
+                    if (msErr.name === 'AbortError') throw msErr;
+                    // Fallback: ML service drug search (FastAPI /drugs endpoint)
+                    const ML_BASE = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+                    const fallbackRes = await fetch(`${ML_BASE}/drugs?q=${query}&limit=50`, {
+                        signal: controller.signal
+                    });
+                    if (fallbackRes.ok) {
+                        const fallbackData = await fallbackRes.json();
+                        results = (fallbackData || []).map(d => ({
+                            name: d.name,
+                            type: d.type || 'generic',
+                            genericName: d.generic || '',
+                            class: d.class || ''
+                        }));
+                    }
+                }
+
+                // Only show generic drug names (not brand names)
+                results = results.filter(s => s.type === 'generic');
+
+                setSuggestions(results);
             } catch (err) {
                 if (err.name !== 'AbortError') {
                     console.error('Search error', err);
@@ -1007,9 +1034,13 @@ const InteractionCheck = () => {
     const handleInputKeyDown = useCallback((e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            addDrug(drugInput || '');
+            // Add top suggestion on Enter if available
+            if (suggestions.length > 0) {
+                const s = suggestions[0];
+                addDrug(s.name);
+            }
         }
-    }, [addDrug, drugInput]);
+    }, [suggestions, addDrug]);
 
     const clearAll = useCallback(() => {
         setDrugs([]);
@@ -1144,48 +1175,68 @@ const InteractionCheck = () => {
         const started = performance.now();
 
         try {
-            // Try ML Service first (new architecture)
-            let data;
-            try {
-                const mlResult = await mlService.checkInteractions(drugs, false);
-                if (mlResult.success) {
-                    // Transform ML service response to match expected format
-                    data = {
-                        severity: mlResult.interactions?.length > 0
-                            ? mlResult.interactions.reduce((max, i) =>
-                                i.severity === 'severe' ? 'severe' :
-                                    i.severity === 'moderate' && max !== 'severe' ? 'moderate' :
-                                        i.severity === 'mild' && max === 'none' ? 'mild' : max, 'none')
-                            : 'none',
-                        interactions: mlResult.interactions?.map(i => ({
-                            drug1: i.drug_pair[0],
-                            drug2: i.drug_pair[1],
-                            severity: i.severity,
-                            description: i.description,
-                            confidence: i.confidence,
-                            recommendation: `Confidence: ${(i.confidence * 100).toFixed(0)}%`
-                        })) || [],
-                        risk_score: mlResult.risk_score,
-                        processing_time_ms: mlResult.processing_time_ms
-                    };
-                } else {
-                    throw new Error('ML Service unavailable');
-                }
-            } catch (mlError) {
-                console.log('ML Service fallback, using original API:', mlError.message);
-            // Fallback to original API
-                const res = await fetch(`${API_BASE}/check-interactions`, {
+            // Call both ML Service and Microservice in parallel for maximum coverage
+            const [mlPromise, msPromise] = [
+                mlService.checkInteractions(drugs, false).catch(() => null),
+                fetch(`${API_BASE}/check-interactions`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ drugs })
-                });
+                }).then(r => r.ok ? r.json() : null).catch(() => null)
+            ];
 
-                if (!res.ok) {
-                    const errBody = await res.json().catch(() => ({}));
-                    throw new Error(errBody.message || 'Unable to check interactions');
+            const [mlResult, msResult] = await Promise.all([mlPromise, msPromise]);
+
+            let data = null;
+
+            // Transform ML service result
+            if (mlResult?.success) {
+                data = {
+                    severity: mlResult.interactions?.length > 0
+                        ? mlResult.interactions.reduce((max, i) =>
+                            i.severity === 'severe' ? 'severe' :
+                                i.severity === 'moderate' && max !== 'severe' ? 'moderate' :
+                                    i.severity === 'mild' && max === 'none' ? 'mild' : max, 'none')
+                        : 'none',
+                    interactions: mlResult.interactions?.map(i => ({
+                        drug1: i.drug_pair[0],
+                        drug2: i.drug_pair[1],
+                        severity: i.severity,
+                        description: i.description,
+                        confidence: i.confidence,
+                        recommendation: `Confidence: ${(i.confidence * 100).toFixed(0)}%`
+                    })) || [],
+                    risk_score: mlResult.risk_score,
+                    processing_time_ms: mlResult.processing_time_ms
+                };
+            }
+
+            // Merge microservice results (adds any interactions not already found)
+            if (msResult?.interactions?.length > 0) {
+                if (!data) {
+                    data = msResult;
+                } else {
+                    const existingKeys = new Set(data.interactions.map(i =>
+                        [i.drug1, i.drug2].sort().join('|').toLowerCase()));
+                    for (const mi of msResult.interactions) {
+                        const key = [mi.drug1, mi.drug2].sort().join('|').toLowerCase();
+                        if (!existingKeys.has(key)) {
+                            existingKeys.add(key);
+                            data.interactions.push(mi);
+                        }
+                    }
+                    // Recalculate severity after merge
+                    if (data.interactions.length > 0) {
+                        data.severity = data.interactions.reduce((max, i) =>
+                            i.severity === 'severe' ? 'severe' :
+                                i.severity === 'moderate' && max !== 'severe' ? 'moderate' :
+                                    i.severity === 'mild' && max === 'none' ? 'mild' : max, 'none');
+                    }
                 }
+            }
 
-                data = await res.json();
+            if (!data) {
+                throw new Error('Both ML Service and Drug Interaction Service are unavailable');
             }
 
             // Add minimum 1.5s delay to show beautiful loading animation
@@ -1629,7 +1680,7 @@ const InteractionCheck = () => {
                                                     value={drugInput}
                                                     onChange={(e) => setDrugInput(e.target.value)}
                                                     onKeyDown={handleInputKeyDown}
-                                                    placeholder="🔍 Search medications by name, brand, or generic..."
+                                                    placeholder="🔍 Search medications by generic name..."
                                                     className="w-full pl-12 pr-24 py-4 bg-white/80 backdrop-blur-sm border-2 border-gray-200/50 rounded-xl text-gray-900 placeholder:text-gray-400 focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all duration-300 text-base shadow-sm hover:shadow-md hover:border-gray-300"
                                                 />
 
@@ -1673,7 +1724,7 @@ const InteractionCheck = () => {
                                                     <li
                                                         key={s.id || s.name}
                                                             className="px-4 py-3 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 cursor-pointer transition-all duration-200 group/item"
-                                                        onMouseDown={() => addDrug(s.name || s.genericName || drugInput)}
+                                                            onMouseDown={() => addDrug(s.name)}
                                                     >
                                                             <div className="flex items-center justify-between">
                                                                 <div className="flex items-center gap-3">
@@ -1681,13 +1732,18 @@ const InteractionCheck = () => {
                                                                         <Beaker className="h-5 w-5 text-blue-600" />
                                                                     </div>
                                                                     <div>
-                                                                        <p className="text-sm font-semibold text-gray-900 group-hover/item:text-blue-700 transition-colors">{s.name || s.genericName}</p>
-                                                                        {s.genericName && s.name !== s.genericName && (
-                                                                            <p className="text-xs text-gray-500">Generic: {s.genericName}</p>
+                                                                        <p className="text-sm font-semibold text-gray-900 group-hover/item:text-blue-700 transition-colors">{s.name}</p>
+                                                                        {s.class && (
+                                                                            <p className="text-xs text-blue-400">{s.class}</p>
                                                                         )}
                                                                     </div>
                                                                 </div>
-                                                                <span className="text-xs text-gray-400 group-hover/item:text-blue-500 transition-colors">+ Add</span>
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="text-[10px] px-1.5 py-0.5 rounded-full font-medium bg-emerald-100 text-emerald-700">
+                                                                        Generic
+                                                                    </span>
+                                                                    <span className="text-xs text-gray-400 group-hover/item:text-blue-500 transition-colors">+ Add</span>
+                                                                </div>
                                                             </div>
                                                     </li>
                                                 ))}
