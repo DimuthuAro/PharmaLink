@@ -75,11 +75,14 @@ const API_ENDPOINTS = {
     ANALYZE_TEXT: `${API_BASE}/analyze-text`,
     HEALTH: `${API_BASE}/health`,
     
-    // ML Service OCR endpoints  
+    // ML Service OCR + NER endpoints (Donut + Medical NER pipeline)
     OCR_PROCESS: `${ML_SERVICE_BASE}/prescription/ocr`,
+    OCR_INTERPRET: `${ML_SERVICE_BASE}/prescription/interpret`,
     OCR_ENHANCE: `${ML_SERVICE_BASE}/prescription/enhance`,
     
-    // Backend gateway routes
+    // Backend gateway routes (proxied through Express to ML)
+    ML_INTERPRET: `${BACKEND_API}/ml/prescription/interpret`,
+    ML_OCR: `${BACKEND_API}/ml/prescription/ocr`,
     PRESCRIPTION_INTERPRET: `${BACKEND_API}/prescription/interpret`,
     PRESCRIPTION_HISTORY: `${BACKEND_API}/prescription/history`
 };
@@ -855,45 +858,54 @@ const ProfessionalPrescriptionInterpreter = () => {
             }));
 
             setProcessingStatus(PROCESSING_STATES.PROCESSING_OCR);
-            addNotification('Processing prescription with OCR...', 'info');
+            addNotification('Processing prescription with OCR + NER pipeline...', 'info');
 
-            // Try primary endpoint (backend microservice)
+            // Try endpoints in priority order:
+            // 1. ML Service full interpret (Donut OCR + Medical NER)
+            // 2. Backend microservice /interpret (proxies to ML)
+            // 3. ML Service basic OCR
+            // 4. Mock fallback
             let response;
             let ocrData;
 
+            const requestConfig = {
+                headers: { 'Content-Type': 'multipart/form-data' },
+                timeout: 120000, // 2 min (Donut model may need loading time)
+                onUploadProgress: (progressEvent) => {
+                    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    updateState('progress', {
+                        step: 'Uploading',
+                        value: percentCompleted,
+                        details: `${percentCompleted}% uploaded`
+                    });
+                }
+            };
+
             try {
-                response = await axios.post(API_ENDPOINTS.UPLOAD, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    },
-                    timeout: 60000, // 60 second timeout for OCR processing
-                    onUploadProgress: (progressEvent) => {
-                        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                        updateState('progress', {
-                            step: 'Uploading',
-                            value: percentCompleted,
-                            details: `${percentCompleted}% uploaded`
-                        });
-                    }
-                });
+                // Primary: ML Service full interpret pipeline (OCR → NER → Parser)
+                response = await axios.post(API_ENDPOINTS.OCR_INTERPRET, formData, requestConfig);
                 ocrData = response.data;
             } catch (primaryError) {
-                console.warn('Primary API failed, trying ML service directly:', primaryError.message);
-                
-                // Fallback to ML service direct endpoint
+                console.warn('ML interpret failed, trying backend microservice:', primaryError.message);
+
                 try {
-                    response = await axios.post(API_ENDPOINTS.OCR_PROCESS, formData, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        },
-                        timeout: 60000
-                    });
+                    // Fallback 1: Backend microservice (proxies to ML)
+                    response = await axios.post(API_ENDPOINTS.UPLOAD, formData, requestConfig);
                     ocrData = response.data;
-                } catch (mlError) {
-                    console.warn('ML service also failed, using mock response:', mlError.message);
-                    
-                    // Fallback to mock response for development/demo
-                    ocrData = generateMockOCRResponse();
+                } catch (backendError) {
+                    console.warn('Backend failed, trying ML OCR directly:', backendError.message);
+
+                    try {
+                // Fallback 2: ML Service basic OCR
+                        response = await axios.post(API_ENDPOINTS.OCR_PROCESS, formData, {
+                            ...requestConfig,
+                            timeout: 120000
+                        });
+                        ocrData = response.data;
+                    } catch (mlError) {
+                        console.warn('All APIs failed, using mock response:', mlError.message);
+                        ocrData = generateMockOCRResponse();
+                    }
                 }
             }
 
@@ -950,15 +962,18 @@ const ProfessionalPrescriptionInterpreter = () => {
     }, [state.selectedImage, state.enhancedPreviewUrl, state.imageSettings, canSubmitForOCR, addNotification, addToProcessingHistory]);
 
     /**
-     * Process and normalize OCR API response
+     * Process and normalize OCR/Interpret API response
      */
     const processOCRResponse = useCallback((apiResponse) => {
         // Handle different API response formats
         const interpretation = apiResponse.interpretation || apiResponse;
+        const nerEntities = apiResponse.ner_entities || {};
+        const metadata = apiResponse.metadata || {};
+        const disclaimer = apiResponse.disclaimer || '';
         
         return {
             rawText: interpretation.rawText || interpretation.extracted_text || interpretation.text || '',
-            medications: extractMedicationsFromOCR(interpretation),
+            medications: extractMedicationsFromOCR(interpretation, nerEntities),
             dosages: interpretation.dosages || [],
             instructions: interpretation.instructions || [],
             frequencies: interpretation.frequencies || [],
@@ -967,26 +982,53 @@ const ProfessionalPrescriptionInterpreter = () => {
             interactions: interpretation.interactions || [],
             confidence: interpretation.confidence || calculateOCRConfidence(interpretation),
             imageQuality: interpretation.imageQuality || interpretation.image_quality || 75,
-            timestamp: apiResponse.timestamp || new Date().toISOString()
+            timestamp: apiResponse.timestamp || new Date().toISOString(),
+            nerEntities,
+            metadata: {
+                engine: metadata.engine || metadata.engines?.join(' + ') || 'unknown',
+                pipeline: metadata.pipeline || '',
+                models: metadata.models || {},
+                processingTime: metadata.processingTime || 0,
+            },
+            disclaimer,
         };
     }, []);
 
     /**
      * Extract medications from OCR response
      */
-    const extractMedicationsFromOCR = (interpretation) => {
+    const extractMedicationsFromOCR = (interpretation, nerEntities = {}) => {
+    // Priority 1: Use structured medications from the ML pipeline
         if (interpretation.medications && Array.isArray(interpretation.medications)) {
             return interpretation.medications.map(med => ({
                 name: med.name || med.drug_name || med,
                 dosage: med.dosage || med.dose || '',
                 frequency: med.frequency || '',
                 duration: med.duration || '',
+                route: med.route || '',
+                form: med.form || '',
                 instructions: med.instructions || '',
-                confidence: med.confidence || 0
+                confidence: med.confidence || 0,
+                source: med.source || 'pipeline'
+            }));
+        }
+
+        // Priority 2: Build from NER entities if available
+        if (nerEntities.medications && nerEntities.medications.length > 0) {
+            return nerEntities.medications.map((medName, idx) => ({
+                name: medName,
+                dosage: nerEntities.dosages?.[idx] || '',
+                frequency: nerEntities.frequencies?.[idx] || '',
+                duration: nerEntities.durations?.[idx] || '',
+                route: nerEntities.routes?.[idx] || '',
+                form: nerEntities.forms?.[idx] || '',
+                instructions: '',
+                confidence: 75,
+                source: 'ner'
             }));
         }
         
-        // Try to parse from raw text if structured data not available
+        // Priority 3: Parse from raw text via regex
         if (interpretation.rawText || interpretation.text) {
             const text = interpretation.rawText || interpretation.text;
             const medicationPatterns = [
@@ -1005,7 +1047,8 @@ const ProfessionalPrescriptionInterpreter = () => {
                             frequency: '',
                             duration: '',
                             instructions: '',
-                            confidence: 60
+                            confidence: 60,
+                            source: 'regex'
                         });
                     }
                 }

@@ -3,10 +3,24 @@
  */
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
 const { mlClient } = require('../services/mlServiceClient');
 
 // Middleware to parse JSON
 router.use(express.json());
+
+// Multer for prescription image uploads
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: (req, file, cb) => {
+        if (/^image\/(jpeg|jpg|png|bmp|tiff|webp)$/.test(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only image files are allowed'));
+        }
+    }
+});
 
 /**
  * Health check for ML service
@@ -295,5 +309,141 @@ function generateBrandInsights(medication, selectedBrands, allBrands) {
         modelVersion: '2.1.0'
     };
 }
+
+/**
+ * Prescription OCR + NER Interpretation
+ * POST /api/ml/prescription/interpret
+ * Body: multipart/form-data with 'file' (image), optional 'engine', 'enhance_mode'
+ */
+router.post('/prescription/interpret', upload.single('file'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, error: 'Prescription image is required' });
+        }
+
+        const engine = req.body.engine || 'auto';
+        const enhanceMode = req.body.enhance_mode || 'medical';
+
+        const result = await mlClient.interpretPrescription(req.file, engine, enhanceMode);
+
+        if (result.success) {
+            res.json(result.data);
+        } else {
+            res.status(500).json({ success: false, error: result.error });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+/**
+ * Basic Prescription OCR
+ * POST /api/ml/prescription/ocr
+ */
+router.post('/prescription/ocr', upload.single('file'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, error: 'Prescription image is required' });
+        }
+
+        const result = await mlClient.ocrPrescription(req.file, req.body.engine || 'auto');
+
+        if (result.success) {
+            res.json(result.data);
+        } else {
+            res.status(500).json({ success: false, error: result.error });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// ═══════════════════════════════════════════════════════════════
+// Treatment Identifier Routes
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * Identify treatments from medication list
+ * POST /api/ml/treatment/identify
+ * Body: { medications: ["Metformin", "Atorvastatin"] }
+ */
+router.post('/treatment/identify', async (req, res) => {
+    try {
+        const { medications } = req.body;
+
+        if (!medications || !Array.isArray(medications) || medications.length === 0) {
+            return res.status(400).json({
+                success: false,
+                error: 'At least 1 medication is required'
+            });
+        }
+
+        const result = await mlClient.identifyTreatments(medications);
+
+        if (result.success) {
+            res.json(result.data);
+        } else {
+            res.status(500).json({ success: false, error: result.error });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+/**
+ * Identify treatments from prescription text
+ * POST /api/ml/treatment/identify-from-text
+ * Body: { prescription_text: "Metformin 500mg, Atorvastatin 20mg ..." }
+ */
+router.post('/treatment/identify-from-text', async (req, res) => {
+    try {
+        const { prescription_text } = req.body;
+
+        if (!prescription_text || typeof prescription_text !== 'string' || !prescription_text.trim()) {
+            return res.status(400).json({
+                success: false,
+                error: 'Prescription text is required'
+            });
+        }
+
+        const result = await mlClient.identifyTreatmentsFromText(prescription_text);
+
+        if (result.success) {
+            res.json(result.data);
+        } else {
+            res.status(500).json({ success: false, error: result.error });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+/**
+ * Get conditions for a single medication
+ * POST /api/ml/treatment/medication-conditions
+ * Body: { medication: "Metformin" }
+ */
+router.post('/treatment/medication-conditions', async (req, res) => {
+    try {
+        const { medication } = req.body;
+
+        if (!medication || typeof medication !== 'string') {
+            return res.status(400).json({
+                success: false,
+                error: 'Medication name is required'
+            });
+        }
+
+        const result = await mlClient.getMedicationConditions(medication);
+
+        if (result.success) {
+            res.json(result.data);
+        } else {
+            res.status(500).json({ success: false, error: result.error });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
 
 module.exports = router;

@@ -10,6 +10,7 @@ import History from '../pages/History.jsx'
 import Home from '../pages/Home.jsx'
 import MealPlan from '../pages/PersonalizedMealPlan.jsx'
 import CrossBrandComparator from '../pages/CrossBrandComparator.jsx'
+import TreatmentIdentifier from '../pages/TreatmentIdentifier.jsx'
 
 const unprotected_routes = [
   { path: '/login', element: <LogIn /> },
@@ -26,7 +27,8 @@ const protected_routes = createProtectedRoutes([
   { path: "/meal-plan", element: <MealPlan /> },
   { path: '/prescription', element: <Prescription_Mainpage /> },
 
-  { path: '/comparator', element: <CrossBrandComparator /> }
+  { path: '/comparator', element: <CrossBrandComparator /> },
+  { path: '/treatment-identifier', element: <TreatmentIdentifier /> }
 ])
 
 export { unprotected_routes, protected_routes }

@@ -123,6 +123,20 @@ app.use('/api/prescription', createProxyMiddleware({
     pathRewrite: { '^/api/prescription': '' }
 }));
 
+app.use('/api/treatment', createProxyMiddleware({
+    target: `http://localhost:${process.env.TREATMENT_IDENTIFIER_PORT || 3005}`,
+    changeOrigin: true,
+    pathRewrite: { '^/api/treatment': '' },
+    onProxyReq: (proxyReq, req, res) => {
+        if (req.body && Object.keys(req.body).length > 0) {
+            const bodyData = JSON.stringify(req.body);
+            proxyReq.setHeader('Content-Type', 'application/json');
+            proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+            proxyReq.write(bodyData);
+        }
+    }
+}));
+
 // ML Service Routes (connects to Python FastAPI)
 const mlRoutes = require('./routes/mlRoutes');
 app.use('/api/ml', mlRoutes);

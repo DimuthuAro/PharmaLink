@@ -1,0 +1,258 @@
+[
+  {
+    "pattern": "cillin$",
+    "conditions": [
+      "Bacterial Infection"
+    ],
+    "drug_class": "Penicillin Antibiotic"
+  },
+  {
+    "pattern": "mycin$",
+    "conditions": [
+      "Bacterial Infection"
+    ],
+    "drug_class": "Macrolide / Aminoglycoside"
+  },
+  {
+    "pattern": "floxacin$",
+    "conditions": [
+      "Bacterial Infection",
+      "UTI"
+    ],
+    "drug_class": "Fluoroquinolone"
+  },
+  {
+    "pattern": "cycline$",
+    "conditions": [
+      "Bacterial Infection",
+      "Acne"
+    ],
+    "drug_class": "Tetracycline"
+  },
+  {
+    "pattern": "azole$",
+    "conditions": [
+      "Fungal Infection"
+    ],
+    "drug_class": "Azole Antifungal"
+  },
+  {
+    "pattern": "statin$",
+    "conditions": [
+      "Hyperlipidemia",
+      "High Cholesterol"
+    ],
+    "drug_class": "Statin"
+  },
+  {
+    "pattern": "sartan$",
+    "conditions": [
+      "Hypertension"
+    ],
+    "drug_class": "ARB"
+  },
+  {
+    "pattern": "pril$",
+    "conditions": [
+      "Hypertension",
+      "Heart Failure"
+    ],
+    "drug_class": "ACE Inhibitor"
+  },
+  {
+    "pattern": "olol$",
+    "conditions": [
+      "Hypertension",
+      "Angina"
+    ],
+    "drug_class": "Beta-Blocker"
+  },
+  {
+    "pattern": "dipine$",
+    "conditions": [
+      "Hypertension",
+      "Angina"
+    ],
+    "drug_class": "Calcium Channel Blocker"
+  },
+  {
+    "pattern": "prazole$",
+    "conditions": [
+      "GERD",
+      "Peptic Ulcer"
+    ],
+    "drug_class": "PPI"
+  },
+  {
+    "pattern": "tidine$",
+    "conditions": [
+      "GERD",
+      "Peptic Ulcer"
+    ],
+    "drug_class": "H2 Blocker"
+  },
+  {
+    "pattern": "gliptin$",
+    "conditions": [
+      "Type 2 Diabetes"
+    ],
+    "drug_class": "DPP-4 Inhibitor"
+  },
+  {
+    "pattern": "gliflozin$",
+    "conditions": [
+      "Type 2 Diabetes"
+    ],
+    "drug_class": "SGLT2 Inhibitor"
+  },
+  {
+    "pattern": "glimepiride$",
+    "conditions": [
+      "Type 2 Diabetes"
+    ],
+    "drug_class": "Sulfonylurea"
+  },
+  {
+    "pattern": "formin$",
+    "conditions": [
+      "Type 2 Diabetes"
+    ],
+    "drug_class": "Biguanide"
+  },
+  {
+    "pattern": "setron$",
+    "conditions": [
+      "Nausea",
+      "Vomiting"
+    ],
+    "drug_class": "5-HT3 Antagonist"
+  },
+  {
+    "pattern": "triptan$",
+    "conditions": [
+      "Migraine"
+    ],
+    "drug_class": "Triptan"
+  },
+  {
+    "pattern": "pam$",
+    "conditions": [
+      "Anxiety",
+      "Insomnia",
+      "Seizure"
+    ],
+    "drug_class": "Benzodiazepine"
+  },
+  {
+    "pattern": "zepine$",
+    "conditions": [
+      "Epilepsy",
+      "Bipolar Disorder"
+    ],
+    "drug_class": "Anticonvulsant"
+  },
+  {
+    "pattern": "barb$|barbital$",
+    "conditions": [
+      "Epilepsy",
+      "Insomnia"
+    ],
+    "drug_class": "Barbiturate"
+  },
+  {
+    "pattern": "caine$",
+    "conditions": [
+      "Local Anesthesia",
+      "Pain"
+    ],
+    "drug_class": "Local Anesthetic"
+  },
+  {
+    "pattern": "vir$|ciclovir$",
+    "conditions": [
+      "Viral Infection",
+      "Herpes"
+    ],
+    "drug_class": "Antiviral"
+  },
+  {
+    "pattern": "mab$",
+    "conditions": [
+      "Autoimmune Disease",
+      "Cancer"
+    ],
+    "drug_class": "Monoclonal Antibody"
+  },
+  {
+    "pattern": "nib$",
+    "conditions": [
+      "Cancer"
+    ],
+    "drug_class": "Kinase Inhibitor"
+  },
+  {
+    "pattern": "sone$|solone$|olone$",
+    "conditions": [
+      "Inflammation",
+      "Autoimmune Disease"
+    ],
+    "drug_class": "Corticosteroid"
+  },
+  {
+    "pattern": "coxib$",
+    "conditions": [
+      "Arthritis",
+      "Pain"
+    ],
+    "drug_class": "COX-2 Inhibitor"
+  },
+  {
+    "pattern": "profen$",
+    "conditions": [
+      "Pain",
+      "Inflammation",
+      "Fever"
+    ],
+    "drug_class": "NSAID"
+  },
+  {
+    "pattern": "phylline$",
+    "conditions": [
+      "Asthma",
+      "COPD"
+    ],
+    "drug_class": "Methylxanthine"
+  },
+  {
+    "pattern": "lukast$",
+    "conditions": [
+      "Asthma",
+      "Allergic Rhinitis"
+    ],
+    "drug_class": "Leukotriene Antagonist"
+  },
+  {
+    "pattern": "zine$",
+    "conditions": [
+      "Allergy",
+      "Allergic Rhinitis"
+    ],
+    "drug_class": "Antihistamine"
+  },
+  {
+    "pattern": "semide$",
+    "conditions": [
+      "Edema",
+      "Heart Failure"
+    ],
+    "drug_class": "Loop Diuretic"
+  },
+  {
+    "pattern": "thiazide$",
+    "conditions": [
+      "Hypertension",
+      "Edema"
+    ],
+    "drug_class": "Thiazide Diuretic"
+  }
+]

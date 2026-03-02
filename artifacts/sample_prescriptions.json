@@ -1,0 +1,34 @@
+[
+  {
+    "id": "sample_001",
+    "description": "Simple 3-drug prescription",
+    "text": "Dr. Smith Medical Clinic\nPatient: John Doe\nDate: 2025-01-05\n\nRx:\n1. Amoxicillin 500mg - Take 1 tablet 3 times daily for 7 days\n2. Ibuprofen 400mg - Take 1 tablet as needed for pain\n3. Omeprazole 20mg - Take 1 capsule daily before breakfast\n\nInstructions: Take medications with food.\nSignature: Dr. Smith, MD",
+    "expected_medications": [
+      "Amoxicillin",
+      "Ibuprofen",
+      "Omeprazole"
+    ]
+  },
+  {
+    "id": "sample_002",
+    "description": "Prescription with medical abbreviations",
+    "text": "Rx:\nTab. Metformin 500mg BD PC\nTab. Amlodipine 5mg OD\nCap. Omeprazole 20mg OD AC\nDuration: 30 days\nReview after 1 month",
+    "expected_medications": [
+      "Metformin",
+      "Amlodipine",
+      "Omeprazole"
+    ]
+  },
+  {
+    "id": "sample_003",
+    "description": "Complex multi-drug prescription",
+    "text": "Patient: Jane Smith  Age: 65  Date: 2025-03-10\n\n1. Warfarin 5mg OD \u2013 monitor INR weekly\n2. Lisinopril 10mg OD\n3. Atorvastatin 20mg HS\n4. Metformin 850mg BD PC\n5. Aspirin 75mg OD\n\nAvoid: Vitamin K-rich foods, alcohol\nFollow up: 2 weeks",
+    "expected_medications": [
+      "Warfarin",
+      "Lisinopril",
+      "Atorvastatin",
+      "Metformin",
+      "Aspirin"
+    ]
+  }
+]

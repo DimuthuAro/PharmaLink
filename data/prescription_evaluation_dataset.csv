@@ -1,0 +1,4 @@
+sample_id,description,expected_count,found_count,hits,precision,recall,medications_found,dosages_found,frequencies_found,durations_found
+sample_001,Simple 3-drug prescription,3,3,3,1.0,1.0,Ibuprofen; Amoxicillin; Omeprazole,500 mg; 1 tablet; 400 mg; 20 mg; 1 caps,3 times; od; 2025-01-05,7 days
+sample_002,Prescription with medical abbreviations,3,2,2,1.0,0.667,Omeprazole; Amlodipine,500 mg; 5 mg; 20 mg,BD; od; OD,30 days; 1 month
+sample_003,Complex multi-drug prescription,5,5,5,1.0,1.0,Metformin; Aspirin; Warfarin; Lisinopril; Atorvastatin,5 mg; 10 mg; 20 mg; 850 mg; 75 mg,OD; HS; BD; od; 2025-03-10,2 weeks

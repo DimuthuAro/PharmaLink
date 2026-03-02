@@ -11,7 +11,8 @@ const microservices = [
     'drug_interaction_microservice',
     'personalized_advisory_microservice',
     'crossbrand_comparator_microservice',
-    'prescription_interpreter_microservice'
+    'prescription_interpreter_microservice',
+    'treatment_identifier_microservice'
 ];
 
 console.log('📦 Checking microservice dependencies...');
@@ -102,6 +103,7 @@ startService('🧬 Drug Interaction', 'drug_interaction_microservice', 3001, 150
 startService('💡 Personalized Advisory', 'personalized_advisory_microservice', 3002, 3000);
 startService('⚖️ Cross-Brand Comparator', 'crossbrand_comparator_microservice', 3003, 4500);
 startService('📋 Prescription Interpreter', 'prescription_interpreter_microservice', 3004, 6000);
+startService('🔬 Treatment Identifier', 'treatment_identifier_microservice', 3005, 7500);
 
 // Display startup information
 setTimeout(() => {
@@ -113,14 +115,16 @@ setTimeout(() => {
     console.log('💡 Advisory: http://localhost:3000/api/advisory');
     console.log('⚖️ Comparator: http://localhost:3000/api/comparator');
     console.log('📋 Prescription: http://localhost:3000/api/prescription');
+    console.log('🔬 Treatment: http://localhost:3000/api/treatment');
     console.log('\n🔍 Health checks:');
     console.log('   GET http://localhost:3000/health');
     console.log('   GET http://localhost:3001/health');
     console.log('   GET http://localhost:3002/health');
     console.log('   GET http://localhost:3003/health');
     console.log('   GET http://localhost:3004/health');
+    console.log('   GET http://localhost:3005/health');
     console.log('='.repeat(70));
-}, 7500);
+}, 9000);
 
 // Graceful shutdown
 process.on('SIGINT', () => {

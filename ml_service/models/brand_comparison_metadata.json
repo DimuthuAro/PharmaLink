@@ -1,0 +1,26 @@
+{
+  "model_type": "RandomForestClassifier",
+  "n_estimators": 150,
+  "features": [
+    "same_form",
+    "same_class",
+    "same_action",
+    "brand_count",
+    "therapeutic_class"
+  ],
+  "numeric_features": [
+    "same_form",
+    "same_class",
+    "same_action",
+    "brand_count"
+  ],
+  "categorical_features": [
+    "therapeutic_class"
+  ],
+  "training_samples": 40233,
+  "test_samples": 10059,
+  "accuracy": 1.0,
+  "comparable_generics": 1358,
+  "total_brands": 150767,
+  "timestamp": "2026-03-02T23:50:50.887151"
+}

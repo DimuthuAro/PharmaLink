@@ -51,7 +51,7 @@ DATASETS = [
         "id": 3,
         "name": "Sri Lanka Food Composition Table",
         "slug": "nipunaudara/nutritional-facts-for-most-common-sri-lankan-foods",
-        "expected_file": "Sri Lanka Food Composition Table .csv",
+        "expected_file": "SrilankanCommonFoods.xlsx",
         "description": "Nutritional data for Sri Lankan foods (calories, protein, iron …)",
         "auto": True,
     },

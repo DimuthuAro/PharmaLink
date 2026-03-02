@@ -1,0 +1,55 @@
+{
+  "pipeline": "Donut OCR \u2192 BERT Medical NER \u2192 Regex Parser \u2192 Medication Classifier",
+  "models": {
+    "ocr": {
+      "name": "Medical Prescription OCR (Donut)",
+      "model_id": "chinmays18/medical-prescription-ocr",
+      "type": "VisionEncoderDecoder"
+    },
+    "ner": {
+      "name": "Medical NER (BERT)",
+      "model_id": "samrawal/bert-large-uncased_med-ner",
+      "type": "TokenClassification",
+      "available": false
+    },
+    "medication_classifier": {
+      "name": "Medication Name Classifier",
+      "type": "RandomForestClassifier",
+      "n_estimators": 100,
+      "accuracy": 1.0,
+      "features": [
+        "length",
+        "has_digit",
+        "starts_upper",
+        "vowel_ratio",
+        "consonant_clusters",
+        "suffix_cillin",
+        "suffix_mycin",
+        "suffix_prazole",
+        "suffix_olol",
+        "suffix_sartan",
+        "suffix_statin",
+        "suffix_pril",
+        "suffix_dipine",
+        "suffix_azole",
+        "suffix_idine",
+        "suffix_amine",
+        "suffix_etine",
+        "suffix_azepam",
+        "suffix_oxacin",
+        "suffix_cycline",
+        "suffix_zosin",
+        "suffix_lukast",
+        "suffix_navir",
+        "suffix_gliptin",
+        "suffix_gliflozin",
+        "suffix_glutide",
+        "suffix_mab",
+        "suffix_nib"
+      ]
+    }
+  },
+  "evaluation_samples": 3,
+  "known_drug_names": 147847,
+  "timestamp": "2026-03-02T23:50:42Z"
+}

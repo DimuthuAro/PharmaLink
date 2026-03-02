@@ -1,0 +1,103 @@
+{
+  "drug_suffixes": {
+    "cillin": "Penicillin antibiotic",
+    "mycin": "Macrolide/Aminoglycoside antibiotic",
+    "prazole": "Proton pump inhibitor",
+    "olol": "Beta-blocker",
+    "sartan": "ARB (Angiotensin receptor blocker)",
+    "statin": "HMG-CoA reductase inhibitor (cholesterol)",
+    "pril": "ACE inhibitor",
+    "dipine": "Calcium channel blocker",
+    "azole": "Antifungal / PPI",
+    "idine": "H2 blocker / miscellaneous",
+    "amine": "Various pharmacological classes",
+    "etine": "SSRI antidepressant",
+    "azepam": "Benzodiazepine",
+    "oxacin": "Fluoroquinolone antibiotic",
+    "cycline": "Tetracycline antibiotic",
+    "zosin": "Alpha-blocker",
+    "lukast": "Leukotriene receptor antagonist",
+    "navir": "Protease inhibitor (antiviral)",
+    "vudine": "Nucleoside reverse transcriptase inhibitor",
+    "gliptin": "DPP-4 inhibitor (diabetes)",
+    "gliflozin": "SGLT2 inhibitor (diabetes)",
+    "glutide": "GLP-1 receptor agonist (diabetes)",
+    "mab": "Monoclonal antibody",
+    "nib": "Tyrosine kinase inhibitor"
+  },
+  "dosage_forms": {
+    "Tab": "Tablet",
+    "Tab.": "Tablet",
+    "Tablet": "Tablet",
+    "Cap": "Capsule",
+    "Cap.": "Capsule",
+    "Capsule": "Capsule",
+    "Syr": "Syrup",
+    "Syrup": "Syrup",
+    "Inj": "Injection",
+    "Injection": "Injection",
+    "Susp": "Suspension",
+    "Oint": "Ointment",
+    "CR": "Controlled Release",
+    "SR": "Sustained Release",
+    "XR": "Extended Release",
+    "ER": "Extended Release",
+    "DR": "Delayed Release"
+  },
+  "abbreviations": {
+    "OD": "Once daily",
+    "BD": "Twice daily",
+    "TDS": "Three times daily",
+    "TID": "Three times daily",
+    "QID": "Four times daily",
+    "QD": "Once daily",
+    "BID": "Twice daily",
+    "PRN": "As needed",
+    "SOS": "If needed (emergency)",
+    "HS": "At bedtime",
+    "AC": "Before meals",
+    "PC": "After meals",
+    "PO": "By mouth",
+    "IM": "Intramuscular",
+    "IV": "Intravenous",
+    "SC": "Subcutaneous",
+    "SL": "Sublingual",
+    "QAM": "Every morning",
+    "QPM": "Every evening",
+    "Q4H": "Every 4 hours",
+    "Q6H": "Every 6 hours",
+    "Q8H": "Every 8 hours",
+    "Q12H": "Every 12 hours",
+    "STAT": "Immediately",
+    "Tab": "Tablet",
+    "Cap": "Capsule",
+    "Inj": "Injection",
+    "Susp": "Suspension",
+    "Syr": "Syrup",
+    "Oint": "Ointment",
+    "gtts": "Drops",
+    "mEq": "Milliequivalent",
+    "mcg": "Microgram"
+  },
+  "regex_patterns": {
+    "medication": [
+      "(?:Tab(?:let)?\\.?|Cap(?:sule)?\\.?|Syrup\\.?|Inj(?:ection)?\\.?)\\s*([A-Za-z][A-Za-z\\s-]+?)(?:\\s+\\d+\\s*(?:mg|g|ml|mcg))?",
+      "\\b([A-Z][a-z]+(?:cillin|mycin|prazole|olol|sartan|statin|pril|dipine|azole|idine|amine|etine|azepam))\\b",
+      "Rx[:\\s]+([A-Za-z][A-Za-z\\s-]+?)(?=\\s+\\d|\\s*$)",
+      "^\\s*\\d+[.)\\s]+([A-Z][a-zA-Z\\s-]+?)(?:\\s+\\d+\\s*(?:mg|g|ml))"
+    ],
+    "dosage": [
+      "(\\d+(?:\\.\\d+)?)\\s*(mg|g|ml|mcg|IU|tablets?|caps?|capsules?)"
+    ],
+    "frequency": [
+      "(once|twice|thrice|\\d+\\s*times?)\\s*(?:a\\s*)?(?:day|daily)",
+      "(every\\s*\\d+\\s*(?:hours?|hrs?))",
+      "(morning|evening|night|bedtime)",
+      "(OD|BD|TDS|TID|QID|QD|BID|PRN|SOS|HS)",
+      "(\\d+[-\u2013]\\d+[-\u2013]\\d+)"
+    ],
+    "duration": [
+      "(?:for\\s*)?(\\d+)\\s*(days?|weeks?|months?)"
+    ]
+  }
+}

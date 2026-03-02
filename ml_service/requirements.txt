@@ -14,6 +14,14 @@ opencv-python-headless>=4.8.0
 # OCR Engines (Pre-trained models)
 easyocr>=1.7.0
 
+# Hugging Face Transformers - OCR & NER models
+transformers>=4.36.0
+torch>=2.1.0
+sentencepiece>=0.1.99
+
+# Medical NER (ONNX Runtime for optimized inference)
+onnxruntime>=1.16.0
+
 # Model Management
 requests>=2.31.0  # For downloading models from URLs
 

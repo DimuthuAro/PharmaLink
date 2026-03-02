@@ -3,6 +3,7 @@
  * Connects Express API to Python ML Service (FastAPI)
  */
 const axios = require('axios');
+const FormData = require('form-data');
 const logger = require('../shared_infrastructure/logger');
 
 const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://localhost:8000';
@@ -112,6 +113,131 @@ class MLServiceClient {
             return {
                 success: false,
                 error: error.response?.data?.detail || error.message
+            };
+        }
+    }
+
+    /**
+     * Full prescription interpretation (OCR + NER + interaction check)
+     * @param {object} file - Multer file object (buffer in memory)
+     * @param {string} engine - 'auto', 'donut', 'easyocr', 'all'
+     * @param {string} enhanceMode - 'medical', 'handwritten', 'standard'
+     */
+    async interpretPrescription(file, engine = 'auto', enhanceMode = 'medical') {
+        try {
+            const form = new FormData();
+            form.append('file', file.buffer, {
+                filename: file.originalname,
+                contentType: file.mimetype,
+            });
+            form.append('engine', engine);
+            form.append('enhance_mode', enhanceMode);
+
+            const response = await this.client.post('/prescription/interpret', form, {
+                headers: form.getHeaders(),
+                timeout: 120000,
+                maxContentLength: 50 * 1024 * 1024,
+            });
+            return { success: true, data: response.data };
+        } catch (error) {
+            return {
+                success: false,
+                error: error.response?.data?.detail || error.message,
+            };
+        }
+    }
+
+    /**
+     * Basic prescription OCR (image to text)
+     * @param {object} file - Multer file object
+     * @param {string} engine - OCR engine to use
+     */
+    async ocrPrescription(file, engine = 'auto') {
+        try {
+            const form = new FormData();
+            form.append('file', file.buffer, {
+                filename: file.originalname,
+                contentType: file.mimetype,
+            });
+            form.append('engine', engine);
+
+            const response = await this.client.post('/prescription/ocr', form, {
+                headers: form.getHeaders(),
+                timeout: 120000,
+                maxContentLength: 50 * 1024 * 1024,
+            });
+            return { success: true, data: response.data };
+        } catch (error) {
+            return {
+                success: false,
+                error: error.response?.data?.detail || error.message,
+            };
+        }
+    }
+
+    // ── Treatment Identifier Methods ────────────────────────────
+
+    /**
+     * Identify treatments/conditions from a list of medication names
+     * @param {string[]} medications - List of medication names
+     */
+    async identifyTreatments(medications) {
+        try {
+            const treatmentClient = axios.create({
+                baseURL: process.env.TREATMENT_ML_URL || 'http://localhost:8004',
+                timeout: 15000,
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const response = await treatmentClient.post('/identify', { medications });
+            return { success: true, data: response.data };
+        } catch (error) {
+            return {
+                success: false,
+                error: error.response?.data?.detail || error.message,
+            };
+        }
+    }
+
+    /**
+     * Identify treatments from prescription text
+     * @param {string} prescriptionText - Raw prescription text
+     */
+    async identifyTreatmentsFromText(prescriptionText) {
+        try {
+            const treatmentClient = axios.create({
+                baseURL: process.env.TREATMENT_ML_URL || 'http://localhost:8004',
+                timeout: 15000,
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const response = await treatmentClient.post('/identify-from-text', {
+                prescription_text: prescriptionText,
+            });
+            return { success: true, data: response.data };
+        } catch (error) {
+            return {
+                success: false,
+                error: error.response?.data?.detail || error.message,
+            };
+        }
+    }
+
+    /**
+     * Get conditions for a single medication
+     * @param {string} medication - Medication name
+     */
+    async getMedicationConditions(medication) {
+        try {
+            const treatmentClient = axios.create({
+                baseURL: process.env.TREATMENT_ML_URL || 'http://localhost:8004',
+                timeout: 10000,
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const response = await treatmentClient.post('/medication-conditions', { medication });
+            return { success: true, data: response.data };
+        } catch (error) {
+            return {
+                success: false,
+                error: error.response?.data?.detail || error.message,
             };
         }
     }
