@@ -52,7 +52,7 @@ const MedicationHeader = ({
                                         </span>
                                     </div>
                                     <div className="text-sm text-slate-600">
-                                        Price range: <span className="font-bold text-emerald-600">${minPrice.toFixed(2)}</span> - <span className="font-bold text-slate-900">${maxPrice.toFixed(2)}</span>
+                                        Price range: <span className="font-bold text-emerald-600">Rs. {minPrice.toFixed(2)}</span> - <span className="font-bold text-slate-900">Rs. {maxPrice.toFixed(2)}</span>
                                     </div>
                                 </div>
                             </div>

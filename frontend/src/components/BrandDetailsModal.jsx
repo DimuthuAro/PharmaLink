@@ -58,7 +58,7 @@ const BrandDetailsModal = ({ brand, onClose }) => {
                     {/* Quick Stats */}
                     <div className="grid grid-cols-4 gap-4 mt-6">
                         <div className="text-center">
-                            <p className="text-3xl font-black">${brand.price}</p>
+                            <p className="text-3xl font-black">Rs. {brand.price}</p>
                             <p className="text-xs text-blue-100">{brand.packSize}</p>
                         </div>
                         <div className="text-center">
@@ -95,7 +95,7 @@ const BrandDetailsModal = ({ brand, onClose }) => {
                                     <CurrencyDollarIcon className="h-5 w-5 text-emerald-600" />
                                     <span className="font-semibold text-emerald-700">Potential Savings</span>
                                 </div>
-                                <p className="text-2xl font-black text-emerald-600">${brand.savings.toFixed(2)}</p>
+                                <p className="text-2xl font-black text-emerald-600">Rs. {brand.savings.toFixed(2)}</p>
                                 <p className="text-sm text-emerald-600">compared to brand name</p>
                             </div>
                         </div>

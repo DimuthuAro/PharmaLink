@@ -189,7 +189,7 @@ const EnhancedComparisonTable = ({ selectedBrands }) => {
                                 <td className="px-6 py-4 text-right">
                                     <div className="flex items-center justify-end gap-2">
                                         <span className={`text-lg font-bold ${brand.price === bestPrice ? 'text-emerald-600' : 'text-slate-900'}`}>
-                                            ${brand.price}
+                                            Rs. {brand.price}
                                         </span>
                                         {brand.price === bestPrice && (
                                             <span className="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full">
@@ -227,7 +227,7 @@ const EnhancedComparisonTable = ({ selectedBrands }) => {
                                     {brand.savings > 0 ? (
                                         <span className="inline-flex items-center gap-1 text-emerald-600 font-bold">
                                             <ArrowTrendingDownIcon className="h-4 w-4" />
-                                            ${brand.savings.toFixed(2)}
+                                            Rs. {brand.savings.toFixed(2)}
                                         </span>
                                     ) : (
                                         <span className="text-slate-400">—</span>
@@ -274,7 +274,7 @@ const EnhancedComparisonTable = ({ selectedBrands }) => {
                         {' '} • Highest rated <span className="font-bold text-amber-600">{sortedBrands.find(b => b.rating === bestRating)?.name}</span>
                     </div>
                     <div className="text-sm text-slate-600">
-                        Total potential savings: <span className="font-bold text-emerald-600">${sortedBrands.reduce((sum, b) => sum + b.savings, 0).toFixed(2)}</span>
+                        Total potential savings: <span className="font-bold text-emerald-600">Rs. {sortedBrands.reduce((sum, b) => sum + b.savings, 0).toFixed(2)}</span>
                     </div>
                 </div>
             </div>

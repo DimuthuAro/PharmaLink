@@ -52,13 +52,13 @@ const AdvancedFilters = ({
             </div>
             <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Price Range: ${priceRange[0]} - ${priceRange[1]}
+                    Price Range: Rs. {priceRange[0]} - Rs. {priceRange[1]}
                 </label>
                 <div className="flex gap-2">
                     <input
                         type="number"
                         min="0"
-                        max="100"
+                        max="50000"
                         value={priceRange[0]}
                         onChange={e => setPriceRange([parseFloat(e.target.value), priceRange[1]])}
                         className="w-1/2 px-3 py-2 border border-slate-300 rounded-lg text-sm"
@@ -67,7 +67,7 @@ const AdvancedFilters = ({
                     <input
                         type="number"
                         min="0"
-                        max="100"
+                        max="50000"
                         value={priceRange[1]}
                         onChange={e => setPriceRange([priceRange[0], parseFloat(e.target.value)])}
                         className="w-1/2 px-3 py-2 border border-slate-300 rounded-lg text-sm"

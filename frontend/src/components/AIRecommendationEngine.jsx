@@ -159,7 +159,7 @@ const AIRecommendationEngine = ({ brands, selectedBrands }) => {
                             {/* Stats */}
                             <div className="grid grid-cols-2 gap-2">
                                 <div className="text-center p-2 bg-white/50 rounded-lg">
-                                    <p className="text-lg font-bold text-slate-900">${rec.brand.price}</p>
+                                    <p className="text-lg font-bold text-slate-900">Rs. {rec.brand.price}</p>
                                     <p className="text-xs text-slate-500">Price</p>
                                 </div>
                                 <div className="text-center p-2 bg-white/50 rounded-lg">
@@ -206,7 +206,7 @@ const AIRecommendationEngine = ({ brands, selectedBrands }) => {
                             <p className="text-sm text-blue-200">
                                 {brands.filter(b => b.isGeneric).length > 0 ? (
                                     <>
-                                        We found <span className="font-bold text-emerald-400">{brands.filter(b => b.isGeneric).length} generic options</span> that could save you up to <span className="font-bold text-emerald-400">${Math.max(...brands.filter(b => b.isGeneric).map(b => b.savings)).toFixed(2)}</span> while maintaining similar efficacy.
+                                        We found <span className="font-bold text-emerald-400">{brands.filter(b => b.isGeneric).length} generic options</span> that could save you up to <span className="font-bold text-emerald-400">Rs. {Math.max(...brands.filter(b => b.isGeneric).map(b => b.savings)).toFixed(2)}</span> while maintaining similar efficacy.
                                     </>
                                 ) : (
                                     <>

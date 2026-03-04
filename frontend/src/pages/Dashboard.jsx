@@ -193,7 +193,7 @@ useEffect(() => {
     {
       id: 3,
       type: 'comparison',
-      description: 'Cost savings identified: $45.00',
+      description: 'Cost savings identified: Rs. 45.00',
       time: '10 minutes ago',
       timestamp: Date.now() - 10 * 60 * 1000,
       status: 'success',
@@ -268,7 +268,7 @@ useEffect(() => {
     },
     { 
       label: 'Cost Savings', 
-      value: `$${stats.costSavings.toLocaleString()}`, 
+      value: `Rs. ${stats.costSavings.toLocaleString()}`, 
       change: '+23%',
       isPositive: true
     },

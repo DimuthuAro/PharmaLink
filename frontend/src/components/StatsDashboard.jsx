@@ -17,7 +17,7 @@ const StatsDashboard = ({ selectedBrands, totalSavings, averageRating, medicatio
             <div className="flex items-center justify-between">
                 <div>
                     <p className="text-sm text-slate-600">Total Savings</p>
-                    <p className="text-2xl font-bold text-emerald-600">${totalSavings.toFixed(2)}</p>
+                    <p className="text-2xl font-bold text-emerald-600">Rs. {totalSavings.toFixed(2)}</p>
                 </div>
                 <CurrencyDollarIcon className="h-8 w-8 text-emerald-500" />
             </div>

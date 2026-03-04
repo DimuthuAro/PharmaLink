@@ -1,0 +1,4647 @@
+{
+  "metadata": {
+    "source": "National Medicines Regulatory Authority (NMRA), Sri Lanka",
+    "description": "Maximum Retail Prices for pharmaceuticals in Sri Lanka",
+    "currency": "LKR",
+    "currencySymbol": "Rs.",
+    "totalEntries": 350,
+    "lastUpdated": "2026-03-05",
+    "disclaimer": "Prices are Maximum Retail Prices (MRP) per unit as gazetted by NMRA Sri Lanka"
+  },
+  "drugs": {
+    "aspirin": [
+      {
+        "id": 50,
+        "brandName": "CAREPRIN 300",
+        "genericName": "Aspirin",
+        "dosageForm": "Tablet",
+        "strength": "300 mg",
+        "manufacturer": "Celogen, Sri Lanka",
+        "marketAuthHolder": "Celogen, Sri Lanka",
+        "price": 4,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 1,
+        "brandName": "A PRIN 75",
+        "genericName": "Aspirin",
+        "dosageForm": "Tablet (Delayed release)",
+        "strength": "75 mg",
+        "manufacturer": "Ace Healthcare, Sri Lanka",
+        "marketAuthHolder": "Ace Healthcare, Sri Lanka",
+        "price": 5.85,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "paclitaxel": [
+      {
+        "id": 2,
+        "brandName": "AB-PACLI 100",
+        "genericName": "Paclitaxel",
+        "dosageForm": "Suspension for injection",
+        "strength": "100mg/Vial",
+        "manufacturer": "Beta Drugs Ltd., India",
+        "marketAuthHolder": "Adora Ceylon Pvt Ltd",
+        "price": 26332.29,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "acetylcysteine": [
+      {
+        "id": 3,
+        "brandName": "Acetylcysteine",
+        "genericName": "Acetylcysteine",
+        "dosageForm": "Infusion",
+        "strength": "200 mg/mL",
+        "manufacturer": "Mercury Laboratories, India",
+        "marketAuthHolder": "Yaden International",
+        "price": 228.28,
+        "priceUnit": "5 mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 4,
+        "brandName": "Acetylcysteine",
+        "genericName": "Acetylcysteine",
+        "dosageForm": "Infusion",
+        "strength": "200 mg/mL",
+        "manufacturer": "Mercury Laboratories, India",
+        "marketAuthHolder": "Yaden International",
+        "price": 451.61,
+        "priceUnit": "10 mL",
+        "currency": "LKR"
+      }
+    ],
+    "azithromycin": [
+      {
+        "id": 22,
+        "brandName": "AZIFRED-250",
+        "genericName": "Azithromycin",
+        "dosageForm": "Capsule",
+        "strength": "250 mg",
+        "manufacturer": "Fredun, India",
+        "marketAuthHolder": "George Steuart",
+        "price": 53,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      },
+      {
+        "id": 5,
+        "brandName": "ACTISAN 500",
+        "genericName": "Azithromycin",
+        "dosageForm": "Tablet",
+        "strength": "500 mg",
+        "manufacturer": "Sands Active, Sri Lanka",
+        "marketAuthHolder": "Sands Active, Sri Lanka",
+        "price": 90,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 292,
+        "brandName": "Zydzith-500",
+        "genericName": "Azithromycin",
+        "dosageForm": "Tablet",
+        "strength": "500 mg",
+        "manufacturer": "Cadila Healthcare, India",
+        "marketAuthHolder": "Sunshine Healthcare Lanka",
+        "price": 97.65,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 23,
+        "brandName": "AZILIDE",
+        "genericName": "Azithromycin",
+        "dosageForm": "Tablet",
+        "strength": "500 mg",
+        "manufacturer": "Micro Labs, India",
+        "marketAuthHolder": "Micro Healthcare",
+        "price": 99.5,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 24,
+        "brandName": "AZITHROCIN",
+        "genericName": "Azithromycin",
+        "dosageForm": "Oral suspension",
+        "strength": "200 mg/5 mL",
+        "manufacturer": "Beximco, Bangladesh",
+        "marketAuthHolder": "Emerchemie NB",
+        "price": 347.58,
+        "priceUnit": "Bottle",
+        "currency": "LKR"
+      }
+    ],
+    "adalimumab": [
+      {
+        "id": 6,
+        "brandName": "ADALIRED",
+        "genericName": "Adalimumab",
+        "dosageForm": "Injection",
+        "strength": "40 mg",
+        "manufacturer": "Reliance Life Sciences, India",
+        "marketAuthHolder": "ABC Pharma Services",
+        "price": 40716,
+        "priceUnit": "0.8mL Prefilled syringe",
+        "currency": "LKR"
+      }
+    ],
+    "adapalene": [
+      {
+        "id": 7,
+        "brandName": "ADAPCO",
+        "genericName": "Adapalene",
+        "dosageForm": "Cream",
+        "strength": "2%",
+        "manufacturer": "Atco Laboratories, Pakistan",
+        "marketAuthHolder": "Morison Ltd.",
+        "price": 787.09,
+        "priceUnit": "15 g",
+        "currency": "LKR"
+      }
+    ],
+    "apixaban": [
+      {
+        "id": 8,
+        "brandName": "ADVAXABAN",
+        "genericName": "Apixaban",
+        "dosageForm": "Tablet",
+        "strength": "5 mg",
+        "manufacturer": "Martin Dow, Pakistan",
+        "marketAuthHolder": "Emerchemie NB",
+        "price": 40.7,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 285,
+        "brandName": "APIX 2.5",
+        "genericName": "Apixaban",
+        "dosageForm": "Tablet",
+        "strength": "2.5 mg",
+        "manufacturer": "The ACME Laboratories, Bangladesh",
+        "marketAuthHolder": "Mega Pharma",
+        "price": 77.49,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 286,
+        "brandName": "ACTICA-2.5",
+        "genericName": "Apixaban",
+        "dosageForm": "Tablet",
+        "strength": "2.5 mg",
+        "manufacturer": "Micro Labs, India",
+        "marketAuthHolder": "Micro Healthcare",
+        "price": 81.5,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 287,
+        "brandName": "ACTICA-5",
+        "genericName": "Apixaban",
+        "dosageForm": "Tablet",
+        "strength": "5 mg",
+        "manufacturer": "Micro Labs, India",
+        "marketAuthHolder": "Micro Healthcare",
+        "price": 120,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "amiodarone": [
+      {
+        "id": 9,
+        "brandName": "AMIDOR 100",
+        "genericName": "Amiodarone",
+        "dosageForm": "Tablet",
+        "strength": "100 mg",
+        "manufacturer": "Celogen, Sri Lanka",
+        "marketAuthHolder": "Celogen, Sri Lanka",
+        "price": 38.73,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "amikacin": [
+      {
+        "id": 10,
+        "brandName": "Amikacin",
+        "genericName": "Amikacin",
+        "dosageForm": "Injection",
+        "strength": "250mg/mL",
+        "manufacturer": "Mercury Laboratories, India",
+        "marketAuthHolder": "Yaden International",
+        "price": 325,
+        "priceUnit": "1mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 12,
+        "brandName": "AMIKAN",
+        "genericName": "Amikacin",
+        "dosageForm": "Injection",
+        "strength": "250 mg/1 mL",
+        "manufacturer": "Kelun Lifesciences, Sri Lanka",
+        "marketAuthHolder": "Kelun Lifesciences, Sri Lanka",
+        "price": 373.33,
+        "priceUnit": "1mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 11,
+        "brandName": "Amikacin",
+        "genericName": "Amikacin",
+        "dosageForm": "Injection",
+        "strength": "250mg/mL",
+        "manufacturer": "Mercury Laboratories, India",
+        "marketAuthHolder": "Yaden International",
+        "price": 382.5,
+        "priceUnit": "2mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 13,
+        "brandName": "AMIKAN",
+        "genericName": "Amikacin",
+        "dosageForm": "Injection",
+        "strength": "250 mg/1 mL",
+        "manufacturer": "Kelun Lifesciences, Sri Lanka",
+        "marketAuthHolder": "Kelun Lifesciences, Sri Lanka",
+        "price": 425,
+        "priceUnit": "2 mL",
+        "currency": "LKR"
+      }
+    ],
+    "aminophylline": [
+      {
+        "id": 14,
+        "brandName": "Aminophylline",
+        "genericName": "Aminophylline",
+        "dosageForm": "Injection",
+        "strength": "25 mg/mL",
+        "manufacturer": "Kelun Lifesciences, Sri Lanka",
+        "marketAuthHolder": "Kelun Lifesciences, Sri Lanka",
+        "price": 620,
+        "priceUnit": "10 mL",
+        "currency": "LKR"
+      }
+    ],
+    "amlodipine": [
+      {
+        "id": 282,
+        "brandName": "Angicam 5",
+        "genericName": "Amlodipine",
+        "dosageForm": "Tablet",
+        "strength": "5 mg",
+        "manufacturer": "Blue Cross Laboratories, India",
+        "marketAuthHolder": "Sunshine Healthcare Lanka",
+        "price": 9.77,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 15,
+        "brandName": "AMLODAC 5",
+        "genericName": "Amlodipine",
+        "dosageForm": "Tablet",
+        "strength": "5 mg",
+        "manufacturer": "Zydus Life Sciences, India",
+        "marketAuthHolder": "Sunshine Healthcare",
+        "price": 10.76,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "aripiprazole": [
+      {
+        "id": 18,
+        "brandName": "ARITERO 5",
+        "genericName": "Aripiprazole",
+        "dosageForm": "Tablet",
+        "strength": "5 mg",
+        "manufacturer": "Hetero Labs, India",
+        "marketAuthHolder": "Mansel Ceylon",
+        "price": 20.72,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 16,
+        "brandName": "ARITERO 10",
+        "genericName": "Aripiprazole",
+        "dosageForm": "Tablet",
+        "strength": "10 mg",
+        "manufacturer": "Hetero Labs, India",
+        "marketAuthHolder": "Mansel Ceylon",
+        "price": 44,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 17,
+        "brandName": "ARITERO 15",
+        "genericName": "Aripiprazole",
+        "dosageForm": "Tablet",
+        "strength": "15 mg",
+        "manufacturer": "Hetero Labs, India",
+        "marketAuthHolder": "Mansel Ceylon",
+        "price": 62.13,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "atorvastatin": [
+      {
+        "id": 19,
+        "brandName": "Atorvastatin",
+        "genericName": "Atorvastatin",
+        "dosageForm": "Tablet",
+        "strength": "10 mg",
+        "manufacturer": "SPMC, Sri Lanka",
+        "marketAuthHolder": "SPMC, Sri Lanka",
+        "price": 5,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 137,
+        "brandName": "LIPITOR",
+        "genericName": "Atorvastatin",
+        "dosageForm": "Tablet",
+        "strength": "10 mg",
+        "manufacturer": "Pfizer, Germany",
+        "marketAuthHolder": "Hemas Pharmaceuticals",
+        "price": 22.1,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 25,
+        "brandName": "AZTOR 40",
+        "genericName": "Atorvastatin",
+        "dosageForm": "Tablet",
+        "strength": "40 mg",
+        "manufacturer": "Sun Pharmaceutical, India",
+        "marketAuthHolder": "Hemas Pharmaceuticals",
+        "price": 49.17,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 291,
+        "brandName": "LIPITOR",
+        "genericName": "Atorvastatin",
+        "dosageForm": "Tablet",
+        "strength": "40 mg",
+        "manufacturer": "Viatris, Germany",
+        "marketAuthHolder": "Hemas Pharmaceuticals",
+        "price": 49.17,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "escitalopram": [
+      {
+        "id": 20,
+        "brandName": "AVESTALO",
+        "genericName": "Escitalopram",
+        "dosageForm": "Tablet",
+        "strength": "5 mg",
+        "manufacturer": "Getz, Pakistan",
+        "marketAuthHolder": "Hemas Pharmaceuticals",
+        "price": 23.5,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "metronidazole": [
+      {
+        "id": 21,
+        "brandName": "AXCEL",
+        "genericName": "Metronidazole",
+        "dosageForm": "Tablet",
+        "strength": "400 mg",
+        "manufacturer": "Kotra Pharma, Malaysia",
+        "marketAuthHolder": "Sunshine Healthcare",
+        "price": 13.83,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "baclofen": [
+      {
+        "id": 26,
+        "brandName": "BACLIN",
+        "genericName": "Baclofen",
+        "dosageForm": "Tablet",
+        "strength": "10 mg",
+        "manufacturer": "Genome, Pakistan",
+        "marketAuthHolder": "Medisurge Healthcare",
+        "price": 37.85,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "chlorhexidine gluconate": [
+      {
+        "id": 27,
+        "brandName": "BACTOSCRUB",
+        "genericName": "Chlorhexidine Gluconate",
+        "dosageForm": "Solution",
+        "strength": "4%",
+        "manufacturer": "Raman & Weil, India",
+        "marketAuthHolder": "Mamro Pvt Ltd",
+        "price": 835.67,
+        "priceUnit": "100 mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 28,
+        "brandName": "BACTOSCRUB",
+        "genericName": "Chlorhexidine Gluconate",
+        "dosageForm": "Solution",
+        "strength": "4%",
+        "manufacturer": "Raman & Weil, India",
+        "marketAuthHolder": "Mamro Pvt Ltd",
+        "price": 2793.38,
+        "priceUnit": "500 mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 29,
+        "brandName": "BACTOSCRUB",
+        "genericName": "Chlorhexidine Gluconate",
+        "dosageForm": "Solution",
+        "strength": "4%",
+        "manufacturer": "Raman & Weil, India",
+        "marketAuthHolder": "Mamro Pvt Ltd",
+        "price": 18074.19,
+        "priceUnit": "5 L",
+        "currency": "LKR"
+      }
+    ],
+    "cefotaxime": [
+      {
+        "id": 237,
+        "brandName": "TAXOVENT 500",
+        "genericName": "Cefotaxime",
+        "dosageForm": "Injection",
+        "strength": "500 mg",
+        "manufacturer": "Innova, India",
+        "marketAuthHolder": "Cliniqon Biotech",
+        "price": 425.64,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      },
+      {
+        "id": 30,
+        "brandName": "BAXIM-1",
+        "genericName": "Cefotaxime",
+        "dosageForm": "Injection",
+        "strength": "1 g",
+        "manufacturer": "Nabiquasim, Pakistan",
+        "marketAuthHolder": "George Steuart",
+        "price": 456.07,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "abiraterone": [
+      {
+        "id": 31,
+        "brandName": "BDRON",
+        "genericName": "Abiraterone",
+        "dosageForm": "Tablet",
+        "strength": "500 mg",
+        "manufacturer": "BDR Pharmaceuticals, India",
+        "marketAuthHolder": "Pharma Associates",
+        "price": 2109.15,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "beclomethasone": [
+      {
+        "id": 32,
+        "brandName": "BECLOHALE",
+        "genericName": "Beclomethasone",
+        "dosageForm": "Inhalation Capsules",
+        "strength": "400 mcg",
+        "manufacturer": "Emergen, Sri Lanka",
+        "marketAuthHolder": "Emergen, Sri Lanka",
+        "price": 10.92,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      }
+    ],
+    "clobetasol": [
+      {
+        "id": 34,
+        "brandName": "BELTAPRO CREAM",
+        "genericName": "Clobetasol",
+        "dosageForm": "Cream",
+        "strength": "0.05%",
+        "manufacturer": "Tabros Pharma, Pakistan",
+        "marketAuthHolder": "Associated Laboratories",
+        "price": 176,
+        "priceUnit": "5g tube",
+        "currency": "LKR"
+      },
+      {
+        "id": 61,
+        "brandName": "COSVATE",
+        "genericName": "Clobetasol",
+        "dosageForm": "Ointment",
+        "strength": "0.05%",
+        "manufacturer": "Blossom, India",
+        "marketAuthHolder": "George Steuart",
+        "price": 374.42,
+        "priceUnit": "15g tube",
+        "currency": "LKR"
+      },
+      {
+        "id": 33,
+        "brandName": "BELTAPRO CREAM",
+        "genericName": "Clobetasol",
+        "dosageForm": "Cream",
+        "strength": "0.05%",
+        "manufacturer": "Tabros Pharma, Pakistan",
+        "marketAuthHolder": "Associated Laboratories",
+        "price": 397.9,
+        "priceUnit": "15g tube",
+        "currency": "LKR"
+      }
+    ],
+    "bendamustine": [
+      {
+        "id": 35,
+        "brandName": "BENDAWEL",
+        "genericName": "Bendamustine",
+        "dosageForm": "Injection",
+        "strength": "100 mg",
+        "manufacturer": "Getwell Pharma, India",
+        "marketAuthHolder": "Esses Pharmacy",
+        "price": 24500,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "benzoyl peroxide": [
+      {
+        "id": 36,
+        "brandName": "BENOX 5 GEL",
+        "genericName": "Benzoyl Peroxide",
+        "dosageForm": "Gel",
+        "strength": "5%",
+        "manufacturer": "East African, India",
+        "marketAuthHolder": "Mega Pharma",
+        "price": 650,
+        "priceUnit": "20 g",
+        "currency": "LKR"
+      }
+    ],
+    "betahistine": [
+      {
+        "id": 295,
+        "brandName": "BE-Steady 8",
+        "genericName": "Betahistine",
+        "dosageForm": "Tablet",
+        "strength": "8 mg",
+        "manufacturer": "Aurobindo Pharma, India",
+        "marketAuthHolder": "Alaris Lanka",
+        "price": 9.13,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 39,
+        "brandName": "BETASTIN 8",
+        "genericName": "Betahistine",
+        "dosageForm": "Tablet",
+        "strength": "8 mg",
+        "manufacturer": "Corona Remedies, India",
+        "marketAuthHolder": "Sunshine Healthcare",
+        "price": 10.47,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 294,
+        "brandName": "BE-Steady 16",
+        "genericName": "Betahistine",
+        "dosageForm": "Tablet",
+        "strength": "16 mg",
+        "manufacturer": "Aurobindo Pharma, India",
+        "marketAuthHolder": "Alaris Lanka",
+        "price": 14.17,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 265,
+        "brandName": "VERTIWA 8",
+        "genericName": "Betahistine",
+        "dosageForm": "Tablet",
+        "strength": "8 mg",
+        "manufacturer": "Sands Active, Sri Lanka",
+        "marketAuthHolder": "Sands Active, Sri Lanka",
+        "price": 18.75,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 37,
+        "brandName": "BETAGEN 16",
+        "genericName": "Betahistine",
+        "dosageForm": "Tablet",
+        "strength": "16 mg",
+        "manufacturer": "Newgen, Sri Lanka",
+        "marketAuthHolder": "Newgen, Sri Lanka",
+        "price": 28.9,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 264,
+        "brandName": "VERTIWA 24",
+        "genericName": "Betahistine",
+        "dosageForm": "Tablet",
+        "strength": "24 mg",
+        "manufacturer": "Sands Active, Sri Lanka",
+        "marketAuthHolder": "Sands Active, Sri Lanka",
+        "price": 48,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "betamethasone": [
+      {
+        "id": 38,
+        "brandName": "BETANIN",
+        "genericName": "Betamethasone",
+        "dosageForm": "Eye/Ear drops",
+        "strength": "0.10%",
+        "manufacturer": "Sunway Rohto, India",
+        "marketAuthHolder": "Yaden International",
+        "price": 342,
+        "priceUnit": "5 mL",
+        "currency": "LKR"
+      }
+    ],
+    "sterile cardioplagia solution": [
+      {
+        "id": 40,
+        "brandName": "BIOPLAGIA",
+        "genericName": "Sterile Cardioplagia solution",
+        "dosageForm": "Infusion",
+        "strength": "20 mL",
+        "manufacturer": "United Biotech, India",
+        "marketAuthHolder": "Klintas (Pvt) Ltd.",
+        "price": 868.72,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "bisoprolol": [
+      {
+        "id": 300,
+        "brandName": "Bisogen 5",
+        "genericName": "Bisoprolol",
+        "dosageForm": "Tablet",
+        "strength": "5mg",
+        "manufacturer": "Newgen Lanka, Sri Lanka",
+        "marketAuthHolder": "Newgen Lanka, Sri Lanka",
+        "price": 19.25,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 41,
+        "brandName": "BISOPRACE 2.5",
+        "genericName": "Bisoprolol",
+        "dosageForm": "Tablet",
+        "strength": "2.5 mg",
+        "manufacturer": "Ace Healthcare, Sri Lanka",
+        "marketAuthHolder": "Ace Healthcare, Sri Lanka",
+        "price": 27,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 271,
+        "brandName": "Zabesta 5",
+        "genericName": "Bisoprolol",
+        "dosageForm": "Tablet",
+        "strength": "5 mg",
+        "manufacturer": "USV Pvt Ltd, India",
+        "marketAuthHolder": "Hemas Pharmaceuticals",
+        "price": 35,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "budesonide": [
+      {
+        "id": 42,
+        "brandName": "BUDEZ 0.5",
+        "genericName": "Budesonide",
+        "dosageForm": "Nebulizer Suspension",
+        "strength": "0.5 mg/2 mL",
+        "manufacturer": "Sun Pharmaceutical, India",
+        "marketAuthHolder": "Hemas Pharmaceuticals",
+        "price": 326.4,
+        "priceUnit": "Ampoule",
+        "currency": "LKR"
+      }
+    ],
+    "cholecalciferol": [
+      {
+        "id": 330,
+        "brandName": "Prove D3-1000IU",
+        "genericName": "Cholecalciferol",
+        "dosageForm": "Tablet",
+        "strength": "1000IU",
+        "manufacturer": "PT Dankos Pharma, Indonesia",
+        "marketAuthHolder": "Hemas Pharmaceuticals",
+        "price": 13.23,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 44,
+        "brandName": "CALMIT-400IU",
+        "genericName": "Cholecalciferol",
+        "dosageForm": "Tablet (chewable)",
+        "strength": "400 IU",
+        "manufacturer": "MMC Healthcare, India",
+        "marketAuthHolder": "Markss HLC",
+        "price": 25,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 43,
+        "brandName": "CAD D 60000",
+        "genericName": "Cholecalciferol",
+        "dosageForm": "Tablet (chewable)",
+        "strength": "60,000 IU",
+        "manufacturer": "Finecure, India",
+        "marketAuthHolder": "Bio Life",
+        "price": 131.47,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 73,
+        "brandName": "DV 60K",
+        "genericName": "Cholecalciferol",
+        "dosageForm": "Capsule",
+        "strength": "60,000 IU",
+        "manufacturer": "Indchemie, India",
+        "marketAuthHolder": "Pharma Associates",
+        "price": 150,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      },
+      {
+        "id": 65,
+        "brandName": "DEUP 10K",
+        "genericName": "Cholecalciferol",
+        "dosageForm": "Capsule",
+        "strength": "10,000 IU",
+        "manufacturer": "Celogen, Sri Lanka",
+        "marketAuthHolder": "Celogen, Sri Lanka",
+        "price": 190,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      }
+    ],
+    "clotrimazole": [
+      {
+        "id": 258,
+        "brandName": "VAGID",
+        "genericName": "Clotrimazole",
+        "dosageForm": "Pessary",
+        "strength": "100 mg",
+        "manufacturer": "Bliss GVS, India",
+        "marketAuthHolder": "Sunshine Healthcare",
+        "price": 69.48,
+        "priceUnit": "Pessary",
+        "currency": "LKR"
+      },
+      {
+        "id": 337,
+        "brandName": "Mycoril",
+        "genericName": "Clotrimazole",
+        "dosageForm": "Vaginal Tablet",
+        "strength": "100mg",
+        "manufacturer": "Remedica, Cyprus",
+        "marketAuthHolder": "Kandana Foods and Drugs",
+        "price": 175.87,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 45,
+        "brandName": "CANBEN",
+        "genericName": "Clotrimazole",
+        "dosageForm": "Cream",
+        "strength": "1%",
+        "manufacturer": "Leben, India",
+        "marketAuthHolder": "Ceyoka (Pvt) Ltd.",
+        "price": 203,
+        "priceUnit": "15 g",
+        "currency": "LKR"
+      }
+    ],
+    "capecitabine": [
+      {
+        "id": 46,
+        "brandName": "CAPETERO 500",
+        "genericName": "Capecitabine",
+        "dosageForm": "Tablet",
+        "strength": "500 mg",
+        "manufacturer": "Hetero Labs, India",
+        "marketAuthHolder": "Mansel Ceylon",
+        "price": 395,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "carbamazepine": [
+      {
+        "id": 47,
+        "brandName": "Carbamazepine",
+        "genericName": "Carbamazepine",
+        "dosageForm": "Tablet",
+        "strength": "100 mg",
+        "manufacturer": "Sands Active, Sri Lanka",
+        "marketAuthHolder": "Sands Active, Sri Lanka",
+        "price": 15,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 241,
+        "brandName": "TEGRETOL CR 200",
+        "genericName": "Carbamazepine",
+        "dosageForm": "Tablet (controlled release)",
+        "strength": "200 mg",
+        "manufacturer": "Novartis, Switzerland",
+        "marketAuthHolder": "Baur & Co.",
+        "price": 47.46,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "carbimazole": [
+      {
+        "id": 48,
+        "brandName": "CARBIMOLE 5",
+        "genericName": "Carbimazole",
+        "dosageForm": "Tablet",
+        "strength": "5 mg",
+        "manufacturer": "Newgen, Sri Lanka",
+        "marketAuthHolder": "Newgen, Sri Lanka",
+        "price": 11.25,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 312,
+        "brandName": "CARBIZ-10",
+        "genericName": "Carbimazole",
+        "dosageForm": "Tablet",
+        "strength": "10mg",
+        "manufacturer": "Celogen Lanka, Sri Lanka",
+        "marketAuthHolder": "Celogen Lanka, Sri Lanka",
+        "price": 28.5,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "carvedilol": [
+      {
+        "id": 315,
+        "brandName": "Betadol 3.125",
+        "genericName": "Carvedilol",
+        "dosageForm": "Tablet",
+        "strength": "3.125mg",
+        "manufacturer": "Centurion Laboratories, India",
+        "marketAuthHolder": "Yaden International",
+        "price": 8,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 313,
+        "brandName": "CONDIL-6.25",
+        "genericName": "Carvedilol",
+        "dosageForm": "Tablet",
+        "strength": "6.25mg",
+        "manufacturer": "Celogen Lanka, Sri Lanka",
+        "marketAuthHolder": "Celogen Lanka, Sri Lanka",
+        "price": 10.3,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 49,
+        "brandName": "CARDIACT 6.25",
+        "genericName": "Carvedilol",
+        "dosageForm": "Tablet",
+        "strength": "6.25 mg",
+        "manufacturer": "Sands Active, Sri Lanka",
+        "marketAuthHolder": "Sands Active, Sri Lanka",
+        "price": 12.29,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 314,
+        "brandName": "CONDIL 12.5",
+        "genericName": "Carvedilol",
+        "dosageForm": "Tablet",
+        "strength": "12.5mg",
+        "manufacturer": "Celogen Lanka, Sri Lanka",
+        "marketAuthHolder": "Celogen Lanka, Sri Lanka",
+        "price": 19.8,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "cefuroxime": [
+      {
+        "id": 51,
+        "brandName": "CEFERO 125",
+        "genericName": "Cefuroxime",
+        "dosageForm": "Tablet",
+        "strength": "125 mg",
+        "manufacturer": "Zim Laboratories, India",
+        "marketAuthHolder": "Tabrane Pharmaceuticals",
+        "price": 50,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 227,
+        "brandName": "SHAMCEF 250",
+        "genericName": "Cefuroxime",
+        "dosageForm": "Injection",
+        "strength": "250mg",
+        "manufacturer": "Shamshree, India",
+        "marketAuthHolder": "Omacx Healthcare",
+        "price": 452,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      },
+      {
+        "id": 120,
+        "brandName": "KALCEF",
+        "genericName": "Cefuroxime",
+        "dosageForm": "Injection",
+        "strength": "750 mg",
+        "manufacturer": "Zhuhai, China",
+        "marketAuthHolder": "Hemas Pharmaceuticals",
+        "price": 640,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "metformin": [
+      {
+        "id": 67,
+        "brandName": "DIAMET 850",
+        "genericName": "Metformin",
+        "dosageForm": "Tablet",
+        "strength": "850 mg",
+        "manufacturer": "Sands Active, Sri Lanka",
+        "marketAuthHolder": "Sands Active, Sri Lanka",
+        "price": 9.57,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 52,
+        "brandName": "CELOMET 1000",
+        "genericName": "Metformin",
+        "dosageForm": "Tablet",
+        "strength": "1000 mg",
+        "manufacturer": "Celogen, Sri Lanka",
+        "marketAuthHolder": "Celogen, Sri Lanka",
+        "price": 14.5,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "diclofenac sodium": [
+      {
+        "id": 53,
+        "brandName": "CELONAC 100",
+        "genericName": "Diclofenac Sodium",
+        "dosageForm": "Tablet (gastro-resistant)",
+        "strength": "100 mg",
+        "manufacturer": "Celogen, Sri Lanka",
+        "marketAuthHolder": "Celogen, Sri Lanka",
+        "price": 30,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "gemcitabine": [
+      {
+        "id": 54,
+        "brandName": "CELZAR",
+        "genericName": "Gemcitabine",
+        "dosageForm": "Injection",
+        "strength": "200 mg",
+        "manufacturer": "Celon Laboratories, India",
+        "marketAuthHolder": "Medmart Pharma",
+        "price": 2918,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "cefixime": [
+      {
+        "id": 82,
+        "brandName": "EXTACEF 100 DT",
+        "genericName": "Cefixime",
+        "dosageForm": "Tablet (dispersible)",
+        "strength": "100 mg",
+        "manufacturer": "Blue Cross, India",
+        "marketAuthHolder": "Sunshine Healthcare",
+        "price": 39.09,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 55,
+        "brandName": "CFIXM-200",
+        "genericName": "Cefixime",
+        "dosageForm": "Tablet",
+        "strength": "200 mg",
+        "manufacturer": "Sands Active, Sri Lanka",
+        "marketAuthHolder": "Sands Active, Sri Lanka",
+        "price": 84.81,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 74,
+        "brandName": "ECOCEF 100",
+        "genericName": "Cefixime",
+        "dosageForm": "Oral suspension",
+        "strength": "100 mg/5 mL",
+        "manufacturer": "Indchemie, India",
+        "marketAuthHolder": "Pharma Associates",
+        "price": 685.25,
+        "priceUnit": "100 mL bottle",
+        "currency": "LKR"
+      }
+    ],
+    "cisatracurium besylate": [
+      {
+        "id": 56,
+        "brandName": "CISATRA",
+        "genericName": "Cisatracurium Besylate",
+        "dosageForm": "Injection",
+        "strength": "10mg/5mL",
+        "manufacturer": "Themis Medicare, India",
+        "marketAuthHolder": "Sunshine Healthcare",
+        "price": 2610.38,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      },
+      {
+        "id": 332,
+        "brandName": "CISATRA",
+        "genericName": "Cisatracurium Besylate",
+        "dosageForm": "Injection",
+        "strength": "10mg/5mL",
+        "manufacturer": "Themis Medicare, India",
+        "marketAuthHolder": "Sunshine Healthcare Lanka",
+        "price": 2610.38,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "clindamycin": [
+      {
+        "id": 57,
+        "brandName": "Clindamycin",
+        "genericName": "Clindamycin",
+        "dosageForm": "Capsule",
+        "strength": "150 mg",
+        "manufacturer": "Gamma Interpharm, Sri Lanka",
+        "marketAuthHolder": "Gamma Interpharm, Sri Lanka",
+        "price": 48.3,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      },
+      {
+        "id": 334,
+        "brandName": "LINDAMAX 300",
+        "genericName": "Clindamycin",
+        "dosageForm": "Capsule",
+        "strength": "300mg",
+        "manufacturer": "Eskayef Pharmaceuticals, Bangladesh",
+        "marketAuthHolder": "Truvic (Pvt) Ltd.",
+        "price": 73,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      }
+    ],
+    "clobazam": [
+      {
+        "id": 58,
+        "brandName": "Clobazam",
+        "genericName": "Clobazam",
+        "dosageForm": "Tablet",
+        "strength": "10 mg",
+        "manufacturer": "Celogen, Sri Lanka",
+        "marketAuthHolder": "Celogen, Sri Lanka",
+        "price": 18,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 263,
+        "brandName": "VERCLOB",
+        "genericName": "Clobazam",
+        "dosageForm": "Tablet",
+        "strength": "5 mg",
+        "manufacturer": "Verve Human Care, India",
+        "marketAuthHolder": "Leader Pharma",
+        "price": 32,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "clopidogrel": [
+      {
+        "id": 59,
+        "brandName": "CLOPEX",
+        "genericName": "Clopidogrel",
+        "dosageForm": "Tablet",
+        "strength": "75 mg",
+        "manufacturer": "Astron, Sri Lanka",
+        "marketAuthHolder": "Astron, Sri Lanka",
+        "price": 14,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "hydrocortisone": [
+      {
+        "id": 60,
+        "brandName": "CORTEC 100",
+        "genericName": "Hydrocortisone",
+        "dosageForm": "Injection",
+        "strength": "100 mg",
+        "manufacturer": "United Biotech, India",
+        "marketAuthHolder": "Klintas (Pvt) Ltd.",
+        "price": 250.94,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      },
+      {
+        "id": 105,
+        "brandName": "Hydrocortisone",
+        "genericName": "Hydrocortisone",
+        "dosageForm": "Injection",
+        "strength": "100 mg",
+        "manufacturer": "Ciron Drugs, India",
+        "marketAuthHolder": "Ceyoka (Pvt) Ltd.",
+        "price": 263.92,
+        "priceUnit": "5 mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 104,
+        "brandName": "HYDROCORT 100",
+        "genericName": "Hydrocortisone",
+        "dosageForm": "Injection",
+        "strength": "100 mg",
+        "manufacturer": "Belco Pharma, India",
+        "marketAuthHolder": "Pharmatec (Pvt) Ltd.",
+        "price": 286,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "dabigatran": [
+      {
+        "id": 62,
+        "brandName": "DABRINEX 110",
+        "genericName": "Dabigatran",
+        "dosageForm": "Capsule",
+        "strength": "110 mg",
+        "manufacturer": "Hetero Labs, India",
+        "marketAuthHolder": "Mansel Ceylon",
+        "price": 165,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      }
+    ],
+    "terbinafine": [
+      {
+        "id": 63,
+        "brandName": "DERBIFIN 250",
+        "genericName": "Terbinafine",
+        "dosageForm": "Tablet",
+        "strength": "250 mg",
+        "manufacturer": "Bharat Parenterals, India",
+        "marketAuthHolder": "Baur Life Science",
+        "price": 68.6,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 240,
+        "brandName": "TEFIN",
+        "genericName": "Terbinafine",
+        "dosageForm": "Gel",
+        "strength": "1.12%",
+        "manufacturer": "HOE, Malaysia",
+        "marketAuthHolder": "Indoscan (Pvt) Ltd.",
+        "price": 587.54,
+        "priceUnit": "15 g Tube",
+        "currency": "LKR"
+      }
+    ],
+    "darbepoetin alfa": [
+      {
+        "id": 64,
+        "brandName": "DERISE 25",
+        "genericName": "Darbepoetin Alfa",
+        "dosageForm": "Injection",
+        "strength": "25 mcg/0.42 mL",
+        "manufacturer": "Hetero Drugs, India",
+        "marketAuthHolder": "Divasa Pharma",
+        "price": 7020,
+        "priceUnit": "Pre-filled syringe",
+        "currency": "LKR"
+      },
+      {
+        "id": 346,
+        "brandName": "DERISE 60",
+        "genericName": "Darbepoetin Alfa",
+        "dosageForm": "Injection",
+        "strength": "60mcg/0.30mL",
+        "manufacturer": "Hetero Biopharma, India",
+        "marketAuthHolder": "Divasa Pharma",
+        "price": 17554.86,
+        "priceUnit": "Pre-filled syringe",
+        "currency": "LKR"
+      }
+    ],
+    "dexmedetomidine": [
+      {
+        "id": 66,
+        "brandName": "Dexmedetomidine",
+        "genericName": "Dexmedetomidine",
+        "dosageForm": "Injection",
+        "strength": "200 mcg/2 mL",
+        "manufacturer": "Kelun Lifesciences, Sri Lanka",
+        "marketAuthHolder": "Kelun Lifesciences, Sri Lanka",
+        "price": 3853.98,
+        "priceUnit": "Ampoule",
+        "currency": "LKR"
+      }
+    ],
+    "aceclofenac": [
+      {
+        "id": 152,
+        "brandName": "MERVAN",
+        "genericName": "Aceclofenac",
+        "dosageForm": "Tablet",
+        "strength": "100 mg",
+        "manufacturer": "Aristopharma, Bangladesh",
+        "marketAuthHolder": "Hemas Pharmaceuticals",
+        "price": 20.47,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 68,
+        "brandName": "DOLOWIN SR",
+        "genericName": "Aceclofenac",
+        "dosageForm": "Tablet (sustained release)",
+        "strength": "200 mg",
+        "manufacturer": "Micro Labs, India",
+        "marketAuthHolder": "Micro Healthcare",
+        "price": 31.5,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "dopamine": [
+      {
+        "id": 69,
+        "brandName": "DOPRESS-200",
+        "genericName": "Dopamine",
+        "dosageForm": "Injection",
+        "strength": "200 mg/5 mL",
+        "manufacturer": "United Biotech, India",
+        "marketAuthHolder": "Klintas (Pvt) Ltd.",
+        "price": 157.36,
+        "priceUnit": "Ampoule",
+        "currency": "LKR"
+      }
+    ],
+    "doxycycline": [
+      {
+        "id": 70,
+        "brandName": "Doxycycline",
+        "genericName": "Doxycycline",
+        "dosageForm": "Capsule",
+        "strength": "100 mg",
+        "manufacturer": "Dagon Pharmaceuticals, India",
+        "marketAuthHolder": "Eurochem Biotech",
+        "price": 20,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      }
+    ],
+    "duloxetine": [
+      {
+        "id": 71,
+        "brandName": "DULOX 60",
+        "genericName": "Duloxetine",
+        "dosageForm": "Capsule (delayed release)",
+        "strength": "60 mg",
+        "manufacturer": "Zim Laboratories, India",
+        "marketAuthHolder": "Tabrane Pharmaceuticals",
+        "price": 72,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      }
+    ],
+    "ipratropium bromide + salbutamol": [
+      {
+        "id": 72,
+        "brandName": "DUOLIN RESPULES",
+        "genericName": "Ipratropium bromide + Salbutamol",
+        "dosageForm": "Respirator solution",
+        "strength": "500 mcg + 2.5 mg/2.5 mL",
+        "manufacturer": "Cipla Ltd., India",
+        "marketAuthHolder": "Breathe Free",
+        "price": 81.39,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "efavirenz": [
+      {
+        "id": 75,
+        "brandName": "EFIREN-200",
+        "genericName": "Efavirenz",
+        "dosageForm": "Tablet",
+        "strength": "200 mg",
+        "manufacturer": "Celogen, Sri Lanka",
+        "marketAuthHolder": "Celogen, Sri Lanka",
+        "price": 192.45,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 76,
+        "brandName": "EFIREN-600",
+        "genericName": "Efavirenz",
+        "dosageForm": "Tablet",
+        "strength": "600 mg",
+        "manufacturer": "Celogen, Sri Lanka",
+        "marketAuthHolder": "Celogen, Sri Lanka",
+        "price": 560,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "esomeprazole": [
+      {
+        "id": 77,
+        "brandName": "EMA-20",
+        "genericName": "Esomeprazole",
+        "dosageForm": "Tablet",
+        "strength": "20 mg",
+        "manufacturer": "Globe, Bangladesh",
+        "marketAuthHolder": "Tabrane Healthcare",
+        "price": 15,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "empagliflozin": [
+      {
+        "id": 78,
+        "brandName": "EMPIRE 25",
+        "genericName": "Empagliflozin",
+        "dosageForm": "Tablet",
+        "strength": "25 mg",
+        "manufacturer": "Drug International, Bangladesh",
+        "marketAuthHolder": "Amsted Intima (Pvt) Ltd",
+        "price": 139.38,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "eplerenone": [
+      {
+        "id": 79,
+        "brandName": "EPNONE 25",
+        "genericName": "Eplerenone",
+        "dosageForm": "Tablet",
+        "strength": "25 mg",
+        "manufacturer": "MSN Laboratories, India",
+        "marketAuthHolder": "Axia Pvt Ltd",
+        "price": 100.31,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "etomidate": [
+      {
+        "id": 80,
+        "brandName": "Etomidate",
+        "genericName": "Etomidate",
+        "dosageForm": "Injection",
+        "strength": "20 mg/10 mL",
+        "manufacturer": "Mercury Laboratories, India",
+        "marketAuthHolder": "Yaden International",
+        "price": 1740,
+        "priceUnit": "10 mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 81,
+        "brandName": "ETUDAT",
+        "genericName": "Etomidate",
+        "dosageForm": "Injection",
+        "strength": "20 mg/10 mL",
+        "manufacturer": "Kelun Lifesciences, Sri Lanka",
+        "marketAuthHolder": "Kelun Lifesciences, Sri Lanka",
+        "price": 2227.2,
+        "priceUnit": "10 mL",
+        "currency": "LKR"
+      }
+    ],
+    "famotidine": [
+      {
+        "id": 83,
+        "brandName": "FAMTIN 20",
+        "genericName": "Famotidine",
+        "dosageForm": "Tablet",
+        "strength": "20 mg",
+        "manufacturer": "Celogen, Sri Lanka",
+        "marketAuthHolder": "Celogen, Sri Lanka",
+        "price": 11.38,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "medroxyprogesterone": [
+      {
+        "id": 84,
+        "brandName": "FAMY-DEPO",
+        "genericName": "Medroxyprogesterone",
+        "dosageForm": "Injection",
+        "strength": "150 mg/mL",
+        "manufacturer": "Mylan, India",
+        "marketAuthHolder": "Baur & Co.",
+        "price": 465.14,
+        "priceUnit": "1 mL",
+        "currency": "LKR"
+      }
+    ],
+    "fat emulsion + amino acid": [
+      {
+        "id": 85,
+        "brandName": "Fat Emulsion + Amino Acid",
+        "genericName": "Fat Emulsion + Amino Acid",
+        "dosageForm": "Infusion",
+        "strength": "20% + 11%",
+        "manufacturer": "Sichuan Kelun, India",
+        "marketAuthHolder": "Pharma Associates",
+        "price": 14979,
+        "priceUnit": "1440 mL",
+        "currency": "LKR"
+      }
+    ],
+    "cefalexin": [
+      {
+        "id": 86,
+        "brandName": "FAXIN-250",
+        "genericName": "Cefalexin",
+        "dosageForm": "Capsule",
+        "strength": "250 mg",
+        "manufacturer": "Sands Active, Sri Lanka",
+        "marketAuthHolder": "Sands Active, Sri Lanka",
+        "price": 15.1,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      },
+      {
+        "id": 121,
+        "brandName": "KEPHALEX B",
+        "genericName": "Cefalexin",
+        "dosageForm": "Oral suspension",
+        "strength": "125 mg/5 mL",
+        "manufacturer": "Bharat Parenterals, India",
+        "marketAuthHolder": "Baur Life Science",
+        "price": 354.2,
+        "priceUnit": "100 mL",
+        "currency": "LKR"
+      }
+    ],
+    "formoterol + fluticasone": [
+      {
+        "id": 87,
+        "brandName": "FLIMYST 5/125",
+        "genericName": "Formoterol + Fluticasone",
+        "dosageForm": "Inhaler (metered dose)",
+        "strength": "5 mcg + 125 mcg/dose",
+        "manufacturer": "Beximco, Bangladesh",
+        "marketAuthHolder": "Emerchemie NB",
+        "price": 1665.76,
+        "priceUnit": "Canister",
+        "currency": "LKR"
+      }
+    ],
+    "ofloxacin": [
+      {
+        "id": 88,
+        "brandName": "FLOBOID",
+        "genericName": "Ofloxacin",
+        "dosageForm": "Eye drops",
+        "strength": "0.30%",
+        "manufacturer": "Micro Labs, India",
+        "marketAuthHolder": "Micro Healthcare",
+        "price": 192,
+        "priceUnit": "5 mL",
+        "currency": "LKR"
+      }
+    ],
+    "fluconazole": [
+      {
+        "id": 89,
+        "brandName": "FLUCAST 150",
+        "genericName": "Fluconazole",
+        "dosageForm": "Capsule",
+        "strength": "150 mg",
+        "manufacturer": "McW Healthcare, India",
+        "marketAuthHolder": "Innogen Lanka",
+        "price": 67,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      }
+    ],
+    "flumazenil": [
+      {
+        "id": 90,
+        "brandName": "Flumazenil",
+        "genericName": "Flumazenil",
+        "dosageForm": "Injection",
+        "strength": "500 mcg/5 mL",
+        "manufacturer": "Mercury Laboratories, India",
+        "marketAuthHolder": "Yaden International",
+        "price": 7230.98,
+        "priceUnit": "5 mL",
+        "currency": "LKR"
+      }
+    ],
+    "fluticasone": [
+      {
+        "id": 91,
+        "brandName": "Fluticasone",
+        "genericName": "Fluticasone",
+        "dosageForm": "Pressurized inhalation",
+        "strength": "50 mcg/dose",
+        "manufacturer": "Heilongjiang, China",
+        "marketAuthHolder": "Ceyoka (Pvt) Ltd.",
+        "price": 2062.5,
+        "priceUnit": "Canister",
+        "currency": "LKR"
+      }
+    ],
+    "formoterol + budesonide": [
+      {
+        "id": 92,
+        "brandName": "FORMONIDE 400",
+        "genericName": "Formoterol + Budesonide",
+        "dosageForm": "Inhalation capsule",
+        "strength": "6 mcg + 400 mcg",
+        "manufacturer": "Lina Manufacturing, Sri Lanka",
+        "marketAuthHolder": "Lina Manufacturing, Sri Lanka",
+        "price": 43,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      }
+    ],
+    "framycetin sulfate": [
+      {
+        "id": 93,
+        "brandName": "FRAMICIN",
+        "genericName": "Framycetin sulfate",
+        "dosageForm": "Cream",
+        "strength": "1%",
+        "manufacturer": "Nem Laboratories, India",
+        "marketAuthHolder": "Softlogic Pharmaceuticals",
+        "price": 177.35,
+        "priceUnit": "20 g",
+        "currency": "LKR"
+      }
+    ],
+    "fusidic acid": [
+      {
+        "id": 94,
+        "brandName": "FUSITOP",
+        "genericName": "Fusidic acid",
+        "dosageForm": "Ointment",
+        "strength": "2%",
+        "manufacturer": "Aurochem Laboratories, India",
+        "marketAuthHolder": "Slim Pharmaceutical",
+        "price": 839.77,
+        "priceUnit": "15 g",
+        "currency": "LKR"
+      }
+    ],
+    "gabapentin": [
+      {
+        "id": 95,
+        "brandName": "GABALEPT 100",
+        "genericName": "Gabapentin",
+        "dosageForm": "Capsule",
+        "strength": "100 mg",
+        "manufacturer": "Micro Labs, India",
+        "marketAuthHolder": "Micro Mega",
+        "price": 31.37,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      }
+    ],
+    "sitagliptin": [
+      {
+        "id": 150,
+        "brandName": "MELSITA 25",
+        "genericName": "Sitagliptin",
+        "dosageForm": "Tablet",
+        "strength": "25 mg",
+        "manufacturer": "Sands Active, Sri Lanka",
+        "marketAuthHolder": "Sands Active, Sri Lanka",
+        "price": 28.37,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 97,
+        "brandName": "GENSITA 50",
+        "genericName": "Sitagliptin",
+        "dosageForm": "Tablet",
+        "strength": "50 mg",
+        "manufacturer": "Newgen, Sri Lanka",
+        "marketAuthHolder": "Newgen, Sri Lanka",
+        "price": 32.5,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 232,
+        "brandName": "SITAGLYN 50",
+        "genericName": "Sitagliptin",
+        "dosageForm": "Tablet",
+        "strength": "50 mg",
+        "manufacturer": "Celogen, Sri Lanka",
+        "marketAuthHolder": "Celogen, Sri Lanka",
+        "price": 48.01,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 96,
+        "brandName": "GENSITA 100",
+        "genericName": "Sitagliptin",
+        "dosageForm": "Tablet",
+        "strength": "100 mg",
+        "manufacturer": "Newgen, Sri Lanka",
+        "marketAuthHolder": "Newgen, Sri Lanka",
+        "price": 57,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 231,
+        "brandName": "Sitagliptin",
+        "genericName": "Sitagliptin",
+        "dosageForm": "Tablet",
+        "strength": "100 mg",
+        "manufacturer": "Sands Active, Sri Lanka",
+        "marketAuthHolder": "Sands Active, Sri Lanka",
+        "price": 85.32,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "glimepiride": [
+      {
+        "id": 98,
+        "brandName": "GLIMPIR 1",
+        "genericName": "Glimepiride",
+        "dosageForm": "Tablet",
+        "strength": "1 mg",
+        "manufacturer": "Celogen, Sri Lanka",
+        "marketAuthHolder": "Celogen, Sri Lanka",
+        "price": 12,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "amphotericin b liposomal": [
+      {
+        "id": 99,
+        "brandName": "GUFISOME",
+        "genericName": "Amphotericin B liposomal",
+        "dosageForm": "Injection",
+        "strength": "50 mg",
+        "manufacturer": "Gufic, India",
+        "marketAuthHolder": "Slim Pharmaceutical",
+        "price": 34425.02,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "methotrexate": [
+      {
+        "id": 100,
+        "brandName": "HI TREX-PF",
+        "genericName": "Methotrexate",
+        "dosageForm": "Injection",
+        "strength": "50mg/2 mL",
+        "manufacturer": "VHB, India",
+        "marketAuthHolder": "Yaden International",
+        "price": 820,
+        "priceUnit": "2 mL",
+        "currency": "LKR"
+      }
+    ],
+    "multivitamin": [
+      {
+        "id": 101,
+        "brandName": "HOVITE",
+        "genericName": "Multivitamin",
+        "dosageForm": "Syrup",
+        "strength": "-",
+        "manufacturer": "Raptakos Brett, India",
+        "marketAuthHolder": "Pharma Associates",
+        "price": 188.58,
+        "priceUnit": "45 mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 102,
+        "brandName": "HOVITE",
+        "genericName": "Multivitamin",
+        "dosageForm": "Syrup",
+        "strength": "-",
+        "manufacturer": "Raptakos Brett, India",
+        "marketAuthHolder": "Pharma Associates",
+        "price": 506.2,
+        "priceUnit": "120 mL",
+        "currency": "LKR"
+      }
+    ],
+    "hydralazine": [
+      {
+        "id": 103,
+        "brandName": "Hydralazine",
+        "genericName": "Hydralazine",
+        "dosageForm": "Injection",
+        "strength": "20 mg/mL",
+        "manufacturer": "Ciron Drugs, India",
+        "marketAuthHolder": "Ceyoka (Pvt) Ltd.",
+        "price": 2067.56,
+        "priceUnit": "1 mL",
+        "currency": "LKR"
+      }
+    ],
+    "hydroxocobalamin": [
+      {
+        "id": 106,
+        "brandName": "Hydroxocobalamin",
+        "genericName": "Hydroxocobalamin",
+        "dosageForm": "Injection",
+        "strength": "1 mg/mL",
+        "manufacturer": "Mercury Laboratories, India",
+        "marketAuthHolder": "Yaden International",
+        "price": 315,
+        "priceUnit": "1 mL Ampoule",
+        "currency": "LKR"
+      }
+    ],
+    "immunoglobulin": [
+      {
+        "id": 109,
+        "brandName": "IG VENA",
+        "genericName": "Immunoglobulin",
+        "dosageForm": "Solution for Infusion",
+        "strength": "50 g/L",
+        "manufacturer": "Kedrion S.p.A, Italy",
+        "marketAuthHolder": "Slim Pharmaceutical",
+        "price": 61440.12,
+        "priceUnit": "50 mL vial",
+        "currency": "LKR"
+      },
+      {
+        "id": 108,
+        "brandName": "IG VENA",
+        "genericName": "Immunoglobulin",
+        "dosageForm": "Solution for Infusion",
+        "strength": "50 g/L",
+        "manufacturer": "Kedrion S.p.A, Italy",
+        "marketAuthHolder": "Slim Pharmaceutical",
+        "price": 122880.25,
+        "priceUnit": "100 mL vial",
+        "currency": "LKR"
+      },
+      {
+        "id": 107,
+        "brandName": "IG VENA",
+        "genericName": "Immunoglobulin",
+        "dosageForm": "Solution for Infusion",
+        "strength": "50 g/L",
+        "manufacturer": "Kedrion S.p.A, Italy",
+        "marketAuthHolder": "Slim Pharmaceutical",
+        "price": 245760.5,
+        "priceUnit": "200 mL vial",
+        "currency": "LKR"
+      }
+    ],
+    "human coagulation factor viii": [
+      {
+        "id": 110,
+        "brandName": "IMMUNATE",
+        "genericName": "Human Coagulation Factor VIII",
+        "dosageForm": "Injection",
+        "strength": "250 IU",
+        "manufacturer": "Takeda, Austria",
+        "marketAuthHolder": "A.J. Medichem",
+        "price": 17478.88,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "influenza vaccine": [
+      {
+        "id": 111,
+        "brandName": "INFLUVAC",
+        "genericName": "Influenza vaccine",
+        "dosageForm": "Injection",
+        "strength": "15 mcg/0.5 mL",
+        "manufacturer": "Abbot Biologicals, Netherlands",
+        "marketAuthHolder": "Sunshine Healthcare",
+        "price": 3096,
+        "priceUnit": "Pre-filled syringe",
+        "currency": "LKR"
+      }
+    ],
+    "irinotecan": [
+      {
+        "id": 112,
+        "brandName": "Irinotecan",
+        "genericName": "Irinotecan",
+        "dosageForm": "Injection",
+        "strength": "100 mg/5 mL",
+        "manufacturer": "Getwell Pharma, India",
+        "marketAuthHolder": "Esses Pharmacy",
+        "price": 10487.33,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "iohexol": [
+      {
+        "id": 113,
+        "brandName": "JODASCAN 350",
+        "genericName": "Iohexol",
+        "dosageForm": "Injection",
+        "strength": "350 mg I/mL",
+        "manufacturer": "Jodas Expoim, India",
+        "marketAuthHolder": "Softcare International",
+        "price": 980.56,
+        "priceUnit": "20 mL vial",
+        "currency": "LKR"
+      },
+      {
+        "id": 114,
+        "brandName": "JODASCAN 350",
+        "genericName": "Iohexol",
+        "dosageForm": "Injection",
+        "strength": "350 mg I/mL",
+        "manufacturer": "Jodas Expoim, India",
+        "marketAuthHolder": "Softcare International",
+        "price": 2451.4,
+        "priceUnit": "50 mL vial",
+        "currency": "LKR"
+      },
+      {
+        "id": 115,
+        "brandName": "JODASCAN 350",
+        "genericName": "Iohexol",
+        "dosageForm": "Injection",
+        "strength": "350 mg I/mL",
+        "manufacturer": "Jodas Expoim, India",
+        "marketAuthHolder": "Softcare International",
+        "price": 3454.25,
+        "priceUnit": "75 mL vial",
+        "currency": "LKR"
+      },
+      {
+        "id": 116,
+        "brandName": "JODASCAN 350",
+        "genericName": "Iohexol",
+        "dosageForm": "Injection",
+        "strength": "350 mg I/mL",
+        "manufacturer": "Jodas Expoim, India",
+        "marketAuthHolder": "Softcare International",
+        "price": 4605.68,
+        "priceUnit": "100 mL vial",
+        "currency": "LKR"
+      }
+    ],
+    "everolimus": [
+      {
+        "id": 117,
+        "brandName": "JOELIMUS 0.25",
+        "genericName": "Everolimus",
+        "dosageForm": "Tablet",
+        "strength": "0.25 mg",
+        "manufacturer": "Jodas Expoim, India",
+        "marketAuthHolder": "Softcare International",
+        "price": 572,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "levetiracetam": [
+      {
+        "id": 127,
+        "brandName": "LEVETAM 750",
+        "genericName": "Levetiracetam",
+        "dosageForm": "Tablet",
+        "strength": "750 mg",
+        "manufacturer": "Newgen, Sri Lanka",
+        "marketAuthHolder": "Newgen, Sri Lanka",
+        "price": 90,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 118,
+        "brandName": "JULITAM XR",
+        "genericName": "Levetiracetam",
+        "dosageForm": "Tablet (extended release)",
+        "strength": "750 mg",
+        "manufacturer": "Celogen, Sri Lanka",
+        "marketAuthHolder": "Celogen, Sri Lanka",
+        "price": 125.23,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "calcium + cholecalciferol": [
+      {
+        "id": 119,
+        "brandName": "KACO-D 500",
+        "genericName": "Calcium + Cholecalciferol",
+        "dosageForm": "Tablet (chewable)",
+        "strength": "500 mg + 400 IU",
+        "manufacturer": "Gamma Interpharm, Sri Lanka",
+        "marketAuthHolder": "Gamma Interpharm, Sri Lanka",
+        "price": 22.67,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 272,
+        "brandName": "ZECARB D+",
+        "genericName": "Calcium + Cholecalciferol",
+        "dosageForm": "Tablet (chewable)",
+        "strength": "1250 mg + 400 IU",
+        "manufacturer": "Celogen, Sri Lanka",
+        "marketAuthHolder": "Celogen, Sri Lanka",
+        "price": 30,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "phytomenadione": [
+      {
+        "id": 122,
+        "brandName": "K-VIT 1",
+        "genericName": "Phytomenadione",
+        "dosageForm": "Injection",
+        "strength": "1 mg/0.5 mL",
+        "manufacturer": "Kelun Lifesciences, Sri Lanka",
+        "marketAuthHolder": "Kelun Lifesciences, Sri Lanka",
+        "price": 350,
+        "priceUnit": "0.5 mL",
+        "currency": "LKR"
+      }
+    ],
+    "lamotrigine": [
+      {
+        "id": 123,
+        "brandName": "LAMITOR 50",
+        "genericName": "Lamotrigine",
+        "dosageForm": "Tablet",
+        "strength": "50 mg",
+        "manufacturer": "Torrent, India",
+        "marketAuthHolder": "Hemas Pharmaceuticals",
+        "price": 29.66,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "levocetirizine": [
+      {
+        "id": 124,
+        "brandName": "LECET",
+        "genericName": "Levocetirizine",
+        "dosageForm": "Tablet",
+        "strength": "5 mg",
+        "manufacturer": "Genome, Pakistan",
+        "marketAuthHolder": "Medisurge Healthcare",
+        "price": 18.85,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "lamivudine": [
+      {
+        "id": 125,
+        "brandName": "LEMIVIR",
+        "genericName": "Lamivudine",
+        "dosageForm": "Tablet",
+        "strength": "150 mg",
+        "manufacturer": "Celogen, Sri Lanka",
+        "marketAuthHolder": "Celogen, Sri Lanka",
+        "price": 180.8,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "leucovorin calcium": [
+      {
+        "id": 126,
+        "brandName": "LEUCOWEL",
+        "genericName": "Leucovorin calcium",
+        "dosageForm": "Injection",
+        "strength": "15 mg/2 mL",
+        "manufacturer": "Getwell Pharma, India",
+        "marketAuthHolder": "Esses Pharmacy",
+        "price": 446.64,
+        "priceUnit": "Ampoule",
+        "currency": "LKR"
+      }
+    ],
+    "lidocaine": [
+      {
+        "id": 133,
+        "brandName": "Lidocaine",
+        "genericName": "Lidocaine",
+        "dosageForm": "Injection",
+        "strength": "2%",
+        "manufacturer": "Pharmafabrikon, India",
+        "marketAuthHolder": "Novachem Lanka",
+        "price": 99.87,
+        "priceUnit": "5 mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 134,
+        "brandName": "Lidocaine",
+        "genericName": "Lidocaine",
+        "dosageForm": "Injection",
+        "strength": "2%",
+        "manufacturer": "Pharmafabrikon, India",
+        "marketAuthHolder": "Novachem Lanka",
+        "price": 149.82,
+        "priceUnit": "20 mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 132,
+        "brandName": "Lidocaine",
+        "genericName": "Lidocaine",
+        "dosageForm": "Injection",
+        "strength": "2%",
+        "manufacturer": "Mercury Laboratories, India",
+        "marketAuthHolder": "Yaden International",
+        "price": 150,
+        "priceUnit": "5mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 128,
+        "brandName": "LICAN",
+        "genericName": "Lidocaine",
+        "dosageForm": "Injection",
+        "strength": "2%",
+        "manufacturer": "Kelun Lifesciences, Sri Lanka",
+        "marketAuthHolder": "Kelun Lifesciences, Sri Lanka",
+        "price": 180,
+        "priceUnit": "5mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 130,
+        "brandName": "Lidocaine",
+        "genericName": "Lidocaine",
+        "dosageForm": "Injection",
+        "strength": "2%",
+        "manufacturer": "Yaden Laboratories, Sri Lanka",
+        "marketAuthHolder": "Yaden Laboratories, Sri Lanka",
+        "price": 180,
+        "priceUnit": "5 mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 129,
+        "brandName": "LICAN",
+        "genericName": "Lidocaine",
+        "dosageForm": "Injection",
+        "strength": "2%",
+        "manufacturer": "Kelun Lifesciences, Sri Lanka",
+        "marketAuthHolder": "Kelun Lifesciences, Sri Lanka",
+        "price": 194.4,
+        "priceUnit": "20mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 131,
+        "brandName": "Lidocaine",
+        "genericName": "Lidocaine",
+        "dosageForm": "Injection",
+        "strength": "2%",
+        "manufacturer": "Yaden Laboratories, Sri Lanka",
+        "marketAuthHolder": "Yaden Laboratories, Sri Lanka",
+        "price": 194.4,
+        "priceUnit": "20 mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 135,
+        "brandName": "Lidocaine",
+        "genericName": "Lidocaine",
+        "dosageForm": "Injection",
+        "strength": "2%",
+        "manufacturer": "Pharmafabrikon, India",
+        "marketAuthHolder": "Novachem Lanka",
+        "price": 220,
+        "priceUnit": "30 mL",
+        "currency": "LKR"
+      }
+    ],
+    "linezolid": [
+      {
+        "id": 136,
+        "brandName": "LINZO-R",
+        "genericName": "Linezolid",
+        "dosageForm": "Injection",
+        "strength": "600 mg/300 mL",
+        "manufacturer": "ER. K. Laboratories, India",
+        "marketAuthHolder": "PTC Medical",
+        "price": 2184.35,
+        "priceUnit": "Ampoule",
+        "currency": "LKR"
+      }
+    ],
+    "loratadine": [
+      {
+        "id": 138,
+        "brandName": "LORID",
+        "genericName": "Loratadine",
+        "dosageForm": "Oral Solution",
+        "strength": "5 mg/5mL",
+        "manufacturer": "Unique Pharmaceuticals, India",
+        "marketAuthHolder": "George Steuart Health",
+        "price": 416,
+        "priceUnit": "60mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 176,
+        "brandName": "Oradin",
+        "genericName": "Loratadine",
+        "dosageForm": "Suspension",
+        "strength": "5 mg/5mL",
+        "manufacturer": "Eskayef Bangladesh",
+        "marketAuthHolder": "Truvic Private Ltd",
+        "price": 431,
+        "priceUnit": "60mL",
+        "currency": "LKR"
+      }
+    ],
+    "meloxicam": [
+      {
+        "id": 139,
+        "brandName": "LOXINOL 7.5",
+        "genericName": "Meloxicam",
+        "dosageForm": "Tablet",
+        "strength": "7.5 mg",
+        "manufacturer": "Agio Pharmaceuticals, India",
+        "marketAuthHolder": "Citihealth Imports",
+        "price": 8,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "losartan": [
+      {
+        "id": 140,
+        "brandName": "LOZART",
+        "genericName": "Losartan",
+        "dosageForm": "Tablet",
+        "strength": "25 mg",
+        "manufacturer": "Astron, Sri Lanka",
+        "marketAuthHolder": "Astron, Sri Lanka",
+        "price": 8,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "leuprolide": [
+      {
+        "id": 141,
+        "brandName": "LUPROVA 3.75",
+        "genericName": "Leuprolide",
+        "dosageForm": "Injection (depot)",
+        "strength": "3.75 mg",
+        "manufacturer": "Celon Laboratories, India",
+        "marketAuthHolder": "Medmart Pharma",
+        "price": 10924.3,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "mitomycin": [
+      {
+        "id": 142,
+        "brandName": "LYOMIT 2",
+        "genericName": "Mitomycin",
+        "dosageForm": "Injection",
+        "strength": "2 mg",
+        "manufacturer": "United Biotech, India",
+        "marketAuthHolder": "Klintas (Pvt) Ltd.",
+        "price": 1600,
+        "priceUnit": "5 mL Vial",
+        "currency": "LKR"
+      }
+    ],
+    "magnesium sulphate": [
+      {
+        "id": 143,
+        "brandName": "MAGCI-50",
+        "genericName": "Magnesium sulphate",
+        "dosageForm": "Injection",
+        "strength": "50%",
+        "manufacturer": "Ciron Drugs, India",
+        "marketAuthHolder": "Ceyoka (Pvt) Ltd.",
+        "price": 30.4,
+        "priceUnit": "1mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 144,
+        "brandName": "MAGCI-50",
+        "genericName": "Magnesium sulphate",
+        "dosageForm": "Injection",
+        "strength": "50%",
+        "manufacturer": "Ciron Drugs, India",
+        "marketAuthHolder": "Ceyoka (Pvt) Ltd.",
+        "price": 100.32,
+        "priceUnit": "2mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 145,
+        "brandName": "MAGCI-50",
+        "genericName": "Magnesium sulphate",
+        "dosageForm": "Injection",
+        "strength": "50%",
+        "manufacturer": "Ciron Drugs, India",
+        "marketAuthHolder": "Ceyoka (Pvt) Ltd.",
+        "price": 304,
+        "priceUnit": "10mL",
+        "currency": "LKR"
+      }
+    ],
+    "oxytocin": [
+      {
+        "id": 146,
+        "brandName": "MARITON",
+        "genericName": "Oxytocin",
+        "dosageForm": "Injection",
+        "strength": "5 IU/1 mL",
+        "manufacturer": "Chengdu Hepatunn, China",
+        "marketAuthHolder": "Slim Pharmaceutical",
+        "price": 431.75,
+        "priceUnit": "Ampoule",
+        "currency": "LKR"
+      }
+    ],
+    "mefenamic acid": [
+      {
+        "id": 147,
+        "brandName": "MEFTAL 500",
+        "genericName": "Mefenamic acid",
+        "dosageForm": "Tablet",
+        "strength": "500 mg",
+        "manufacturer": "Blue Cross Laboratories, India",
+        "marketAuthHolder": "Sunshine Healthcare",
+        "price": 16.87,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "multivitamin and minerals": [
+      {
+        "id": 148,
+        "brandName": "MEGAVIT",
+        "genericName": "Multivitamin and Minerals",
+        "dosageForm": "Tablet",
+        "strength": "-",
+        "manufacturer": "The Acme, Bangladesh",
+        "marketAuthHolder": "Mega Pharma",
+        "price": 55,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "cefepime": [
+      {
+        "id": 189,
+        "brandName": "PIMECEF 500",
+        "genericName": "Cefepime",
+        "dosageForm": "Injection",
+        "strength": "500 mg",
+        "manufacturer": "Surge Laboratories, Pakistan",
+        "marketAuthHolder": "George Steuart",
+        "price": 588.23,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      },
+      {
+        "id": 317,
+        "brandName": "Dizma 4",
+        "genericName": "Cefepime",
+        "dosageForm": "Injection",
+        "strength": "500mg",
+        "manufacturer": "Zafa Pharmaceutical, India",
+        "marketAuthHolder": "Yaden International",
+        "price": 629.64,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      },
+      {
+        "id": 149,
+        "brandName": "MELPIN 500",
+        "genericName": "Cefepime",
+        "dosageForm": "Injection",
+        "strength": "500 mg",
+        "manufacturer": "Sands Active, Sri Lanka",
+        "marketAuthHolder": "Sands Active, Sri Lanka",
+        "price": 795,
+        "priceUnit": "10 mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 188,
+        "brandName": "PIMECEF 1G",
+        "genericName": "Cefepime",
+        "dosageForm": "Injection",
+        "strength": "1 g",
+        "manufacturer": "Surge Laboratories, Pakistan",
+        "marketAuthHolder": "George Steuart",
+        "price": 1023.78,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      },
+      {
+        "id": 316,
+        "brandName": "MELPIM 1000",
+        "genericName": "Cefepime",
+        "dosageForm": "Injection",
+        "strength": "1000mg",
+        "manufacturer": "Sands Active, Sri Lanka",
+        "marketAuthHolder": "Sands Active, Sri Lanka",
+        "price": 1094.4,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "meropenem": [
+      {
+        "id": 212,
+        "brandName": "RONEM",
+        "genericName": "Meropenem",
+        "dosageForm": "Injection",
+        "strength": "500 mg",
+        "manufacturer": "Venus Remedies, India",
+        "marketAuthHolder": "Ceyoka (Pvt) Ltd.",
+        "price": 4396.5,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      },
+      {
+        "id": 151,
+        "brandName": "MEROFIC 1G",
+        "genericName": "Meropenem",
+        "dosageForm": "Injection",
+        "strength": "1g",
+        "manufacturer": "Gufic, India",
+        "marketAuthHolder": "Slim Pharmaceutical",
+        "price": 7661.75,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "mesna": [
+      {
+        "id": 153,
+        "brandName": "Mesna",
+        "genericName": "Mesna",
+        "dosageForm": "Injection",
+        "strength": "200 mg/2 mL",
+        "manufacturer": "Getwell Pharma, India",
+        "marketAuthHolder": "Esses Pharmacy",
+        "price": 543.97,
+        "priceUnit": "Ampoule",
+        "currency": "LKR"
+      }
+    ],
+    "methylphenidate": [
+      {
+        "id": 154,
+        "brandName": "METHYPHEN",
+        "genericName": "Methylphenidate",
+        "dosageForm": "Tablet",
+        "strength": "10 mg",
+        "manufacturer": "Celogen, Sri Lanka",
+        "marketAuthHolder": "Celogen, Sri Lanka",
+        "price": 40,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "metoclopramide": [
+      {
+        "id": 155,
+        "brandName": "Metoclopramide",
+        "genericName": "Metoclopramide",
+        "dosageForm": "Tablet",
+        "strength": "10 mg",
+        "manufacturer": "Mercury Laboratories, India",
+        "marketAuthHolder": "Yaden International",
+        "price": 7,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 156,
+        "brandName": "Metoclopramide",
+        "genericName": "Metoclopramide",
+        "dosageForm": "Injection",
+        "strength": "10 mg/2 mL",
+        "manufacturer": "Mercury Laboratories, India",
+        "marketAuthHolder": "Yaden International",
+        "price": 98,
+        "priceUnit": "2 mL",
+        "currency": "LKR"
+      }
+    ],
+    "milrinone": [
+      {
+        "id": 157,
+        "brandName": "MIRONE",
+        "genericName": "Milrinone",
+        "dosageForm": "Injection",
+        "strength": "1 mg/1 mL",
+        "manufacturer": "Kelun Lifescience, Sri Lanka",
+        "marketAuthHolder": "Kelun Lifescience, Sri Lanka",
+        "price": 3150,
+        "priceUnit": "1 mL",
+        "currency": "LKR"
+      }
+    ],
+    "telmisartan": [
+      {
+        "id": 158,
+        "brandName": "MISAR 20",
+        "genericName": "Telmisartan",
+        "dosageForm": "Tablet",
+        "strength": "20 mg",
+        "manufacturer": "Highnoon, Pakistan",
+        "marketAuthHolder": "Truvic (Pvt) Ltd.",
+        "price": 20,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 242,
+        "brandName": "TELGIO 40",
+        "genericName": "Telmisartan",
+        "dosageForm": "Tablet",
+        "strength": "40 mg",
+        "manufacturer": "PT Dexa Medica, Indonesia",
+        "marketAuthHolder": "Baur & Co.",
+        "price": 26.32,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "montelukast": [
+      {
+        "id": 159,
+        "brandName": "MOTELAST 5",
+        "genericName": "Montelukast",
+        "dosageForm": "Tablet (chewable)",
+        "strength": "5 mg",
+        "manufacturer": "Cadila Pharmaceuticals, India",
+        "marketAuthHolder": "Sunshine Healthcare",
+        "price": 11,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "mycophenolate": [
+      {
+        "id": 160,
+        "brandName": "MYFORTIC 180MG",
+        "genericName": "Mycophenolate",
+        "dosageForm": "Tablet (gastro-resistant)",
+        "strength": "180 mg",
+        "manufacturer": "Novartis, Switzerland",
+        "marketAuthHolder": "Baur & Co.",
+        "price": 277.56,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 161,
+        "brandName": "MYOTEC-S 360",
+        "genericName": "Mycophenolate",
+        "dosageForm": "Tablet (delayed release)",
+        "strength": "360 mg",
+        "manufacturer": "United Biotech, India",
+        "marketAuthHolder": "Klintas (Pvt) Ltd.",
+        "price": 355,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "midazolam": [
+      {
+        "id": 162,
+        "brandName": "Midazolam",
+        "genericName": "Midazolam",
+        "dosageForm": "Injection",
+        "strength": "5mg/mL",
+        "manufacturer": "Ciron Drugs, India",
+        "marketAuthHolder": "Ceyoka (Pvt) Ltd.",
+        "price": 356.25,
+        "priceUnit": "1 mL",
+        "currency": "LKR"
+      }
+    ],
+    "sodium chloride": [
+      {
+        "id": 163,
+        "brandName": "NASOCLEAR",
+        "genericName": "Sodium chloride",
+        "dosageForm": "Nasal spray",
+        "strength": "0.65%",
+        "manufacturer": "Zydus Life Sciences, India",
+        "marketAuthHolder": "Gamma Interpharm",
+        "price": 154.82,
+        "priceUnit": "Pack",
+        "currency": "LKR"
+      },
+      {
+        "id": 215,
+        "brandName": "R-SALINE NS",
+        "genericName": "Sodium chloride",
+        "dosageForm": "Infusion",
+        "strength": "0.90%",
+        "manufacturer": "R.K. Laboratories, India",
+        "marketAuthHolder": "PTC Medical",
+        "price": 206.4,
+        "priceUnit": "500mL",
+        "currency": "LKR"
+      }
+    ],
+    "diclofenac potassium": [
+      {
+        "id": 164,
+        "brandName": "NEODOL-K",
+        "genericName": "Diclofenac potassium",
+        "dosageForm": "Tablet",
+        "strength": "50 mg",
+        "manufacturer": "Micro Healthcare, India",
+        "marketAuthHolder": "Micro Healthcare",
+        "price": 16.5,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "cyclophosphamide": [
+      {
+        "id": 165,
+        "brandName": "NEOPHOS",
+        "genericName": "Cyclophosphamide",
+        "dosageForm": "Injection",
+        "strength": "200 mg",
+        "manufacturer": "Drug International, Bangladesh",
+        "marketAuthHolder": "Tabrane Pharmaceuticals",
+        "price": 608.99,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "etanercept": [
+      {
+        "id": 166,
+        "brandName": "NEPEXTO",
+        "genericName": "Etanercept",
+        "dosageForm": "Injection (Prefilled syringe)",
+        "strength": "50 mg/1 mL",
+        "manufacturer": "Lupin, India",
+        "marketAuthHolder": "Ceyoka (Pvt) Ltd.",
+        "price": 30950,
+        "priceUnit": "0.5 mL syringe",
+        "currency": "LKR"
+      },
+      {
+        "id": 167,
+        "brandName": "NEPEXTO",
+        "genericName": "Etanercept",
+        "dosageForm": "Injection (Prefilled syringe)",
+        "strength": "50 mg/1 mL",
+        "manufacturer": "Lupin, India",
+        "marketAuthHolder": "Ceyoka (Pvt) Ltd.",
+        "price": 52000,
+        "priceUnit": "1.0 mL syringe",
+        "currency": "LKR"
+      },
+      {
+        "id": 168,
+        "brandName": "NEPEXTO",
+        "genericName": "Etanercept",
+        "dosageForm": "Injection (Prefilled pen)",
+        "strength": "50 mg/1 mL",
+        "manufacturer": "Lupin, India",
+        "marketAuthHolder": "Ceyoka (Pvt) Ltd.",
+        "price": 55000,
+        "priceUnit": "Pre-filled pen",
+        "currency": "LKR"
+      }
+    ],
+    "filgrastim": [
+      {
+        "id": 169,
+        "brandName": "NEUTROFLX",
+        "genericName": "Filgrastim",
+        "dosageForm": "Injection",
+        "strength": "300mcg/mL",
+        "manufacturer": "Kexing Biopharma, China",
+        "marketAuthHolder": "Slim Pharmaceutical",
+        "price": 5145.39,
+        "priceUnit": "Pre-filled syringe",
+        "currency": "LKR"
+      }
+    ],
+    "nilotinib": [
+      {
+        "id": 170,
+        "brandName": "NILTIB 150",
+        "genericName": "Nilotinib",
+        "dosageForm": "Capsule",
+        "strength": "150 mg",
+        "manufacturer": "Hetero Labs, India",
+        "marketAuthHolder": "Mansel Ceylon",
+        "price": 1100,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      }
+    ],
+    "nimodipine": [
+      {
+        "id": 171,
+        "brandName": "NIMODEC",
+        "genericName": "Nimodipine",
+        "dosageForm": "Infusion",
+        "strength": "10 mg/50 mL",
+        "manufacturer": "United Biotech, India",
+        "marketAuthHolder": "Klintas (Pvt) Ltd.",
+        "price": 4100.38,
+        "priceUnit": "50 mL Vial",
+        "currency": "LKR"
+      }
+    ],
+    "ciprofloxacin": [
+      {
+        "id": 255,
+        "brandName": "ULTRAFLOX-500",
+        "genericName": "Ciprofloxacin",
+        "dosageForm": "Tablet",
+        "strength": "500 mg",
+        "manufacturer": "Bal Pharma, India",
+        "marketAuthHolder": "Yaden International",
+        "price": 16.88,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 172,
+        "brandName": "NIRCIP",
+        "genericName": "Ciprofloxacin",
+        "dosageForm": "Infusion",
+        "strength": "200 mg/100 mL",
+        "manufacturer": "Aculife Healthcare, India",
+        "marketAuthHolder": "Emerchemie NB",
+        "price": 153.84,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      },
+      {
+        "id": 331,
+        "brandName": "CIPROCIN",
+        "genericName": "Ciprofloxacin",
+        "dosageForm": "Eye/Ear Drop",
+        "strength": "0.30%",
+        "manufacturer": "Square Pharmaceuticals, Bangladesh",
+        "marketAuthHolder": "CIC Holdings",
+        "price": 202.95,
+        "priceUnit": "5mL",
+        "currency": "LKR"
+      }
+    ],
+    "thiamine hydrochloride": [
+      {
+        "id": 173,
+        "brandName": "ONE B",
+        "genericName": "Thiamine hydrochloride",
+        "dosageForm": "Injection",
+        "strength": "100 mg/2 mL",
+        "manufacturer": "Kelun Lifescience, Sri Lanka",
+        "marketAuthHolder": "Kelun Lifescience, Sri Lanka",
+        "price": 250,
+        "priceUnit": "2 mL",
+        "currency": "LKR"
+      }
+    ],
+    "fentanyl": [
+      {
+        "id": 174,
+        "brandName": "OPNIL",
+        "genericName": "Fentanyl",
+        "dosageForm": "Injection",
+        "strength": "100 mcg/2 mL",
+        "manufacturer": "Kelun Lifescience, Sri Lanka",
+        "marketAuthHolder": "Kelun Lifescience, Sri Lanka",
+        "price": 340,
+        "priceUnit": "2 mL",
+        "currency": "LKR"
+      }
+    ],
+    "carboxymethylcellulose + glycerin": [
+      {
+        "id": 175,
+        "brandName": "OPTIVE",
+        "genericName": "Carboxymethylcellulose + Glycerin",
+        "dosageForm": "Eye drops",
+        "strength": "0.5% + 0.9%",
+        "manufacturer": "Allergan LLC, USA",
+        "marketAuthHolder": "Hemas Pharmaceuticals",
+        "price": 1476,
+        "priceUnit": "15 mL Vial",
+        "currency": "LKR"
+      }
+    ],
+    "hyoscine butylbromide": [
+      {
+        "id": 177,
+        "brandName": "OROSPAS",
+        "genericName": "Hyoscine butylbromide",
+        "dosageForm": "Tablet",
+        "strength": "10 mg",
+        "manufacturer": "Macleods, India",
+        "marketAuthHolder": "Emerchemie NB",
+        "price": 27.19,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "protamine sulphate": [
+      {
+        "id": 178,
+        "brandName": "ORVOPROT 50",
+        "genericName": "Protamine Sulphate",
+        "dosageForm": "Injection",
+        "strength": "50mg/5 mL",
+        "manufacturer": "United Biotech, India",
+        "marketAuthHolder": "Klintas (Pvt) Ltd.",
+        "price": 1370.5,
+        "priceUnit": "Ampoule",
+        "currency": "LKR"
+      }
+    ],
+    "oseltamivir": [
+      {
+        "id": 179,
+        "brandName": "Oseltamivir",
+        "genericName": "Oseltamivir",
+        "dosageForm": "Capsule",
+        "strength": "45 mg",
+        "manufacturer": "Sands Active, Sri Lanka",
+        "marketAuthHolder": "Sands Active, Sri Lanka",
+        "price": 488.55,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      }
+    ],
+    "octreotide": [
+      {
+        "id": 180,
+        "brandName": "OTIDE",
+        "genericName": "Octreotide",
+        "dosageForm": "Injection",
+        "strength": "50 mcg/mL",
+        "manufacturer": "United Biotech, India",
+        "marketAuthHolder": "Klintas (Pvt) Ltd.",
+        "price": 1393,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "pantoprazole": [
+      {
+        "id": 181,
+        "brandName": "PANTO DR 20",
+        "genericName": "Pantoprazole",
+        "dosageForm": "Tablet (delayed release)",
+        "strength": "20 mg",
+        "manufacturer": "Newgen, Sri Lanka",
+        "marketAuthHolder": "Newgen, Sri Lanka",
+        "price": 25,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "paracetamol": [
+      {
+        "id": 182,
+        "brandName": "PARAMOL 500",
+        "genericName": "Paracetamol",
+        "dosageForm": "Tablet",
+        "strength": "500 mg",
+        "manufacturer": "Newgen, Sri Lanka",
+        "marketAuthHolder": "Newgen, Sri Lanka",
+        "price": 3.2,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "enoxaparin": [
+      {
+        "id": 183,
+        "brandName": "PARIN-E",
+        "genericName": "Enoxaparin",
+        "dosageForm": "Injection",
+        "strength": "40 mg/0.4 mL",
+        "manufacturer": "Venus Remedies, India",
+        "marketAuthHolder": "Yaden International",
+        "price": 2635,
+        "priceUnit": "Pre-filled syringe",
+        "currency": "LKR"
+      }
+    ],
+    "pemetrexed": [
+      {
+        "id": 184,
+        "brandName": "PEMETRA 100",
+        "genericName": "Pemetrexed",
+        "dosageForm": "Injection",
+        "strength": "100 mg",
+        "manufacturer": "Getwell Pharma, India",
+        "marketAuthHolder": "Esses Pharmacy",
+        "price": 5605.3,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "phenylephrine": [
+      {
+        "id": 186,
+        "brandName": "PHRINTEC",
+        "genericName": "Phenylephrine",
+        "dosageForm": "Injection",
+        "strength": "10 mg/mL",
+        "manufacturer": "United Biotech, India",
+        "marketAuthHolder": "Klintas (Pvt) Ltd.",
+        "price": 1955,
+        "priceUnit": "Ampoule",
+        "currency": "LKR"
+      },
+      {
+        "id": 185,
+        "brandName": "PHERAN",
+        "genericName": "Phenylephrine",
+        "dosageForm": "Injection",
+        "strength": "10 mg/mL",
+        "manufacturer": "Kelun Lifescience, Sri Lanka",
+        "marketAuthHolder": "Kelun Lifescience, Sri Lanka",
+        "price": 2311.52,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "piroxicam": [
+      {
+        "id": 187,
+        "brandName": "PICAM GEL",
+        "genericName": "Piroxicam",
+        "dosageForm": "Gel",
+        "strength": "0.50%",
+        "manufacturer": "Micro Labs, India",
+        "marketAuthHolder": "Micro Healthcare",
+        "price": 475,
+        "priceUnit": "30 g",
+        "currency": "LKR"
+      }
+    ],
+    "pneumococcal vaccine": [
+      {
+        "id": 190,
+        "brandName": "PCV-10",
+        "genericName": "Pneumococcal Vaccine",
+        "dosageForm": "Injection",
+        "strength": "10 valent",
+        "manufacturer": "Serum Institute, India",
+        "marketAuthHolder": "Citihealth Imports",
+        "price": 14779,
+        "priceUnit": "5 dose vial",
+        "currency": "LKR"
+      }
+    ],
+    "poliomyelitis vaccine": [
+      {
+        "id": 191,
+        "brandName": "Polio Vaccine",
+        "genericName": "Poliomyelitis vaccine",
+        "dosageForm": "Oral drops",
+        "strength": "-",
+        "manufacturer": "Panacea Biotec, India",
+        "marketAuthHolder": "Baur & Co.",
+        "price": 690.39,
+        "priceUnit": "10 dose vial",
+        "currency": "LKR"
+      },
+      {
+        "id": 302,
+        "brandName": "BIOPOLIO B1/3",
+        "genericName": "Poliomyelitis vaccine",
+        "dosageForm": "Vaccine",
+        "strength": "Type 1 & 3",
+        "manufacturer": "Bharat Biotech, India",
+        "marketAuthHolder": "Gulf Pharma",
+        "price": 931.55,
+        "priceUnit": "10 doses",
+        "currency": "LKR"
+      },
+      {
+        "id": 192,
+        "brandName": "Polio Vaccine",
+        "genericName": "Poliomyelitis vaccine",
+        "dosageForm": "Oral drops",
+        "strength": "-",
+        "manufacturer": "Panacea Biotec, India",
+        "marketAuthHolder": "Baur & Co.",
+        "price": 1380.78,
+        "priceUnit": "20 dose vial",
+        "currency": "LKR"
+      },
+      {
+        "id": 301,
+        "brandName": "BIOPOLIO B1/3",
+        "genericName": "Poliomyelitis vaccine",
+        "dosageForm": "Vaccine",
+        "strength": "Type 1 & 3",
+        "manufacturer": "Bharat Biotech, India",
+        "marketAuthHolder": "Gulf Pharma",
+        "price": 1863.1,
+        "priceUnit": "20 doses",
+        "currency": "LKR"
+      }
+    ],
+    "pramipexole": [
+      {
+        "id": 193,
+        "brandName": "PRAMIZ 0.25",
+        "genericName": "Pramipexole",
+        "dosageForm": "Tablet",
+        "strength": "0.25 mg",
+        "manufacturer": "Zydus Life Sciences, India",
+        "marketAuthHolder": "Zydus Lanka",
+        "price": 44,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "human normal immunoglobulin": [
+      {
+        "id": 197,
+        "brandName": "PRIVIGEN",
+        "genericName": "Human Normal Immunoglobulin",
+        "dosageForm": "Infusion",
+        "strength": "100g/1000mL",
+        "manufacturer": "CSL Behring, Switzerland",
+        "marketAuthHolder": "ABC Pharma Services",
+        "price": 61440,
+        "priceUnit": "25 mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 196,
+        "brandName": "PRIVIGEN",
+        "genericName": "Human Normal Immunoglobulin",
+        "dosageForm": "Infusion",
+        "strength": "100g/1000mL",
+        "manufacturer": "CSL Behring, Switzerland",
+        "marketAuthHolder": "ABC Pharma Services",
+        "price": 122880.25,
+        "priceUnit": "50mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 195,
+        "brandName": "PRIVIGEN",
+        "genericName": "Human Normal Immunoglobulin",
+        "dosageForm": "Infusion",
+        "strength": "100g/1000mL",
+        "manufacturer": "CSL Behring, Switzerland",
+        "marketAuthHolder": "ABC Pharma Services",
+        "price": 245760.5,
+        "priceUnit": "100mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 194,
+        "brandName": "PRIVIGEN",
+        "genericName": "Human Normal Immunoglobulin",
+        "dosageForm": "Infusion",
+        "strength": "100g/1000mL",
+        "manufacturer": "CSL Behring, Switzerland",
+        "marketAuthHolder": "ABC Pharma Services",
+        "price": 491521,
+        "priceUnit": "200 mL",
+        "currency": "LKR"
+      }
+    ],
+    "promethazine": [
+      {
+        "id": 198,
+        "brandName": "PROMACE",
+        "genericName": "Promethazine",
+        "dosageForm": "Oral solution",
+        "strength": "5 mg/5 mL",
+        "manufacturer": "Ace Healthcare, Sri Lanka",
+        "marketAuthHolder": "Ace Healthcare, Sri Lanka",
+        "price": 135,
+        "priceUnit": "100 mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 200,
+        "brandName": "Promethazine",
+        "genericName": "Promethazine",
+        "dosageForm": "Injection",
+        "strength": "25 mg/mL",
+        "manufacturer": "Yaden Laboratories, Sri Lanka",
+        "marketAuthHolder": "Yaden Laboratories, Sri Lanka",
+        "price": 179.02,
+        "priceUnit": "1mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 201,
+        "brandName": "Promethazine",
+        "genericName": "Promethazine",
+        "dosageForm": "Injection",
+        "strength": "25 mg/mL",
+        "manufacturer": "Yaden Laboratories, Sri Lanka",
+        "marketAuthHolder": "Yaden Laboratories, Sri Lanka",
+        "price": 330,
+        "priceUnit": "2 mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 199,
+        "brandName": "PROMACE",
+        "genericName": "Promethazine",
+        "dosageForm": "Oral solution",
+        "strength": "5 mg/5 mL",
+        "manufacturer": "Ace Healthcare, Sri Lanka",
+        "marketAuthHolder": "Ace Healthcare, Sri Lanka",
+        "price": 550,
+        "priceUnit": "500 mL",
+        "currency": "LKR"
+      }
+    ],
+    "glucose": [
+      {
+        "id": 202,
+        "brandName": "R DEX-D10",
+        "genericName": "Glucose",
+        "dosageForm": "Infusion",
+        "strength": "10%",
+        "manufacturer": "R.K. Laboratories, India",
+        "marketAuthHolder": "PTC Medical",
+        "price": 270,
+        "priceUnit": "500mL",
+        "currency": "LKR"
+      }
+    ],
+    "ranitidine": [
+      {
+        "id": 203,
+        "brandName": "RANITID",
+        "genericName": "Ranitidine",
+        "dosageForm": "Injection",
+        "strength": "25 mg/mL",
+        "manufacturer": "Sakar Healthcare, India",
+        "marketAuthHolder": "Ceyoka (Pvt) Ltd.",
+        "price": 111.46,
+        "priceUnit": "2 mL",
+        "currency": "LKR"
+      }
+    ],
+    "diazepam": [
+      {
+        "id": 204,
+        "brandName": "RELIVIUM",
+        "genericName": "Diazepam",
+        "dosageForm": "Injection",
+        "strength": "5 mg/mL",
+        "manufacturer": "HBM Pharma, Latvia",
+        "marketAuthHolder": "Baur Life Science",
+        "price": 500.19,
+        "priceUnit": "2 mL",
+        "currency": "LKR"
+      }
+    ],
+    "infliximab": [
+      {
+        "id": 206,
+        "brandName": "REMSIMA SC",
+        "genericName": "Infliximab",
+        "dosageForm": "Injection",
+        "strength": "120 mg",
+        "manufacturer": "Celtrion, Korea",
+        "marketAuthHolder": "George Steuart",
+        "price": 103799.65,
+        "priceUnit": "Pack of 1 syringe",
+        "currency": "LKR"
+      },
+      {
+        "id": 205,
+        "brandName": "REMSIMA SC",
+        "genericName": "Infliximab",
+        "dosageForm": "Injection",
+        "strength": "120 mg",
+        "manufacturer": "Celtrion, Korea",
+        "marketAuthHolder": "George Steuart",
+        "price": 207599.3,
+        "priceUnit": "Pack of 2 syringes",
+        "currency": "LKR"
+      }
+    ],
+    "risperidone": [
+      {
+        "id": 208,
+        "brandName": "RESPIGEN 1",
+        "genericName": "Risperidone",
+        "dosageForm": "Tablet",
+        "strength": "1 mg",
+        "manufacturer": "Newgen, Sri Lanka",
+        "marketAuthHolder": "Newgen, Sri Lanka",
+        "price": 9,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 207,
+        "brandName": "RESICALM 2",
+        "genericName": "Risperidone",
+        "dosageForm": "Tablet",
+        "strength": "2 mg",
+        "manufacturer": "Aurobindo Pharma, India",
+        "marketAuthHolder": "Alaris Lanka",
+        "price": 15.32,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 225,
+        "brandName": "SANDONE 2",
+        "genericName": "Risperidone",
+        "dosageForm": "Tablet",
+        "strength": "2 mg",
+        "manufacturer": "Sands Active, Sri Lanka",
+        "marketAuthHolder": "Sands Active, Sri Lanka",
+        "price": 17.5,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 210,
+        "brandName": "Risperidone",
+        "genericName": "Risperidone",
+        "dosageForm": "Tablet",
+        "strength": "2 mg",
+        "manufacturer": "Sands Active, Sri Lanka",
+        "marketAuthHolder": "Sands Active, Sri Lanka",
+        "price": 18.2,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "deferiprone": [
+      {
+        "id": 209,
+        "brandName": "RIPRONE 500",
+        "genericName": "Deferiprone",
+        "dosageForm": "Tablet",
+        "strength": "500 mg",
+        "manufacturer": "Genome, Pakistan",
+        "marketAuthHolder": "Slim Pharmaceutical",
+        "price": 112.45,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "rizatriptan": [
+      {
+        "id": 211,
+        "brandName": "RIZY 5",
+        "genericName": "Rizatriptan",
+        "dosageForm": "Tablet",
+        "strength": "5 mg",
+        "manufacturer": "Celogen, Sri Lanka",
+        "marketAuthHolder": "Celogen, Sri Lanka",
+        "price": 120,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "rosuvastatin": [
+      {
+        "id": 214,
+        "brandName": "Rosuvastatin",
+        "genericName": "Rosuvastatin",
+        "dosageForm": "Tablet",
+        "strength": "5 mg",
+        "manufacturer": "Sands Active, Sri Lanka",
+        "marketAuthHolder": "Sands Active, Sri Lanka",
+        "price": 42,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 213,
+        "brandName": "ROSUKE 10",
+        "genericName": "Rosuvastatin",
+        "dosageForm": "Tablet",
+        "strength": "10 mg",
+        "manufacturer": "Finecure, India",
+        "marketAuthHolder": "Bio Life",
+        "price": 54,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "rupatadine": [
+      {
+        "id": 216,
+        "brandName": "RUPADAY",
+        "genericName": "Rupatadine",
+        "dosageForm": "Tablet",
+        "strength": "10 mg",
+        "manufacturer": "Eskayef, Bangladesh",
+        "marketAuthHolder": "Truvic (Pvt) Ltd.",
+        "price": 42,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "coagulation factor viii": [
+      {
+        "id": 218,
+        "brandName": "SAFACTO AF",
+        "genericName": "Coagulation Factor VIII",
+        "dosageForm": "Injection",
+        "strength": "250 IU",
+        "manufacturer": "Saman Daroo, Iran",
+        "marketAuthHolder": "Cliniqon Biotech",
+        "price": 17340.78,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      },
+      {
+        "id": 217,
+        "brandName": "SAFACTO AF",
+        "genericName": "Coagulation Factor VIII",
+        "dosageForm": "Injection",
+        "strength": "500 IU",
+        "manufacturer": "Saman Daroo, Iran",
+        "marketAuthHolder": "Cliniqon Biotech",
+        "price": 34681.56,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "somatropin": [
+      {
+        "id": 219,
+        "brandName": "SAIZEN LIQUID",
+        "genericName": "Somatropin",
+        "dosageForm": "Injection",
+        "strength": "5.83 mg/mL",
+        "manufacturer": "Merck Serono, Italy",
+        "marketAuthHolder": "Baur & Co.",
+        "price": 38322.44,
+        "priceUnit": "Pre-filled syringe",
+        "currency": "LKR"
+      }
+    ],
+    "salbutamol": [
+      {
+        "id": 220,
+        "brandName": "Salbutamol",
+        "genericName": "Salbutamol",
+        "dosageForm": "Oral solution",
+        "strength": "2 mg/5 mL",
+        "manufacturer": "Diyatha, Sri Lanka",
+        "marketAuthHolder": "Diyatha, Sri Lanka",
+        "price": 222,
+        "priceUnit": "60 mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 221,
+        "brandName": "Salbutamol",
+        "genericName": "Salbutamol",
+        "dosageForm": "Oral solution",
+        "strength": "2 mg/5 mL",
+        "manufacturer": "Diyatha, Sri Lanka",
+        "marketAuthHolder": "Diyatha, Sri Lanka",
+        "price": 371,
+        "priceUnit": "100 mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 222,
+        "brandName": "Salbutamol",
+        "genericName": "Salbutamol",
+        "dosageForm": "Oral solution",
+        "strength": "2 mg/5 mL",
+        "manufacturer": "Diyatha, Sri Lanka",
+        "marketAuthHolder": "Diyatha, Sri Lanka",
+        "price": 800,
+        "priceUnit": "500 mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 223,
+        "brandName": "Salbutamol",
+        "genericName": "Salbutamol",
+        "dosageForm": "Oral solution",
+        "strength": "2 mg/5 mL",
+        "manufacturer": "Diyatha, Sri Lanka",
+        "marketAuthHolder": "Diyatha, Sri Lanka",
+        "price": 1110,
+        "priceUnit": "750 mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 224,
+        "brandName": "SALBUVENT 200",
+        "genericName": "Salbutamol",
+        "dosageForm": "Pressurized Inhalation",
+        "strength": "200 mcg/dose",
+        "manufacturer": "Lina Spiro, Sri Lanka",
+        "marketAuthHolder": "Lina Spiro, Sri Lanka",
+        "price": 1460,
+        "priceUnit": "Inhaler",
+        "currency": "LKR"
+      }
+    ],
+    "sevoflurane": [
+      {
+        "id": 226,
+        "brandName": "Sevoflurane",
+        "genericName": "Sevoflurane",
+        "dosageForm": "Inhalation Liquid",
+        "strength": "-",
+        "manufacturer": "Shandong, China",
+        "marketAuthHolder": "Gulf Pharma",
+        "price": 38850,
+        "priceUnit": "Bottle",
+        "currency": "LKR"
+      }
+    ],
+    "sildenafil": [
+      {
+        "id": 228,
+        "brandName": "SILATIO",
+        "genericName": "Sildenafil",
+        "dosageForm": "Tablet",
+        "strength": "20 mg",
+        "manufacturer": "Unison, Thailand",
+        "marketAuthHolder": "Sunshine Healthcare",
+        "price": 41.81,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 229,
+        "brandName": "Sildenafil",
+        "genericName": "Sildenafil",
+        "dosageForm": "Tablet",
+        "strength": "50 mg",
+        "manufacturer": "Celogen, Sri Lanka",
+        "marketAuthHolder": "Celogen, Sri Lanka",
+        "price": 133.2,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "basiliximab": [
+      {
+        "id": 230,
+        "brandName": "SIMULECT",
+        "genericName": "Basiliximab",
+        "dosageForm": "Injection",
+        "strength": "20 mg",
+        "manufacturer": "Novartis, Switzerland",
+        "marketAuthHolder": "Baur & Co.",
+        "price": 275000,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "isotretinoin": [
+      {
+        "id": 233,
+        "brandName": "SOTRET",
+        "genericName": "Isotretinoin",
+        "dosageForm": "Capsule",
+        "strength": "10 mg",
+        "manufacturer": "Sun Pharmaceutical, India",
+        "marketAuthHolder": "Emerchemie NB",
+        "price": 138.07,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      }
+    ],
+    "succinylcholine": [
+      {
+        "id": 234,
+        "brandName": "SUXONIUM",
+        "genericName": "Succinylcholine",
+        "dosageForm": "Injection",
+        "strength": "50 mg/mL",
+        "manufacturer": "Kelun Lifescience, Sri Lanka",
+        "marketAuthHolder": "Kelun Lifescience, Sri Lanka",
+        "price": 357.59,
+        "priceUnit": "2 mL",
+        "currency": "LKR"
+      }
+    ],
+    "tamsulosin": [
+      {
+        "id": 235,
+        "brandName": "TALMOSIN",
+        "genericName": "Tamsulosin",
+        "dosageForm": "Capsule",
+        "strength": "0.4 mg",
+        "manufacturer": "Ace Healthcare, Sri Lanka",
+        "marketAuthHolder": "Ace Healthcare, Sri Lanka",
+        "price": 37,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      },
+      {
+        "id": 236,
+        "brandName": "Tamsulosin",
+        "genericName": "Tamsulosin",
+        "dosageForm": "Capsule",
+        "strength": "0.4 mg",
+        "manufacturer": "Ace Healthcare, Sri Lanka",
+        "marketAuthHolder": "Ace Healthcare, Sri Lanka",
+        "price": 37,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      }
+    ],
+    "teicoplanin": [
+      {
+        "id": 238,
+        "brandName": "TECOPLAN 200",
+        "genericName": "Teicoplanin",
+        "dosageForm": "Injection",
+        "strength": "200 mg",
+        "manufacturer": "United Biotech, India",
+        "marketAuthHolder": "Klintas (Pvt) Ltd.",
+        "price": 4850,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      },
+      {
+        "id": 239,
+        "brandName": "TECOPLAN 400",
+        "genericName": "Teicoplanin",
+        "dosageForm": "Injection",
+        "strength": "400 mg",
+        "manufacturer": "United Biotech, India",
+        "marketAuthHolder": "Klintas (Pvt) Ltd.",
+        "price": 8800,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "tetracycline": [
+      {
+        "id": 243,
+        "brandName": "TETRET 250",
+        "genericName": "Tetracycline",
+        "dosageForm": "Capsule",
+        "strength": "250 mg",
+        "manufacturer": "Leben, India",
+        "marketAuthHolder": "Ceyoka (Pvt) Ltd.",
+        "price": 5.98,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      }
+    ],
+    "theophylline": [
+      {
+        "id": 244,
+        "brandName": "Theophylline",
+        "genericName": "Theophylline",
+        "dosageForm": "Capsule (controlled release)",
+        "strength": "200 mg",
+        "manufacturer": "Raptakos Brett, India",
+        "marketAuthHolder": "Pharma Associates",
+        "price": 6.43,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      }
+    ],
+    "azathioprine": [
+      {
+        "id": 245,
+        "brandName": "THIOPRESS 50",
+        "genericName": "Azathioprine",
+        "dosageForm": "Tablet",
+        "strength": "50 mg",
+        "manufacturer": "United Biotech, India",
+        "marketAuthHolder": "Klintas (Pvt) Ltd.",
+        "price": 59,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "levothyroxine": [
+      {
+        "id": 246,
+        "brandName": "THYRIN 50",
+        "genericName": "Levothyroxine",
+        "dosageForm": "Tablet",
+        "strength": "50 mcg",
+        "manufacturer": "Square, Bangladesh",
+        "marketAuthHolder": "CIC Holdings",
+        "price": 10.67,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "thyroxine": [
+      {
+        "id": 247,
+        "brandName": "THYROX 25",
+        "genericName": "Thyroxine",
+        "dosageForm": "Tablet",
+        "strength": "25 mcg",
+        "manufacturer": "Macleods, India",
+        "marketAuthHolder": "Emerchemie NB",
+        "price": 11.51,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "ticagrelor": [
+      {
+        "id": 248,
+        "brandName": "TICACARD 90",
+        "genericName": "Ticagrelor",
+        "dosageForm": "Tablet",
+        "strength": "90 mg",
+        "manufacturer": "Aristopharma, Bangladesh",
+        "marketAuthHolder": "Hemas Pharmaceuticals",
+        "price": 113,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "topiramate": [
+      {
+        "id": 249,
+        "brandName": "TOPIRA 25",
+        "genericName": "Topiramate",
+        "dosageForm": "Tablet",
+        "strength": "25 mg",
+        "manufacturer": "Celogen, Sri Lanka",
+        "marketAuthHolder": "Celogen, Sri Lanka",
+        "price": 24,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 250,
+        "brandName": "TOPIRA 50",
+        "genericName": "Topiramate",
+        "dosageForm": "Tablet",
+        "strength": "50 mg",
+        "manufacturer": "Celogen, Sri Lanka",
+        "marketAuthHolder": "Celogen, Sri Lanka",
+        "price": 46,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "ketorolac": [
+      {
+        "id": 251,
+        "brandName": "TORADOL",
+        "genericName": "Ketorolac",
+        "dosageForm": "Injection",
+        "strength": "30 mg/mL",
+        "manufacturer": "Martin Dow, Pakistan",
+        "marketAuthHolder": "Emerchemie NB",
+        "price": 290.81,
+        "priceUnit": "Ampoule",
+        "currency": "LKR"
+      }
+    ],
+    "torasemide": [
+      {
+        "id": 252,
+        "brandName": "TORAS-DENK 10",
+        "genericName": "Torasemide",
+        "dosageForm": "Tablet",
+        "strength": "10 mg",
+        "manufacturer": "Denk Pharma, Germany",
+        "marketAuthHolder": "Sunshine Healthcare",
+        "price": 63.17,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "terlipressin": [
+      {
+        "id": 253,
+        "brandName": "T-PRESSIN",
+        "genericName": "Terlipressin",
+        "dosageForm": "Injection",
+        "strength": "1 mg/10 mL",
+        "manufacturer": "United Biotech, India",
+        "marketAuthHolder": "Klintas (Pvt) Ltd.",
+        "price": 5984.55,
+        "priceUnit": "Ampoule",
+        "currency": "LKR"
+      }
+    ],
+    "ceftriaxone": [
+      {
+        "id": 319,
+        "brandName": "TRIAXIWA 500",
+        "genericName": "Ceftriaxone",
+        "dosageForm": "Injection",
+        "strength": "500mg",
+        "manufacturer": "Sands Active, Sri Lanka",
+        "marketAuthHolder": "Sands Active, Sri Lanka",
+        "price": 690,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      },
+      {
+        "id": 254,
+        "brandName": "TRIAWA-1000",
+        "genericName": "Ceftriaxone",
+        "dosageForm": "Injection",
+        "strength": "1000 mg",
+        "manufacturer": "Sands Active, Sri Lanka",
+        "marketAuthHolder": "Sands Active, Sri Lanka",
+        "price": 1025.38,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "flucloxacillin": [
+      {
+        "id": 256,
+        "brandName": "UNIFLOX 500",
+        "genericName": "Flucloxacillin",
+        "dosageForm": "Injection",
+        "strength": "500 mg",
+        "manufacturer": "Navesta, Sri Lanka",
+        "marketAuthHolder": "Navesta, Sri Lanka",
+        "price": 907.95,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "progesterone": [
+      {
+        "id": 257,
+        "brandName": "VAGESTON",
+        "genericName": "Progesterone",
+        "dosageForm": "Vaginal gel",
+        "strength": "8%",
+        "manufacturer": "Zydus Healthcare, India",
+        "marketAuthHolder": "Hemas Pharmaceuticals",
+        "price": 883,
+        "priceUnit": "1.35g Tube",
+        "currency": "LKR"
+      }
+    ],
+    "vancomycin": [
+      {
+        "id": 259,
+        "brandName": "VANCOTECH 1000",
+        "genericName": "Vancomycin",
+        "dosageForm": "Injection",
+        "strength": "1000 mg",
+        "manufacturer": "United Biotech, India",
+        "marketAuthHolder": "Klintas (Pvt) Ltd.",
+        "price": 2628.38,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "varicella vaccine": [
+      {
+        "id": 260,
+        "brandName": "VARILRIX",
+        "genericName": "Varicella vaccine",
+        "dosageForm": "Injection",
+        "strength": "2000 PFU",
+        "manufacturer": "Glaxo, Belgium",
+        "marketAuthHolder": "Baur & Co.",
+        "price": 8910,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "vasopressin": [
+      {
+        "id": 261,
+        "brandName": "Vasopressin",
+        "genericName": "Vasopressin",
+        "dosageForm": "Injection",
+        "strength": "20 IU/mL",
+        "manufacturer": "Kelun Lifescience, Sri Lanka",
+        "marketAuthHolder": "Kelun Lifescience, Sri Lanka",
+        "price": 4058.67,
+        "priceUnit": "1 mL",
+        "currency": "LKR"
+      }
+    ],
+    "trimetazidine": [
+      {
+        "id": 262,
+        "brandName": "VASTAREL MR",
+        "genericName": "Trimetazidine",
+        "dosageForm": "Tablet (modified release)",
+        "strength": "35 mg",
+        "manufacturer": "Les Laboratories, France",
+        "marketAuthHolder": "Hemas Pharmaceuticals",
+        "price": 49.31,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "vildagliptin": [
+      {
+        "id": 266,
+        "brandName": "VILDIPP 50",
+        "genericName": "Vildagliptin",
+        "dosageForm": "Tablet",
+        "strength": "50 mg",
+        "manufacturer": "Sun Pharmaceutical, India",
+        "marketAuthHolder": "Emerchemie NB",
+        "price": 68.18,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "erythropoietin": [
+      {
+        "id": 267,
+        "brandName": "VINTOR 4000",
+        "genericName": "Erythropoietin",
+        "dosageForm": "Injection",
+        "strength": "4000 IU/mL",
+        "manufacturer": "Genova, India",
+        "marketAuthHolder": "Emerchemie NB",
+        "price": 1736.95,
+        "priceUnit": "Pre-filled syringe",
+        "currency": "LKR"
+      }
+    ],
+    "mebendazole": [
+      {
+        "id": 268,
+        "brandName": "Wormin 500",
+        "genericName": "Mebendazole",
+        "dosageForm": "Tablet",
+        "strength": "500 mg",
+        "manufacturer": "Cadila Pharmaceuticals, India",
+        "marketAuthHolder": "Sunshine Healthcare",
+        "price": 50.25,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "insulin biphasic isophane": [
+      {
+        "id": 269,
+        "brandName": "WOSULIN-30/70",
+        "genericName": "Insulin Biphasic Isophane",
+        "dosageForm": "Injection",
+        "strength": "100 IU/mL",
+        "manufacturer": "Wockhardt, India",
+        "marketAuthHolder": "Emerchemie NB",
+        "price": 913.14,
+        "priceUnit": "3mL Cartridge",
+        "currency": "LKR"
+      },
+      {
+        "id": 270,
+        "brandName": "WOSULIN-30/70",
+        "genericName": "Insulin Biphasic Isophane",
+        "dosageForm": "Injection",
+        "strength": "100 IU/mL",
+        "manufacturer": "Wockhardt, India",
+        "marketAuthHolder": "Emerchemie NB",
+        "price": 1811.39,
+        "priceUnit": "3mL Vial",
+        "currency": "LKR"
+      }
+    ],
+    "compound benzoic acid": [
+      {
+        "id": 273,
+        "brandName": "ZEN WHITFIELD'S",
+        "genericName": "Compound benzoic acid",
+        "dosageForm": "Ointment",
+        "strength": "-",
+        "manufacturer": "Nanz Med Science, India",
+        "marketAuthHolder": "SMM Halcyon",
+        "price": 296.58,
+        "priceUnit": "15g",
+        "currency": "LKR"
+      }
+    ],
+    "zoledronic acid": [
+      {
+        "id": 274,
+        "brandName": "ZOLDRON",
+        "genericName": "Zoledronic acid",
+        "dosageForm": "Injection",
+        "strength": "4mg",
+        "manufacturer": "Getwell Pharma, India",
+        "marketAuthHolder": "Esses Pharmacy",
+        "price": 8174.39,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "bisacodyl": [
+      {
+        "id": 299,
+        "brandName": "CORLEX",
+        "genericName": "Bisacodyl",
+        "dosageForm": "Tablet (delayed release)",
+        "strength": "5mg",
+        "manufacturer": "Akums Drugs, India",
+        "marketAuthHolder": "Sterix Healthcare",
+        "price": 4.95,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 275,
+        "brandName": "ZYCOLAX-10",
+        "genericName": "Bisacodyl",
+        "dosageForm": "Suppository",
+        "strength": "10mg",
+        "manufacturer": "Zydus Life Science, India",
+        "marketAuthHolder": "Hemas Pharmaceuticals",
+        "price": 64.33,
+        "priceUnit": "Suppository",
+        "currency": "LKR"
+      }
+    ],
+    "abacavir": [
+      {
+        "id": 276,
+        "brandName": "Abacavir",
+        "genericName": "Abacavir",
+        "dosageForm": "Tablet",
+        "strength": "300mg",
+        "manufacturer": "Celogen, Sri Lanka",
+        "marketAuthHolder": "Celogen, Sri Lanka",
+        "price": 350,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "abiraterone acetate": [
+      {
+        "id": 277,
+        "brandName": "Abirone",
+        "genericName": "Abiraterone acetate",
+        "dosageForm": "Tablet",
+        "strength": "250mg",
+        "manufacturer": "Hetero Labs, India",
+        "marketAuthHolder": "Mansel Ceylon",
+        "price": 464.01,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "aciclovir sodium": [
+      {
+        "id": 278,
+        "brandName": "Aciclovir Sodium",
+        "genericName": "Aciclovir Sodium",
+        "dosageForm": "Infusion",
+        "strength": "250mg",
+        "manufacturer": "Ciron Drugs, India",
+        "marketAuthHolder": "Ceyoka (Pvt) Ltd.",
+        "price": 978,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "alcohol based hand rub": [
+      {
+        "id": 279,
+        "brandName": "Setallium",
+        "genericName": "Alcohol Based Hand Rub",
+        "dosageForm": "Solution",
+        "strength": "-",
+        "manufacturer": "Suraksha Pharma, Sri Lanka",
+        "marketAuthHolder": "Suraksha Pharma, Sri Lanka",
+        "price": 405,
+        "priceUnit": "500mL",
+        "currency": "LKR"
+      }
+    ],
+    "alfacalcidol": [
+      {
+        "id": 280,
+        "brandName": "Aldiol",
+        "genericName": "Alfacalcidol",
+        "dosageForm": "Capsule",
+        "strength": "0.25mcg",
+        "manufacturer": "Softgel Healthcare, India",
+        "marketAuthHolder": "Pharma Associates",
+        "price": 10,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      }
+    ],
+    "amisulpride": [
+      {
+        "id": 281,
+        "brandName": "AMIDE 100",
+        "genericName": "Amisulpride",
+        "dosageForm": "Tablet",
+        "strength": "100mg",
+        "manufacturer": "Celogen Lanka, Sri Lanka",
+        "marketAuthHolder": "Celogen Lanka, Sri Lanka",
+        "price": 26.5,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "amoxicillin + clavulanate": [
+      {
+        "id": 284,
+        "brandName": "Indclav 1000",
+        "genericName": "Amoxicillin + Clavulanate",
+        "dosageForm": "Tablet",
+        "strength": "1000mg",
+        "manufacturer": "Indchemie Health, India",
+        "marketAuthHolder": "Pharma Associates",
+        "price": 70,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 283,
+        "brandName": "Indclav 156",
+        "genericName": "Amoxicillin + Clavulanate",
+        "dosageForm": "Oral Suspension",
+        "strength": "156.25mg/5mL",
+        "manufacturer": "Indchemie Health, India",
+        "marketAuthHolder": "Pharma Associates",
+        "price": 571.06,
+        "priceUnit": "100mL",
+        "currency": "LKR"
+      }
+    ],
+    "ascorbic acid": [
+      {
+        "id": 325,
+        "brandName": "ASBIC-O",
+        "genericName": "Ascorbic Acid",
+        "dosageForm": "Chewable Tablet",
+        "strength": "500mg",
+        "manufacturer": "Celogen Lanka, Sri Lanka",
+        "marketAuthHolder": "Celogen Lanka, Sri Lanka",
+        "price": 20,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 288,
+        "brandName": "C-GEN 500",
+        "genericName": "Ascorbic acid",
+        "dosageForm": "Chewable Tablet",
+        "strength": "500 mg",
+        "manufacturer": "Newgen Lanka, Sri Lanka",
+        "marketAuthHolder": "Newgen Lanka, Sri Lanka",
+        "price": 22.5,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "atenolol": [
+      {
+        "id": 289,
+        "brandName": "Ateleb-50",
+        "genericName": "Atenolol",
+        "dosageForm": "Tablet",
+        "strength": "50 mg",
+        "manufacturer": "Leben Laboratories, India",
+        "marketAuthHolder": "Ceyoka (Pvt) Ltd.",
+        "price": 2.4,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "atomoxetine": [
+      {
+        "id": 290,
+        "brandName": "Attentrol 18",
+        "genericName": "Atomoxetine",
+        "dosageForm": "Capsule",
+        "strength": "18mg",
+        "manufacturer": "Sun Pharmaceuticals, India",
+        "marketAuthHolder": "Emerchemie NB",
+        "price": 99.88,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      }
+    ],
+    "beclometasone": [
+      {
+        "id": 293,
+        "brandName": "BECLOMATE NS 50",
+        "genericName": "Beclometasone",
+        "dosageForm": "Aqueous Nasal Spray",
+        "strength": "50 mcg",
+        "manufacturer": "Jewim Pharmaceutical, China",
+        "marketAuthHolder": "Emerchemie NB",
+        "price": 694.17,
+        "priceUnit": "200 Sprays Bottle",
+        "currency": "LKR"
+      }
+    ],
+    "betamethasone + salicylic acid": [
+      {
+        "id": 296,
+        "brandName": "Beprosalic",
+        "genericName": "Betamethasone + Salicylic Acid",
+        "dosageForm": "Ointment",
+        "strength": "-",
+        "manufacturer": "HOE Pharmaceuticals, Malaysia",
+        "marketAuthHolder": "Indoscan (Pvt) Ltd.",
+        "price": 777.12,
+        "priceUnit": "15g tube",
+        "currency": "LKR"
+      }
+    ],
+    "bevacizumab": [
+      {
+        "id": 297,
+        "brandName": "Versavo 100",
+        "genericName": "Bevacizumab",
+        "dosageForm": "Infusion",
+        "strength": "100mg/4 mL",
+        "manufacturer": "Dr. Reddy's Laboratories",
+        "marketAuthHolder": "Emerchemie NB",
+        "price": 30588.04,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      },
+      {
+        "id": 298,
+        "brandName": "Versavo 400",
+        "genericName": "Bevacizumab",
+        "dosageForm": "Infusion",
+        "strength": "400mg/16mL",
+        "manufacturer": "Dr. Reddy's Laboratories",
+        "marketAuthHolder": "Emerchemie NB",
+        "price": 89579.26,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "brimonidine + timolol": [
+      {
+        "id": 303,
+        "brandName": "COMBIGAN",
+        "genericName": "Brimonidine + Timolol",
+        "dosageForm": "Eye Drops",
+        "strength": "-",
+        "manufacturer": "Allergan Pharmaceuticals, Ireland",
+        "marketAuthHolder": "Hemas Pharmaceuticals",
+        "price": 3003.35,
+        "priceUnit": "5mL",
+        "currency": "LKR"
+      }
+    ],
+    "brimonidine tartrate": [
+      {
+        "id": 304,
+        "brandName": "Brimonidine Tartrate",
+        "genericName": "Brimonidine Tartrate",
+        "dosageForm": "Eye Drops",
+        "strength": "0.1%",
+        "manufacturer": "Allergan Sales, USA",
+        "marketAuthHolder": "Hemas Pharmaceuticals",
+        "price": 2492,
+        "priceUnit": "5mL",
+        "currency": "LKR"
+      }
+    ],
+    "cabergoline": [
+      {
+        "id": 305,
+        "brandName": "Cabergoline",
+        "genericName": "Cabergoline",
+        "dosageForm": "Tablet",
+        "strength": "0.5mg",
+        "manufacturer": "Treffer Pharmaceuticals, India",
+        "marketAuthHolder": "Yaden International",
+        "price": 277.99,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "calcipotriol": [
+      {
+        "id": 306,
+        "brandName": "Caligen",
+        "genericName": "Calcipotriol",
+        "dosageForm": "Ointment",
+        "strength": "0.005%",
+        "manufacturer": "Newgen Lanka, Sri Lanka",
+        "marketAuthHolder": "Newgen Lanka, Sri Lanka",
+        "price": 3000,
+        "priceUnit": "15g",
+        "currency": "LKR"
+      },
+      {
+        "id": 307,
+        "brandName": "Caligen",
+        "genericName": "Calcipotriol",
+        "dosageForm": "Ointment",
+        "strength": "0.005%",
+        "manufacturer": "Newgen Lanka, Sri Lanka",
+        "marketAuthHolder": "Newgen Lanka, Sri Lanka",
+        "price": 4000,
+        "priceUnit": "30g",
+        "currency": "LKR"
+      }
+    ],
+    "calcium + vitamin d3": [
+      {
+        "id": 308,
+        "brandName": "MOMCAL",
+        "genericName": "Calcium + Vitamin D3",
+        "dosageForm": "Soft Gelatin Capsule",
+        "strength": "250mg + 400IU",
+        "manufacturer": "Contract Manufacturing, Australia",
+        "marketAuthHolder": "Alaris Lanka",
+        "price": 35.12,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      }
+    ],
+    "calcium carbonate + vitamin d3": [
+      {
+        "id": 309,
+        "brandName": "THERACAL",
+        "genericName": "Calcium Carbonate + Vitamin D3",
+        "dosageForm": "Soft Gelatin Capsule",
+        "strength": "625mg + 400IU",
+        "manufacturer": "Contract Manufacturing, Australia",
+        "marketAuthHolder": "Alaris Lanka",
+        "price": 44.78,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      }
+    ],
+    "calcium folinate": [
+      {
+        "id": 310,
+        "brandName": "FOLINEX 50",
+        "genericName": "Calcium Folinate",
+        "dosageForm": "Injection",
+        "strength": "50mg",
+        "manufacturer": "Beacon Pharmaceuticals, Bangladesh",
+        "marketAuthHolder": "Emerchemie NB",
+        "price": 1822,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "candesartan": [
+      {
+        "id": 311,
+        "brandName": "Treatan 16",
+        "genericName": "Candesartan",
+        "dosageForm": "Tablet",
+        "strength": "16 mg",
+        "manufacturer": "CIC Holding, Sri Lanka",
+        "marketAuthHolder": "CIC Holding, Sri Lanka",
+        "price": 65,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "ceftazidime": [
+      {
+        "id": 318,
+        "brandName": "C-TZID 1000",
+        "genericName": "Ceftazidime",
+        "dosageForm": "Injection",
+        "strength": "1000mg",
+        "manufacturer": "Sands Active, Sri Lanka",
+        "marketAuthHolder": "Sands Active, Sri Lanka",
+        "price": 880,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "cefuroxime axetil": [
+      {
+        "id": 320,
+        "brandName": "MILCEF 125",
+        "genericName": "Cefuroxime Axetil",
+        "dosageForm": "Tablet",
+        "strength": "125mg",
+        "manufacturer": "The Madras Pharmaceuticals, India",
+        "marketAuthHolder": "Pharma Associates",
+        "price": 51.73,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 321,
+        "brandName": "RITIL-250",
+        "genericName": "Cefuroxime Axetil",
+        "dosageForm": "Tablet",
+        "strength": "250mg",
+        "manufacturer": "Micro Labs, India",
+        "marketAuthHolder": "Micro Healthcare",
+        "price": 66.87,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "celecoxib": [
+      {
+        "id": 322,
+        "brandName": "Celecoxib",
+        "genericName": "Celecoxib",
+        "dosageForm": "Capsule",
+        "strength": "100mg",
+        "manufacturer": "Zydus Lifesciences, India",
+        "marketAuthHolder": "Sunshine Healthcare Lanka",
+        "price": 7.21,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      }
+    ],
+    "cephalexin": [
+      {
+        "id": 323,
+        "brandName": "Nexporin-500",
+        "genericName": "Cephalexin",
+        "dosageForm": "Capsule",
+        "strength": "500mg",
+        "manufacturer": "Scott-Edil, India",
+        "marketAuthHolder": "Slim Pharmaceuticals",
+        "price": 29.71,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      },
+      {
+        "id": 324,
+        "brandName": "Cephadex",
+        "genericName": "Cephalexin",
+        "dosageForm": "Oral Suspension",
+        "strength": "125mg/5 mL",
+        "manufacturer": "Medispray, India",
+        "marketAuthHolder": "Breathe Free Lanka",
+        "price": 296,
+        "priceUnit": "100 mL",
+        "currency": "LKR"
+      }
+    ],
+    "chlorpheniramine maleate": [
+      {
+        "id": 329,
+        "brandName": "ALLERMINE",
+        "genericName": "Chlorpheniramine Maleate",
+        "dosageForm": "Tablet",
+        "strength": "4mg",
+        "manufacturer": "Astron, Sri Lanka",
+        "marketAuthHolder": "Astron, Sri Lanka",
+        "price": 2,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 326,
+        "brandName": "Hymine",
+        "genericName": "Chlorpheniramine Maleate",
+        "dosageForm": "Oral Solution",
+        "strength": "2 mg/5mL",
+        "manufacturer": "ACE Healthcare, Sri Lanka",
+        "marketAuthHolder": "ACE Healthcare, Sri Lanka",
+        "price": 150,
+        "priceUnit": "60mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 327,
+        "brandName": "Hymine",
+        "genericName": "Chlorpheniramine Maleate",
+        "dosageForm": "Oral Solution",
+        "strength": "2 mg/5mL",
+        "manufacturer": "ACE Healthcare, Sri Lanka",
+        "marketAuthHolder": "ACE Healthcare, Sri Lanka",
+        "price": 208,
+        "priceUnit": "100mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 328,
+        "brandName": "Hymine",
+        "genericName": "Chlorpheniramine Maleate",
+        "dosageForm": "Oral Solution",
+        "strength": "2 mg/5mL",
+        "manufacturer": "ACE Healthcare, Sri Lanka",
+        "marketAuthHolder": "ACE Healthcare, Sri Lanka",
+        "price": 650,
+        "priceUnit": "500mL",
+        "currency": "LKR"
+      }
+    ],
+    "clarithromycin": [
+      {
+        "id": 333,
+        "brandName": "Clarigen 500",
+        "genericName": "Clarithromycin",
+        "dosageForm": "Tablet",
+        "strength": "500mg",
+        "manufacturer": "Newgen Lanka, Sri Lanka",
+        "marketAuthHolder": "Newgen Lanka, Sri Lanka",
+        "price": 90,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "clonazepam": [
+      {
+        "id": 336,
+        "brandName": "Clonazepam",
+        "genericName": "Clonazepam",
+        "dosageForm": "Tablet",
+        "strength": "0.5mg",
+        "manufacturer": "Morison, Sri Lanka",
+        "marketAuthHolder": "Morison, Sri Lanka",
+        "price": 5.1,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 335,
+        "brandName": "Clonazepam",
+        "genericName": "Clonazepam",
+        "dosageForm": "Tablet",
+        "strength": "2mg",
+        "manufacturer": "Mercury Laboratories, India",
+        "marketAuthHolder": "Yaden International",
+        "price": 28,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "co-amoxiclav": [
+      {
+        "id": 338,
+        "brandName": "CLANEKSI",
+        "genericName": "Co-amoxiclav",
+        "dosageForm": "Injection",
+        "strength": "1.2g",
+        "manufacturer": "PT Sanbe, Indonesia",
+        "marketAuthHolder": "Softlogic Pharmaceuticals",
+        "price": 1025.54,
+        "priceUnit": "Vial",
+        "currency": "LKR"
+      }
+    ],
+    "compound sodium lactate": [
+      {
+        "id": 339,
+        "brandName": "Compound Sodium Lactate",
+        "genericName": "Compound Sodium Lactate",
+        "dosageForm": "Infusion",
+        "strength": "-",
+        "manufacturer": "Aculife Healthcare, India",
+        "marketAuthHolder": "Emerchemie NB",
+        "price": 205.56,
+        "priceUnit": "500mL",
+        "currency": "LKR"
+      },
+      {
+        "id": 340,
+        "brandName": "Compound Sodium Lactate",
+        "genericName": "Compound Sodium Lactate",
+        "dosageForm": "Infusion",
+        "strength": "-",
+        "manufacturer": "Aculife Healthcare, India",
+        "marketAuthHolder": "Emerchemie NB",
+        "price": 300.82,
+        "priceUnit": "1000mL",
+        "currency": "LKR"
+      }
+    ],
+    "cyclosporine": [
+      {
+        "id": 341,
+        "brandName": "Cyclosporine",
+        "genericName": "Cyclosporine",
+        "dosageForm": "Capsule",
+        "strength": "25mg",
+        "manufacturer": "Centurion Laboratories, India",
+        "marketAuthHolder": "Yaden International",
+        "price": 290,
+        "priceUnit": "Capsule",
+        "currency": "LKR"
+      }
+    ],
+    "dapagliflozin": [
+      {
+        "id": 345,
+        "brandName": "INVAFLOZIN 5",
+        "genericName": "Dapagliflozin",
+        "dosageForm": "Tablet",
+        "strength": "5mg",
+        "manufacturer": "Inventia Healthcare, India",
+        "marketAuthHolder": "Emerchemie NB",
+        "price": 38.13,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 344,
+        "brandName": "Dapaget 5",
+        "genericName": "Dapagliflozin",
+        "dosageForm": "Tablet",
+        "strength": "5mg",
+        "manufacturer": "Getz Pharma, Pakistan",
+        "marketAuthHolder": "Hemas Pharmaceuticals",
+        "price": 88.04,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 343,
+        "brandName": "DIABFLOZ 10",
+        "genericName": "Dapagliflozin",
+        "dosageForm": "Tablet",
+        "strength": "10mg",
+        "manufacturer": "Finecure Pharmaceuticals, India",
+        "marketAuthHolder": "Biolife Pharmaceuticals",
+        "price": 104,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      },
+      {
+        "id": 342,
+        "brandName": "Dapaget 10",
+        "genericName": "Dapagliflozin",
+        "dosageForm": "Tablet",
+        "strength": "10mg",
+        "manufacturer": "Getz Pharma, Pakistan",
+        "marketAuthHolder": "Hemas Pharmaceuticals",
+        "price": 109.93,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "dexamethasone": [
+      {
+        "id": 347,
+        "brandName": "Dexamethasone",
+        "genericName": "Dexamethasone",
+        "dosageForm": "Injection",
+        "strength": "8mg/2mL",
+        "manufacturer": "Kelun Lifescience, Sri Lanka",
+        "marketAuthHolder": "Kelun Lifesciences, Sri Lanka",
+        "price": 45,
+        "priceUnit": "Ampoule",
+        "currency": "LKR"
+      }
+    ],
+    "dienogest": [
+      {
+        "id": 348,
+        "brandName": "Visanne",
+        "genericName": "Dienogest",
+        "dosageForm": "Tablet",
+        "strength": "2mg",
+        "manufacturer": "Bayer Weimar GmbH, Germany",
+        "marketAuthHolder": "Hemas Pharmaceuticals",
+        "price": 487.11,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ],
+    "digoxin": [
+      {
+        "id": 349,
+        "brandName": "DIGIVER",
+        "genericName": "Digoxin",
+        "dosageForm": "Injection",
+        "strength": "250mcg/mL",
+        "manufacturer": "Verve Human Care, India",
+        "marketAuthHolder": "Leader Pharma",
+        "price": 354,
+        "priceUnit": "2mL",
+        "currency": "LKR"
+      }
+    ],
+    "dipyridamole": [
+      {
+        "id": 350,
+        "brandName": "Pyrigen 100",
+        "genericName": "Dipyridamole",
+        "dosageForm": "Tablet",
+        "strength": "100mg",
+        "manufacturer": "Newgen Lanka, Sri Lanka",
+        "marketAuthHolder": "Newgen Lanka, Sri Lanka",
+        "price": 22.2,
+        "priceUnit": "Tablet",
+        "currency": "LKR"
+      }
+    ]
+  }
+}

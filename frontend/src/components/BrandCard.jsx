@@ -56,7 +56,7 @@ const BrandCard = ({ brand, onSelect, onFavoriteToggle, isSelected, setShowDetai
                 )}
                 {brand.savings > 0 && (
                     <span className="px-2 py-1 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-bold rounded-full shadow-lg">
-                        Save ${brand.savings.toFixed(2)}
+                        Save Rs. {brand.savings.toFixed(2)}
                     </span>
                 )}
                 {brand.sustainability?.ecoFriendly && (
@@ -87,7 +87,7 @@ const BrandCard = ({ brand, onSelect, onFavoriteToggle, isSelected, setShowDetai
 
                 {/* Price Section */}
                 <div className="flex items-end gap-3 mb-4">
-                    <div className="text-3xl font-black text-slate-900">${brand.price}</div>
+                    <div className="text-3xl font-black text-slate-900">Rs. {brand.price}</div>
                     <div className="text-sm text-slate-500 mb-1">{brand.packSize}</div>
                     {priceChange && (
                         <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold ${priceChange.isUp ? 'bg-red-100 text-red-600' : 'bg-emerald-100 text-emerald-600'

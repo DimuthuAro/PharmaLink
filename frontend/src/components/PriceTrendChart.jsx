@@ -72,8 +72,8 @@ const PriceTrendChart = ({ priceHistory, currentPrice, compact = false }) => {
             <div className="relative h-20 flex items-end gap-1">
                 {/* Y-axis labels */}
                 <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs text-slate-400 pr-2">
-                    <span>${maxPrice.toFixed(0)}</span>
-                    <span>${minPrice.toFixed(0)}</span>
+                    <span>Rs. {maxPrice.toFixed(0)}</span>
+                    <span>Rs. {minPrice.toFixed(0)}</span>
                 </div>
 
                 {/* Bars */}
@@ -101,7 +101,7 @@ const PriceTrendChart = ({ priceHistory, currentPrice, compact = false }) => {
                                 {/* Tooltip */}
                                 <div className="absolute bottom-full mb-2 hidden group-hover:block z-10">
                                     <div className="bg-slate-900 text-white text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap">
-                                        ${price.toFixed(2)}
+                                        Rs. {price.toFixed(2)}
                                         {isCurrent && <span className="ml-1 text-blue-300">(Current)</span>}
                                     </div>
                                 </div>
@@ -121,15 +121,15 @@ const PriceTrendChart = ({ priceHistory, currentPrice, compact = false }) => {
             <div className="mt-4 pt-3 border-t border-slate-200 grid grid-cols-3 gap-2 text-center">
                 <div>
                     <p className="text-xs text-slate-500">Low</p>
-                    <p className="text-sm font-bold text-emerald-600">${minPrice.toFixed(2)}</p>
+                    <p className="text-sm font-bold text-emerald-600">Rs. {minPrice.toFixed(2)}</p>
                 </div>
                 <div>
                     <p className="text-xs text-slate-500">Current</p>
-                    <p className="text-sm font-bold text-blue-600">${currentPrice?.toFixed(2) || priceHistory[priceHistory.length - 1].toFixed(2)}</p>
+                    <p className="text-sm font-bold text-blue-600">Rs. {currentPrice?.toFixed(2) || priceHistory[priceHistory.length - 1].toFixed(2)}</p>
                 </div>
                 <div>
                     <p className="text-xs text-slate-500">High</p>
-                    <p className="text-sm font-bold text-red-600">${maxPrice.toFixed(2)}</p>
+                    <p className="text-sm font-bold text-red-600">Rs. {maxPrice.toFixed(2)}</p>
                 </div>
             </div>
         </div>

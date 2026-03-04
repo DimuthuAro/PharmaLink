@@ -9,7 +9,7 @@ const SelectedBrandsSummary = ({ selectedBrands, totalSavings, handleBrandSelect
                 <div>
                     <h3 className="text-lg font-bold text-slate-900">Selected for Comparison</h3>
                     <p className="text-sm text-slate-600">
-                        Total savings: <span className="font-bold text-emerald-600">${totalSavings.toFixed(2)}</span>
+                        Total savings: <span className="font-bold text-emerald-600">Rs. {totalSavings.toFixed(2)}</span>
                     </p>
                 </div>
             </div>
@@ -47,7 +47,7 @@ const SelectedBrandsSummary = ({ selectedBrands, totalSavings, handleBrandSelect
                         </button>
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                        <span className="text-slate-600">${brand.price}</span>
+                        <span className="text-slate-600">Rs. {brand.price}</span>
                         <span className="text-xs text-slate-500">{brand.packSize}</span>
                     </div>
                 </div>
