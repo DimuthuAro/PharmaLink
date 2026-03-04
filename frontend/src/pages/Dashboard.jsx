@@ -484,7 +484,7 @@ useEffect(() => {
             Welcome back, {user?.name?.split(' ')[0] || 'User'}
           </h1>
           <p className="text-gray-600">
-            {user?.role === 'doctor' && "Here's what's happening with your patients today."}
+            {user?.role === 'patient' && "Track your prescriptions and medication interactions."}
             {user?.role === 'pharmacist' && "Monitor prescriptions and drug interactions."}
             {user?.role === 'admin' && "Manage your healthcare platform operations."}
             {(!user?.role || user?.role === 'other') && "Welcome to your healthcare management dashboard."}

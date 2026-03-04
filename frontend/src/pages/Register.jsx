@@ -27,7 +27,7 @@ const Register = () => {
     email: "",
     phone: "",
     organization: "",
-    role: "doctor",
+    role: "patient",
     password: "",
     confirmPassword: "",
     acceptTerms: false,
@@ -293,19 +293,16 @@ const Register = () => {
 
               {/* Role */}
               <div>
-                <label className="block text-sm font-semibold text-slate-800 mb-2">Professional role</label>
+                <label className="block text-sm font-semibold text-slate-800 mb-2">Role</label>
                 <select
                   name="role"
                   value={formData.role}
                   onChange={handleInputChange}
                   className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="doctor">Doctor / Physician</option>
+                  <option value="patient">Patient</option>
                   <option value="pharmacist">Pharmacist</option>
-                  <option value="nurse">Nurse</option>
-                  <option value="admin">Healthcare Administrator</option>
-                  <option value="researcher">Medical Researcher</option>
-                  <option value="other">Other</option>
+                  <option value="admin">Admin</option>
                 </select>
               </div>
 

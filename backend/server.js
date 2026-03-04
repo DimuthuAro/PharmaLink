@@ -5,6 +5,9 @@ const morgan = require('morgan');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const { createProxyMiddleware } = require('http-proxy-middleware');
+const { spawn, execSync } = require('child_process');
+const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 
 const logger = require('./shared_infrastructure/logger');
@@ -12,8 +15,119 @@ const connectDB = require('./config/database');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const test = 10;
-console.log(test);
+
+// ============================================================
+// Microservice Auto-Launcher
+// ============================================================
+const MICROSERVICES = [
+    { name: 'Drug Interaction',          dir: 'drug_interaction_microservice',          port: process.env.DRUG_INTERACTION_PORT || 3001,   emoji: '🧬' },
+    { name: 'Personalized Advisory',     dir: 'personalized_advisory_microservice',     port: process.env.ADVISORY_PORT || 3002,           emoji: '💡' },
+    { name: 'Cross-Brand Comparator',    dir: 'crossbrand_comparator_microservice',     port: process.env.COMPARATOR_PORT || 3003,         emoji: '⚖️' },
+    { name: 'Prescription Interpreter',  dir: 'prescription_interpreter_microservice',  port: process.env.PRESCRIPTION_PORT || 3004,       emoji: '📋' },
+    { name: 'Treatment Identifier',      dir: 'treatment_identifier_microservice',      port: process.env.TREATMENT_IDENTIFIER_PORT || 3005, emoji: '🔬' },
+];
+
+const childProcesses = [];
+
+function ensureDependencies(serviceDir) {
+    const svcPath = path.join(__dirname, 'microservices', serviceDir);
+    const nodeModPath = path.join(svcPath, 'node_modules');
+    if (!fs.existsSync(nodeModPath)) {
+        logger.info(`Installing dependencies for ${serviceDir}...`);
+        try {
+            execSync('npm install --production', { cwd: svcPath, stdio: 'pipe' });
+        } catch (e) {
+            logger.error(`Failed to install deps for ${serviceDir}: ${e.message}`);
+            return false;
+        }
+    }
+    return true;
+}
+
+function startMicroservice({ name, dir, port, emoji }, delay) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            const svcPath = path.join(__dirname, 'microservices', dir);
+            if (!fs.existsSync(path.join(svcPath, 'index.js'))) {
+                logger.error(`${emoji} ${name}: index.js not found at ${svcPath}`);
+                return resolve(false);
+            }
+
+            if (!ensureDependencies(dir)) {
+                return resolve(false);
+            }
+
+            const child = spawn('node', ['index.js'], {
+                cwd: svcPath,
+                env: { ...process.env, NODE_ENV: process.env.NODE_ENV || 'development' },
+                stdio: ['ignore', 'pipe', 'pipe'],
+                shell: true,
+            });
+
+            child.stdout.on('data', (data) => {
+                const msg = data.toString().trim();
+                if (msg) logger.info(`${emoji} [${name}] ${msg}`);
+            });
+
+            child.stderr.on('data', (data) => {
+                const msg = data.toString().trim();
+                if (msg) logger.error(`${emoji} [${name}] ${msg}`);
+            });
+
+            child.on('error', (err) => {
+                logger.error(`${emoji} ${name} failed to start: ${err.message}`);
+                resolve(false);
+            });
+
+            child.on('exit', (code) => {
+                if (code !== null && code !== 0) {
+                    logger.warn(`${emoji} ${name} exited with code ${code}`);
+                }
+            });
+
+            child._serviceName = name;
+            childProcesses.push(child);
+            logger.info(`${emoji} ${name} starting on port ${port}`);
+            resolve(true);
+        }, delay);
+    });
+}
+
+async function startAllMicroservices() {
+    logger.info('\n' + '='.repeat(60));
+    logger.info('🚀 Auto-starting all microservices...');
+    logger.info('='.repeat(60));
+
+    for (let i = 0; i < MICROSERVICES.length; i++) {
+        await startMicroservice(MICROSERVICES[i], i * 1000); // 1s stagger
+    }
+
+    // Print summary after all services have been spawned
+    setTimeout(() => {
+        logger.info('\n' + '='.repeat(60));
+        logger.info('✅ All microservices launched! Endpoints:');
+        logger.info('='.repeat(60));
+        logger.info('🌐 API Gateway:        http://localhost:' + PORT);
+        logger.info('🧬 Drug Interactions:  http://localhost:' + PORT + '/api/drug-interactions');
+        logger.info('💡 Advisory:           http://localhost:' + PORT + '/api/advisory');
+        logger.info('⚖️  Comparator:         http://localhost:' + PORT + '/api/comparator');
+        logger.info('📋 Prescription:       http://localhost:' + PORT + '/api/prescription');
+        logger.info('🔬 Treatment:          http://localhost:' + PORT + '/api/treatment');
+        logger.info('='.repeat(60) + '\n');
+    }, MICROSERVICES.length * 1000 + 2000);
+}
+
+function shutdownMicroservices() {
+    logger.info('🛑 Shutting down microservices...');
+    childProcesses.forEach((child) => {
+        try {
+            if (!child.killed) {
+                child.kill('SIGTERM');
+                logger.info(`   Stopped: ${child._serviceName || 'unknown'}`);
+            }
+        } catch (_) { /* already dead */ }
+    });
+}
 
 // Security middleware
 app.use(helmet());
@@ -108,19 +222,43 @@ app.use('/api/drug-interactions', createProxyMiddleware({
 app.use('/api/advisory', createProxyMiddleware({
     target: `http://localhost:${process.env.ADVISORY_PORT || 3002}`,
     changeOrigin: true,
-    pathRewrite: { '^/api/advisory': '' }
+    pathRewrite: { '^/api/advisory': '' },
+    onProxyReq: (proxyReq, req, res) => {
+        if (req.body && Object.keys(req.body).length > 0) {
+            const bodyData = JSON.stringify(req.body);
+            proxyReq.setHeader('Content-Type', 'application/json');
+            proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+            proxyReq.write(bodyData);
+        }
+    }
 }));
 
 app.use('/api/comparator', createProxyMiddleware({
     target: `http://localhost:${process.env.COMPARATOR_PORT || 3003}`,
     changeOrigin: true,
-    pathRewrite: { '^/api/comparator': '' }
+    pathRewrite: { '^/api/comparator': '' },
+    onProxyReq: (proxyReq, req, res) => {
+        if (req.body && Object.keys(req.body).length > 0) {
+            const bodyData = JSON.stringify(req.body);
+            proxyReq.setHeader('Content-Type', 'application/json');
+            proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+            proxyReq.write(bodyData);
+        }
+    }
 }));
 
 app.use('/api/prescription', createProxyMiddleware({
     target: `http://localhost:${process.env.PRESCRIPTION_PORT || 3004}`,
     changeOrigin: true,
-    pathRewrite: { '^/api/prescription': '' }
+    pathRewrite: { '^/api/prescription': '' },
+    onProxyReq: (proxyReq, req, res) => {
+        if (req.body && Object.keys(req.body).length > 0) {
+            const bodyData = JSON.stringify(req.body);
+            proxyReq.setHeader('Content-Type', 'application/json');
+            proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+            proxyReq.write(bodyData);
+        }
+    }
 }));
 
 app.use('/api/treatment', createProxyMiddleware({
@@ -162,18 +300,27 @@ app.use('*', (req, res) => {
     });
 });
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-    logger.info('SIGTERM signal received. Closing HTTP server.');
+// Graceful shutdown — kill all child microservices then exit
+function gracefulShutdown(signal) {
+    logger.info(`${signal} received. Shutting down...`);
+    shutdownMicroservices();
     server.close(() => {
         logger.info('HTTP server closed.');
         process.exit(0);
     });
-});
+    // Force exit after 5 seconds if graceful shutdown stalls
+    setTimeout(() => process.exit(1), 5000);
+}
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT',  () => gracefulShutdown('SIGINT'));
 
 const server = app.listen(PORT, () => {
     logger.info(`Pharmalink Backend API Gateway listening on port ${PORT}`);
     logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+
+    // Auto-start all 5 microservices after gateway is ready
+    startAllMicroservices();
 });
 
 module.exports = app;

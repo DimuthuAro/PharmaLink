@@ -2433,7 +2433,9 @@ const CrossBrandComparator = () => {
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
     const searchInputRef = useRef(null);
     const [apiBrandSuggestions, setApiBrandSuggestions] = useState([]);
+    const [apiAllSuggestions, setApiAllSuggestions] = useState([]);
     const [isSearchingAPI, setIsSearchingAPI] = useState(false);
+    const [isFetchingBrands, setIsFetchingBrands] = useState(false);
     
     // AI Insights state
     const [showAIInsights, setShowAIInsights] = useState(false);
@@ -2474,8 +2476,10 @@ const CrossBrandComparator = () => {
                         }));
                     }
                 }
-                // Only keep brand names
+                // Keep brand names for brand suggestions
                 setApiBrandSuggestions(results.filter(s => s.type === 'brand'));
+                // Keep all results including generics for generic-name searches
+                setApiAllSuggestions(results);
             } catch (err) {
                 if (err.name !== 'AbortError') console.error('Brand search error', err);
             } finally {
@@ -2485,14 +2489,116 @@ const CrossBrandComparator = () => {
         return () => { clearTimeout(timer); controller.abort(); };
     }, [searchTerm]);
 
-    // Generate autocomplete suggestions - API brands first, then local matches
+    // Fetch available brands for a generic drug name from the cross-brand comparison service
+    // Routes through Vite proxy → Express gateway (/api/comparator) → Node microservice (port 3003)
+    const fetchBrandsForGeneric = async (genericName, selectedBrandName = '') => {
+        setIsFetchingBrands(true);
+        try {
+            const COMPARATOR_BASE = import.meta.env.VITE_CROSS_BRAND_API || '/api/comparator';
+            const res = await fetch(`${COMPARATOR_BASE}/compare`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ genericName: genericName.trim() })
+            });
+            if (!res.ok) throw new Error('Cross-brand compare failed');
+            const data = await res.json();
+            const apiBrands = data?.comparison?.brands || [];
+
+            if (apiBrands.length === 0) return null;
+
+            // Map API brands to the component's expected brand object format
+            const idBase = Date.now() % 100000; // unique base to avoid collisions
+            const mappedBrands = apiBrands.map((b, idx) => ({
+                id: idBase + idx,
+                name: b.brandName || 'Unknown',
+                manufacturer: b.manufacturer || 'Unknown',
+                price: typeof b.price === 'number' ? Math.round(b.price * 100) / 100 : 0,
+                priceHistory: [b.price * 1.05, b.price * 1.02, b.price, b.price * 0.98, b.price].map(p => Math.round((p || 0) * 100) / 100),
+                packSize: `${b.packageSize || 30} ${b.dosageForm || 'tablets'}`,
+                availability: b.availability === 'limited' ? 'Limited Stock' : 'In Stock',
+                stockLevel: b.availability === 'limited' ? 45 : Math.floor(Math.random() * 2000) + 500,
+                rating: typeof b.rating === 'number' ? Math.round(b.rating * 10) / 10 : 4.0,
+                reviews: Math.floor(Math.random() * 2000) + 100,
+                savings: 0,
+                isGeneric: (b.brandName || '').toLowerCase().includes('generic'),
+                description: `${b.dosageForm || 'Medication'} - ${b.strength || ''} by ${b.manufacturer || 'Unknown'}`,
+                sideEffects: [],
+                efficacyScore: Math.floor(Math.random() * 10) + 85,
+                patientCompliance: Math.floor(Math.random() * 10) + 82,
+                storage: 'Room temperature',
+                requiresPrescription: true,
+                lastUpdated: new Date().toISOString().split('T')[0],
+                favorite: false,
+                popularity: Math.floor(Math.random() * 30) + 60,
+                interactions: [],
+                dosage: b.strength || 'As prescribed',
+                warnings: [],
+                tags: [b.dosageForm || 'Tablet', b.therapeuticClass || genericName].filter(Boolean),
+                discount: 0,
+                subscription: { available: false, discount: 0, frequency: null },
+                sustainability: { ecoFriendly: false, recyclable: true, carbonNeutral: false }
+            }));
+
+            // Calculate savings relative to most expensive
+            const maxPrice = Math.max(...mappedBrands.map(b => b.price));
+            mappedBrands.forEach(b => {
+                b.savings = Math.round((maxPrice - b.price) * 100) / 100;
+            });
+
+            // Build a dynamic medication object
+            const firstBrand = apiBrands[0];
+            const dynamicMedication = {
+                id: 99000 + Math.floor(Math.random() * 1000),
+                genericName: genericName,
+                strength: firstBrand.strength || '',
+                category: firstBrand.therapeuticClass || 'Medication',
+                form: firstBrand.dosageForm || 'Tablet',
+                therapeuticClass: firstBrand.therapeuticClass || 'General',
+                popularity: 80,
+                prescriptionRate: 70,
+                brands: mappedBrands
+            };
+
+            // Update price range to accommodate new data
+            const prices = mappedBrands.map(b => b.price);
+            if (prices.length > 0) {
+                setPriceRange([0, Math.ceil(Math.max(...prices) + 10)]);
+            }
+
+            return dynamicMedication;
+        } catch (err) {
+            console.error('Failed to fetch brands for generic:', err);
+            return null;
+        } finally {
+            setIsFetchingBrands(false);
+        }
+    };
+
+    // Generate autocomplete suggestions - API generics first, then brands, then local
     const autocompleteSuggestions = useMemo(() => {
         if (!searchTerm || searchTerm.length < 1) return [];
 
         const suggestions = [];
         const seen = new Set();
 
-        // 1) API brand results (from real drug database)
+        // 1) API generic results (search by generic name to find all brands)
+        apiAllSuggestions.filter(s => s.type === 'generic').forEach(generic => {
+            const key = `generic-${generic.name.toLowerCase()}`;
+            if (!seen.has(key)) {
+                seen.add(key);
+                suggestions.push({
+                    type: 'api-generic',
+                    id: `api-generic-${generic.name}`,
+                    name: generic.name,
+                    subtitle: 'View all available brands for this medicine',
+                    genericName: generic.name,
+                    category: generic.class || 'Medication',
+                    icon: 'pill'
+                });
+            }
+        });
+
+        // 2) API brand results (from real drug database)
         apiBrandSuggestions.forEach(brand => {
             const key = brand.name.toLowerCase();
             if (!seen.has(key)) {
@@ -2509,8 +2615,26 @@ const CrossBrandComparator = () => {
             }
         });
 
-        // 2) Local matching brands from sampleMedications
+        // 3) Local matching medications (by generic name)
         const term = searchTerm.toLowerCase();
+        medications.forEach(med => {
+            const genKey = `generic-${med.genericName.toLowerCase()}`;
+            if (!seen.has(genKey) && med.genericName.toLowerCase().includes(term)) {
+                seen.add(genKey);
+                suggestions.push({
+                    type: 'medication',
+                    id: `local-med-${med.id}`,
+                    name: med.genericName,
+                    subtitle: `${med.brands.length} brands available • ${med.strength} ${med.form} • ${med.category}`,
+                    genericName: med.genericName,
+                    category: med.category,
+                    icon: 'pill',
+                    medication: med
+                });
+            }
+        });
+
+        // 4) Local matching brands from sampleMedications
         medications.forEach(med => {
             med.brands.forEach(brand => {
                 const key = brand.name.toLowerCase();
@@ -2531,10 +2655,13 @@ const CrossBrandComparator = () => {
         });
 
         return suggestions.slice(0, 15);
-    }, [searchTerm, medications, apiBrandSuggestions]);
+    }, [searchTerm, medications, apiBrandSuggestions, apiAllSuggestions]);
 
     // Handle autocomplete selection
-    const handleAutocompleteSelect = (suggestion) => {
+    const handleAutocompleteSelect = async (suggestion) => {
+        setShowAutocomplete(false);
+        setHighlightedIndex(-1);
+
         if (suggestion.type === 'medication') {
             setSelectedMedication(suggestion.medication);
             setSearchTerm(suggestion.name);
@@ -2545,9 +2672,28 @@ const CrossBrandComparator = () => {
             if (!selectedBrands.find(b => b.id === suggestion.brand.id)) {
                 setSelectedBrands(prev => [...prev, suggestion.brand]);
             }
+        } else if (suggestion.type === 'api-generic') {
+            // User selected a generic drug name → fetch all its available brands
+            setSearchTerm(suggestion.name);
+            setSelectedBrands([]);
+
+            // First check local medications
+            const genericLower = suggestion.name.toLowerCase();
+            const localMatch = medications.find(med => med.genericName.toLowerCase() === genericLower);
+            if (localMatch) {
+                setSelectedMedication(localMatch);
+            } else {
+                // Fetch brands from cross-brand comparison service
+                const dynamicMed = await fetchBrandsForGeneric(suggestion.name);
+                if (dynamicMed) {
+                    setSelectedMedication(dynamicMed);
+                    // Also add to medications list for future reference
+                    setMedications(prev => [...prev, dynamicMed]);
+                }
+            }
         } else if (suggestion.type === 'api-brand') {
             setSearchTerm(suggestion.name);
-            // Try to match against local medications by generic name
+            // Try to match against local medications first
             const genericLower = (suggestion.genericName || '').toLowerCase();
             const matched = medications.find(med =>
                 med.genericName.toLowerCase() === genericLower ||
@@ -2559,14 +2705,27 @@ const CrossBrandComparator = () => {
                 if (matchedBrand && !selectedBrands.find(b => b.id === matchedBrand.id)) {
                     setSelectedBrands(prev => [...prev, matchedBrand]);
                 }
+            } else if (suggestion.genericName) {
+                // No local match - fetch brands from cross-brand comparison service
+                const dynamicMed = await fetchBrandsForGeneric(suggestion.genericName, suggestion.name);
+                if (dynamicMed) {
+                    setSelectedMedication(dynamicMed);
+                    setMedications(prev => [...prev, dynamicMed]);
+                    // Auto-select the brand the user clicked on
+                    const clickedBrand = dynamicMed.brands.find(
+                        b => b.name.toLowerCase() === suggestion.name.toLowerCase()
+                    );
+                    if (clickedBrand) {
+                        setSelectedBrands([clickedBrand]);
+                    }
+                }
             }
         }
-        setShowAutocomplete(false);
-        setHighlightedIndex(-1);
+
         // Scroll to brands section
         setTimeout(() => {
             document.getElementById('brands-section')?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
+        }, 200);
     };
 
     // Handle keyboard navigation in autocomplete
@@ -2637,9 +2796,37 @@ const CrossBrandComparator = () => {
         });
     };
 
-    const handleMedicationSelect = (medication) => {
+    const handleMedicationSelect = async (medication) => {
         setSelectedMedication(medication);
         setSelectedBrands([]);
+        setSearchTerm(medication.genericName);
+        
+        // Also try to fetch real brands from the cross-brand comparison service
+        try {
+            const dynamicMed = await fetchBrandsForGeneric(medication.genericName);
+            if (dynamicMed && dynamicMed.brands.length > 0) {
+                // Merge real brands with local brands (avoid duplicates by name)
+                const existingNames = new Set(medication.brands.map(b => b.name.toLowerCase()));
+                const newBrands = dynamicMed.brands.filter(b => !existingNames.has(b.name.toLowerCase()));
+                if (newBrands.length > 0) {
+                    const enrichedMedication = {
+                        ...medication,
+                        brands: [...medication.brands, ...newBrands]
+                    };
+                    setSelectedMedication(enrichedMedication);
+                    // Update in medications list too
+                    setMedications(prev => prev.map(m => m.id === medication.id ? enrichedMedication : m));
+                    // Update price range
+                    const allPrices = enrichedMedication.brands.map(b => b.price);
+                    if (allPrices.length > 0) {
+                        setPriceRange([0, Math.ceil(Math.max(...allPrices) + 10)]);
+                    }
+                }
+            }
+        } catch (err) {
+            console.error('Could not enrich medication with API brands:', err);
+        }
+        
         // Scroll to brands section
         setTimeout(() => {
             document.getElementById('brands-section')?.scrollIntoView({ behavior: 'smooth' });
@@ -3431,7 +3618,7 @@ const CrossBrandComparator = () => {
                         <input
                             ref={searchInputRef}
                             type="text"
-                            placeholder="Search brand names (e.g., Advil, Lipitor, Tylenol)..."
+                            placeholder="Search drugs or brands (e.g., Ibuprofen, Advil, Lipitor)..."
                             value={searchTerm}
                             onChange={(e) => {
                                 setSearchTerm(e.target.value);
@@ -3470,7 +3657,7 @@ const CrossBrandComparator = () => {
                                 <div className="p-3 border-b border-slate-100 bg-gradient-to-r from-emerald-50 to-teal-50">
                                     <div className="flex items-center justify-between">
                                         <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">
-                                            🏷️ {autocompleteSuggestions.length} Brand{autocompleteSuggestions.length !== 1 ? 's' : ''} Found
+                                            💊 {autocompleteSuggestions.length} Result{autocompleteSuggestions.length !== 1 ? 's' : ''} Found
                                         </span>
                                         {isSearchingAPI && (
                                             <span className="text-xs text-blue-500 flex items-center gap-1">
@@ -3481,45 +3668,64 @@ const CrossBrandComparator = () => {
                                     </div>
                                 </div>
                                 <ul className="max-h-96 overflow-y-auto">
-                                    {autocompleteSuggestions.map((suggestion, index) => (
-                                        <li
-                                            key={suggestion.id}
-                                            onClick={() => handleAutocompleteSelect(suggestion)}
-                                            className={`px-4 py-3 cursor-pointer transition-all flex items-center gap-3 ${
-                                                highlightedIndex === index
-                                                ? 'bg-emerald-50 border-l-4 border-emerald-500'
-                                                    : 'hover:bg-slate-50 border-l-4 border-transparent'
-                                            }`}
-                                        >
-                                            <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-md bg-gradient-to-br from-emerald-500 to-teal-600">
-                                                <TagIcon className="h-6 w-6 text-white" />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-2 flex-wrap">
-                                                    <span className="font-bold text-slate-900">
-                                                        {suggestion.name}
-                                                    </span>
-                                                    <span className="px-2 py-0.5 text-xs font-bold rounded-full bg-emerald-100 text-emerald-700">
-                                                        Brand
-                                                    </span>
-                                                    {suggestion.genericName && (
-                                                        <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-blue-50 text-blue-600">
-                                                            {suggestion.genericName}
-                                                        </span>
-                                                    )}
-                                                    {suggestion.category && (
-                                                        <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-slate-100 text-slate-600">
-                                                            {suggestion.category}
-                                                        </span>
+                                    {autocompleteSuggestions.map((suggestion, index) => {
+                                        const isGenericType = suggestion.type === 'api-generic' || suggestion.type === 'medication';
+                                        const isBrandType = suggestion.type === 'brand' || suggestion.type === 'api-brand';
+                                        const highlightBg = isGenericType ? 'bg-blue-50 border-l-4 border-blue-500' : 'bg-emerald-50 border-l-4 border-emerald-500';
+                                        const iconBg = isGenericType
+                                            ? 'bg-gradient-to-br from-blue-500 to-indigo-600'
+                                            : 'bg-gradient-to-br from-emerald-500 to-teal-600';
+                                        const badgeLabel = suggestion.type === 'api-generic'
+                                            ? 'Generic · View All Brands'
+                                            : suggestion.type === 'medication'
+                                                ? `${suggestion.medication?.brands?.length || 0} Brands Available`
+                                                : 'Brand';
+                                        const badgeColor = isGenericType
+                                            ? 'bg-blue-100 text-blue-700'
+                                            : 'bg-emerald-100 text-emerald-700';
+
+                                        return (
+                                            <li
+                                                key={suggestion.id}
+                                                onClick={() => handleAutocompleteSelect(suggestion)}
+                                                className={`px-4 py-3 cursor-pointer transition-all flex items-center gap-3 ${
+                                                    highlightedIndex === index ? highlightBg : 'hover:bg-slate-50 border-l-4 border-transparent'
+                                                }`}
+                                            >
+                                                <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-md ${iconBg}`}>
+                                                    {isGenericType ? (
+                                                        <ScaleIcon className="h-6 w-6 text-white" />
+                                                    ) : (
+                                                        <TagIcon className="h-6 w-6 text-white" />
                                                     )}
                                                 </div>
-                                                <p className="text-sm text-slate-500 truncate mt-0.5">
-                                                    {suggestion.subtitle}
-                                                </p>
-                                            </div>
-                                            <ChevronRightIcon className="h-5 w-5 text-slate-400 flex-shrink-0" />
-                                        </li>
-                                    ))}
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center gap-2 flex-wrap">
+                                                        <span className="font-bold text-slate-900">
+                                                            {suggestion.name}
+                                                        </span>
+                                                        <span className={`px-2 py-0.5 text-xs font-bold rounded-full ${badgeColor}`}>
+                                                            {badgeLabel}
+                                                        </span>
+                                                        {isBrandType && suggestion.genericName && (
+                                                            <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-blue-50 text-blue-600">
+                                                                {suggestion.genericName}
+                                                            </span>
+                                                        )}
+                                                        {suggestion.category && (
+                                                            <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-slate-100 text-slate-600">
+                                                                {suggestion.category}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-sm text-slate-500 truncate mt-0.5">
+                                                        {suggestion.subtitle}
+                                                    </p>
+                                                </div>
+                                                <ChevronRightIcon className="h-5 w-5 text-slate-400 flex-shrink-0" />
+                                            </li>
+                                        );
+                                    })}
                                 </ul>
                                 <div className="p-3 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
                                     <span className="text-xs text-slate-500 flex items-center gap-2">
@@ -3531,7 +3737,7 @@ const CrossBrandComparator = () => {
                                     </span>
                                     <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
                                         <SparklesSolid className="h-3 w-3" />
-                                        Brand Name Search
+                                        Drug &amp; Brand Search
                                     </span>
                                 </div>
                             </div>
@@ -3673,11 +3879,27 @@ const CrossBrandComparator = () => {
                 />
 
                 {/* Medication Selection */}
-                {searchTerm && filteredMedications.length > 0 && !selectedMedication && (
+                {searchTerm && filteredMedications.length > 0 && !selectedMedication && !isFetchingBrands && (
                     <MedicationSelection
                         filteredMedications={filteredMedications}
                         handleMedicationSelect={handleMedicationSelect}
                     />
+                )}
+
+                {/* Loading state while fetching brands from API */}
+                {isFetchingBrands && (
+                    <div className="flex flex-col items-center justify-center py-16 bg-white/60 backdrop-blur-sm rounded-2xl border border-blue-200 mb-8">
+                        <div className="relative mb-6">
+                            <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <ScaleIcon className="h-6 w-6 text-blue-600" />
+                            </div>
+                        </div>
+                        <h3 className="text-lg font-bold text-slate-800 mb-2">Fetching Available Brands</h3>
+                        <p className="text-slate-500 text-sm max-w-md text-center">
+                            Querying the cross-brand comparison database for all available brands of this medicine...
+                        </p>
+                    </div>
                 )}
 
                 {/* Brand Comparison Section */}

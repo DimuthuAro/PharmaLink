@@ -8,7 +8,7 @@ Downloads the pre-trained models required for the OCR + NER pipeline:
   2. BERT Medical NER model (HuggingFace)
      samrawal/bert-large-uncased_med-ner
   3. EasyOCR language models (first-time download)
-  4. Sample prescription images for testing (optional)
+  4. Sample prescription images for training (optional)
 
 All models are cached by HuggingFace Transformers / EasyOCR in their
 default cache directories (~/.cache/huggingface, ~/.EasyOCR).

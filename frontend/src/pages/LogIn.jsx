@@ -38,9 +38,15 @@ const LogIn = () => {
   const demoUsers = useMemo(
     () => [
       {
-        key: "doctor",
-        role: "Doctor",
-        email: "doctor@pharmalink.com",
+        key: "patient",
+        role: "Patient",
+        email: "patient@pharmalink.com",
+        password: "pharma123",
+      },
+      {
+        key: "pharmacist",
+        role: "Pharmacist",
+        email: "pharmacist@pharmalink.com",
         password: "pharma123",
       },
       {
@@ -48,12 +54,6 @@ const LogIn = () => {
         role: "Admin",
         email: "admin@pharmalink.com",
         password: "admin123",
-      },
-      {
-        key: "pharmacist",
-        role: "Pharmacist",
-        email: "pharmacist@pharmalink.com",
-        password: "pharma123",
       },
     ],
     []
@@ -121,9 +121,9 @@ const LogIn = () => {
       await new Promise((r) => setTimeout(r, 900)); // simulate delay
 
       const validCredentials = [
-        { email: "doctor@pharmalink.com", password: "pharma123", role: "doctor", name: "Dr. Sarah Smith" },
-        { email: "admin@pharmalink.com", password: "admin123", role: "admin", name: "Admin User" },
+        { email: "patient@pharmalink.com", password: "pharma123", role: "patient", name: "Sarah Smith" },
         { email: "pharmacist@pharmalink.com", password: "pharma123", role: "pharmacist", name: "John Pharmacist" },
+        { email: "admin@pharmalink.com", password: "admin123", role: "admin", name: "Admin User" },
       ];
 
       const found = validCredentials.find(
