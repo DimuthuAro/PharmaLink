@@ -2312,50 +2312,48 @@ const CrossBrandComparator = () => {
     };
 
     // Demo function to load sample data for demonstration
-    const loadDemoData = () => {
-        // Select Atorvastatin (cholesterol medication) for demo
-        const demoMedication = medications.find(m => m.genericName === 'Atorvastatin');
+    const loadDemoData = async () => {
+        // Select Atorvastatin (cholesterol medication) from NMRA database for demo
+        let demoMedication = medications.find(m => m.genericName.toLowerCase().includes('atorvastatin'));
+        if (!demoMedication) {
+            const dynamicMed = await fetchBrandsForGeneric('Atorvastatin');
+            if (dynamicMed) {
+                demoMedication = dynamicMed;
+                setMedications(prev => [...prev, dynamicMed]);
+            }
+        }
         if (demoMedication) {
             setSelectedMedication(demoMedication);
-            // Select both brand and generic for comparison
             setSelectedBrands(demoMedication.brands);
-            // Set some demo notifications
+            setSearchTerm(demoMedication.genericName);
             setNotifications([
                 {
                     type: 'price',
-                    title: 'ðŸ’° Price Drop Alert!',
-                    message: 'Atorvastatin Generic dropped 15% - Now Rs. 5.00',
+                    title: 'Price Drop Alert!',
+                    message: `${demoMedication.brands[0]?.name || 'Generic'} - Rs. ${demoMedication.brands[0]?.price || '0.00'}`,
                     time: 'Just now'
                 },
                 {
                     type: 'stock',
-                    title: 'ðŸ“¦ Stock Update',
-                    message: 'Lipitor back in stock at most pharmacies',
+                    title: 'Stock Update',
+                    message: `${demoMedication.brands.length} brand(s) available in NMRA database`,
                     time: '5 min ago'
                 },
                 {
                     type: 'info',
-                    title: 'ðŸŽ¯ Savings Opportunity',
-                    message: 'Switch to generic to save Rs. 500/month',
+                    title: 'Savings Opportunity',
+                    message: demoMedication.brands.length > 1
+                        ? `Compare ${demoMedication.brands.length} brands to find the best price`
+                        : 'Search for more medications to compare',
                     time: '10 min ago'
                 }
             ]);
-            // Set demo price alerts
-            setPriceAlerts([
-                {
-                    id: 1,
-                    brandName: 'Lipitor',
-                    currentPrice: 45.99,
-                    targetPrice: 40.00
-                },
-                {
-                    id: 2,
-                    brandName: 'Glucophage',
-                    currentPrice: 32.50,
-                    targetPrice: 28.00
-                }
-            ]);
-            // Scroll to brands section
+            setPriceAlerts(demoMedication.brands.slice(0, 2).map((b, i) => ({
+                id: i + 1,
+                brandName: b.name,
+                currentPrice: b.price,
+                targetPrice: Math.round(b.price * 0.85 * 100) / 100
+            })));
             setTimeout(() => {
                 document.getElementById('brands-section')?.scrollIntoView({ behavior: 'smooth' });
             }, 300);
@@ -2438,7 +2436,7 @@ const CrossBrandComparator = () => {
                         <input
                             ref={searchInputRef}
                             type="text"
-                            placeholder="Search drugs or brands (e.g., Ibuprofen, Advil, Lipitor)..."
+                            placeholder="Search drugs or brands (e.g., Atorvastatin, Azithromycin, Paracetamol)..."
                             value={searchTerm}
                             onChange={(e) => {
                                 setSearchTerm(e.target.value);
