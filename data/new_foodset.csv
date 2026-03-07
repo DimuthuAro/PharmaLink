@@ -1,0 +1,284 @@
+Food,category,meal_type,food_type,diet_type,energy,protein,carbs,fat,fiber,sugars,sodium,is_leafy_green,is_alcohol,quantity,image
+Yellow Rice,Grain,Lunch,main,veg,469,16.9,0,18.8,1,0.5,5,0,0,1 cup,/static/foods/YellowRice.webp
+Fried Halmesso,Fish,Lunch,protein,non_veg,75,7.5,0,4.5,0,0,70,0,0,1 cup,/static/foods/Fried Halmesso.jpg
+Fried Karawala,Fish,Lunch,protein,non_veg,85,9,0,5,0,0,70,0,0,1 cup,/static/foods/Fried Karawala.jpg
+Kola Mallum,Vegetable,Lunch,side,veg,80,1,0,5,2,2,200,0,0,1 cup,/static/foods/Kola Mallum.jpg
+Kiri Hodi (Fish),Meal,Dinner,protein,non_veg,280,22,8,18,2,3,520,0,0,1 cup,/static/foods/Kiri Hodi (Fish).jpg
+Soya meat curry ,Meal,Lunch,side,veg,134,5.5,13,6.2,4.7,4.3,340,0,0,1 cup,/static/foods/Soya meat curry.avif
+Boiled Potatoes,Roots,Dinner,side,veg,100,1,0,0.1,0,0,0,0,0,1 cup,/static/foods/Boiled Potatoes.jpg
+Chicken Curry,Protein/Meat,Lunch,protein,non_veg,100,27,0,8,2,2,200,0,0,1 cup,/static/foods/Chicken Curry.jpg
+Chicken Gravy,Protein/Meat,Lunch,protein,non_veg,100,3.5,0,1.5,0,0,70,0,0,1 cup,/static/foods/Chicken Gravy.jpg
+Egg Yolk,Diary,Lunch,protein,egg,100,2.5,0,4.2,0,0,70,0,0,1,/static/foods/Egg Yolk.jpg
+Mango Chutney,Meal,Lunch,side,veg,100,0.5,0,0,2.5,10,5,0,0,1 cup,/static/foods/Mango Chutney.jpg
+Boiled Jackfruit Seed,Seed,Lunch,side,veg,100,0.6,0,0.1,2.5,10,5,0,0,1 cup,/static/foods/Boiled Jackfruit Seed.jpg
+Boiled Chickpeas,Grain,Breakfast,main,veg,100,9,0,2.6,6,3,10,0,0,1 cup,/static/foods/Boiled Chickpeas.jpg
+Boiled Mung,Grain,Breakfast,main,veg,100,7,0,0.4,6,3,10,0,0,1 cup,/static/foods/Boiled Mung.jpg
+Boiled Sweet Potato,Roots,Breakfast,main,veg,100,1.6,0,0.1,0,0,0,0,0,1 cup,/static/foods/Boiled Sweet Potato.jpg
+Cucumber Flesh,Vegetable,Lunch,side,veg,100,0.3,0,0.05,2.5,10,5,0,0,1 cup,/static/foods/Cucumber Flesh.jpg
+Roast Peanut,Grain,Lunch,side,veg,300,13,0,26,6,3,10,0,0,1 cup,/static/foods/Roast Peanut.jpg
+Roast Green Pea,Grain,Lunch,side,veg,190,14,0,4.5,6,3,10,0,0,1 cup,/static/foods/Roast Green Pea.jpg
+Roasted Gram,Grain,Lunch,side,veg,200,12,0,2,6,3,10,0,0,1 cup,/static/foods/Roasted Gram.jpg
+Orange,Fruit,Breakfast,side,veg,62,1.2,0,0.2,1,3,50,0,0,1,/static/foods/Orange.webp
+Guava,Fruit,Lunch,side,veg,37,1,0,0.2,1,3,50,0,0,1,/static/foods/Guava.webp
+Ambun Kesel,Fruit,Breakfast,side,veg,90,1.3,0,0.3,1.5,8,250,0,0,1,/static/foods/Ambun Kesel.webp
+Ambul Kesel,Fruit,Lunch,side,veg,45,0.5,0,0.1,1,3,50,0,0,1,/static/foods/Ambul Kesel.webp
+Cavendish Banana,Fruit,Dinner,side,veg,134,1.7,0,0.5,1,3,50,0,0,1,/static/foods/Cavendish Banana.webp
+Dried Grapes,Fruit,Breakfast,side,veg,299,3.1,0,0.5,1,3,50,0,0,1 cup,/static/foods/Dried Grapes.jpg
+Jackfruit,Fruit,Lunch,side,veg,33,0.6,0,0.2,2.5,10,5,0,0,1 cup,/static/foods/Jackfruit.jpg
+Avocado,Fruit,Breakfast,side,veg,80,1,0,7.4,1,3,50,0,0,1,/static/foods/Avocadp.jpg
+Watermelon Juice,Beverage,Dinner,drink,veg,30,0.6,0,0.2,1,3,50,0,0,1 Glass,/static/foods/Watermelon Juice.jpg
+Watermelon Juice,Beverage,Breakfast,drink,veg,30,0.6,0,0.2,1,3,50,0,0,1 Glass,/static/foods/Watermelon Juice.jpg
+Helapa,Snack,Dinner,main,veg,440,11,0,17,1,3,50,0,0,2 Slices,/static/foods/Helapa.jpg
+Helapa,Snack,Breakfast,side,veg,440,11,0,17,1,3,50,0,0,2 Slices,/static/foods/Helapa.jpg
+Wandu,Snack,Dinner,side,veg,205,2,0,1,6,3,10,0,0,2 Pieces,/static/foods/Wandu.jpg
+Wandu,Snack,Breakfast,side,veg,205,2,0,1,6,3,10,0,0,2 Pieces,/static/foods/Wandu.jpg
+Aggala,Snack,Breakfast,side,veg,326,9.8,0,10.4,1.5,8,250,0,0,2 Balls,/static/foods/Aggala.jpg
+Lavariya,Snack,Breakfast,side,veg,310,4,0,10,1.5,8,250,0,0,2 Pieces,/static/foods/Lavariya.jpg
+Lavariya,Snack,Dinner,main,veg,310,4,0,10,1.5,8,250,0,0,2 Pieces,/static/foods/Lavariya.jpg
+Yogurt,Diary,Breakfast,side,non_veg,90,5,0,3,0,10,60,0,0,1 cup,/static/foods/Yogurt.webp
+Yogurt,Diary,Lunch,side,non_veg,90,5,0,3,0,10,60,0,0,1 cup,/static/foods/Yogurt.webp
+Yogurt,Diary,Dinner,side,non_veg,90,5,0,3,0,10,60,0,0,1 cup,/static/foods/Yogurt.webp
+Oats,Grain,Breakfast,main,veg,150,5,0,3,1,0.5,5,0,0,1 cup,/static/foods/Oats.jpg
+Fried Tilapia,Protein/Fish,Dinner,side,non_veg,110,22,0,2.5,0,0,50,0,0,2 Fishes,/static/foods/Fried Tilapia.jpg
+Fried Tilapia,Protein/Fish,Lunch,side,non_veg,110,22,0,2.5,0,0,50,0,0,2 Slices,/static/foods/Fried Tilapia.jpg
+Salmon ,Fish,Dinner,protein,non_veg,208,20,0,13,0,0,70,0,0,2 Slices,/static/foods/Salmon.webp
+Salmon ,Fish,Lunch,protein,non_veg,208,20,0,13,0,0,70,0,0,2 Slices,/static/foods/Salmon.webp
+Tuna,Fish,Lunch,protein,non_veg,132,29,0,0.6,0,0,70,0,0,2 Slices,/static/foods/Tuna.jpg
+Tuna,Fish,Dinner,protein,non_veg,132,29,0,0.6,0,0,70,0,0,2 Slices,/static/foods/Tuna.jpg
+Greek Yogurt,Diary,Breakfast,side,veg,100,10,0,5,0,4,60,0,0,1 cup,/static/foods/Greek Yogurt.jpg
+Whole Milk,Diary,Breakfast,drink,veg,130,7,0,7,0,12,50,0,0,1 Glass,/static/foods/Whole Milk.jpg
+Skim Milk,Diary,Breakfast,drink,veg,80,8,0,0,0,12,50,0,0,1 Glass,/static/foods/Skim Milk.jpg
+Apple,Fruit,Dinner,side,veg,80,0,0,0,2.4,10,1,0,0,1,/static/foods/Apple.jpg
+Apple,Fruit,Breakfast,side,veg,80,0,0,0,2.4,10,1,0,0,1,/static/foods/Apple.jpg
+Apple,Fruit,Lunch,side,veg,80,0,0,0,2.4,10,1,0,0,1,/static/foods/Apple.jpg
+Almonds,Grain,Breakfast,side,veg,180,6,0,15,7,3,5,0,0,1 cup,/static/foods/Almonds.jpg
+Almonds,Grain,Dinner,side,veg,180,6,0,15,7,3,5,0,0,1 cup,/static/foods/Almonds.jpg
+Walnuts,Grain,Breakfast,side,veg,190,4,0,18,7,3,5,0,0,1 cup,/static/foods/Walnuts.webp
+Walnuts,Grain,Dinner,side,veg,190,4,0,18,7,3,5,0,0,1 cup,/static/foods/Walnuts.webp
+Kiribath (Milk Rice) ,Grain,Breakfast,main,veg,260,6,0,8,2,2,180,0,0,2 Slices,/static/foods/Kiribath (Milk Rice).avif
+String Hoppers (Idiyappam) ,Grain,Breakfast,main,veg,240,5,0,1,2,1,120,0,0,5 Slices,/static/foods/String Hoppers (Idiyappam).jpg
+String Hoppers (Idiyappam) ,Grain,Dinner,main,veg,240,5,0,1,2,1,120,0,0,5 Slices,/static/foods/String Hoppers (Idiyappam).jpg
+Hoppers (Appa) ,Grain,Breakfast,main,veg,220,4,0,5,2,2,200,0,0,5 Slices,/static/foods/Hoppers (Appa).webp
+Egg Hopper (Biththara Appa) ,Protein,Breakfast,protein,non_veg,180,8,0,7,1,1,250,0,0,1 Hopper,/static/foods/Egg hoppers.jpg
+Pol Roti ,Grain,Breakfast,main,veg,320,6,0,13,4,2,280,0,0,2 Slices,/static/foods/Pol roti.jpg
+Pittu (Coconut) ,Grain,Breakfast,main,veg,300,6,0,9,4,2,180,0,0,2 Slices,/static/foods/Pittu (Coconut).webp
+Kola Kenda (Herbal Porridge) ,Vegetable,Breakfast,drink,veg,160,4,0,4,3,1,120,0,0,1 Glass,/static/foods/Kola Kenda (Herbal Porridge).webp
+Dhal Curry (Parippu) ,Meal/Protein,Lunch,side,veg,180,9,0,6,6,2,320,0,0,1 cup,/static/foods/Dhal Curry (Parippu).avif 
+Lunu Miris ,Meal,Breakfast,side,veg,60,1,0,3,2,3,180,0,0,1 cup,/static/foods/Lunu Miris.jpg
+Pol Sambol ,Meal,Breakfast,side,veg,150,2,0,12,4,2,220,0,0,1 cup,/static/foods/Pol Sambol.jpg 
+Kiri Hodi (Tomato) ,Meal,Breakfast,side,veg,170,3,0,14,1,2,220,0,0,1 cup,/static/foods/Kiri Hodi (Tomato).jpg 
+Seeni Sambol ,Meal,Breakfast,side,veg,90,1,0,3,1,10,180,0,0,1 cup,/static/foods/Seeni Sambol.jpg
+Ceylon Tea  ,Beverage,Breakfast,drink,veg,5,0.2,0,0,0,0,5,0,0,1 cup,/static/foods/Ceylon Tea.jpg
+Ginger Tea  ,Beverage,Dinner,drink,veg,10,0.2,0,0,0,0,5,0,0,1 cup,/static/foods/Ginger Tea.png
+King Coconut Water ,Beverage,Lunch,drink,veg,55,1,0,0,0,11,60,0,0,1 Glass,/static/foods/King Coconut Water.webp
+Red Rice,Grain,Lunch,main,veg,240,5,0,2,3,0,10,0,0,1 cup,/static/foods/Red rice.webp
+White Rice,Grain,Lunch,main,veg,205,4,0,0.5,1,0,5,0,0,1 cup,/static/foods/White Rice.webp
+Fried Rice (Chicken) ,Protein/Meat/Grain,Lunch,main,non_veg,520,22,0,16,4,4,720,0,0,1 cup,/static/foods/Fried Rice (Chicken).jpg 
+Fried Rice (Vegetable) ,Vegetable,Lunch,main,veg,520,0,0,16,4,4,720,0,0,1 cup,/static/foods/Fried Rice (Vegetable).jpg 
+Fish Curry (Tuna) ,Fish,Lunch,protein,non_veg,220,20,0,12,1,1,380,0,0,1 cup,/static/foods/Fish Curry (Tuna).jpg 
+Fish Curry (Tuna) ,Fish,Dinner,protein,non_veg,220,20,0,12,1,1,380,0,0,1 cup,/static/foods/Fish Curry (Tuna).jpg 
+Ambul Thiyal (Sour Fish) ,Fish,Lunch,protein,non_veg,180,19,0,10,0,0,300,0,0,1 cup,/static/foods/Ambul Thiyal (Sour Fish).jpg
+Ambul Thiyal (Sour Fish) ,Fish,Dinner,protein,non_veg,180,19,0,10,0,0,300,0,0,1 cup,/static/foods/Ambul Thiyal (Sour Fish).jpg
+Black Pork Curry ,Protein/Meat,Lunch,protein,non_veg,320,20,0,24,1,1,520,0,0,1 cup,/static/foods/Black Pork Curry.jpg
+Black Pork Curry ,Protein/Meat,Dinner,protein,non_veg,320,20,0,24,1,1,520,0,0,1 cup,/static/foods/Black Pork Curry.jpg
+Prawn Curry ,Protein/Meat,Lunch,protein,non_veg,200,18,0,10,1,1,450,0,0,1 cup,/static/foods/Prawn Curry.jpg
+Prawn Curry ,Protein/Meat,Dinner,protein,non_veg,200,18,0,10,1,1,450,0,0,1 cup,/static/foods/Prawn Curry.jpg
+Egg Curry ,Protein,Lunch,protein,egg,190,10,0,13,0,1,260,0,0,1 cup,/static/foods/Egg Curry .jpg
+Egg Curry ,Protein,Dinner,protein,egg,190,10,0,13,0,1,260,0,0,1 cup,/static/foods/Egg Curry .jpg
+Dhal Curry (Parippu) ,Meal/Protein,Dinner,side,veg,180,9,0,6,6,2,320,0,0,1 cup,/static/foods/Dhal Curry (Parippu).avif 
+Potato Curry ,Roots,Lunch,side,veg,210,4,0,9,3,2,380,0,0,,/static/foods/
+Potato Curry ,Roots,Dinner,side,veg,210,4,0,9,3,2,380,0,0,,/static/foods/
+Brinjal Moju ,Vegetable,Lunch,side,veg,160,2,0,9,3,8,420,0,0,,/static/foods/
+Brinjal Moju ,Vegetable,Dinner,side,veg,160,2,0,9,3,8,420,0,0,,/static/foods/
+Pumpkin Curry ,Vegetable,Lunch,side,veg,140,3,0,5,4,6,250,0,0,,/static/foods/
+Jackfruit Curry (Polos) ,Vegetable,Lunch,side,veg,190,4,0,8,6,3,360,0,0,,/static/foods/
+Young Jackfruit Curry (Kos) ,Vegetable,Lunch,side,veg,170,4,0,6,7,3,320,0,0,,/static/foods/
+Cuttlefish Curry ,Protein/Meat,Lunch,protein,non_veg,230,22,0,12,0,0,520,0,0,,/static/foods/
+Cuttlefish Curry ,Protein/Meat,Dinner,protein,non_veg,230,22,0,12,0,0,520,0,0,,/static/foods/
+Beef Curry ,Protein/Meat,Lunch,protein,non_veg,300,22,0,22,1,1,520,0,0,,/static/foods/
+Beef Curry ,Protein/Meat,Dinner,protein,non_veg,300,22,0,22,1,1,520,0,0,,/static/foods/
+Gotukola Sambol ,Vegetable,Lunch,side,veg,90,3,0,5,4,2,180,0,0,,/static/foods/
+Kankun Mallung ,Vegetable,Lunch,side,veg,80,3,0,4,3,1,160,0,0,,/static/foods/
+Mukunuwenna Mallum ,Vegetable,Lunch,side,veg,75,3,0,4,3,1,160,0,0,,/static/foods/
+Beetroot Curry ,Vegetable,Lunch,side,veg,120,3,0,6,4,6,220,0,0,1 cup,/static/foods/Beetroot Curry.avif
+Okra (Bandakka) Curry ,Vegetable,Lunch,side,veg,110,3,0,6,4,3,240,0,0,,/static/foods/
+Fried Beans Sambol  ,Vegetable,Lunch,side,veg,130,4,0,5,5,3,240,0,0,,/static/foods/
+Carrot Curry,Vegetable,Lunch,side,veg,130,2,0,6,4,7,220,0,0,,/static/foods/
+Cucumber Salad ,Vegetable,Lunch,side,veg,50,2,0,1,2,5,80,0,0,,/static/foods/
+Cucumber Salad ,Vegetable,Dinner,side,veg,50,2,0,1,2,5,80,0,0,,/static/foods/
+Papadam ,Snack,Lunch,side,veg,140,4,0,7,1,1,300,0,0,,/static/foods/
+Papadam ,Snack,Dinner,side,veg,140,4,0,7,1,1,300,0,0,,/static/foods/
+Mixed Greens Mallum ,Vegetable,Lunch,side,veg,85,3,0,5,3,1,160,0,0,,/static/foods/
+Vegetable Roti ,Grain,Breakfast,side,veg,280,7,0,11,4,2,520,0,0,,/static/foods/
+Parippu Wade ,Snack,Breakfast,side,veg,320,10,0,14,6,2,520,0,0,,/static/foods/
+Isso Wade ,Snack,Dinner,side,non_veg,340,12,0,15,4,2,620,0,0,,/static/foods/
+Manioc Chips ,Snack,Dinner,side,veg,250,2,0,13,3,0,320,0,0,,/static/foods/
+Boiled Manioc (Cassava) ,Roots,Breakfast,main,veg,220,2,0,0.5,3,2,15,0,0,,/static/foods/
+Roasted Peanuts ,Grain,Breakfast,side,veg,170,7,0,14,3,1,5,0,0,,/static/foods/
+Curd (Buffalo) + Treacle ,Dairy,Lunch,side,veg,260,9,0,12,0,26,120,0,0,,/static/foods/
+Parippu Wade ,Snack,Dinner,side,veg,320,10,0,14,6,2,520,0,0,,/static/foods/
+Vegetable Soup,Vegetable,Dinner,main,veg,60,4,10,0.5,4,2,132,0,0,,/static/foods/
+Vegetable Soup,Vegetable,Breakfast,side,veg,60,4,10,0.5,4,2,132,0,0,,/static/foods/
+Beet Root Salad,Vegetable,Lunch,side,veg,45,2.1,8,0.9,2.8,5,110,0,0,1 cup,/static/foods/
+Carrot Salad,Vegetable,Lunch,side,veg,41,0.9,10,0.2,2.8,0,0,0,0,1 cup,/static/foods/
+Lotus Root Curry,Meals,Lunch,side,veg,66,2,16,0.1,3,0,281,0,0,1 cup,/static/foods/
+Leeks Sambola,Vegetable,Lunch,side,veg,32.3,1.6,4.9,0.25,2.27,3.15,<5,0,0,1 cup,/static/foods/
+Mushroom Curry,Meal/Protein,Lunch,side,veg,81,3.2,7.1,4.4,4,3,101,0,0,1 cup,/static/foods/
+Anguna Kola Mallum ,Vegetable,Lunch,side,veg,0,0,0,0,0,0,0,1,0,1 cup,/static/foods/
+Kathurumurunga Mallum,Vegetable,Lunch,side,veg,28,0,5.2,0.2,2.6,0,0,1,0,1 cup,/static/foods/
+Cassava Leaves,Vegetable,Lunch,side,veg,91,1,7,0.2,0.5,0,36,1,0,1 cup,/static/foods/
+Whole Wheat Toast ,Grain,Dinner,main,veg,80,4,14,1,2,2,140,0,0,1 Slice,/static/foods/
+Black Coffee,Beverage,Dinner,drink,veg,5,0.3,0,0.1,0,0,5,0,0,1 cup,/static/foods/
+Grilled Chicken Salad,Meal/Protein,Dinner,protein,non_veg,350,30,10,20,5,4,400,0,0,1 cup,/static/foods/Grilled Chicken Salad.jpg
+Quinoa ,Grain,Breakfast,main,veg,222,8,39,3.6,5,1,13,0,0,1 cup,/static/foods/
+Steamed Broccoli ,Vegetable,Dinner,side,veg,55,3.7,11.2,0.6,5.1,2,40,0,0,1 cup,/static/foods/
+Greek Yogurt ,Dairy,Lunch,side,non_veg,150,25,8,3,0,7,85,0,0,1 cup,/static/foods/
+Oatmeal,Grain,Breakfast,main,veg,160,6,28,3,4,1,2,0,0,1 cup,/static/foods/
+Blueberries ,Fruit,Breakfast,side,veg,42,0.5,11,0.2,1.8,7,1,0,0,1/2 cup,/static/foods/
+Turkey Sandwich ,Meal/Processed,Breakfast,main,veg,340,22,34,12,5,6,850,0,0,4 Slices,/static/foods/
+Carrot Sticks ,Vegetable,Lunch,side,veg,52,1.2,12.3,0.3,3.6,6,88,0,0,1 cup,/static/foods/
+Spaghetti Bolognese,Meal/Pasta,Dinner,main,non_veg,460,20,55,18,6,10,700,0,0,1 cup,/static/foods/
+Frosted Flakes ,Grain,Breakfast,main,veg,130,2,31,0,1,11,190,0,0,1 cup,/static/foods/
+Lentil Soup ,Meal/Legume,Dinner,main,veg,230,15,35,3,12,6,650,0,0,1 cup,/static/foods/
+Beef Steak ,Protein/Meat,Dinner,side,non_veg,270,11,55,1.5,2,5,430,0,0,1 piece,/static/foods/
+Baked Potato ,Vegetable,Breakfast,side,veg,160,4.3,36,0.2,3.8,1,17,0,0,Medium,/static/foods/
+Avocado Toast ,Meal/Vegetarian,Breakfast,main,veg,260,7,28,15,10,1,350,0,0,1 Slice,/static/foods/
+Hard-Boiled Egg ,Protein,Breakfast,side,non_veg,78,6.3,0.6,5.3,0,0.5,62,0,0,1 Large,/static/foods/
+Chicken Wrap ,Meal/Processed,Dinner,main,non_veg,410,25,38,17,5,3,780,0,0,1 Wrap,/static/foods/
+Hard-Boiled Egg ,Protein,Dinner,side,non_veg,78,6.3,0.6,5.3,0,0.5,62,0,0,1 Large,/static/foods/
+Baked Potato ,Vegetable,Dinner,side,veg,160,4.3,36,0.2,3.8,1,17,0,0,Medium,/static/foods/
+Black Beans ,Legume,Breakfast,main,veg,114,7.6,20.4,0.5,7.5,0.3,1,0,0,1/2 cup,/static/foods/
+Chicken Noodle Soup ,Meal/Processed,Dinner,main,non_veg,150,7,18,5,2,2,890,0,0,1 cup,/static/foods/
+Celery Sticks ,Vegetable,Lunch,side,veg,14,0.6,3,0.2,1.4,1.2,77,0,0,1 cup,/static/foods/
+Green Beans ,Vegetable,Dinner,side,veg,31,1.8,7,0.2,2.7,3.3,6,0,0,1 cup,/static/foods/
+Green Tea ,Beverage,Dinner,side,veg,2,0.5,0,0,0,0,2,0,0,1 cup,/static/foods/
+Pancakes ,Grain,Breakfast,main,non_veg,180,5,30,5,1,6,450,0,0,2 Medium,/static/foods/
+Pancakes ,Grain,Dinner,side,non_veg,180,5,30,5,1,6,450,0,0,2 Medium,/static/foods/
+Fruit & Yogurt Smoothie ,Beverage/Meal,Breakfast,side,non_veg,280,12,55,3,7,40,70,0,0,1 Glass,/static/foods/
+Fruit & Yogurt Smoothie ,Beverage/Meal,Dinner,side,non_veg,280,12,55,3,7,40,70,0,0,1 Glass,/static/foods/
+Brown Rice ,Grain,Lunch,main,veg,215,5,45,1.8,3.5,0.4,10,0,0,1 cup,/static/foods/
+Bell Pepper Salad,Vegetable,Lunch,side,veg,31,1.2,6,0.3,2.1,4.2,4,0,0,1 cup,/static/foods/
+Pita Bread ,Grain,Breakfast,main,veg,170,6,35,1.5,5,2,320,0,0,4 Slices,/static/foods/
+Fried Pork Chop ,Protein/Meat,Dinner,main,non_veg,220,30,0,10,0,0,70,0,0,4 Slices,/static/foods/
+Mashed Potatoes ,Vegetable,Dinner,main,veg,230,4,35,8,3,2,350,0,0,1 cup,/static/foods/
+Chicken Caesar Salad ,Meal/Protein,Dinner,side,non_veg,470,30,15,30,3,3,890,0,0,1 cup,/static/foods/
+Orange Juice ,Beverage,Lunch,side,veg,112,1.7,25.8,0.5,0.7,20.8,2,0,0,1 Glass,/static/foods/
+Bacon,Protein/Meat,Dinner,side,non_veg,86,6,0.2,6.8,0,0.1,330,0,0,2 Slices,/static/foods/
+Mushroom Curry,Meal/Protein,Dinner,side,veg,81,3.2,7.1,4.4,4,3,101,0,0,1 cup,/static/foods/
+Mixed Nuts ,Nut,Dinner,side,veg,200,6,8,18,3,2,1,0,0,1 cup,/static/foods/
+Mixed Nuts ,Nut,Breakfast,side,veg,200,6,8,18,3,2,1,0,0,1 cup,/static/foods/
+Asparagus ,Vegetable,Lunch,side,veg,40,4.3,7.4,0.4,3.6,3.5,4,0,0,1 cup,/static/foods/
+Raisins ,Fruit,Breakfast,side,veg,130,1.3,34,0.2,1.6,25,5,0,0,1/4 cup,/static/foods/Raisins.jpg
+Vegetable Macaroni ,Meal/Pasta,Breakfast,main,veg,350,2,40,17,2,5,750,0,0,1 cup,/static/foods/
+Vegetable Macaroni ,Meal/Pasta,Dinner,main,veg,350,2,40,17,2,5,750,0,0,1 cup,/static/foods/
+Chicken Macaroni ,Meal/Pasta,Dinner,main,veg,350,10,40,17,2,5,750,0,0,1 cup,/static/foods/Chicken Macaroni.webp
+Chicken Macaroni ,Meal/Pasta,Breakfast,main,veg,350,10,40,17,2,5,750,0,0,1 cup,/static/foods/Chicken Macaroni.webp
+Tomato Soup ,Meal/Vegetable,Dinner,main,veg,170,4,25,6,4,15,900,0,0,1 cup,/static/foods/
+Grilled Cheese Sandwich,Meal/Processed,Breakfast,side,non_veg,390,15,32,22,3,4,800,0,0,1,/static/foods/
+Beef Tacos ,Meal/Meat,Dinner,side,non_veg,380,18,28,22,5,3,600,0,0,2 hard shell,/static/foods/
+Refried Beans ,Legume,Dinner,side,veg,115,7,19,1,6,1,480,0,0,1/2 cup,/static/foods/
+Guacamole,Vegetable/Condiment,Dinner,main,veg,90,1,4,8,3,0.5,120,0,0,1/4 cup,/static/foods/
+Clam Chowder ,Meal/Seafood,Breakfast,main,non_veg,200,10,18,9,1,2,870,0,0,1 cup,/static/foods/
+Iced Tea ,Beverage,Dinner,side,veg,180,0,46,0,0,46,15,0,0,1 Glass,/static/foods/Iced Tea.avif
+Garlic Bread ,Grain,Breakfast,main,veg,150,4,18,7,1,1,310,0,0,1 Slice,/static/foods/
+Chocolate Milk ,Beverage/Dairy,Breakfast,side,veg,200,8,26,8,1,24,160,0,0,1 Glass,/static/foods/
+Potato Chips ,Snack/Processed,Breakfast,side,veg,160,2,15,10,1,0.5,170,0,0,1 cup,/static/foods/
+Caprese Salad,Meal/Vegetable,Lunch,side,veg,240,10,8,18,2,5,350,0,0,1 cup,/static/foods/
+Cherries ,Fruit,Breakfast,side,veg,77,1.6,19,0.5,2.5,15,0,0,0,1 cup,/static/foods/
+Turkey Bacon ,Protein/Meat,Dinner,side,non_veg,70,6,1,5,0,0.5,360,0,0,2 Slices,/static/foods/
+Grits ,Grain,Breakfast,main,veg,150,3,32,1,2,0.5,320,0,0,1 cup,/static/foods/
+Kiwifruit ,Fruit,Breakfast,side,veg,46,0.9,11.1,0.4,2.3,6.7,2,0,0,1 Medium,/static/foods/
+Beef Jerky ,Snack/Processed,Dinner,side,non_veg,116,9.4,3.1,7.2,0.5,2.5,590,0,0,1 cup,/static/foods/
+Figs ,Fruit,Breakfast,side,veg,74,0.6,19.2,0.3,2.9,16.2,2,0,0,2 Medium,/static/foods/
+Lobster ,Protein/Seafood,Dinner,side,non_veg,76,16,0,0.7,0,0,250,0,0,1 cup,/static/foods/Lobster.webp 
+Corn on the Cob ,Vegetable,Breakfast,main,veg,125,5,29,1.5,3,5,2,0,0,1 Large,/static/foods/Corn on the Cob .jpg
+French Onion Soup ,Meal,Lunch,side,veg,150,6,15,7,2,5,800,0,0,1 cup,/static/foods/
+Seaweed Salad ,Vegetable,Lunch,side,veg,60,2,8,3,2,4,350,0,0,1/2 cup,/static/foods/
+Croutons,Grain,Lunch,side,veg,50,1.5,7,2,0.5,0.5,140,0,0,1/4 cup,/static/foods/
+Shepherd's Pie ,Meal/Meat,Dinner,main,non_veg,400,20,35,20,6,7,850,0,0,1 serving,/static/foods/
+Fried Halibut ,Protein/Fish,Dinner,main,non_veg,125,24,0,2.5,0,0,60,0,0,1,/static/foods/
+Lemonade ,Beverage,Dinner,side,veg,99,0.1,26,0,0.1,25,30,0,0,1 Glass,/static/foods/
+Pistachios ,Nut,Dinner,side,veg,159,5.7,7.7,12.8,3,2.2,2,0,0,1 oz shelled,/static/foods/
+Oat Milk ,Beverage/Dairy-Alt,Breakfast,main,non_veg,120,3,16,5,2,7,100,0,0,1 cup,/static/foods/
+Biscuits and Gravy ,Meal/Processed,Breakfast,main,non_veg,480,10,45,28,2,3,1100,0,0,(1 serving),/static/foods/
+Corn Flakes ,Grain,Breakfast,main,veg,100,2,24,0,1,3,200,0,0,1 cup,/static/foods/
+T-Bone Steak ,Protein/Meat,Dinner,main,non_veg,460,38,0,33,0,0,110,0,0,6 oz,/static/foods/
+Creamed Spinach ,Vegetable,Dinner,main,veg,190,5,8,16,3,2,450,0,0,1/2 cup,/static/foods/
+Pecans ,Nut,Breakfast,side,veg,196,2.6,3.9,20.4,2.7,1.1,0,0,0,1 oz ,/static/foods/
+Cucumber Slices ,Vegetable,Lunch,side,veg,16,0.7,3.6,0.1,0.5,1.7,2,0,0,1 cup,/static/foods/
+Olives ,Fruit,Lunch,side,veg,35,0.2,1,3.5,0.5,0,210,0,0,5 Larges,/static/foods/
+Chicken Alfredo ,Meal/Pasta,Dinner,main,non_veg,680,35,45,38,4,5,980,0,0,1/2 cup,/static/foods/
+Breadstick ,Grain,Breakfast,main,veg,160,4,28,3,1,2,350,0,0,1 Large,/static/foods/
+Cobb Salad,Meal/Protein,Lunch,side,veg,510,30,12,38,7,6,800,0,0,1 cup,/static/foods/
+Mandarin Orange ,Fruit,Lunch,side,veg,37,0.6,9.3,0.2,1.3,7.3,1,0,0,1 Medium,/static/foods/
+Cashews ,Nut,Dinner,side,veg,163,4.3,9.2,13.1,0.9,1.4,140,0,0,1 cup,/static/foods/
+Eggo Waffle (2 waffles),Grain/Processed,Dinner,main,non_veg,180,4,30,5,1,4,400,0,0,2 Waffles,/static/foods/Eggo Waffle.jpg 
+Pulled Pork Sandwich,Meal/Meat,Dinner,main,non_veg,480,25,48,20,3,15,900,0,0,1,/static/foods/Pulled Pork Sandwich.jpg
+Macadamia Nuts ,Nut,Dinner,side,veg,204,2.2,3.9,21.5,2.4,1.3,1,0,0,1 oz,/static/foods/Macadamia Nuts .avif
+Tomato Soup ,Meal/Vegetable,Lunch,side,veg,170,4,25,6,4,15,900,0,0,1 cup,/static/foods/Tomato Soup .webp
+Grilled Cheese Sandwich,Meal/Processed,Dinner,main,non_veg,390,15,32,22,3,4,800,0,0,1,/static/foods/Grilled Cheese Sandwich.jpg
+Beef Tacos ,Meal/Meat,Dinner,side,non_veg,380,18,28,22,5,3,600,0,0,2 hard shell,/static/foods/Beef Tacos .jpg
+Refried Beans ,Legume,Breakfast,side,veg,115,7,19,1,6,1,480,0,0,1/2 cup,/static/foods/Refried Beans.jpg 
+Refried Beans ,Legume,Lunch,side,veg,115,7,19,1,6,1,480,0,0,1/2 cup,/static/foods/Refried Beans.jpg 
+Guacamole,Vegetable/Condiment,Breakfast,main,veg,90,1,4,8,3,0.5,120,0,0,1/4 cup,/static/foods/Guacamole.jpg
+Garlic Bread ,Grain,Dinner,main,veg,150,4,18,7,1,1,310,0,0,1 Slice,/static/foods/Garlic Bread .jpg
+Chocolate Milk ,Beverage/Dairy,Dinner,side,veg,200,8,26,8,1,24,160,0,0,1 Glass,/static/foods/Chocolate Milk.jpg
+Potato Chips ,Snack/Processed,Dinner,side,veg,160,2,15,10,1,0.5,170,0,0,1 cup,/static/foods/Potato Chips .jpg
+Cherries ,Fruit,Dinner,side,veg,77,1.6,19,0.5,2.5,15,0,0,0,1 cup,/static/foods/Cherries .webp
+Cherries ,Fruit,Lunch,side,veg,77,1.6,19,0.5,2.5,15,0,0,0,1 cup,/static/foods/Cherries .webp
+Turkey Bacon ,Protein/Meat,Lunch,side,non_veg,70,6,1,5,0,0.5,360,0,0,2 Slices,/static/foods/Turkey Bacon .jpg
+Kiwifruit ,Fruit,Dinner,side,veg,46,0.9,11.1,0.4,2.3,6.7,2,0,0,1 Medium,/static/foods/Kiwifruit .webp
+Kiwifruit ,Fruit,Lunch,side,veg,46,0.9,11.1,0.4,2.3,6.7,2,0,0,1 Medium,/static/foods/Kiwifruit .webp
+Figs ,Fruit,Lunch,side,veg,74,0.6,19.2,0.3,2.9,16.2,2,0,0,1,/static/foods/Figs .jpg
+Figs ,Fruit,Dinner,side,veg,74,0.6,19.2,0.3,2.9,16.2,2,0,0,1,/static/foods/Figs .jpg
+Lobster ,Protein/Seafood,Lunch,side,non_veg,76,16,0,0.7,0,0,250,0,0,1 cup,/static/foods/Lobster.webp 
+Corn on the Cob ,Vegetable,Dinner,main,veg,125,5,29,1.5,3,5,2,0,0,1 Large,/static/foods/Corn on the Cob .jpg
+Halibut ,Protein/Fish,Lunch,side,non_veg,125,24,0,2.5,0,0,60,0,0,1,/static/foods/Halibut .jpg
+Lemonade ,Beverage,Lunch,side,veg,99,0.1,26,0,0.1,25,30,0,0,1 Glass,/static/foods/Lemonade .jpg
+Lemonade ,Beverage,Breakfast,side,veg,99,0.1,26,0,0.1,25,30,0,0,1 Glass,/static/foods/Lemonade .jpg
+Biscuits and Gravy ,Meal/Processed,Dinner,main,non_veg,480,10,45,28,2,3,1100,0,0,(1 serving),/static/foods/Biscuits and Gravy .jpg
+Pecans ,Nut,Dinner,side,veg,196,2.6,3.9,20.4,2.7,1.1,0,0,0,1 oz ,/static/foods/Pecans.webp
+Eggo Waffle ,Grain/Processed,Breakfast,side,non_veg,180,4,30,5,1,4,400,0,0,2  Waffles,/static/foods/Eggo Waffle .jpg
+Almond Milk (Unsweetened),Beverage/Drink,Breakfast,drink,veg,30,1,0,2.5,1,0,160,0,0,1 cup,/static/foods/Almond Milk (Unsweetened).jpg
+Lemon Bar ,Dessert,Lunch,side,veg,150,1.5,0,6,0.5,15,80,0,0,1 Square,/static/foods/Lemon Bar.jpg 
+Rice Krispies ,Grain,Breakfast,main,veg,160,3,0,0.5,0.5,4,290,0,0,1/2 cup,/static/foods/Rice Krispies.jpg 
+Pickle,Vegetable,Lunch,side,veg,5,0.2,0,0.1,0.3,0.5,300,0,0, 1 spear dill,/static/foods/Pickle.avif
+Lobster Bisque ,Meal/Seafood,Lunch,side,non_veg,250,8,0,18,1,3,850,0,0,1 cup,/static/foods/Lobster Bisque .jpg
+Lobster Bisque ,Meal/Seafood,Dinner,side,non_veg,250,8,0,18,1,3,850,0,0,1 cup,/static/foods/Lobster Bisque .jpg
+Sauerkraut ,Vegetable,Lunch,side,veg,7,0.3,1.5,0,1,0.6,234,0,0,1/4 cup,/static/foods/Sauerkraut.jpg
+Sauerkraut ,Vegetable,Dinner,main,veg,7,0.3,1.5,0,1,0.6,234,0,0,1/4 cup,/static/foods/Sauerkraut.jpg
+Soy Milk ,Beverage/Dairy-Alt,Breakfast,side,veg,110,8,9,4.5,2,6,125,0,0,1 cup,/static/foods/Soy Milk .jpg
+Chicken Tikka Masala ,Meal/Meat,Lunch,side,non_veg,480,30,20,30,5,8,900,0,0,1/2 cup),/static/foods/Chicken Tikka Masala .jpg
+Naan Roti,Grain,Breakfast,main,veg,260,8,45,5,2,3,450,0,0,1 piece,/static/foods/Naan Roti.jpg
+Naan Roti,Grain,Dinner,main,veg,260,8,45,5,2,3,450,0,0,1 piece,/static/foods/Naan Roti.jpg
+Sweet & Sour Chicken ,Meal/Processed,Lunch,side,non_veg,380,18,45,15,3,25,750,0,0,1 cup,/static/foods/Sweet & Sour Chicken .jpg
+Sweet & Sour Chicken ,Meal/Processed,Dinner,side,non_veg,380,18,45,15,3,25,750,0,0,1 cup,/static/foods/Sweet & Sour Chicken .jpg
+Egg Drop Soup ,Meal/Vegetable,Dinner,main,non_veg,65,5,6,2,0.5,1,780,0,0,1 cup,/static/foods/Egg Drop Soup.jpg 
+Egg Drop Soup ,Meal/Vegetable,Breakfast,main,non_veg,65,5,6,2,0.5,1,780,0,0,1 cup,/static/foods/Egg Drop Soup.jpg 
+Potato Salad ,Meal/Vegetable,Dinner,main,veg,180,2,19,11,2,3,500,0,0,1/2 cup,/static/foods/Potato Salad.webp
+Cranberry Juice ,Beverage,Breakfast,side,veg,130,0,33,0,0,30,10,0,0,1 Glass,/static/foods/Cranberry Juice.jpg
+Cranberry Juice ,Beverage,Dinner,side,veg,130,0,33,0,0,30,10,0,0,1 Glass,/static/foods/Cranberry Juice.jpg
+Chicken Piccata ,Meal/Meat,Dinner,main,non_veg,350,30,10,20,1,2,600,0,0,1 serving,/static/foods/Chicken Piccata.jpg 
+Angel Hair Pasta ,Grain,Dinner,main,non_veg,200,7,42,1,2,1,1,0,0,1 cup,/static/foods/Angel Hair Pasta.jpg 
+Salami ,Protein/Processed,Dinner,side,non_veg,110,6,1,9,0,0.5,500,0,0,3 slices,/static/foods/Salami.jpg 
+Shrimp Scampi ,Meal/Seafood,Dinner,main,non_veg,380,22,40,15,3,3,750,0,0,1 cup,/static/foods/Shrimp Scampi.jpg
+Shrimp Scampi ,Meal/Seafood,Lunch,side,non_veg,380,22,40,15,3,3,750,0,0,1 cup,/static/foods/Shrimp Scampi .jpg
+Yellow Rice,Grain,Dinner,main,veg,469,16.9,0,18.8,1,0.5,5,0,0,1 cup,/static/foods/YellowRice.webp
+Fried Halmesso,Fish,Dinner,protein,non_veg,75,7.5,0,4.5,0,0,70,0,0,1 cup,/static/foods/Fried Halmesso.jpg
+Fried Karawala,Fish,Dinner,protein,non_veg,85,9,0,5,0,0,70,0,0,1 cup,/static/foods/Fried Karawala.jpg
+Chicken Curry,Protein/Meat,Dinner,protein,non_veg,100,27,0,8,2,2,200,0,0,1 cup,/static/foods/Chicken Curry.jpg
+Chicken Gravy,Protein/Meat,Dinner,protein,non_veg,100,3.5,0,1.5,0,0,70,0,0,1 cup,/static/foods/Chicken Gravy.jpg
+Egg Yolk,Diary,Dinner,protein,egg,100,2.5,0,4.2,0,0,70,0,0,1,/static/foods/Egg Yolk.jpg
+Boiled Sweet Potato,Roots,Dinner,main,veg,100,1.6,0,0.1,0,0,0,0,0,1 cup,/static/foods/Boiled Sweet Potato.jpg
+Roast Peanut,Grain,Dinner,side,veg,300,13,0,26,6,3,10,0,0,1 cup,/static/foods/Roast Peanut.jpg
+Roast Green Pea,Grain,Dinner,side,veg,190,14,0,4.5,6,3,10,0,0,1 cup,/static/foods/Roast Green Pea.jpg
+Roasted Gram,Grain,Dinner,side,veg,200,12,0,2,6,3,10,0,0,1 cup,/static/foods/Roasted Gram.jpg
+Pol Sambol ,Meal,Dinner,side,veg,150,2,0,12,4,2,220,0,0,1 cup,/static/foods/Pol Sambol.jpg 
+Kiri Hodi (Tomato) ,Meal,Dinner,side,veg,170,3,0,14,1,2,220,0,0,1 cup,/static/foods/Kiri Hodi (Tomato).jpg 
+Ceylon Tea  ,Beverage,Dinner,drink,veg,5,0.2,0,0,0,0,5,0,0,1 cup,/static/foods/Ceylon Tea.jpg
+White Rice,Grain,Dinner,main,veg,205,4,0,0.5,1,0,5,0,0,1 cup,/static/foods/White Rice.webp
+White Rice,Grain,Lunch,main,veg,205,4,0,0.5,1,0,5,0,0,1 cup,/static/foods/White Rice.webp
+Salami ,Protein/Processed,Lunch,side,non_veg,110,6,1,9,0,0.5,500,0,0,3 slices,/static/foods/Salami.jpg 
+Soy Milk ,Beverage/Dairy-Alt,Dinner,side,veg,110,8,9,4.5,2,6,125,0,0,1 cup,/static/foods/Soy Milk .jpg
+Guacamole,Vegetable/Condiment,Dinner,main,veg,90,1,4,8,3,0.5,120,0,0,1/4 cup,/static/foods/Guacamole.jpg
+Grilled Cheese Sandwich,Meal/Processed,Breakfast,main,non_veg,390,15,32,22,3,4,800,0,0,1,/static/foods/Grilled Cheese Sandwich.jpg
