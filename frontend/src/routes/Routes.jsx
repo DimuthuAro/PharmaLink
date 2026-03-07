@@ -1,34 +1,49 @@
-import Dashboard from '../pages/Dashboard.jsx'
+import React, { Suspense } from 'react'
+import { createProtectedRoutes } from '../auth/auth.jsx'
+import AppLayout from '../components/AppLayout.jsx'
+
+// Eagerly loaded (small / landing pages)
 import LogIn from '../pages/LogIn.jsx'
 import Register from '../pages/Register.jsx'
-import ProtectedTestPage from '../pages/ProtectedTestPage.jsx'
-import FoodDrugInteraction from '../pages/FoodDrugInteraction.jsx'
-import Prescription_Mainpage from '../pages/Prescription_Mainpage.jsx'
-import InteractionCheck from '../pages/InteractionCheck.jsx'
-import { createProtectedRoutes } from '../auth/auth.jsx'
-import History from '../pages/History.jsx'
 import Home from '../pages/Home.jsx'
-import MealPlan from '../pages/PersonalizedMealPlan.jsx'
-import CrossBrandComparator from '../pages/CrossBrandComparator.jsx'
-import TreatmentIdentifier from '../pages/TreatmentIdentifier.jsx'
+
+// Lazy-loaded feature pages
+const Dashboard = React.lazy(() => import('../pages/Dashboard.jsx'))
+const InteractionCheck = React.lazy(() => import('../pages/InteractionCheck.jsx'))
+const FoodDrugInteraction = React.lazy(() => import('../pages/FoodDrugInteraction.jsx'))
+const History = React.lazy(() => import('../pages/History.jsx'))
+const MealPlan = React.lazy(() => import('../pages/PersonalizedMealPlan.jsx'))
+const Prescription_Mainpage = React.lazy(() => import('../pages/Prescription_Mainpage.jsx'))
+const CrossBrandComparator = React.lazy(() => import('../pages/CrossBrandComparator.jsx'))
+const TreatmentIdentifier = React.lazy(() => import('../pages/TreatmentIdentifier.jsx'))
+const ProtectedTestPage = React.lazy(() => import('../pages/ProtectedTestPage.jsx'))
+
+const LazyPage = ({ children }) => (
+  <Suspense fallback={
+    <div className="flex items-center justify-center py-20">
+      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
+    </div>
+  }>
+    {children}
+  </Suspense>
+)
 
 const unprotected_routes = [
   { path: '/login', element: <LogIn /> },
   { path: '/register', element: <Register /> },
-  { path: '/', element: <Home /> } // Redirect to login by default
+  { path: '/', element: <Home /> }
 ]
 
 const protected_routes = createProtectedRoutes([
-  { path: '/dashboard', element: <Dashboard /> },
-  { path: '/interaction-check', element: <InteractionCheck /> },
-  { path: '/e', element: <ProtectedTestPage /> },
-  { path: '/advisory', element: <FoodDrugInteraction /> },
-  { path: "/history", element: <History /> },
-  { path: "/meal-plan", element: <MealPlan /> },
-  { path: '/prescription', element: <Prescription_Mainpage /> },
-
-  { path: '/comparator', element: <CrossBrandComparator /> },
-  { path: '/treatment-identifier', element: <TreatmentIdentifier /> }
+  { path: '/dashboard', element: <AppLayout><LazyPage><Dashboard /></LazyPage></AppLayout> },
+  { path: '/interaction-check', element: <AppLayout><LazyPage><InteractionCheck /></LazyPage></AppLayout> },
+  { path: '/e', element: <AppLayout><LazyPage><ProtectedTestPage /></LazyPage></AppLayout> },
+  { path: '/advisory', element: <AppLayout><LazyPage><FoodDrugInteraction /></LazyPage></AppLayout> },
+  { path: "/history", element: <AppLayout><LazyPage><History /></LazyPage></AppLayout> },
+  { path: "/meal-plan", element: <AppLayout><LazyPage><MealPlan /></LazyPage></AppLayout> },
+  { path: '/prescription', element: <AppLayout><LazyPage><Prescription_Mainpage /></LazyPage></AppLayout> },
+  { path: '/comparator', element: <AppLayout><LazyPage><CrossBrandComparator /></LazyPage></AppLayout> },
+  { path: '/treatment-identifier', element: <AppLayout><LazyPage><TreatmentIdentifier /></LazyPage></AppLayout> }
 ])
 
 export { unprotected_routes, protected_routes }

@@ -4227,63 +4227,42 @@ If any field is not visible or unclear in the text, use null for that field. Ret
     );
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden">
+        <div className="relative overflow-hidden">
             <AnimationStyles />
-            <GradientOrbs />
 
-            {/* Header with Glassmorphism */}
-            <header className="sticky top-0 z-50 print:hidden">
-                <div className="h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
-                <div className="backdrop-blur-xl bg-white/70 border-b border-white/20 shadow-lg shadow-black/5">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-4">
-                                <div className="relative group">
-                                    <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl blur opacity-40 group-hover:opacity-60 transition duration-300"></div>
-                                    <div className="relative h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
-                                        <MedicalServices className="text-white" />
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="flex items-center gap-2">
-                                        <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-900 bg-clip-text text-transparent">
-                                            Prescription Interpreter
-                                        </h1>
-                                        <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full">
-                                            Pro
-                                        </span>
-                                    </div>
-                                    <p className="text-sm text-gray-500 flex items-center gap-1">
-                                        <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                        AI-Powered OCR Analysis Platform
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="hidden lg:flex items-center gap-3">
-                                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-200/50 backdrop-blur-sm">
-                                    <span className="text-sm font-semibold text-blue-700">{state.parsedData.medications.length}</span>
-                                    <span className="text-xs text-blue-600/70">medications</span>
-                                </div>
-                                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-200/50 backdrop-blur-sm">
-                                    <span className="text-sm font-semibold text-emerald-700">{state.parsedData.confidence}%</span>
-                                    <span className="text-xs text-emerald-600/70">confidence</span>
-                                </div>
-                            </div>
-                            <button
-                                className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-white/50 border border-gray-200/50 hover:bg-white hover:shadow-md transition-all duration-300"
-                                onClick={() => navigate('/dashboard')}
-                            >
-                                <span className="text-sm font-medium text-gray-600 group-hover:text-blue-600 transition-colors">← Dashboard</span>
-                            </button>
+            {/* Page Title */}
+            <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-4">
+                    <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                        <MedicalServices className="text-white" />
+                    </div>
+                    <div>
+                        <div className="flex items-center gap-2">
+                            <h1 className="text-xl font-bold text-gray-900 dark:text-white">Prescription Interpreter</h1>
+                            <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full">Pro</span>
                         </div>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                            <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            AI-Powered OCR Analysis Platform
+                        </p>
                     </div>
                 </div>
-            </header>
+                <div className="hidden lg:flex items-center gap-3">
+                    <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-200/50 dark:border-blue-800/50">
+                        <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">{state.parsedData.medications.length}</span>
+                        <span className="text-xs text-blue-600/70 dark:text-blue-400/70">medications</span>
+                    </div>
+                    <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-200/50 dark:border-emerald-800/50">
+                        <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">{state.parsedData.confidence}%</span>
+                        <span className="text-xs text-emerald-600/70 dark:text-emerald-400/70">confidence</span>
+                    </div>
+                </div>
+            </div>
 
             {/* Loading Overlay */}
             {state.isLoading && <LoadingOverlay message={state.progress.step} />}
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+            <div className="relative z-10">
                 {/* Hidden Canvas */}
                 <StyledCanvas ref={canvasRef} />
 

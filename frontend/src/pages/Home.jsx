@@ -126,6 +126,16 @@ const LandingPage = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  // Force light theme on landing page — independent of user theme preference
+  useEffect(() => {
+    const root = document.documentElement;
+    const wasDark = root.classList.contains('dark');
+    root.classList.remove('dark');
+    return () => {
+      if (wasDark) root.classList.add('dark');
+    };
+  }, []);
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);

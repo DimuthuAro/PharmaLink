@@ -38,7 +38,6 @@ import {
     ArrowRightIcon as ArrowRight
 } from '@heroicons/react/24/outline';
 import { BookmarkIcon as BookmarkSolid, HeartIcon as HeartSolid, StarIcon } from '@heroicons/react/24/solid';
-import bgImage from '../assets/bg.png';
 
 const API_BASE = import.meta.env.VITE_DRUG_INTERACTION_API || 'http://localhost:3000/api/drug-interactions';
 
@@ -1022,87 +1021,59 @@ const InteractionCheck = () => {
     }, [riskScore]);
 
     return (
-        <div className="min-h-screen relative" style={{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' }}>
+        <div className="relative">
             {/* Animation Styles */}
             <AnimationStyles />
 
             {/* Loading Overlay */}
             {loading && <LoadingOverlay message="Analyzing Drug Interactions..." />}
 
-            {/* Glass Overlay */}
-            <div className="fixed inset-0 bg-gradient-to-br from-slate-900/30 via-gray-900/20 to-slate-800/25 backdrop-blur-[2px] pointer-events-none">
-                <GradientOrbs />
-            </div>
-
-            {/* Header */}
-            <header className="sticky top-0 z-50 print:hidden">
-                <div className="h-0.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-600"></div>
-
-                <div className="backdrop-blur-xl bg-white/80 border-b border-gray-200/60 shadow-sm">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-                        <div className="flex items-center justify-between">
-                            {/* Logo & Title */}
-                            <div className="flex items-center space-x-3">
-                                <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
-                                    <ShieldCheck className="h-6 w-6 text-white" />
-                                </div>
-                                <div>
-                                    <h1 className="text-lg font-bold text-gray-900">
-                                        Drug Interaction Checker
-                                    </h1>
-                                    <p className="text-xs text-gray-500">
-                                        Clinical Safety Analysis
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Navigation */}
-                            <button
-                                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50/50 transition-colors"
-                                onClick={() => navigate('/dashboard')}
-                            >
-                                ← Dashboard
-                            </button>
-                        </div>
+            {/* Page Header */}
+            <div className="mb-4">
+                <div className="flex items-center space-x-3 mb-2">
+                    <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                        <ShieldCheck className="h-6 w-6 text-white" />
                     </div>
-
-                    {/* Tab Navigation */}
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="flex gap-1 -mb-px">
-                            {[
-                                { id: 'check', label: 'Check Interactions', icon: ShieldCheck, count: null },
-                                { id: 'history', label: 'History', icon: Clock, count: history.length },
-                                { id: 'saved', label: 'Saved', icon: Bookmark, count: savedResults.length }
-                            ].map(tab => (
-                                <button
-                                    key={tab.id}
-                                    onClick={() => setActiveTab(tab.id)}
-                                    className={`relative flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${activeTab === tab.id
-                                        ? 'text-blue-600'
-                                        : 'text-gray-500 hover:text-gray-700'
-                                        }`}
-                                >
-                                    {activeTab === tab.id && (
-                                        <div className="absolute inset-x-0 -bottom-px h-0.5 bg-blue-500 rounded-full"></div>
-                                    )}
-                                    <tab.icon className={`h-4 w-4 ${activeTab === tab.id ? 'text-blue-500' : ''}`} />
-                                    <span>{tab.label}</span>
-                                    {tab.count !== null && tab.count > 0 && (
-                                        <span className={`px-1.5 py-0.5 text-xs font-medium rounded-full ${activeTab === tab.id
-                                            ? 'bg-blue-100 text-blue-700'
-                                            : 'bg-gray-100 text-gray-600'
-                                            }`}>
-                                            {tab.count}
-                                        </span>
-                                    )}
-                                </button>
-                            ))}
-                        </div>
+                    <div>
+                        <h1 className="text-lg font-bold text-gray-900 dark:text-white">Drug Interaction Checker</h1>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Clinical Safety Analysis</p>
                     </div>
                 </div>
-            </header>
 
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative">
+                {/* Tab Navigation */}
+                <div className="flex gap-1 border-b border-gray-200 dark:border-gray-700">
+                    {[
+                        { id: 'check', label: 'Check Interactions', icon: ShieldCheck, count: null },
+                        { id: 'history', label: 'History', icon: Clock, count: history.length },
+                        { id: 'saved', label: 'Saved', icon: Bookmark, count: savedResults.length }
+                    ].map(tab => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
+                            className={`relative flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${activeTab === tab.id
+                                ? 'text-blue-600 dark:text-blue-400'
+                                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                                }`}
+                        >
+                            {activeTab === tab.id && (
+                                <div className="absolute inset-x-0 -bottom-px h-0.5 bg-blue-500 rounded-full"></div>
+                            )}
+                            <tab.icon className={`h-4 w-4 ${activeTab === tab.id ? 'text-blue-500' : ''}`} />
+                            <span>{tab.label}</span>
+                            {tab.count !== null && tab.count > 0 && (
+                                <span className={`px-1.5 py-0.5 text-xs font-medium rounded-full ${activeTab === tab.id
+                                    ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300'
+                                    : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300'
+                                    }`}>
+                                    {tab.count}
+                                </span>
+                            )}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <div className="relative">
                 {/* Main Check Tab */}
                 {activeTab === 'check' && (
                     <div className="space-y-6">
@@ -2444,7 +2415,7 @@ const InteractionCheck = () => {
                         )}
                     </div>
                 )}
-            </main>
+            </div>
 
             {/* Footer - Enhanced */}
             <footer className="mt-auto print:hidden relative">

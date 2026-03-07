@@ -47,17 +47,19 @@ export default defineConfig({
     // Chunk splitting for better caching
     rollupOptions: {
       output: {
-        manualChunks: {
-          // Vendor chunks
-          vendor: ['react', 'react-dom'],
-          router: ['react-router-dom'],
-          icons: ['@heroicons/react']
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react-dom')) return 'vendor-react';
+            if (id.includes('react-router')) return 'vendor-router';
+            if (id.includes('@heroicons')) return 'vendor-icons';
+            if (id.includes('@mui') || id.includes('@emotion')) return 'vendor-mui';
+            if (id.includes('tesseract') || id.includes('html2canvas') || id.includes('jspdf')) return 'vendor-heavy';
+          }
         }
       }
     },
 
-    // Optimize bundle size
-    chunkSizeWarningLimit: 1000
+    chunkSizeWarningLimit: 600
   },
 
   // Path resolution

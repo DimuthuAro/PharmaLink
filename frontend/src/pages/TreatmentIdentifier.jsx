@@ -14,7 +14,6 @@ import {
     ClipboardDocumentListIcon,
     HeartIcon,
     DocumentTextIcon,
-    ArrowLeftIcon,
     ChevronDownIcon,
     ChevronUpIcon,
     ArrowDownTrayIcon as Download,
@@ -31,27 +30,6 @@ import { HeartIcon as HeartSolid } from '@heroicons/react/24/solid';
 
 // ── API Config ──────────────────────────────────────────────
 const TREATMENT_API = import.meta.env.VITE_TREATMENT_API || 'http://localhost:3000/api/treatment';
-
-// ── SVG Decorations ─────────────────────────────────────────
-const MedicalPattern = () => (
-    <svg className="absolute inset-0 w-full h-full opacity-[0.03]" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-            <pattern id="treatment-pattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
-                <path d="M30 5v20M20 15h20" stroke="currentColor" strokeWidth="2" fill="none" />
-                <circle cx="30" cy="45" r="8" stroke="currentColor" strokeWidth="1.5" fill="none" />
-                <path d="M26 45h8M30 41v8" stroke="currentColor" strokeWidth="1.5" />
-            </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#treatment-pattern)" />
-    </svg>
-);
-
-const GradientOrbs = () => (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full bg-gradient-to-br from-emerald-400/10 via-teal-500/10 to-cyan-400/10 blur-3xl animate-pulse" style={{ animationDuration: '20s' }} />
-        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-gradient-to-br from-blue-400/10 via-indigo-500/10 to-purple-400/10 blur-3xl animate-pulse" style={{ animationDuration: '25s', animationDelay: '5s' }} />
-    </div>
-);
 
 const FloatingPills = () => (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -276,39 +254,26 @@ const TreatmentIdentifier = () => {
     // Render
     // ═════════════════════════════════════════════════════════
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50/30 relative overflow-hidden">
-            <GradientOrbs />
-
-            {/* ── Top Navigation Bar ─────────────────────────── */}
-            <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200/60 shadow-sm">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between h-16">
-                        <div className="flex items-center gap-3">
-                            <button onClick={() => navigate('/dashboard')} className="p-2 rounded-xl hover:bg-gray-100 transition-colors" title="Back to Dashboard">
-                                <ArrowLeftIcon className="h-5 w-5 text-gray-600" />
-                            </button>
-                            <div className="flex items-center gap-2">
-                                <div className="p-2 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/25">
-                                    <ClipboardDocumentListIcon className="h-5 w-5 text-white" />
-                                </div>
-                                <div>
-                                    <h1 className="text-lg font-bold text-gray-900">Treatment Identifier</h1>
-                                    <p className="text-xs text-gray-500">AI-powered condition detection</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <button onClick={clearAll} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors">
-                                <Refresh className="h-4 w-4" />
-                                Reset
-                            </button>
-                        </div>
+        <div className="relative overflow-hidden">
+            {/* Page Title */}
+            <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-2">
+                    <div className="p-2 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/25">
+                        <ClipboardDocumentListIcon className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                        <h1 className="text-lg font-bold text-gray-900 dark:text-white">Treatment Identifier</h1>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">AI-powered condition detection</p>
                     </div>
                 </div>
+                <button onClick={clearAll} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                    <Refresh className="h-4 w-4" />
+                    Reset
+                </button>
             </div>
 
             {/* ── Main Content ───────────────────────────────── */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+            <div className="relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                     {/* ── Left Panel: Input ──────────────────── */}

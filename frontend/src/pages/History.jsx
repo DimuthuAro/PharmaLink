@@ -70,55 +70,51 @@ const History = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <ClockIcon className="h-7 w-7 text-blue-600" />
-            <div>
-              <h1 className="text-lg font-bold text-gray-900">Interaction History</h1>
-              <p className="text-xs text-gray-500">
-                {user?.name ? `For ${user.name}` : "Your past food–drug checks"}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-3">
-            <button
-              onClick={() => navigate("/advisory")}
-              className="text-sm text-blue-600 hover:text-blue-700 cursor-pointer"
-            >
-              Food-Drug Interaction Check
-            </button>
-            {history.length > 0 && (
-              <button
-                onClick={handleClear}
-                className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50 cursor-pointer"
-              >
-                <ArrowPathIcon className="h-4 w-4 mr-1" />
-                Clear history
-              </button>
-            )}
+    <div>
+      {/* Page Title */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center space-x-2">
+          <ClockIcon className="h-7 w-7 text-blue-600" />
+          <div>
+            <h1 className="text-lg font-bold text-gray-900 dark:text-white">Interaction History</h1>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              {user?.name ? `For ${user.name}` : "Your past food–drug checks"}
+            </p>
           </div>
         </div>
-      </header>
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={() => navigate("/advisory")}
+            className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 cursor-pointer"
+          >
+            Food-Drug Interaction Check
+          </button>
+          {history.length > 0 && (
+            <button
+              onClick={handleClear}
+              className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-900/30 cursor-pointer"
+            >
+              <ArrowPathIcon className="h-4 w-4 mr-1" />
+              Clear history
+            </button>
+          )}
+        </div>
+      </div>
 
       {/* Content */}
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
-          {loading ? (
-            <p className="text-sm text-gray-500">Loading history…</p>
-          ) : formattedHistory.length === 0 ? (
-            <div className="text-center py-10">
-              <div className="mx-auto h-12 w-12 rounded-full bg-blue-50 flex items-center justify-center mb-3">
-                <ShieldCheckIcon className="h-7 w-7 text-blue-600" />
+      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-4 md:p-6">
+        {loading ? (
+          <p className="text-sm text-gray-500 dark:text-gray-400">Loading history…</p>
+        ) : formattedHistory.length === 0 ? (
+          <div className="text-center py-10">
+              <div className="mx-auto h-12 w-12 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center mb-3">
+                <ShieldCheckIcon className="h-7 w-7 text-blue-600 dark:text-blue-400" />
               </div>
-              <h2 className="text-base font-semibold text-gray-900 mb-1">
+              <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-1">
                 No interactions yet
               </h2>
-              <p className="text-sm text-gray-500">
-                Start by checking a food–drug interaction. Your results will appear
-                here automatically.
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Start by checking a food–drug interaction. Your results will appear here automatically.
               </p>
               <button
                 onClick={() => navigate("/advisory")}
@@ -133,45 +129,44 @@ const History = () => {
                 <div
                   key={entry.id}
                   className={`flex flex-col md:flex-row md:items-center justify-between border rounded-lg px-3 py-3 text-sm ${riskColors[entry.risk]}`}
-                  >
+                >
                   <div className="flex-1 pr-0 md:pr-4">
                     <div className="flex flex-wrap items-center gap-x-2">
                       <span className="font-semibold">
                         {entry.drug} + {entry.food}
                       </span>
-                      <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-white/80">
-                        {riskLabel(entry.risk)}
-                      </span>
-                    </div>
-                    <p className="mt-1 text-xs md:text-[13px]">{entry.message}</p>
-                    <p className="mt-1 text-[11px] text-gray-500">{entry.time}</p>
+                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-white/80 dark:bg-gray-800/80">
+                      {riskLabel(entry.risk)}
+                    </span>
                   </div>
-                  <div className="mt-2 md:mt-0 md:ml-4 flex items-center gap-2 shrink-0 self-end md:self-auto">
-                    <button
-                     type="button"
-                     onClick={()=>handleDeleteOne(entry)}
-                     className="px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 border border-red-300 hover:bg-red-50"
-                     >
-                      Delete
-                    </button>
-                    <button
-                      onClick={() => handleRecheck(entry)}
-                      className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium border border-blue-300 text-blue-700 hover:bg-blue-50"
-                    >
-                      Re-check this pair
-                    </button>
-                  </div>
+                  <p className="mt-1 text-xs md:text-[13px]">{entry.message}</p>
+                  <p className="mt-1 text-[11px] text-gray-500 dark:text-gray-500">{entry.time}</p>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-        {/* Tiny footer */}
-        <footer className="mt-10 mb-4 text-[11px] text-slate-500 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-3">
-          <span>© {new Date().getFullYear()} PharmaLink. For academic/research use.</span>
-          <span>Always consult a qualified healthcare professional.</span>
-        </footer>
-      </main>
+                <div className="mt-2 md:mt-0 md:ml-4 flex items-center gap-2 shrink-0 self-end md:self-auto">
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteOne(entry)}
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 dark:text-red-400 border border-red-300 dark:border-red-700 hover:bg-red-50 dark:hover:bg-red-900/30"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    onClick={() => handleRecheck(entry)}
+                    className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium border border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30"
+                  >
+                    Re-check this pair
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <footer className="mt-10 mb-4 text-[11px] text-slate-500 dark:text-gray-600 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 dark:border-gray-800 pt-3">
+        <span>&copy; {new Date().getFullYear()} PharmaLink. For academic/research use.</span>
+        <span>Always consult a qualified healthcare professional.</span>
+      </footer>
     </div>
   );
 };

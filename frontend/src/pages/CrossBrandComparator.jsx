@@ -14,8 +14,6 @@ import MedicationSelection from '../components/MedicationSelection.jsx';
 import SelectedBrandsSummary from '../components/SelectedBrandsSummary.jsx';
 import AdvancedFilters from '../components/AdvancedFilters.jsx';
 import EmptyState from '../components/EmptyState.jsx';
-import Header from '../components/Header.jsx';
-import SearchBar from '../components/SearchBar.jsx';
 import MedicationHeader from '../components/MedicationHeader.jsx';
 import CrossBrandPredictor from '../components/CrossBrandPredictor.jsx';
 import {
@@ -2361,65 +2359,23 @@ const CrossBrandComparator = () => {
     };
 
     return (
-        <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
+        <div className="relative overflow-hidden">
             <AnimationStyles />
-            <div className="fixed inset-0 pointer-events-none z-0">
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-blue-400/10 via-indigo-500/10 to-purple-400/10 rounded-full blur-3xl animate-float"></div>
-                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-br from-cyan-400/10 via-teal-500/10 to-emerald-400/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
-            </div>
 
-            {/* Header */}
-            <header className="relative z-10 backdrop-blur-xl bg-white/80 border-b border-white/50 shadow-lg shadow-black/5">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between h-16">
-                        <div className="flex items-center gap-4">
-                            <button
-                                onClick={() => navigate('/dashboard')}
-                                className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition-colors"
-                            >
-                                <ArrowLeftIcon className="h-5 w-5" />
-                                <span className="font-medium">Dashboard</span>
-                            </button>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <div className="relative">
-                                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-                                    <ScaleIcon className="h-5 w-5 text-white" />
-                                </div>
-                                <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full flex items-center justify-center">
-                                    <SparklesSolid className="h-2 w-2 text-white" />
-                                </div>
-                            </div>
-                            <div>
-                                <h1 className="text-xl font-black text-slate-900 tracking-tight">Brand Intelligence Platform</h1>
-                                <p className="text-xs text-blue-500 font-semibold">AI-powered medication analysis & market insights</p>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <button
-                                onClick={() => setShowNotifications(!showNotifications)}
-                                className="relative p-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
-                            >
-                                <BellIcon className="h-6 w-6" />
-                                {notifications.length > 0 && (
-                                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center animate-pulse">
-                                        {notifications.length}
-                                    </span>
-                                )}
-                            </button>
-                            <div className="text-right">
-                                <p className="text-sm font-semibold text-slate-900">{user?.name || 'Healthcare Professional'}</p>
-                                <p className="text-xs text-slate-500 flex items-center gap-1">
-                                    <CpuChipIcon className="h-3 w-3" />
-                                    AI Assistant Active
-                                </p>
-                            </div>
-                        </div>
+            {/* Page Title */}
+            <div className="mb-6 flex items-center gap-3">
+                <div className="relative">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <ScaleIcon className="h-5 w-5 text-white" />
                     </div>
                 </div>
-            </header>
+                <div>
+                    <h1 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">Brand Intelligence Platform</h1>
+                    <p className="text-xs text-blue-500 dark:text-blue-400 font-semibold">AI-powered medication analysis & market insights</p>
+                </div>
+            </div>
 
-            <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="relative">
                 {/* Quick Actions Bar */}
                 <QuickActionsBar
                     selectedBrands={selectedBrands}
@@ -2925,7 +2881,7 @@ const CrossBrandComparator = () => {
                 {!selectedMedication && !searchTerm && (
                     <EmptyState />
                 )}
-            </main>
+            </div>
 
             {/* Brand Details Modal */}
             {showDetails && (
