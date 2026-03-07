@@ -16,6 +16,8 @@ const MealPlan = React.lazy(() => import('../pages/PersonalizedMealPlan.jsx'))
 const Prescription_Mainpage = React.lazy(() => import('../pages/Prescription_Mainpage.jsx'))
 const CrossBrandComparator = React.lazy(() => import('../pages/CrossBrandComparator.jsx'))
 const TreatmentIdentifier = React.lazy(() => import('../pages/TreatmentIdentifier.jsx'))
+const Profile = React.lazy(() => import('../pages/Profile.jsx'))
+const Setting = React.lazy(() => import('../pages/Setting.jsx'))
 const ProtectedTestPage = React.lazy(() => import('../pages/ProtectedTestPage.jsx'))
 
 const LazyPage = ({ children }) => (
@@ -43,7 +45,9 @@ const protected_routes = createProtectedRoutes([
   { path: "/meal-plan", element: <AppLayout><LazyPage><MealPlan /></LazyPage></AppLayout> },
   { path: '/prescription', element: <AppLayout><LazyPage><Prescription_Mainpage /></LazyPage></AppLayout> },
   { path: '/comparator', element: <AppLayout><LazyPage><CrossBrandComparator /></LazyPage></AppLayout> },
-  { path: '/treatment-identifier', element: <AppLayout><LazyPage><TreatmentIdentifier /></LazyPage></AppLayout> }
+  { path: '/treatment-identifier', element: <AppLayout><LazyPage><TreatmentIdentifier /></LazyPage></AppLayout> },
+  { path: '/profile', element: <LazyPage><Profile /></LazyPage> },
+  { path: '/settings', element: <LazyPage><Setting /></LazyPage> }
 ])
 
 export { unprotected_routes, protected_routes }
