@@ -121,21 +121,21 @@ const SmartAlerts = ({ brands, selectedBrands = [] }) => {
         <div className="mb-6">
             <div className="flex items-center gap-3 mb-4">
                 <BellIcon className="h-6 w-6 text-amber-500 animate-pulse" />
-                <h3 className="text-lg font-bold text-slate-900">Smart Alerts</h3>
-                <span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">Smart Alerts</h3>
+                <span className="px-2 py-1 bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300 text-xs font-bold rounded-full">
                     {alerts.length} new
                 </span>
             </div>
             <div className="grid md:grid-cols-3 gap-4">
                 {alerts.map((alert, idx) => (
-                    <div key={idx} className={`rounded-xl p-4 border ${alert.type === 'warning' ? 'bg-amber-50 border-amber-200' :
-                        alert.type === 'success' ? 'bg-emerald-50 border-emerald-200' :
-                            'bg-blue-50 border-blue-200'
+                    <div key={idx} className={`rounded-xl p-4 border ${alert.type === 'warning' ? 'bg-amber-50 border-amber-200 dark:bg-amber-500/10 dark:border-amber-500/20' :
+                        alert.type === 'success' ? 'bg-emerald-50 border-emerald-200 dark:bg-emerald-500/10 dark:border-emerald-500/20' :
+                            'bg-blue-50 border-blue-200 dark:bg-blue-500/10 dark:border-blue-500/20'
                         }`}>
                         <div className="flex items-start gap-3">
-                            <div className={`p-2 rounded-lg ${alert.type === 'warning' ? 'bg-amber-100' :
-                                alert.type === 'success' ? 'bg-emerald-100' :
-                                    'bg-blue-100'
+                            <div className={`p-2 rounded-lg ${alert.type === 'warning' ? 'bg-amber-100 dark:bg-amber-500/20' :
+                                alert.type === 'success' ? 'bg-emerald-100 dark:bg-emerald-500/20' :
+                                    'bg-blue-100 dark:bg-blue-500/20'
                                 }`}>
                                 <alert.icon className={`h-5 w-5 ${alert.type === 'warning' ? 'text-amber-600' :
                                     alert.type === 'success' ? 'text-emerald-600' :
@@ -143,11 +143,11 @@ const SmartAlerts = ({ brands, selectedBrands = [] }) => {
                                     }`} />
                             </div>
                             <div className="flex-1">
-                                <h4 className="font-semibold text-slate-900 mb-1">{alert.title}</h4>
-                                <p className="text-sm text-slate-600 mb-2">{alert.message}</p>
+                                <h4 className="font-semibold text-slate-900 dark:text-white mb-1">{alert.title}</h4>
+                                <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">{alert.message}</p>
                                 <div className="flex flex-wrap gap-1">
                                     {alert.brands.map((brand, brandIdx) => (
-                                        <span key={brandIdx} className="px-2 py-1 bg-white/50 text-slate-700 text-xs rounded-full">
+                                        <span key={brandIdx} className="px-2 py-1 bg-white/50 dark:bg-white/10 text-slate-700 dark:text-slate-300 text-xs rounded-full">
                                             {brand}
                                         </span>
                                     ))}
@@ -529,7 +529,7 @@ const SideBySideComparisonModal = ({ brands, onClose }) => {
 
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
                 <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 flex items-center justify-between">
                     <h2 className="text-2xl font-black text-white">Side-by-Side Comparison</h2>
                     <button
@@ -662,7 +662,7 @@ const HistoricalPriceAnalytics = ({ medications, onClose }) => {
 
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden">
                 <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <ChartBarIcon className="h-8 w-8 text-white" />
@@ -775,7 +775,7 @@ const HistoricalPriceAnalytics = ({ medications, onClose }) => {
 // Notification Center
 const NotificationCenter = ({ notifications, onClose, onClearAll }) => {
     return (
-        <div className="fixed top-20 right-8 w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 max-h-[600px] overflow-hidden">
+        <div className="fixed top-20 right-8 w-96 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-white/10 z-50 max-h-[600px] overflow-hidden">
             <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <BellIcon className="h-5 w-5 text-white" />
@@ -897,7 +897,7 @@ const AIInsightsModal = ({ insights, loading, error, onClose }) => {
     if (loading) {
         return (
             <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-2xl w-full p-8">
                     <div className="flex flex-col items-center justify-center py-12">
                         <div className="relative w-20 h-20 mb-6">
                             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 animate-spin" style={{ animationDuration: '3s' }}></div>
@@ -905,8 +905,8 @@ const AIInsightsModal = ({ insights, loading, error, onClose }) => {
                                 <SparklesSolid className="h-8 w-8 text-purple-600 animate-pulse" />
                             </div>
                         </div>
-                        <h3 className="text-xl font-bold text-slate-900 mb-2">Generating AI Insights</h3>
-                        <p className="text-slate-600 text-center">Analyzing brand data, market trends, and patient outcomes...</p>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Generating AI Insights</h3>
+                        <p className="text-slate-600 dark:text-slate-400 text-center">Analyzing brand data, market trends, and patient outcomes...</p>
                     </div>
                 </div>
             </div>
@@ -916,16 +916,16 @@ const AIInsightsModal = ({ insights, loading, error, onClose }) => {
     if (error) {
         return (
             <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-md w-full p-6">
                     <div className="text-center">
-                        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 flex items-center justify-center">
+                        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-500/20 flex items-center justify-center">
                             <ExclamationTriangleIcon className="h-8 w-8 text-red-600" />
                         </div>
-                        <h3 className="text-xl font-bold text-slate-900 mb-2">Unable to Generate Insights</h3>
-                        <p className="text-slate-600 mb-6">{error}</p>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Unable to Generate Insights</h3>
+                        <p className="text-slate-600 dark:text-slate-400 mb-6">{error}</p>
                         <button
                             onClick={onClose}
-                            className="px-6 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors"
+                            className="px-6 py-2 bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-white/15 transition-colors"
                         >
                             Close
                         </button>
@@ -954,7 +954,7 @@ const AIInsightsModal = ({ insights, loading, error, onClose }) => {
 
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
                 {/* Header */}
                 <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 p-6 flex items-center justify-between">
                     <div className="flex items-center gap-4">
@@ -986,7 +986,7 @@ const AIInsightsModal = ({ insights, loading, error, onClose }) => {
                 <div className="overflow-auto max-h-[calc(90vh-120px)] p-6">
                     {/* Top Picks */}
                     <div className="mb-8">
-                        <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                             <FireIcon className="h-5 w-5 text-orange-500" />
                             Top Picks
                         </h3>
@@ -1027,8 +1027,8 @@ const AIInsightsModal = ({ insights, loading, error, onClose }) => {
 
                     {/* Recommendations */}
                     <div className="mb-8">
-                        <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                            <LightBulbIcon className="h-5 w-5 text-purple-500" />
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                            <LightBulbIcon className="h-5 w-5 text-purple-500 dark:text-purple-400" />
                             AI Recommendations
                         </h3>
                         <div className="space-y-3">
@@ -1060,22 +1060,22 @@ const AIInsightsModal = ({ insights, loading, error, onClose }) => {
 
                     {/* Market Analysis */}
                     <div className="mb-8">
-                        <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                            <ChartBarIcon className="h-5 w-5 text-indigo-500" />
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                            <ChartBarIcon className="h-5 w-5 text-indigo-500 dark:text-indigo-400" />
                             Market Analysis
                         </h3>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
-                                <div className="text-2xl font-black text-slate-900">{insights.marketAnalysis.totalBrands}</div>
-                                <div className="text-sm text-slate-600">Total Brands</div>
+                            <div className="bg-white dark:bg-white/5 dark:backdrop-blur-lg border border-slate-200 dark:border-white/10 rounded-xl p-4 text-center">
+                                <div className="text-2xl font-black text-slate-900 dark:text-white">{insights.marketAnalysis.totalBrands}</div>
+                                <div className="text-sm text-slate-600 dark:text-slate-400">Total Brands</div>
                             </div>
-                            <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
-                                <div className="text-2xl font-black text-emerald-600">Rs. {insights.marketAnalysis.averagePrice.toFixed(2)}</div>
-                                <div className="text-sm text-slate-600">Avg. Price</div>
+                            <div className="bg-white dark:bg-white/5 dark:backdrop-blur-lg border border-slate-200 dark:border-white/10 rounded-xl p-4 text-center">
+                                <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400">Rs. {insights.marketAnalysis.averagePrice.toFixed(2)}</div>
+                                <div className="text-sm text-slate-600 dark:text-slate-400">Avg. Price</div>
                             </div>
-                            <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
-                                <div className="text-2xl font-black text-amber-600">{insights.marketAnalysis.averageRating}</div>
-                                <div className="text-sm text-slate-600">Avg. Rating</div>
+                            <div className="bg-white dark:bg-white/5 dark:backdrop-blur-lg border border-slate-200 dark:border-white/10 rounded-xl p-4 text-center">
+                                <div className="text-2xl font-black text-amber-600 dark:text-amber-400">{insights.marketAnalysis.averageRating}</div>
+                                <div className="text-sm text-slate-600 dark:text-slate-400">Avg. Rating</div>
                             </div>
                         </div>
                     </div>
@@ -1094,13 +1094,13 @@ const AIInsightsModal = ({ insights, loading, error, onClose }) => {
                                     <span className="text-slate-600 dark:text-slate-300">Total: <strong>Rs. {insights.selectionAnalysis.totalCost.toFixed(2)}</strong></span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <StarIcon className="h-5 w-5 text-purple-500" />
-                                    <span className="text-slate-600">Avg Rating: <strong>{insights.selectionAnalysis.averageRating}</strong></span>
+                                    <StarIcon className="h-5 w-5 text-purple-500 dark:text-purple-400" />
+                                    <span className="text-slate-600 dark:text-slate-300">Avg Rating: <strong>{insights.selectionAnalysis.averageRating}</strong></span>
                                 </div>
                                 {insights.selectionAnalysis.potentialSavings > 0 && (
                                     <div className="flex items-center gap-2">
                                         <ArrowTrendingDownIcon className="h-5 w-5 text-emerald-500" />
-                                        <span className="text-emerald-600">Savings: <strong>Rs. {insights.selectionAnalysis.potentialSavings.toFixed(2)}</strong></span>
+                                        <span className="text-emerald-600 dark:text-emerald-400">Savings: <strong>Rs. {insights.selectionAnalysis.potentialSavings.toFixed(2)}</strong></span>
                                     </div>
                                 )}
                             </div>
@@ -1109,8 +1109,8 @@ const AIInsightsModal = ({ insights, loading, error, onClose }) => {
                 </div>
 
                 {/* Footer */}
-                <div className="border-t border-slate-200 p-4 bg-slate-50 flex items-center justify-between">
-                    <div className="text-xs text-slate-500">
+                <div className="border-t border-slate-200 dark:border-white/10 p-4 bg-slate-50 dark:bg-white/5 flex items-center justify-between">
+                    <div className="text-xs text-slate-500 dark:text-slate-400">
                         Generated at {new Date(insights.timestamp).toLocaleString()} â€¢ Model v{insights.modelVersion}
                     </div>
                     <button
@@ -1132,12 +1132,12 @@ const QuickActionsBar = ({ selectedBrands, medications, onExport, onShare, onAII
     );
 
     return (
-        <div className="sticky top-4 z-20 mb-6 bg-white/90 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-xl p-4">
+        <div className="sticky top-4 z-20 mb-6 bg-white/90 dark:bg-white/5 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-2xl shadow-xl p-4">
             <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-6">
                     <div className="flex items-center gap-2">
-                        <ShoppingCartIcon className="h-5 w-5 text-blue-600" />
-                        <span className="font-medium text-slate-900">
+                        <ShoppingCartIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                        <span className="font-medium text-slate-900 dark:text-white">
                             {selectedBrands.length} selected
                         </span>
                     </div>
@@ -2402,12 +2402,12 @@ const CrossBrandComparator = () => {
                             onFocus={() => setShowAutocomplete(true)}
                             onBlur={() => setTimeout(() => setShowAutocomplete(false), 200)}
                             onKeyDown={handleSearchKeyDown}
-                            className="w-full pl-12 pr-36 py-4 bg-white/80 backdrop-blur-sm border border-slate-300 rounded-2xl shadow-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-lg"
+                            className="w-full pl-12 pr-36 py-4 bg-white/80 dark:bg-white/5 backdrop-blur-sm border border-slate-300 dark:border-white/10 rounded-2xl shadow-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-lg dark:text-white dark:placeholder-slate-400"
                         />
                         <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center gap-2 z-10">
                             <button
                                 onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-                                className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-blue-600 bg-white/50 backdrop-blur-sm rounded-lg border border-slate-200"
+                                className="flex items-center gap-2 px-4 py-2 text-slate-600 dark:text-slate-300 hover:text-blue-600 bg-white/50 dark:bg-white/10 backdrop-blur-sm rounded-lg border border-slate-200 dark:border-white/10"
                             >
                                 <AdjustmentsHorizontalIcon className="h-5 w-5" />
                                 <span className="text-sm font-medium">Smart Filters</span>
@@ -2427,7 +2427,7 @@ const CrossBrandComparator = () => {
 
                         {/* Autocomplete Dropdown */}
                         {showAutocomplete && (autocompleteSuggestions.length > 0 || isSearchingAPI) && (
-                            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden z-50">
+                            <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-white/10 overflow-hidden z-50">
                                 <div className="p-3 border-b border-slate-100 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-white/5 dark:to-white/5 dark:border-white/10">
                                     <div className="flex items-center justify-between">
                                         <span className="text-xs font-bold text-slate-600 uppercase tracking-wider dark:text-slate-300">
@@ -2501,7 +2501,7 @@ const CrossBrandComparator = () => {
                                         );
                                     })}
                                 </ul>
-                                <div className="p-3 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
+                                <div className="p-3 border-t border-slate-100 dark:border-white/10 bg-slate-50 dark:bg-white/5 flex items-center justify-between">
                                     <span className="text-xs text-slate-500 flex items-center gap-2">
                                         <kbd className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-xs">â†‘</kbd>
                                         <kbd className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-xs">â†“</kbd>
@@ -2656,10 +2656,10 @@ const CrossBrandComparator = () => {
 
                 {/* Loading NMRA database */}
                 {isLoadingMedications && (
-                    <div className="flex flex-col items-center justify-center py-12 bg-white/60 backdrop-blur-sm rounded-2xl border border-amber-200 mb-8">
+                    <div className="flex flex-col items-center justify-center py-12 bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-amber-200 dark:border-white/10 mb-8">
                         <div className="w-12 h-12 border-4 border-amber-200 border-t-amber-600 rounded-full animate-spin mb-4"></div>
-                        <h3 className="text-lg font-bold text-slate-800 mb-1">Loading NMRA Drug Database</h3>
-                        <p className="text-slate-500 text-sm">Loading real Sri Lankan medication prices...</p>
+                        <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-1">Loading NMRA Drug Database</h3>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm">Loading real Sri Lankan medication prices...</p>
                     </div>
                 )}
 
@@ -2673,15 +2673,15 @@ const CrossBrandComparator = () => {
 
                 {/* Loading state while fetching brands from API */}
                 {isFetchingBrands && (
-                    <div className="flex flex-col items-center justify-center py-16 bg-white/60 backdrop-blur-sm rounded-2xl border border-blue-200 mb-8">
+                    <div className="flex flex-col items-center justify-center py-16 bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-blue-200 dark:border-white/10 mb-8">
                         <div className="relative mb-6">
                             <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
                             <div className="absolute inset-0 flex items-center justify-center">
                                 <ScaleIcon className="h-6 w-6 text-blue-600" />
                             </div>
                         </div>
-                        <h3 className="text-lg font-bold text-slate-800 mb-2">Fetching Available Brands</h3>
-                        <p className="text-slate-500 text-sm max-w-md text-center">
+                        <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-2">Fetching Available Brands</h3>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm max-w-md text-center">
                             Querying the cross-brand comparison database for all available brands of this medicine...
                         </p>
                     </div>
@@ -2771,12 +2771,12 @@ const CrossBrandComparator = () => {
                                 ) : (
                                     <div
                                         key={brand.id}
-                                        className="bg-white rounded-xl border border-slate-200 p-6 hover:border-blue-300 transition-all"
+                                            className="bg-white dark:bg-white/5 dark:backdrop-blur-lg rounded-xl border border-slate-200 dark:border-white/10 p-6 hover:border-blue-300 dark:hover:border-white/20 transition-all"
                                     >
                                         <div className="flex items-start justify-between">
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-3 mb-3">
-                                                    <h4 className="text-lg font-bold text-slate-900">{brand.name}</h4>
+                                                        <h4 className="text-lg font-bold text-slate-900 dark:text-white">{brand.name}</h4>
                                                     {brand.isGeneric && (
                                                         <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
                                                             GENERIC
@@ -2786,23 +2786,23 @@ const CrossBrandComparator = () => {
                                                         <HeartSolid className="h-4 w-4 text-red-500" />
                                                     )}
                                                 </div>
-                                                <p className="text-slate-600 mb-4">{brand.description}</p>
+                                                    <p className="text-slate-600 dark:text-slate-400 mb-4">{brand.description}</p>
                                                 <div className="grid grid-cols-4 gap-4 mb-4">
                                                     <div>
-                                                        <p className="text-2xl font-black text-slate-900">Rs. {brand.price}</p>
-                                                        <p className="text-xs text-slate-500">{brand.packSize}</p>
+                                                            <p className="text-2xl font-black text-slate-900 dark:text-white">Rs. {brand.price}</p>
+                                                            <p className="text-xs text-slate-500 dark:text-slate-400">{brand.packSize}</p>
                                                     </div>
                                                     <div className="text-center">
-                                                        <p className="text-sm font-semibold text-slate-900">{brand.rating}/5</p>
-                                                        <p className="text-xs text-slate-500">{brand.reviews} reviews</p>
+                                                            <p className="text-sm font-semibold text-slate-900 dark:text-white">{brand.rating}/5</p>
+                                                            <p className="text-xs text-slate-500 dark:text-slate-400">{brand.reviews} reviews</p>
                                                     </div>
                                                     <div className="text-center">
-                                                        <p className="text-sm font-semibold text-emerald-600">{brand.efficacyScore}%</p>
-                                                        <p className="text-xs text-slate-500">Efficacy</p>
+                                                            <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">{brand.efficacyScore}%</p>
+                                                            <p className="text-xs text-slate-500 dark:text-slate-400">Efficacy</p>
                                                     </div>
                                                     <div className="text-center">
-                                                        <p className="text-sm font-semibold text-blue-600">{brand.patientCompliance}%</p>
-                                                        <p className="text-xs text-slate-500">Compliance</p>
+                                                            <p className="text-sm font-semibold text-blue-600 dark:text-blue-400">{brand.patientCompliance}%</p>
+                                                            <p className="text-xs text-slate-500 dark:text-slate-400">Compliance</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-3">

@@ -37,9 +37,9 @@ const BrandCard = ({ brand, onSelect, onFavoriteToggle, isSelected, setShowDetai
 
     return (
         <div
-            className={`relative group bg-white rounded-2xl border-2 transition-all duration-300 overflow-hidden ${isSelected
+            className={`relative group bg-white dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl border-2 transition-all duration-300 overflow-hidden ${isSelected
                     ? 'border-blue-500 shadow-xl shadow-blue-500/20'
-                    : 'border-slate-200 hover:border-blue-300 hover:shadow-xl'
+                : 'border-slate-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-white/20 hover:shadow-xl'
                 }`}
         >
             {/* Selection indicator */}
@@ -70,12 +70,12 @@ const BrandCard = ({ brand, onSelect, onFavoriteToggle, isSelected, setShowDetai
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
                     <div className="flex-1 pr-20">
-                        <h4 className="text-lg font-bold text-slate-900 mb-1 line-clamp-1">{brand.name}</h4>
-                        <p className="text-sm text-slate-500">{brand.manufacturer}</p>
+                        <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-1 line-clamp-1">{brand.name}</h4>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">{brand.manufacturer}</p>
                     </div>
                     <button
                         onClick={(e) => { e.stopPropagation(); onFavoriteToggle(brand.id); }}
-                        className="absolute top-14 right-3 p-2 rounded-xl bg-slate-100 hover:bg-red-100 transition-colors"
+                        className="absolute top-14 right-3 p-2 rounded-xl bg-slate-100 dark:bg-white/10 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors"
                     >
                         {brand.favorite ? (
                             <HeartSolid className="h-5 w-5 text-red-500" />
@@ -87,8 +87,8 @@ const BrandCard = ({ brand, onSelect, onFavoriteToggle, isSelected, setShowDetai
 
                 {/* Price Section */}
                 <div className="flex items-end gap-3 mb-4">
-                    <div className="text-3xl font-black text-slate-900">Rs. {brand.price}</div>
-                    <div className="text-sm text-slate-500 mb-1">{brand.packSize}</div>
+                    <div className="text-3xl font-black text-slate-900 dark:text-white">Rs. {brand.price}</div>
+                    <div className="text-sm text-slate-500 dark:text-slate-400 mb-1">{brand.packSize}</div>
                     {priceChange && (
                         <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold ${priceChange.isUp ? 'bg-red-100 text-red-600' : 'bg-emerald-100 text-emerald-600'
                             }`}>
@@ -104,33 +104,33 @@ const BrandCard = ({ brand, onSelect, onFavoriteToggle, isSelected, setShowDetai
 
                 {/* Stats Grid */}
                 <div className="grid grid-cols-3 gap-3 mb-4">
-                    <div className="text-center p-3 bg-slate-50 rounded-xl">
+                    <div className="text-center p-3 bg-slate-50 dark:bg-white/5 rounded-xl">
                         <div className="flex items-center justify-center gap-1 mb-1">
                             <StarSolid className="h-4 w-4 text-amber-400" />
-                            <span className="font-bold text-slate-900">{brand.rating}</span>
+                            <span className="font-bold text-slate-900 dark:text-white">{brand.rating}</span>
                         </div>
-                        <p className="text-xs text-slate-500">{brand.reviews} reviews</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">{brand.reviews} reviews</p>
                     </div>
-                    <div className="text-center p-3 bg-slate-50 rounded-xl">
+                    <div className="text-center p-3 bg-slate-50 dark:bg-white/5 rounded-xl">
                         <div className={`text-sm font-bold bg-gradient-to-r ${getEfficacyColor(brand.efficacyScore)} bg-clip-text text-transparent`}>
                             {brand.efficacyScore}%
                         </div>
-                        <p className="text-xs text-slate-500">Efficacy</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">Efficacy</p>
                     </div>
-                    <div className="text-center p-3 bg-slate-50 rounded-xl">
-                        <div className="text-sm font-bold text-blue-600">{brand.patientCompliance}%</div>
-                        <p className="text-xs text-slate-500">Compliance</p>
+                    <div className="text-center p-3 bg-slate-50 dark:bg-white/5 rounded-xl">
+                        <div className="text-sm font-bold text-blue-600 dark:text-blue-400">{brand.patientCompliance}%</div>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">Compliance</p>
                     </div>
                 </div>
 
                 {/* Description */}
-                <p className="text-sm text-slate-600 mb-4 line-clamp-2">{brand.description}</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2">{brand.description}</p>
 
                 {/* Tags */}
                 {brand.tags && brand.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-4">
                         {brand.tags.slice(0, 3).map((tag, idx) => (
-                            <span key={idx} className="px-2 py-1 bg-blue-50 text-blue-600 text-xs font-medium rounded-full">
+                            <span key={idx} className="px-2 py-1 bg-blue-50 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-medium rounded-full">
                                 {tag}
                             </span>
                         ))}
@@ -140,7 +140,7 @@ const BrandCard = ({ brand, onSelect, onFavoriteToggle, isSelected, setShowDetai
                 {/* Side Effects Toggle */}
                 <button
                     onClick={(e) => { e.stopPropagation(); setShowSideEffects(!showSideEffects); }}
-                    className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 mb-4"
+                    className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 mb-4"
                 >
                     {showSideEffects ? (
                         <EyeSlashIcon className="h-4 w-4" />
@@ -151,7 +151,7 @@ const BrandCard = ({ brand, onSelect, onFavoriteToggle, isSelected, setShowDetai
                 </button>
 
                 {showSideEffects && brand.sideEffects && (
-                    <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl">
+                    <div className="mb-4 p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl">
                         <div className="flex items-center gap-2 mb-2">
                             <ExclamationTriangleIcon className="h-4 w-4 text-amber-600" />
                             <span className="text-sm font-semibold text-amber-800">Side Effects</span>
@@ -172,7 +172,7 @@ const BrandCard = ({ brand, onSelect, onFavoriteToggle, isSelected, setShowDetai
                         onClick={(e) => { e.stopPropagation(); onSelect(brand); }}
                         className={`flex-1 py-3 rounded-xl font-bold transition-all ${isSelected
                                 ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg'
-                                : 'bg-slate-100 text-slate-700 hover:bg-blue-500 hover:text-white'
+                            : 'bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-300 hover:bg-blue-500 hover:text-white'
                             }`}
                     >
                         {isSelected ? (
@@ -186,7 +186,7 @@ const BrandCard = ({ brand, onSelect, onFavoriteToggle, isSelected, setShowDetai
                     </button>
                     <button
                         onClick={(e) => { e.stopPropagation(); setShowDetails(brand); }}
-                        className="px-4 py-3 bg-slate-100 text-slate-700 rounded-xl hover:bg-slate-200 transition-colors"
+                        className="px-4 py-3 bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-300 rounded-xl hover:bg-slate-200 dark:hover:bg-white/15 transition-colors"
                     >
                         <InformationCircleIcon className="h-5 w-5" />
                     </button>
@@ -194,7 +194,7 @@ const BrandCard = ({ brand, onSelect, onFavoriteToggle, isSelected, setShowDetai
 
                 {/* Subscription Badge */}
                 {brand.subscription?.available && (
-                    <div className="mt-4 p-3 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl">
+                    <div className="mt-4 p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-white/5 dark:to-white/5 border border-purple-200 dark:border-white/10 rounded-xl">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <SparklesSolid className="h-4 w-4 text-purple-500" />

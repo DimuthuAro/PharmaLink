@@ -16,43 +16,43 @@ const MedicationHeader = ({
         const maxPrice = Math.max(...selectedMedication.brands.map(b => b.price));
 
         return (
-            <div className="mb-8 bg-gradient-to-br from-white to-blue-50/30 border border-slate-200 rounded-2xl shadow-xl overflow-hidden">
+            <div className="mb-8 bg-gradient-to-br from-white to-blue-50/30 dark:from-white/5 dark:to-white/5 border border-slate-200 dark:border-white/10 rounded-2xl shadow-xl dark:backdrop-blur-lg overflow-hidden">
                 <div className="p-6">
                     <div className="flex items-start justify-between flex-wrap gap-4">
                         <div className="flex items-start gap-4">
                             <button
                                 onClick={onBack}
-                                className="mt-1 p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900 transition-all"
+                                className="mt-1 p-2 rounded-xl bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/15 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all"
                             >
                                 <ArrowLeftIcon className="h-5 w-5" />
                             </button>
                             <div>
                                 <div className="flex items-center gap-3 mb-2">
-                                    <h2 className="text-2xl font-black text-slate-900">
+                                    <h2 className="text-2xl font-black text-slate-900 dark:text-white">
                                         {selectedMedication.genericName}
                                     </h2>
                                     <span className="px-3 py-1 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-bold rounded-full">
                                         {selectedMedication.category}
                                     </span>
                                 </div>
-                                <p className="text-slate-600 mb-4">
+                                <p className="text-slate-600 dark:text-slate-400 mb-4">
                                     {selectedMedication.strength} • {selectedMedication.form} • {selectedMedication.therapeuticClass}
                                 </p>
                                 <div className="flex items-center gap-6 flex-wrap">
                                     <div className="flex items-center gap-2">
                                         <BeakerIcon className="h-5 w-5 text-purple-500" />
-                                        <span className="text-sm text-slate-600">
-                                            <span className="font-bold text-slate-900">{selectedMedication.brands.length}</span> brands available
+                                        <span className="text-sm text-slate-600 dark:text-slate-400">
+                                            <span className="font-bold text-slate-900 dark:text-white">{selectedMedication.brands.length}</span> brands available
                                         </span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <StarSolid className="h-5 w-5 text-amber-400" />
-                                        <span className="text-sm text-slate-600">
-                                            <span className="font-bold text-slate-900">{avgRating.toFixed(1)}</span> avg rating
+                                        <span className="text-sm text-slate-600 dark:text-slate-400">
+                                            <span className="font-bold text-slate-900 dark:text-white">{avgRating.toFixed(1)}</span> avg rating
                                         </span>
                                     </div>
-                                    <div className="text-sm text-slate-600">
-                                        Price range: <span className="font-bold text-emerald-600">Rs. {minPrice.toFixed(2)}</span> - <span className="font-bold text-slate-900">Rs. {maxPrice.toFixed(2)}</span>
+                                    <div className="text-sm text-slate-600 dark:text-slate-400">
+                                        Price range: <span className="font-bold text-emerald-600 dark:text-emerald-400">Rs. {minPrice.toFixed(2)}</span> - <span className="font-bold text-slate-900 dark:text-white">Rs. {maxPrice.toFixed(2)}</span>
                                     </div>
                                 </div>
                             </div>
