@@ -1911,14 +1911,14 @@ const InteractionCheck = () => {
                                 {/* Clinical Guidance Card - Enhanced */}
                                 <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-amber-50/90 via-orange-50/80 to-yellow-50/90 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg border border-amber-200/50 dark:border-white/10 rounded-2xl shadow-xl shadow-amber-500/10 dark:shadow-lg p-5">
                                     {/* Decorative Elements */}
-                                    <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-amber-400/20 to-orange-400/20 dark:from-amber-400/5 dark:to-orange-400/5 rounded-full blur-2xl"></div>
-                                    <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-yellow-400/20 to-amber-400/20 dark:from-yellow-400/5 dark:to-amber-400/5 rounded-full blur-xl"></div>
+                                    <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-amber-400/20 to-orange-400/20 dark:from-amber-900/20 dark:to-orange-900/20 rounded-full blur-2xl"></div>
+                                    <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-yellow-400/20 to-amber-400/20 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-full blur-xl"></div>
 
                                     {/* Header */}
                                     <div className="relative flex items-center gap-3 mb-4">
                                         <div className="relative">
-                                            <div className="absolute inset-0 bg-gradient-to-br from-amber-400 to-orange-500 dark:from-amber-500 dark:to-orange-500 rounded-xl blur opacity-40"></div>
-                                            <div className="relative h-12 w-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 dark:from-amber-500 dark:to-orange-600 flex items-center justify-center shadow-lg">
+                                            <div className="absolute inset-0 bg-gradient-to-br from-amber-400 to-orange-500 dark:from-amber-800 dark:to-orange-800 rounded-xl blur opacity-40"></div>
+                                            <div className="relative h-12 w-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 dark:from-amber-800 dark:to-orange-800 flex items-center justify-center shadow-lg">
                                                 <Warning className="h-6 w-6 text-amber-500 dark:text-amber-300" />
                                             </div>
                                     </div>
@@ -1954,7 +1954,7 @@ const InteractionCheck = () => {
                                 {/* Quick Add Popular Drugs - Enhanced */}
                                 <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-blue-50/90 via-indigo-50/80 to-violet-50/90 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg border border-blue-200/50 dark:border-white/10 rounded-2xl shadow-xl shadow-blue-500/10 dark:shadow-lg p-5">
                                     {/* Decorative */}
-                                    <div className="absolute -top-8 -left-8 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 dark:from-blue-400/5 dark:to-indigo-400/5 rounded-full blur-2xl"></div>
+                                    <div className="absolute -top-8 -left-8 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-full blur-2xl"></div>
 
                                     {/* Header */}
                                     <div className="relative flex items-center justify-between mb-4">
@@ -2003,12 +2003,12 @@ const InteractionCheck = () => {
                             {history.length > 0 && (
                                     <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-slate-50/90 via-gray-50/80 to-zinc-50/90 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-2xl shadow-xl shadow-gray-500/10 dark:shadow-lg p-5">
                                         {/* Decorative */}
-                                        <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-gradient-to-br from-gray-400/10 to-slate-400/10 dark:from-gray-400/5 dark:to-slate-400/5 rounded-full blur-2xl"></div>
+                                        <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-gradient-to-br from-gray-400/10 to-slate-400/10 dark:from-gray-800/20 dark:to-slate-800/20 rounded-full blur-2xl"></div>
 
                                         {/* Header */}
                                         <div className="relative flex items-center justify-between mb-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-gray-600 to-slate-700 dark:from-gray-700 dark:to-slate-800 flex items-center justify-center shadow-lg">
+                                                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-gray-600 to-slate-700 dark:from-gray-800 dark:to-slate-900 flex items-center justify-center shadow-lg">
                                                     <Clock className="h-5 w-5 text-white" />
                                                 </div>
                                                 <div>
@@ -2097,10 +2097,10 @@ const InteractionCheck = () => {
 
                                 {/* Pro Tips Card */}
                                 <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-violet-50/90 via-purple-50/80 to-fuchsia-50/90 border border-violet-200/50 rounded-2xl shadow-xl shadow-violet-500/10 p-5">
-                                    <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-gradient-to-br from-violet-400/20 to-purple-400/20 dark:from-violet-400/5 dark:to-purple-400/5 rounded-full blur-2xl"></div>
+                                    <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-gradient-to-br from-violet-400/20 to-purple-400/20 dark:from-violet-900/20 dark:to-purple-900/20 rounded-full blur-2xl"></div>
 
                                     <div className="relative flex items-center gap-3 mb-4">
-                                        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 dark:from-violet-600 dark:to-purple-700 flex items-center justify-center shadow-lg">
+                                        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 dark:from-violet-800 dark:to-purple-800 flex items-center justify-center shadow-lg">
                                             <LightBulbIcon className="h-5 w-5 text-white" />
                                         </div>
                                         <div>
@@ -2134,15 +2134,14 @@ const InteractionCheck = () => {
                     <div className="max-w-4xl mx-auto">
                         {/* Header Card */}
                         <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-slate-50/90 via-gray-50/80 to-zinc-50/90 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-3xl shadow-xl dark:shadow-lg mb-6">
-                            <div className="absolute -top-20 -right-20 w-48 h-48 bg-gradient-to-br from-blue-400/10 to-indigo-400/10 dark:from-blue-400/5 dark:to-indigo-400/5 rounded-full blur-3xl"></div>
-                            <div className="absolute -bottom-20 -left-20 w-48 h-48 bg-gradient-to-br from-purple-400/10 to-pink-400/10 dark:from-purple-400/5 dark:to-pink-400/5 rounded-full blur-3xl"></div>
-
+                            <div className="absolute -top-20 -right-20 w-48 h-48 bg-gradient-to-br from-blue-400/10 to-indigo-400/10 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-full blur-3xl"></div>
+                            <div className="absolute -bottom-20 -left-20 w-48 h-48 bg-gradient-to-br from-purple-400/10 to-pink-400/10 dark:from-purple-900/20 dark:to-pink-900/20 rounded-full blur-3xl"></div>
                             <div className="relative p-6 sm:p-8">
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                     <div className="flex items-center gap-4">
                                         <div className="relative">
-                                            <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 rounded-2xl blur opacity-40"></div>
-                                            <div className="relative h-14 w-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 flex items-center justify-center shadow-lg">
+                                            <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-800 dark:to-indigo-800 rounded-2xl blur opacity-40"></div>
+                                            <div className="relative h-14 w-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-800 dark:to-indigo-800 flex items-center justify-center shadow-lg">
                                                 <Clock className="h-7 w-7 text-white" />
                                             </div>
                                         </div>

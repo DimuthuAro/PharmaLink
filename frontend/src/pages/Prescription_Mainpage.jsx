@@ -4308,9 +4308,9 @@ If any field is not visible or unclear in the text, use null for that field. Ret
                     <aside className="space-y-4">
                         {/* Tips Card */}
                         <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-amber-50/90 via-orange-50/80 to-yellow-50/90 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg border border-amber-200/50 dark:border-white/10 rounded-2xl shadow-xl shadow-amber-500/10 dark:shadow-lg p-5">
-                            <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-amber-400/20 to-orange-400/20 dark:from-amber-400/5 dark:to-orange-400/5 rounded-full blur-2xl"></div>
+                            <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-amber-400/20 to-orange-400/20 dark:from-amber-900/20 dark:to-orange-900/20 rounded-full blur-2xl"></div>
                             <div className="relative flex items-center gap-3 mb-4">
-                                <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 dark:from-amber-500 dark:to-orange-600 flex items-center justify-center shadow-lg">
+                                <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 dark:from-amber-800 dark:to-orange-800 flex items-center justify-center shadow-lg">
                                     <span className="text-2xl">💡</span>
                                 </div>
                                 <div>
@@ -4342,9 +4342,9 @@ If any field is not visible or unclear in the text, use null for that field. Ret
 
                         {/* Quick Actions Card */}
                         <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-blue-50/90 via-indigo-50/80 to-violet-50/90 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg border border-blue-200/50 dark:border-white/10 rounded-2xl shadow-xl shadow-blue-500/10 dark:shadow-lg p-5">
-                            <div className="absolute -top-8 -left-8 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 dark:from-blue-400/5 dark:to-indigo-400/5 rounded-full blur-2xl"></div>
+                            <div className="absolute -top-8 -left-8 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-full blur-2xl"></div>
                             <div className="relative flex items-center gap-3 mb-4">
-                                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 flex items-center justify-center shadow-lg">
+                                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-800 dark:to-indigo-800 flex items-center justify-center shadow-lg">
                                     <Tune sx={{ fontSize: 20, color: '#fff' }} />
                                 </div>
                                 <div>
@@ -4374,9 +4374,9 @@ If any field is not visible or unclear in the text, use null for that field. Ret
                         {/* Stats Card */}
                         {state.parsedData.medications.length > 0 && (
                             <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-emerald-50/90 via-teal-50/80 to-cyan-50/90 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg border border-emerald-200/50 dark:border-white/10 rounded-2xl shadow-xl shadow-emerald-500/10 dark:shadow-lg p-5">
-                                <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-gradient-to-br from-emerald-400/20 to-teal-400/20 dark:from-emerald-400/5 dark:to-teal-400/5 rounded-full blur-2xl"></div>
+                                <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-gradient-to-br from-emerald-400/20 to-teal-400/20 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-full blur-2xl"></div>
                                 <div className="relative flex items-center gap-3 mb-4">
-                                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 dark:from-emerald-600 dark:to-teal-700 flex items-center justify-center shadow-lg">
+                                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 dark:from-emerald-800 dark:to-teal-800 flex items-center justify-center shadow-lg">
                                         <span className="text-xl">📊</span>
                                     </div>
                                     <div>
