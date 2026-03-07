@@ -50,17 +50,17 @@ const BrandCard = ({ brand, onSelect, onFavoriteToggle, isSelected, setShowDetai
             {/* Badges Row */}
             <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
                 {brand.isGeneric && (
-                    <span className="px-2 py-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-xs font-bold rounded-full shadow-lg">
+                    <span className="px-2 py-1 bg-emerald-600 dark:bg-emerald-700 text-white text-xs font-bold rounded-full shadow-lg">
                         GENERIC
                     </span>
                 )}
                 {brand.savings > 0 && (
-                    <span className="px-2 py-1 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-bold rounded-full shadow-lg">
+                    <span className="px-2 py-1 bg-amber-600 dark:bg-amber-700 text-white text-xs font-bold rounded-full shadow-lg">
                         Save Rs. {brand.savings.toFixed(2)}
                     </span>
                 )}
                 {brand.sustainability?.ecoFriendly && (
-                    <span className="px-2 py-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs font-bold rounded-full shadow-lg">
+                    <span className="px-2 py-1 bg-green-600 dark:bg-green-700 text-white text-xs font-bold rounded-full shadow-lg">
                         🌱 Eco
                     </span>
                 )}
@@ -171,7 +171,7 @@ const BrandCard = ({ brand, onSelect, onFavoriteToggle, isSelected, setShowDetai
                     <button
                         onClick={(e) => { e.stopPropagation(); onSelect(brand); }}
                         className={`flex-1 py-3 rounded-xl font-bold transition-all ${isSelected
-                                ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg'
+                                ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg dark:bg-blue-700 dark:hover:bg-blue-800'
                             : 'bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-300 hover:bg-blue-500 hover:text-white'
                             }`}
                     >

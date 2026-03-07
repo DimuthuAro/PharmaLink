@@ -31,7 +31,7 @@ const MedicationHeader = ({
                                     <h2 className="text-2xl font-black text-slate-900 dark:text-white">
                                         {selectedMedication.genericName}
                                     </h2>
-                                    <span className="px-3 py-1 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-bold rounded-full">
+                                    <span className="px-3 py-1 bg-blue-600 dark:bg-blue-700 text-white text-sm font-bold rounded-full">
                                         {selectedMedication.category}
                                     </span>
                                 </div>
@@ -60,7 +60,7 @@ const MedicationHeader = ({
                         <div className="flex items-center gap-3">
                             <button
                                 onClick={onSelectAll}
-                                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all"
+                                className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl hover:shadow-lg transition-all dark:bg-blue-700 dark:hover:bg-blue-800"
                             >
                                 <CheckCircleIcon className="h-5 w-5" />
                                 Select All Brands

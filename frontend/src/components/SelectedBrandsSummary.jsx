@@ -25,7 +25,7 @@ const SelectedBrandsSummary = ({ selectedBrands, totalSavings, handleBrandSelect
                         // Add all selected to cart
                         alert(`Added ${selectedBrands.length} items to cart`);
                     }}
-                    className="px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all flex items-center gap-2"
+                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg hover:shadow-lg transition-all flex items-center gap-2 dark:bg-blue-700 dark:hover:bg-blue-800"
                 >
                     <ShoppingCartIcon className="h-5 w-5" />
                     Add All to Cart

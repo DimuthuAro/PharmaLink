@@ -387,7 +387,7 @@ const PriceAlertSystem = ({ medications, priceAlerts, onAddAlert, onRemoveAlert 
                 </div>
                 <button
                     onClick={() => setShowAddAlert(!showAddAlert)}
-                    className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all dark:from-purple-600 dark:to-pink-700 dark:hover:from-purple-700 dark:hover:to-pink-800"
+                    className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg hover:shadow-lg transition-all dark:bg-purple-700 dark:hover:bg-purple-800"
                 >
                     + Create Alert
                 </button>
@@ -481,7 +481,7 @@ const BatchComparisonMode = ({ medications, batchSelectedMeds, onToggleMed, onCo
                 {batchSelectedMeds.length > 0 && (
                     <button
                         onClick={onCompare}
-                        className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all dark:from-cyan-600 dark:to-blue-700 dark:hover:from-cyan-700 dark:hover:to-blue-800"
+                        className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg hover:shadow-lg transition-all dark:bg-blue-700 dark:hover:bg-blue-800"
                     >
                         Compare {batchSelectedMeds.length} Medications
                     </button>
@@ -1115,7 +1115,7 @@ const AIInsightsModal = ({ insights, loading, error, onClose }) => {
                     </div>
                     <button
                         onClick={onClose}
-                        className="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
+                        className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg hover:shadow-lg transition-all dark:bg-purple-700 dark:hover:bg-purple-800"
                     >
                         Done
                     </button>
@@ -1158,21 +1158,21 @@ const QuickActionsBar = ({ selectedBrands, medications, onExport, onShare, onAII
                 <div className="flex items-center gap-3">
                     <button
                         onClick={onExport}
-                        className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all flex items-center gap-2"
+                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg hover:shadow-lg transition-all flex items-center gap-2 dark:bg-blue-700 dark:hover:bg-blue-800"
                     >
                         <DocumentArrowDownIcon className="h-5 w-5" />
                         Export
                     </button>
                     <button
                         onClick={onShare}
-                        className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all flex items-center gap-2"
+                        className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg hover:shadow-lg transition-all flex items-center gap-2 dark:bg-emerald-700 dark:hover:bg-emerald-800"
                     >
                         <UsersIcon className="h-5 w-5" />
                         Share
                     </button>
                     <button
                         onClick={onAIInsights}
-                        className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all flex items-center gap-2"
+                        className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg hover:shadow-lg transition-all flex items-center gap-2 dark:bg-purple-700 dark:hover:bg-purple-800"
                     >
                         <SparklesSolid className="h-5 w-5" />
                         AI Insights

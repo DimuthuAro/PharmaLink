@@ -253,7 +253,7 @@ const BrandDetailsModal = ({ brand, onClose }) => {
                             </button>
                             <button
                                 onClick={() => alert('Added to comparison!')}
-                                className="px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold rounded-xl hover:shadow-lg transition-all"
+                                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl hover:shadow-lg transition-all dark:bg-blue-700 dark:hover:bg-blue-800"
                             >
                                 Add to Comparison
                             </button>

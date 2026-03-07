@@ -528,7 +528,7 @@ const CrossBrandPredictor = ({ initialDrug1 = '', initialDrug2 = '' }) => {
                     <button
                         type="submit"
                         disabled={loading || !drug1.trim() || !drug2.trim()}
-                        className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+                        className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-6 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg dark:bg-indigo-700 dark:hover:bg-indigo-800"
                     >
                         {loading ? (
                             <>
