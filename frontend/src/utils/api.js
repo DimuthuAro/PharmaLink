@@ -1,14 +1,62 @@
 // src/utils/api.js
 import axios from "axios";
 
-// Use env var if you want, else default to local FastAPI
+// ============ API Base URLs ============
+const AUTH_API = import.meta.env.VITE_AUTH_API || "http://localhost:3000";
+const ADVISORY_API = import.meta.env.VITE_ADVISORY_API || "http://localhost:3002";
+const ML_API = import.meta.env.VITE_ML_API || "http://127.0.0.1:8000";
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
+// ============ Axios Instance ============
 export const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
-// ---- Drug + food lookup ----
+// ============ Generic Request Helpers ============
+export async function authRequest(path, opts) {
+  return apiBaseRequest(AUTH_API, path, opts);
+}
+
+export async function advisoryRequest(path, opts) {
+  return apiBaseRequest(ADVISORY_API, path, opts);
+}
+
+export async function mlRequest(path, opts) {
+  return apiBaseRequest(ML_API, path, opts);
+}
+
+async function apiBaseRequest(base, path, { method = "GET", body, token } = {}) {
+  const headers = {};
+  if (token) headers.Authorization = `Bearer ${token}`;
+  if (body !== undefined) headers["Content-Type"] = "application/json";
+
+  const res = await fetch(`${base}${path}`, {
+    method,
+    headers,
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw data;
+  return data;
+}
+
+export async function apiUpload(path, { formData, token, method = "POST" }) {
+  const headers = {};
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  const res = await fetch(`${ADVISORY_API}${path}`, {
+    method,
+    headers,
+    body: formData,
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw data;
+  return data;
+}
+
+// ============ Drug + Food Lookup ============
 export const fetchDrugs = async (query = "") => {
   const res = await api.get("/drugs", {
     params: { q: query, limit: 50 },
@@ -23,7 +71,7 @@ export const fetchFoods = async (query = "") => {
   return res.data;
 };
 
-// ---- Risk endpoints ----
+// ============ Risk Endpoints ============
 export const checkDrugRisk = async (drugIndex) => {
   const res = await api.post("/drug-risk", { drug_index: drugIndex });
   return res.data;
