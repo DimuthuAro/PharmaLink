@@ -4307,49 +4307,49 @@ If any field is not visible or unclear in the text, use null for that field. Ret
                     {/* Sidebar - 1 column */}
                     <aside className="space-y-4">
                         {/* Tips Card */}
-                        <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-amber-50/90 via-orange-50/80 to-yellow-50/90 border border-amber-200/50 rounded-2xl shadow-xl shadow-amber-500/10 p-5">
-                            <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-amber-400/20 to-orange-400/20 rounded-full blur-2xl"></div>
+                        <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-amber-50/90 via-orange-50/80 to-yellow-50/90 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg border border-amber-200/50 dark:border-white/10 rounded-2xl shadow-xl shadow-amber-500/10 dark:shadow-lg p-5">
+                            <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-amber-400/20 to-orange-400/20 dark:from-amber-400/5 dark:to-orange-400/5 rounded-full blur-2xl"></div>
                             <div className="relative flex items-center gap-3 mb-4">
-                                <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg">
+                                <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 dark:from-amber-500 dark:to-orange-600 flex items-center justify-center shadow-lg">
                                     <span className="text-2xl">💡</span>
                                 </div>
                                 <div>
-                                    <p className="text-sm font-bold text-amber-900">OCR Tips</p>
-                                    <p className="text-xs text-amber-700/70">Better results</p>
+                                    <p className="text-sm font-bold text-amber-900 dark:text-amber-300">OCR Tips</p>
+                                    <p className="text-xs text-amber-700/70 dark:text-amber-400/70">Better results</p>
                                 </div>
                             </div>
                             <div className="relative space-y-3">
-                                <div className="group flex gap-3 p-3 bg-white/60 backdrop-blur-sm rounded-xl border border-amber-200/50 hover:bg-white/80 transition-all">
-                                    <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
+                                <div className="group flex gap-3 p-3 bg-white/60 dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-lg backdrop-blur-sm rounded-xl border border-amber-200/50 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/10 transition-all">
+                                    <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
                                         <PhotoCamera sx={{ fontSize: 18, color: '#92400e' }} />
                                     </div>
-                                    <p className="text-sm text-amber-900">Use clear, well-lit images for best OCR accuracy.</p>
+                                    <p className="text-sm text-amber-900 dark:text-amber-300">Use clear, well-lit images for best OCR accuracy.</p>
                                 </div>
-                                <div className="group flex gap-3 p-3 bg-white/60 backdrop-blur-sm rounded-xl border border-blue-200/50 hover:bg-white/80 transition-all">
-                                    <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                                <div className="group flex gap-3 p-3 bg-white/60 dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-lg backdrop-blur-sm rounded-xl border border-blue-200/50 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/10 transition-all">
+                                    <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                                         <AutoAwesome sx={{ fontSize: 18, color: '#1e40af' }} />
                                     </div>
-                                    <p className="text-sm text-blue-900">Use auto-enhance for low quality images.</p>
+                                    <p className="text-sm text-blue-900 dark:text-blue-300">Use auto-enhance for low quality images.</p>
                                 </div>
-                                <div className="group flex gap-3 p-3 bg-white/60 backdrop-blur-sm rounded-xl border border-purple-200/50 hover:bg-white/80 transition-all">
-                                    <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
+                                <div className="group flex gap-3 p-3 bg-white/60 dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-lg backdrop-blur-sm rounded-xl border border-purple-200/50 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/10 transition-all">
+                                    <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
                                         <ZoomIn sx={{ fontSize: 18, color: '#6b21a8' }} />
                                     </div>
-                                    <p className="text-sm text-purple-900">Zoom in to verify extracted text accuracy.</p>
+                                    <p className="text-sm text-purple-900 dark:text-purple-300">Zoom in to verify extracted text accuracy.</p>
                                 </div>
                             </div>
                         </div>
 
                         {/* Quick Actions Card */}
-                        <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-blue-50/90 via-indigo-50/80 to-violet-50/90 border border-blue-200/50 rounded-2xl shadow-xl shadow-blue-500/10 p-5">
-                            <div className="absolute -top-8 -left-8 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 rounded-full blur-2xl"></div>
+                        <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-blue-50/90 via-indigo-50/80 to-violet-50/90 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg border border-blue-200/50 dark:border-white/10 rounded-2xl shadow-xl shadow-blue-500/10 dark:shadow-lg p-5">
+                            <div className="absolute -top-8 -left-8 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 dark:from-blue-400/5 dark:to-indigo-400/5 rounded-full blur-2xl"></div>
                             <div className="relative flex items-center gap-3 mb-4">
-                                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 flex items-center justify-center shadow-lg">
                                     <Tune sx={{ fontSize: 20, color: '#fff' }} />
                                 </div>
                                 <div>
-                                    <p className="text-sm font-bold text-gray-900">Quick Actions</p>
-                                    <p className="text-xs text-gray-500">Common tasks</p>
+                                    <p className="text-sm font-bold text-gray-900 dark:text-white">Quick Actions</p>
+                                    <p className="text-xs text-gray-500 dark:text-slate-400">Common tasks</p>
                                 </div>
                             </div>
                             <div className="relative space-y-2">
@@ -4362,10 +4362,10 @@ If any field is not visible or unclear in the text, use null for that field. Ret
                                     <button
                                         key={action.label}
                                         onClick={() => navigate(action.path)}
-                                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium bg-white/80 border border-gray-200/50 text-gray-700 hover:border-blue-300 hover:bg-blue-50 hover:shadow-md transition-all"
+                                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium bg-white/80 dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-lg border border-gray-200/50 dark:border-white/10 text-gray-700 dark:text-slate-300 hover:border-blue-300 dark:hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:shadow-md transition-all"
                                     >
                                         <span>{action.label}</span>
-                                        <span className="ml-auto text-gray-400">→</span>
+                                        <span className="ml-auto text-gray-400 dark:text-slate-500">→</span>
                                     </button>
                                 ))}
                             </div>
@@ -4373,33 +4373,33 @@ If any field is not visible or unclear in the text, use null for that field. Ret
 
                         {/* Stats Card */}
                         {state.parsedData.medications.length > 0 && (
-                            <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-emerald-50/90 via-teal-50/80 to-cyan-50/90 border border-emerald-200/50 rounded-2xl shadow-xl shadow-emerald-500/10 p-5">
-                                <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-gradient-to-br from-emerald-400/20 to-teal-400/20 rounded-full blur-2xl"></div>
+                            <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-emerald-50/90 via-teal-50/80 to-cyan-50/90 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg border border-emerald-200/50 dark:border-white/10 rounded-2xl shadow-xl shadow-emerald-500/10 dark:shadow-lg p-5">
+                                <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-gradient-to-br from-emerald-400/20 to-teal-400/20 dark:from-emerald-400/5 dark:to-teal-400/5 rounded-full blur-2xl"></div>
                                 <div className="relative flex items-center gap-3 mb-4">
-                                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
+                                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 dark:from-emerald-600 dark:to-teal-700 flex items-center justify-center shadow-lg">
                                         <span className="text-xl">📊</span>
                                     </div>
                                     <div>
-                                        <p className="text-sm font-bold text-gray-900">Analysis Stats</p>
-                                        <p className="text-xs text-gray-500">Current scan</p>
+                                        <p className="text-sm font-bold text-gray-900 dark:text-white">Analysis Stats</p>
+                                        <p className="text-xs text-gray-500 dark:text-slate-400">Current scan</p>
                                     </div>
                                 </div>
                                 <div className="relative grid grid-cols-2 gap-3">
-                                    <div className="p-3 bg-white/60 rounded-xl text-center">
-                                        <p className="text-2xl font-bold text-emerald-600">{state.parsedData.medications.length}</p>
-                                        <p className="text-xs text-gray-500">Medications</p>
+                                    <div className="p-3 bg-white/60 dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-lg rounded-xl text-center">
+                                        <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{state.parsedData.medications.length}</p>
+                                        <p className="text-xs text-gray-500 dark:text-slate-400">Medications</p>
                                     </div>
-                                    <div className="p-3 bg-white/60 rounded-xl text-center">
-                                        <p className="text-2xl font-bold text-blue-600">{state.parsedData.confidence}%</p>
-                                        <p className="text-xs text-gray-500">Confidence</p>
+                                    <div className="p-3 bg-white/60 dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-lg rounded-xl text-center">
+                                        <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{state.parsedData.confidence}%</p>
+                                        <p className="text-xs text-gray-500 dark:text-slate-400">Confidence</p>
                                     </div>
-                                    <div className="p-3 bg-white/60 rounded-xl text-center">
-                                        <p className="text-2xl font-bold text-purple-600">{state.parsedData.warnings.length}</p>
-                                        <p className="text-xs text-gray-500">Warnings</p>
+                                    <div className="p-3 bg-white/60 dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-lg rounded-xl text-center">
+                                        <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{state.parsedData.warnings.length}</p>
+                                        <p className="text-xs text-gray-500 dark:text-slate-400">Warnings</p>
                                     </div>
-                                    <div className="p-3 bg-white/60 rounded-xl text-center">
-                                        <p className="text-2xl font-bold text-amber-600">{state.parsedData.dosages.length}</p>
-                                        <p className="text-xs text-gray-500">Dosages</p>
+                                    <div className="p-3 bg-white/60 dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-lg rounded-xl text-center">
+                                        <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">{state.parsedData.dosages.length}</p>
+                                        <p className="text-xs text-gray-500 dark:text-slate-400">Dosages</p>
                                     </div>
                                 </div>
                             </div>

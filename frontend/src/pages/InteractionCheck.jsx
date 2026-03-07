@@ -1909,62 +1909,62 @@ const InteractionCheck = () => {
                         {/* Sidebar */}
                         <aside className="space-y-4">
                                 {/* Clinical Guidance Card - Enhanced */}
-                                <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-amber-50/90 via-orange-50/80 to-yellow-50/90 border border-amber-200/50 rounded-2xl shadow-xl shadow-amber-500/10 p-5">
+                                <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-amber-50/90 via-orange-50/80 to-yellow-50/90 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg border border-amber-200/50 dark:border-white/10 rounded-2xl shadow-xl shadow-amber-500/10 dark:shadow-lg p-5">
                                     {/* Decorative Elements */}
-                                    <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-amber-400/20 to-orange-400/20 rounded-full blur-2xl"></div>
-                                    <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-yellow-400/20 to-amber-400/20 rounded-full blur-xl"></div>
+                                    <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-amber-400/20 to-orange-400/20 dark:from-amber-400/5 dark:to-orange-400/5 rounded-full blur-2xl"></div>
+                                    <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-yellow-400/20 to-amber-400/20 dark:from-yellow-400/5 dark:to-amber-400/5 rounded-full blur-xl"></div>
 
                                     {/* Header */}
                                     <div className="relative flex items-center gap-3 mb-4">
                                         <div className="relative">
-                                            <div className="absolute inset-0 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl blur opacity-40"></div>
-                                            <div className="relative h-12 w-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg">
-                                                <Warning className="h-6 w-6 text-amber-500" />
+                                            <div className="absolute inset-0 bg-gradient-to-br from-amber-400 to-orange-500 dark:from-amber-500 dark:to-orange-500 rounded-xl blur opacity-40"></div>
+                                            <div className="relative h-12 w-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 dark:from-amber-500 dark:to-orange-600 flex items-center justify-center shadow-lg">
+                                                <Warning className="h-6 w-6 text-amber-500 dark:text-amber-300" />
                                             </div>
                                     </div>
                                     <div>
-                                            <p className="text-sm font-bold text-amber-900">Clinical Guidance</p>
-                                            <p className="text-xs text-amber-700/70">Important safety notes</p>
+                                            <p className="text-sm font-bold text-amber-900 dark:text-amber-300">Clinical Guidance</p>
+                                            <p className="text-xs text-amber-700/70 dark:text-amber-400/70">Important safety notes</p>
                                         </div>
                                     </div>
 
                                     {/* Guidelines */}
                                     <div className="relative space-y-3">
-                                        <div className="group flex gap-3 p-3 bg-white/60 backdrop-blur-sm rounded-xl border border-amber-200/50 hover:bg-white/80 hover:shadow-md transition-all duration-300">
-                                            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                                <Beaker className="h-5 w-5 text-amber-600" />
+                                        <div className="group flex gap-3 p-3 bg-white/60 dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-lg backdrop-blur-sm rounded-xl border border-amber-200/50 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/10 hover:shadow-md transition-all duration-300">
+                                            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                                <Beaker className="h-5 w-5 text-amber-600 dark:text-amber-400" />
                                             </div>
-                                            <p className="text-sm text-amber-900 leading-relaxed">Always verify results with clinical judgment and professional guidance.</p>
+                                            <p className="text-sm text-amber-900 dark:text-amber-300 leading-relaxed">Always verify results with clinical judgment and professional guidance.</p>
                                         </div>
-                                        <div className="group flex gap-3 p-3 bg-white/60 backdrop-blur-sm rounded-xl border border-blue-200/50 hover:bg-white/80 hover:shadow-md transition-all duration-300">
-                                            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                                <Heart className="h-5 w-5 text-blue-600" />
+                                        <div className="group flex gap-3 p-3 bg-white/60 dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-lg backdrop-blur-sm rounded-xl border border-blue-200/50 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/10 hover:shadow-md transition-all duration-300">
+                                            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                                <Heart className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                                             </div>
-                                            <p className="text-sm text-blue-900 leading-relaxed">Consider patient-specific factors like age, weight, and comorbidities.</p>
+                                            <p className="text-sm text-blue-900 dark:text-blue-300 leading-relaxed">Consider patient-specific factors like age, weight, and comorbidities.</p>
                                         </div>
-                                        <div className="group flex gap-3 p-3 bg-white/60 backdrop-blur-sm rounded-xl border border-purple-200/50 hover:bg-white/80 hover:shadow-md transition-all duration-300">
-                                            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                                <Bookmark className="h-5 w-5 text-purple-600" />
+                                        <div className="group flex gap-3 p-3 bg-white/60 dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-lg backdrop-blur-sm rounded-xl border border-purple-200/50 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/10 hover:shadow-md transition-all duration-300">
+                                            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                                <Bookmark className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                                             </div>
-                                            <p className="text-sm text-purple-900 leading-relaxed">Document all interactions and discuss with healthcare team.</p>
+                                            <p className="text-sm text-purple-900 dark:text-purple-300 leading-relaxed">Document all interactions and discuss with healthcare team.</p>
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Quick Add Popular Drugs - Enhanced */}
-                                <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-blue-50/90 via-indigo-50/80 to-violet-50/90 border border-blue-200/50 rounded-2xl shadow-xl shadow-blue-500/10 p-5">
+                                <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-blue-50/90 via-indigo-50/80 to-violet-50/90 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg border border-blue-200/50 dark:border-white/10 rounded-2xl shadow-xl shadow-blue-500/10 dark:shadow-lg p-5">
                                     {/* Decorative */}
-                                    <div className="absolute -top-8 -left-8 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 rounded-full blur-2xl"></div>
+                                    <div className="absolute -top-8 -left-8 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 dark:from-blue-400/5 dark:to-indigo-400/5 rounded-full blur-2xl"></div>
 
                                     {/* Header */}
                                     <div className="relative flex items-center justify-between mb-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                                            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 flex items-center justify-center shadow-lg">
                                                 <Bolt className="h-5 w-5 text-white" />
                                             </div>
                                             <div>
-                                                <p className="text-sm font-bold text-gray-900">Quick Add</p>
-                                                <p className="text-xs text-gray-500">Popular medications</p>
+                                                <p className="text-sm font-bold text-gray-900 dark:text-white">Quick Add</p>
+                                                <p className="text-xs text-gray-500 dark:text-slate-400">Popular medications</p>
                                             </div>
                                         </div>
                                         <span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider bg-blue-100 text-blue-700 rounded-full">
@@ -1988,8 +1988,8 @@ const InteractionCheck = () => {
                                                 onClick={() => addDrug(drug.name)}
                                                 disabled={drugs.includes(drug.name)}
                                                 className={`group flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${drugs.includes(drug.name)
-                                                    ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg shadow-blue-500/30 cursor-not-allowed'
-                                                    : 'bg-white/80 backdrop-blur-sm border border-gray-200/50 text-gray-700 hover:border-blue-300 hover:bg-blue-50 hover:shadow-md hover:scale-105'
+                                                    ? 'bg-gradient-to-r from-blue-500 to-indigo-500 dark:from-blue-600 dark:to-indigo-700 text-white shadow-lg shadow-blue-500/30 dark:shadow-blue-700/30 cursor-not-allowed'
+                                                    : 'bg-white/80 dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-lg backdrop-blur-sm border border-gray-200/50 dark:border-white/10 text-gray-700 dark:text-slate-300 hover:border-blue-300 dark:hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:shadow-md hover:scale-105'
                                             }`}
                                             >
                                                 <span>{drug.name}</span>
@@ -2001,19 +2001,19 @@ const InteractionCheck = () => {
 
                                 {/* Recent Activity - Enhanced */}
                             {history.length > 0 && (
-                                    <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-slate-50/90 via-gray-50/80 to-zinc-50/90 border border-gray-200/50 rounded-2xl shadow-xl shadow-gray-500/10 p-5">
+                                    <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-slate-50/90 via-gray-50/80 to-zinc-50/90 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-2xl shadow-xl shadow-gray-500/10 dark:shadow-lg p-5">
                                         {/* Decorative */}
-                                        <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-gradient-to-br from-gray-400/10 to-slate-400/10 rounded-full blur-2xl"></div>
+                                        <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-gradient-to-br from-gray-400/10 to-slate-400/10 dark:from-gray-400/5 dark:to-slate-400/5 rounded-full blur-2xl"></div>
 
                                         {/* Header */}
                                         <div className="relative flex items-center justify-between mb-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-gray-600 to-slate-700 flex items-center justify-center shadow-lg">
+                                                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-gray-600 to-slate-700 dark:from-gray-700 dark:to-slate-800 flex items-center justify-center shadow-lg">
                                                     <Clock className="h-5 w-5 text-white" />
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-bold text-gray-900">Recent Checks</p>
-                                                    <p className="text-xs text-gray-500">{history.length} total</p>
+                                                    <p className="text-sm font-bold text-gray-900 dark:text-white">Recent Checks</p>
+                                                    <p className="text-xs text-gray-500 dark:text-slate-400">{history.length} total</p>
                                                 </div>
                                             </div>
                                         <button
@@ -2033,7 +2033,7 @@ const InteractionCheck = () => {
                                             <button
                                                 key={entry.id}
                                                 onClick={() => loadFromHistory(entry)}
-                                                    className="group relative w-full text-left p-3 pl-10 bg-white/60 backdrop-blur-sm rounded-xl border border-gray-200/50 hover:bg-white hover:shadow-md hover:border-blue-200 transition-all duration-300"
+                                                    className="group relative w-full text-left p-3 pl-10 bg-white/60 dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-lg backdrop-blur-sm rounded-xl border border-gray-200/50 dark:border-white/10 hover:bg-white dark:hover:bg-white/10 hover:shadow-md hover:border-blue-200 dark:hover:border-blue-400 transition-all duration-300"
                                             >
                                                     {/* Timeline Dot */}
                                                     <div className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 border-white shadow-md ${entry.result?.severity === 'severe' ? 'bg-red-500' :
@@ -2097,30 +2097,30 @@ const InteractionCheck = () => {
 
                                 {/* Pro Tips Card */}
                                 <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-violet-50/90 via-purple-50/80 to-fuchsia-50/90 border border-violet-200/50 rounded-2xl shadow-xl shadow-violet-500/10 p-5">
-                                    <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-gradient-to-br from-violet-400/20 to-purple-400/20 rounded-full blur-2xl"></div>
+                                    <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-gradient-to-br from-violet-400/20 to-purple-400/20 dark:from-violet-400/5 dark:to-purple-400/5 rounded-full blur-2xl"></div>
 
                                     <div className="relative flex items-center gap-3 mb-4">
-                                        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg">
+                                        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 dark:from-violet-600 dark:to-purple-700 flex items-center justify-center shadow-lg">
                                             <LightBulbIcon className="h-5 w-5 text-white" />
                                         </div>
                                         <div>
-                                            <p className="text-sm font-bold text-gray-900">Pro Tips</p>
-                                            <p className="text-xs text-gray-500">Get the most out of PharmaLink</p>
+                                            <p className="text-sm font-bold text-gray-900 dark:text-white">Pro Tips</p>
+                                            <p className="text-xs text-gray-500 dark:text-slate-400">Get the most out of PharmaLink</p>
                                         </div>
                                     </div>
 
                                     <div className="relative space-y-2 text-xs">
-                                        <div className="flex items-start gap-2 p-2 bg-white/50 rounded-lg">
-                                            <MicrophoneIcon className="h-4 w-4 text-violet-500 flex-shrink-0 mt-0.5" />
-                                            <p className="text-gray-700">Use voice input for hands-free drug entry</p>
+                                        <div className="flex items-start gap-2 p-2 bg-white/50 dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-lg rounded-lg">
+                                            <MicrophoneIcon className="h-4 w-4 text-violet-500 dark:text-violet-400 flex-shrink-0 mt-0.5" />
+                                            <p className="text-gray-700 dark:text-slate-300">Use voice input for hands-free drug entry</p>
                                         </div>
-                                        <div className="flex items-start gap-2 p-2 bg-white/50 rounded-lg">
-                                            <Bookmark className="h-4 w-4 text-violet-500 flex-shrink-0 mt-0.5" />
-                                            <p className="text-gray-700">Save important results for quick access later</p>
+                                        <div className="flex items-start gap-2 p-2 bg-white/50 dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-lg rounded-lg">
+                                            <Bookmark className="h-4 w-4 text-violet-500 dark:text-violet-400 flex-shrink-0 mt-0.5" />
+                                            <p className="text-gray-700 dark:text-slate-300">Save important results for quick access later</p>
                                         </div>
-                                        <div className="flex items-start gap-2 p-2 bg-white/50 rounded-lg">
-                                            <ChartBarIcon className="h-4 w-4 text-violet-500 flex-shrink-0 mt-0.5" />
-                                            <p className="text-gray-700">Switch to Matrix view for multi-drug analysis</p>
+                                        <div className="flex items-start gap-2 p-2 bg-white/50 dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-lg rounded-lg">
+                                            <ChartBarIcon className="h-4 w-4 text-violet-500 dark:text-violet-400 flex-shrink-0 mt-0.5" />
+                                            <p className="text-gray-700 dark:text-slate-300">Switch to Matrix view for multi-drug analysis</p>
                                         </div>
                                     </div>
                             </div>
@@ -2133,24 +2133,24 @@ const InteractionCheck = () => {
                 {activeTab === 'history' && (
                     <div className="max-w-4xl mx-auto">
                         {/* Header Card */}
-                        <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-slate-50/90 via-gray-50/80 to-zinc-50/90 border border-gray-200/50 rounded-3xl shadow-xl mb-6">
-                            <div className="absolute -top-20 -right-20 w-48 h-48 bg-gradient-to-br from-blue-400/10 to-indigo-400/10 rounded-full blur-3xl"></div>
-                            <div className="absolute -bottom-20 -left-20 w-48 h-48 bg-gradient-to-br from-purple-400/10 to-pink-400/10 rounded-full blur-3xl"></div>
+                        <div className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-slate-50/90 via-gray-50/80 to-zinc-50/90 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-3xl shadow-xl dark:shadow-lg mb-6">
+                            <div className="absolute -top-20 -right-20 w-48 h-48 bg-gradient-to-br from-blue-400/10 to-indigo-400/10 dark:from-blue-400/5 dark:to-indigo-400/5 rounded-full blur-3xl"></div>
+                            <div className="absolute -bottom-20 -left-20 w-48 h-48 bg-gradient-to-br from-purple-400/10 to-pink-400/10 dark:from-purple-400/5 dark:to-pink-400/5 rounded-full blur-3xl"></div>
 
                             <div className="relative p-6 sm:p-8">
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                     <div className="flex items-center gap-4">
                                         <div className="relative">
-                                            <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl blur opacity-40"></div>
-                                            <div className="relative h-14 w-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                                            <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 rounded-2xl blur opacity-40"></div>
+                                            <div className="relative h-14 w-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 flex items-center justify-center shadow-lg">
                                                 <Clock className="h-7 w-7 text-white" />
                                             </div>
                                         </div>
                                         <div>
-                                            <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-900 bg-clip-text text-transparent">
+                                            <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-900 dark:from-white dark:via-blue-300 dark:to-indigo-300 bg-clip-text text-transparent">
                                                 Check History
                                             </h2>
-                                            <p className="text-sm text-gray-500 mt-0.5">
+                                            <p className="text-sm text-gray-500 dark:text-slate-400 mt-0.5">
                                                 Your recent interaction checks • Last 20 entries
                                             </p>
                                         </div>
@@ -2158,13 +2158,13 @@ const InteractionCheck = () => {
 
                                     {history.length > 0 && (
                                         <div className="flex items-center gap-3">
-                                            <div className="px-4 py-2 bg-blue-50 rounded-xl">
-                                                <span className="text-2xl font-black text-blue-600">{history.length}</span>
-                                                <span className="text-xs text-blue-500 ml-1">entries</span>
+                                            <div className="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+                                                <span className="text-2xl font-black text-blue-600 dark:text-blue-400">{history.length}</span>
+                                                <span className="text-xs text-blue-500 dark:text-blue-400 ml-1">entries</span>
                                             </div>
                                             <button
                                                 onClick={clearHistory}
-                                                className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-red-600 bg-red-50 rounded-xl hover:bg-red-100 transition-colors"
+                                                className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors"
                                             >
                                                 <Trash className="h-4 w-4" />
                                                 Clear All
@@ -2176,17 +2176,17 @@ const InteractionCheck = () => {
                         </div>
                         
                         {history.length === 0 ? (
-                            <div className="relative overflow-hidden backdrop-blur-xl bg-white/80 border border-gray-200/50 rounded-3xl shadow-xl p-12 text-center">
-                                <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-blue-50/30"></div>
+                            <div className="relative overflow-hidden backdrop-blur-xl bg-white/80 dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-3xl shadow-xl dark:shadow-lg p-12 text-center">
+                                <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-blue-50/30 dark:from-white/5 dark:to-blue-500/5"></div>
                                 <div className="relative">
-                                    <div className="w-20 h-20 mx-auto mb-6 rounded-3xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                                        <Clock className="h-10 w-10 text-gray-400" />
+                                    <div className="w-20 h-20 mx-auto mb-6 rounded-3xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center">
+                                        <Clock className="h-10 w-10 text-gray-400 dark:text-slate-500" />
                                     </div>
-                                    <h3 className="text-xl font-bold text-gray-700 mb-2">No History Yet</h3>
-                                    <p className="text-gray-500 mb-6">Your interaction checks will appear here once you start analyzing medications.</p>
+                                    <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-2">No History Yet</h3>
+                                    <p className="text-gray-500 dark:text-slate-400 mb-6">Your interaction checks will appear here once you start analyzing medications.</p>
                                     <button
                                         onClick={() => setActiveTab('check')}
-                                        className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                                        className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
                                     >
                                         <ShieldCheck className="h-5 w-5" />
                                         Start Checking
