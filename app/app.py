@@ -146,7 +146,7 @@ for c in ["rule_id", "condition", "avoid_drugs", "message"]:
 symptom_drug_reco["symptom"] = symptom_drug_reco["symptom"].astype(str).str.strip().str.lower()
 
 disease_drug_reco = _read_csv(_find_csv("disease_drug_reco.csv", required=True))
-contra_rules = _read_csv(_find_csv("contra_rules.csv", required=True))
+#contra_rules = _read_csv(_find_csv("contra_rules.csv", required=True))
 
 # normalize columns (lower)
 disease_drug_reco.columns = [c.strip().lower() for c in disease_drug_reco.columns]
