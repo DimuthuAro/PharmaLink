@@ -83,12 +83,12 @@ const PremiumLoader = () => (
 
 // Skeleton Loader Component
 const SkeletonLoader = ({ className = "" }) => (
-    <div className={`bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-shimmer rounded ${className}`}></div>
+    <div className={`bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-slate-700 dark:via-slate-800 dark:to-slate-700 animate-shimmer rounded ${className}`}></div>
 );
 
 // Results Skeleton
 const ResultsSkeleton = () => (
-    <div className="relative overflow-hidden backdrop-blur-xl bg-white/90 border border-white/50 rounded-3xl shadow-2xl p-6">
+    <div className="relative overflow-hidden backdrop-blur-xl bg-white/90 dark:bg-slate-900/50 dark:border-white/10 dark:backdrop-blur-lg border border-white/50 rounded-3xl shadow-2xl p-6">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 animate-shimmer"></div>
         <div className="flex items-start gap-4 mb-6">
             <SkeletonLoader className="w-16 h-16 rounded-2xl" />
