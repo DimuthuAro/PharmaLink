@@ -189,7 +189,7 @@ const CostSavingsCalculator = ({ selectedBrands, medication }) => {
     if (selectedBrands.length < 2) return null;
 
     return (
-        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-6 mb-6">
+        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-6 mb-6 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg">
             <div className="flex items-center gap-3 mb-6">
                 <CalculatorIcon className="h-6 w-6 text-emerald-600" />
                 <div>
@@ -204,7 +204,7 @@ const CostSavingsCalculator = ({ selectedBrands, medication }) => {
                     <select
                         value={dosage}
                         onChange={(e) => setDosage(e.target.value)}
-                        className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-white/10 dark:border-white/20 dark:text-white dark:focus:ring-emerald-400"
                     >
                         <option value="1 daily">Once daily</option>
                         <option value="2 daily">Twice daily</option>
@@ -223,7 +223,7 @@ const CostSavingsCalculator = ({ selectedBrands, medication }) => {
                         step="7"
                         value={duration}
                         onChange={(e) => setDuration(parseInt(e.target.value))}
-                        className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
+                        className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer dark:bg-white/20"
                     />
                     <div className="flex justify-between text-xs text-slate-500 mt-1">
                         <span>1 week</span>
@@ -238,15 +238,15 @@ const CostSavingsCalculator = ({ selectedBrands, medication }) => {
                             setDosage('1 daily');
                             setDuration(30);
                         }}
-                        className="w-full px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors"
+                        className="w-full px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors dark:bg-white/10 dark:text-white dark:hover:bg-white/15"
                     >
                         Reset Calculator
                     </button>
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl p-4 border border-slate-200">
-                <h4 className="font-semibold text-slate-900 mb-4">Projected Costs</h4>
+            <div className="bg-white rounded-xl p-4 border border-slate-200 dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-lg">
+                <h4 className="font-semibold text-slate-900 mb-4 dark:text-white">Projected Costs</h4>
                 <div className="space-y-3">
                     {selectedBrands.map((brand) => {
                         const cost = calculateCost(brand);
@@ -327,23 +327,23 @@ const MarketInsights = ({ medications, selectedMedication }) => {
     const insights = getMarketInsights();
 
     return (
-        <div className="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-2xl p-6 mb-6">
+        <div className="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-2xl p-6 mb-6 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg">
             <div className="flex items-center gap-3 mb-6">
-                <LightBulbIcon className="h-6 w-6 text-purple-600" />
+                <LightBulbIcon className="h-6 w-6 text-purple-600 dark:text-purple-400" />
                 <div>
-                    <h3 className="text-lg font-bold text-slate-900">{insights.title}</h3>
-                    <p className="text-sm text-slate-600">Real-time market data</p>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">{insights.title}</h3>
+                    <p className="text-sm text-slate-600 dark:text-slate-300">Real-time market data</p>
                 </div>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {insights.insights.map((insight, idx) => (
-                    <div key={idx} className="bg-white/80 rounded-xl p-4 text-center">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center mx-auto mb-3">
-                            <insight.icon className="h-6 w-6 text-purple-600" />
+                    <div key={idx} className="bg-white/80 rounded-xl p-4 text-center dark:bg-white/5 dark:backdrop-blur-lg dark:border dark:border-white/10">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center mx-auto mb-3 dark:from-purple-500/20 dark:to-pink-500/20">
+                            <insight.icon className="h-6 w-6 text-purple-600 dark:text-purple-400" />
                         </div>
-                        <div className="text-2xl font-bold text-slate-900 mb-1">{insight.value}</div>
-                        <div className="text-sm text-slate-600">{insight.label}</div>
+                        <div className="text-2xl font-bold text-slate-900 mb-1 dark:text-white">{insight.value}</div>
+                        <div className="text-sm text-slate-600 dark:text-slate-300">{insight.label}</div>
                     </div>
                 ))}
             </div>
@@ -376,32 +376,32 @@ const PriceAlertSystem = ({ medications, priceAlerts, onAddAlert, onRemoveAlert 
     };
 
     return (
-        <div className="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-2xl p-6 mb-6">
+        <div className="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-2xl p-6 mb-6 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg">
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                    <BellAlertIcon className="h-6 w-6 text-purple-600" />
+                    <BellAlertIcon className="h-6 w-6 text-purple-600 dark:text-purple-400" />
                     <div>
-                        <h3 className="text-lg font-bold text-slate-900">Price Alert System</h3>
-                        <p className="text-sm text-slate-600">Get notified when prices drop</p>
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">Price Alert System</h3>
+                        <p className="text-sm text-slate-600 dark:text-slate-300">Get notified when prices drop</p>
                     </div>
                 </div>
                 <button
                     onClick={() => setShowAddAlert(!showAddAlert)}
-                    className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
+                    className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all dark:from-purple-600 dark:to-pink-700 dark:hover:from-purple-700 dark:hover:to-pink-800"
                 >
                     + Create Alert
                 </button>
             </div>
 
             {showAddAlert && (
-                <div className="bg-white rounded-xl p-4 mb-4 border border-purple-200">
+                <div className="bg-white rounded-xl p-4 mb-4 border border-purple-200 dark:bg-white/10 dark:border-white/20 dark:backdrop-blur-lg">
                     <div className="grid md:grid-cols-3 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-2">Select Brand</label>
                             <select
                                 value={selectedBrand?.id || ''}
                                 onChange={(e) => setSelectedBrand(allBrands.find(b => b.id === parseInt(e.target.value)))}
-                                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 dark:bg-white/10 dark:border-white/20 dark:text-white dark:focus:ring-purple-400"
                             >
                                 <option value="">Choose a brand...</option>
                                 {allBrands.map(brand => (
@@ -419,7 +419,7 @@ const PriceAlertSystem = ({ medications, priceAlerts, onAddAlert, onRemoveAlert 
                                 value={targetPrice}
                                 onChange={(e) => setTargetPrice(e.target.value)}
                                 placeholder="Enter target price"
-                                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 dark:bg-white/10 dark:border-white/20 dark:text-white dark:placeholder-slate-400 dark:focus:ring-purple-400"
                             />
                         </div>
                         <div className="flex items-end">
@@ -437,9 +437,9 @@ const PriceAlertSystem = ({ medications, priceAlerts, onAddAlert, onRemoveAlert 
             {priceAlerts.length > 0 ? (
                 <div className="space-y-3">
                     {priceAlerts.map(alert => (
-                        <div key={alert.id} className="bg-white rounded-lg p-4 border border-purple-200 flex items-center justify-between">
+                        <div key={alert.id} className="bg-white rounded-lg p-4 border border-purple-200 flex items-center justify-between dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-lg">
                             <div className="flex-1">
-                                <h4 className="font-bold text-slate-900">{alert.brandName}</h4>
+                                <h4 className="font-bold text-slate-900 dark:text-white">{alert.brandName}</h4>
                                 <div className="flex items-center gap-4 mt-1 text-sm">
                                     <span className="text-slate-600">Current: <span className="font-semibold">Rs. {alert.currentPrice}</span></span>
                                     <span className="text-purple-600">Target: <span className="font-bold">Rs. {alert.targetPrice}</span></span>
@@ -469,19 +469,19 @@ const PriceAlertSystem = ({ medications, priceAlerts, onAddAlert, onRemoveAlert 
 // Batch Comparison Mode
 const BatchComparisonMode = ({ medications, batchSelectedMeds, onToggleMed, onCompare }) => {
     return (
-        <div className="bg-gradient-to-br from-cyan-50 to-blue-50 border border-cyan-200 rounded-2xl p-6 mb-6">
+        <div className="bg-gradient-to-br from-cyan-50 to-blue-50 border border-cyan-200 rounded-2xl p-6 mb-6 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg">
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                    <ClipboardDocumentCheckIcon className="h-6 w-6 text-cyan-600" />
+                    <ClipboardDocumentCheckIcon className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
                     <div>
-                        <h3 className="text-lg font-bold text-slate-900">Batch Comparison Mode</h3>
-                        <p className="text-sm text-slate-600">Compare multiple medications at once</p>
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">Batch Comparison Mode</h3>
+                        <p className="text-sm text-slate-600 dark:text-slate-300">Compare multiple medications at once</p>
                     </div>
                 </div>
                 {batchSelectedMeds.length > 0 && (
                     <button
                         onClick={onCompare}
-                        className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
+                        className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all dark:from-cyan-600 dark:to-blue-700 dark:hover:from-cyan-700 dark:hover:to-blue-800"
                     >
                         Compare {batchSelectedMeds.length} Medications
                     </button>
@@ -844,12 +844,12 @@ const PopularAlternatives = ({ medications, selectedMedication }) => {
     if (alternatives.length === 0) return null;
 
     return (
-        <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-6 mb-6">
+        <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-6 mb-6 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg">
             <div className="flex items-center gap-3 mb-6">
-                <FireIcon className="h-6 w-6 text-amber-600" />
+                <FireIcon className="h-6 w-6 text-amber-600 dark:text-amber-400" />
                 <div>
-                    <h3 className="text-lg font-bold text-slate-900">Popular Alternatives</h3>
-                    <p className="text-sm text-slate-600">Other medications in {selectedMedication.category}</p>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">Popular Alternatives</h3>
+                    <p className="text-sm text-slate-600 dark:text-slate-300">Other medications in {selectedMedication.category}</p>
                 </div>
             </div>
 
@@ -858,29 +858,29 @@ const PopularAlternatives = ({ medications, selectedMedication }) => {
                     <button
                         key={med.id}
                         onClick={() => window.location.hash = `medication-${med.id}`}
-                        className="group bg-white rounded-xl p-4 border border-amber-200 hover:border-amber-300 hover:shadow-lg transition-all text-left"
+                        className="group bg-white rounded-xl p-4 border border-amber-200 hover:border-amber-300 hover:shadow-lg transition-all text-left dark:bg-white/5 dark:border-white/10 dark:hover:border-white/20 dark:backdrop-blur-lg dark:hover:backdrop-blur-xl"
                     >
                         <div className="flex items-start justify-between mb-3">
                             <div>
-                                <h4 className="font-bold text-slate-900 group-hover:text-amber-600 transition-colors">
+                                <h4 className="font-bold text-slate-900 group-hover:text-amber-600 transition-colors dark:text-white dark:group-hover:text-amber-400">
                                     {med.genericName}
                                 </h4>
-                                <p className="text-sm text-slate-600">{med.strength}</p>
+                                <p className="text-sm text-slate-600 dark:text-slate-400">{med.strength}</p>
                             </div>
-                            <span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">
+                            <span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full dark:bg-amber-500/20 dark:text-amber-300">
                                 {med.popularity}% popular
                             </span>
                         </div>
-                        <div className="text-sm text-slate-600 mb-3">
+                        <div className="text-sm text-slate-600 dark:text-slate-400 mb-3">
                             {med.brands.length > 0 ? `${med.brands.length} brands from Rs. ${Math.min(...med.brands.map(b => b.price)).toFixed(2)}` : `${med.brands.length} brands`}
                         </div>
                         <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-amber-600 group-hover:text-amber-700">
+                            <span className="text-sm font-medium text-amber-600 group-hover:text-amber-700 dark:text-amber-400 dark:group-hover:text-amber-300">
                                 View alternatives â†’
                             </span>
                             <div className="flex items-center gap-1">
                                 <StarSolid className="h-4 w-4 text-amber-400" />
-                                <span className="text-sm font-semibold">
+                                <span className="text-sm font-semibold dark:text-slate-300">
                                     {(med.brands.reduce((s, b) => s + b.rating, 0) / med.brands.length).toFixed(1)}
                                 </span>
                             </div>
@@ -991,35 +991,35 @@ const AIInsightsModal = ({ insights, loading, error, onClose }) => {
                             Top Picks
                         </h3>
                         <div className="grid md:grid-cols-3 gap-4">
-                            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl p-4">
-                                <span className="text-xs font-bold text-emerald-600 uppercase">Best Value</span>
-                                <h4 className="text-lg font-bold text-slate-900 mt-1">{insights.topPicks.bestValue.name}</h4>
+                            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl p-4 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg">
+                                <span className="text-xs font-bold text-emerald-600 uppercase dark:text-emerald-400">Best Value</span>
+                                <h4 className="text-lg font-bold text-slate-900 mt-1 dark:text-white">{insights.topPicks.bestValue.name}</h4>
                                 <div className="flex items-center gap-2 mt-2">
-                                    <span className="text-emerald-600 font-bold">Rs. {insights.topPicks.bestValue.price}</span>
-                                    <span className="text-slate-400">â€¢</span>
+                                    <span className="text-emerald-600 font-bold dark:text-emerald-400">Rs. {insights.topPicks.bestValue.price}</span>
+                                    <span className="text-slate-400 dark:text-slate-500">â€¢</span>
                                     <span className="flex items-center gap-1">
                                         <StarSolid className="h-4 w-4 text-amber-400" />
-                                        {insights.topPicks.bestValue.rating}
+                                        <span className="dark:text-slate-300">{insights.topPicks.bestValue.rating}</span>
                                     </span>
                                 </div>
                             </div>
-                            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4">
-                                <span className="text-xs font-bold text-blue-600 uppercase">Most Affordable</span>
-                                <h4 className="text-lg font-bold text-slate-900 mt-1">{insights.topPicks.mostAffordable.name}</h4>
+                            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg">
+                                <span className="text-xs font-bold text-blue-600 uppercase dark:text-blue-400">Most Affordable</span>
+                                <h4 className="text-lg font-bold text-slate-900 mt-1 dark:text-white">{insights.topPicks.mostAffordable.name}</h4>
                                 <div className="flex items-center gap-2 mt-2">
-                                    <span className="text-blue-600 font-bold">Rs. {insights.topPicks.mostAffordable.price}</span>
+                                    <span className="text-blue-600 font-bold dark:text-blue-400">Rs. {insights.topPicks.mostAffordable.price}</span>
                                 </div>
                             </div>
-                            <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4">
-                                <span className="text-xs font-bold text-amber-600 uppercase">Highest Rated</span>
-                                <h4 className="text-lg font-bold text-slate-900 mt-1">{insights.topPicks.highestRated.name}</h4>
+                            <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg">
+                                <span className="text-xs font-bold text-amber-600 uppercase dark:text-amber-400">Highest Rated</span>
+                                <h4 className="text-lg font-bold text-slate-900 mt-1 dark:text-white">{insights.topPicks.highestRated.name}</h4>
                                 <div className="flex items-center gap-2 mt-2">
                                     <span className="flex items-center gap-1">
                                         <StarSolid className="h-4 w-4 text-amber-400" />
-                                        <span className="text-amber-600 font-bold">{insights.topPicks.highestRated.rating}</span>
+                                        <span className="text-amber-600 font-bold dark:text-amber-400">{insights.topPicks.highestRated.rating}</span>
                                     </span>
                                     <span className="text-slate-400">â€¢</span>
-                                    <span className="text-slate-600 text-sm">{insights.topPicks.highestRated.reviews} reviews</span>
+                                    <span className="text-slate-600 text-sm dark:text-slate-300">{insights.topPicks.highestRated.reviews} reviews</span>
                                 </div>
                             </div>
                         </div>
@@ -1082,16 +1082,16 @@ const AIInsightsModal = ({ insights, loading, error, onClose }) => {
 
                     {/* Selection Analysis */}
                     {insights.selectionAnalysis && (
-                        <div className="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-5">
-                            <h3 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
-                                <CheckCircleIcon className="h-5 w-5 text-purple-500" />
+                        <div className="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-5 dark:from-white/5 dark:to-white/5 dark:border-white/10 dark:backdrop-blur-lg">
+                            <h3 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2 dark:text-white">
+                                <CheckCircleIcon className="h-5 w-5 text-purple-500 dark:text-purple-400" />
                                 Your Selection
                             </h3>
-                            <p className="text-slate-700 mb-3">{insights.selectionAnalysis.summary}</p>
+                            <p className="text-slate-700 mb-3 dark:text-slate-300">{insights.selectionAnalysis.summary}</p>
                             <div className="flex flex-wrap gap-4">
                                 <div className="flex items-center gap-2">
-                                    <CurrencyDollarIcon className="h-5 w-5 text-purple-500" />
-                                    <span className="text-slate-600">Total: <strong>Rs. {insights.selectionAnalysis.totalCost.toFixed(2)}</strong></span>
+                                    <CurrencyDollarIcon className="h-5 w-5 text-purple-500 dark:text-purple-400" />
+                                    <span className="text-slate-600 dark:text-slate-300">Total: <strong>Rs. {insights.selectionAnalysis.totalCost.toFixed(2)}</strong></span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <StarIcon className="h-5 w-5 text-purple-500" />
@@ -1142,14 +1142,14 @@ const QuickActionsBar = ({ selectedBrands, medications, onExport, onShare, onAII
                         </span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <HeartSolid className="h-5 w-5 text-red-500" />
-                        <span className="font-medium text-slate-900">
+                        <HeartSolid className="h-5 w-5 text-red-500 dark:text-red-400" />
+                        <span className="font-medium text-slate-900 dark:text-white">
                             {favoriteCount} favorites
                         </span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <TagIcon className="h-5 w-5 text-emerald-600" />
-                        <span className="font-medium text-slate-900">
+                        <TagIcon className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                        <span className="font-medium text-slate-900 dark:text-white">
                             {medications.reduce((sum, med) => sum + med.brands.filter(b => b.isGeneric).length, 0)} generics
                         </span>
                     </div>
@@ -2428,9 +2428,9 @@ const CrossBrandComparator = () => {
                         {/* Autocomplete Dropdown */}
                         {showAutocomplete && (autocompleteSuggestions.length > 0 || isSearchingAPI) && (
                             <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden z-50">
-                                <div className="p-3 border-b border-slate-100 bg-gradient-to-r from-emerald-50 to-teal-50">
+                                <div className="p-3 border-b border-slate-100 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-white/5 dark:to-white/5 dark:border-white/10">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                        <span className="text-xs font-bold text-slate-600 uppercase tracking-wider dark:text-slate-300">
                                             ðŸ’Š {autocompleteSuggestions.length} Result{autocompleteSuggestions.length !== 1 ? 's' : ''} Found
                                         </span>
                                         {isSearchingAPI && (
