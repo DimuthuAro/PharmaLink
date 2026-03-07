@@ -28,13 +28,11 @@ import time
 import base64
 import logging
 import joblib
-import easyocr
 import numpy as np
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 from datetime import datetime
-# import missin imports correctly
-import Doa
+
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from pydantic import BaseModel
 from PIL import Image
@@ -219,9 +217,73 @@ class MedicalNEREngine:
 
     @staticmethod
     def _regex_extract(text: str) -> Dict[str, list]:
+        """Regex-based fallback that extracts medical entities when NER model is unavailable."""
+        medications = []
+        dosages = []
+        frequencies = []
+        durations = []
+        routes = []
+        forms = []
+        conditions = []
+
+        seen_meds = set()
+        stop_words = {'the','and','for','with','take','daily','tablet','capsule',
+                       'syrup','injection','patient','doctor','clinic','hospital',
+                       'date','name','address','signature','phone','age','sex',
+                       'male','female','prescription','diagnosis','instructions'}
+
+        # Extract medications
+        med_patterns = [
+            r'(?:Tab(?:let)?|Cap(?:sule)?|Syrup|Inj(?:ection)?|Cream|Oint(?:ment)?|Drop|Susp(?:ension)?)\.?\s+([A-Za-z][A-Za-z\s-]{2,25}?)(?=\s+\d|\s*[-–]|\s*$|\s*\()',
+            r'\b([A-Z][a-z]+(?:cillin|mycin|prazole|olol|sartan|statin|pril|dipine|azole|idine|amine|etine|azepam|ofen|afil|gliptin|formin|vastatin|profen|oxacin|cycline|nazole|tadine|mab|nib|tide|glitazone|lukast|oprazole|setron|sartan|dipine|olol|vastatin|parin|fenac|codone|morphone|tropium|methacin|buterol|sone|olone|asone|nisolone))\b',
+            r'Rx[:\s]+([A-Za-z][A-Za-z\s-]{2,25}?)(?=\s+\d|\s*[-–]|\s*$)',
+            r'^\s*\d+[.)\s]+([A-Z][a-zA-Z\s-]{2,25}?)(?=\s+\d+\s*(?:mg|g|ml|mcg))',
+        ]
+        for pattern in med_patterns:
+            for match in re.findall(pattern, text, re.IGNORECASE | re.MULTILINE):
+                name = match.strip()
+                if len(name) >= 3 and name.lower() not in stop_words and name.lower() not in seen_meds:
+                    seen_meds.add(name.lower())
+                    medications.append({"text": name, "score": 0.70})
+
+        # Extract dosages
+        for match in re.findall(r'(\d+(?:\.\d+)?)\s*(mg|g|ml|mcg|IU)', text, re.IGNORECASE):
+            dosages.append({"text": f"{match[0]} {match[1]}", "score": 0.85})
+
+        # Extract frequencies
+        freq_patterns = [
+            (r'\b(once|twice|thrice|\d+\s*times?)\s*(?:a\s*)?(?:day|daily)\b', 0.80),
+            (r'\b(every\s*\d+\s*(?:hours?|hrs?))\b', 0.80),
+            (r'\b(morning|evening|night|bedtime|before\s+meals?|after\s+meals?)\b', 0.75),
+            (r'\b(OD|BD|TDS|TID|QID|QD|BID|PRN|SOS|HS|AC|PC|STAT)\b', 0.85),
+            (r'\b(\d+[-–]\d+[-–]\d+)\b', 0.80),
+        ]
+        for pattern, score in freq_patterns:
+            for match in re.findall(pattern, text, re.IGNORECASE):
+                val = match.strip()
+                if val:
+                    frequencies.append({"text": val, "score": score})
+
+        # Extract durations
+        for match in re.findall(r'(?:for\s*)(\d+)\s*(days?|weeks?|months?)', text, re.IGNORECASE):
+            durations.append({"text": f"{match[0]} {match[1]}", "score": 0.80})
+
+        # Extract routes
+        for match in re.findall(r'\b(oral(?:ly)?|topical(?:ly)?|intravenous(?:ly)?|intramuscular|subcutaneous|sublingual|rectal(?:ly)?|inhaled?|nasal)\b', text, re.IGNORECASE):
+            routes.append({"text": match, "score": 0.75})
+
+        # Extract forms
+        for match in re.findall(r'\b(tablet|capsule|syrup|injection|cream|ointment|drops?|suspension|inhaler|patch|suppository|powder|solution|gel)s?\b', text, re.IGNORECASE):
+            forms.append({"text": match, "score": 0.80})
+
         return {
-            "medications": [], "dosages": [], "frequencies": [],
-            "durations": [], "routes": [], "forms": [], "conditions": [],
+            "medications": medications,
+            "dosages": dosages,
+            "frequencies": frequencies,
+            "durations": durations,
+            "routes": routes,
+            "forms": forms,
+            "conditions": conditions,
         }
 
 
@@ -251,8 +313,8 @@ class MedicalImagePreprocessor:
 # ══════════════════════════════════════════════════════════════════
 class PrescriptionParser:
     MEDICATION_PATTERNS = [
-        r'(?:Tab(?:let)?\.?|Cap(?:sule)?\.?|Syrup\.?|Inj(?:ection)?\.?)\s*([A-Za-z][A-Za-z\s-]+?)(?:\s+\d+\s*(?:mg|g|ml|mcg))?',
-        r'\b([A-Z][a-z]+(?:cillin|mycin|prazole|olol|sartan|statin|pril|dipine|azole|idine|amine|etine|azepam))\b',
+        r'(?:Tab(?:let)?\.?|Cap(?:sule)?\.?|Syrup\.?|Inj(?:ection)?\.?|Cream\.?|Oint(?:ment)?\.?|Drop\.?|Susp(?:ension)?\.?)\s*([A-Za-z][A-Za-z\s-]+?)(?:\s+\d+\s*(?:mg|g|ml|mcg))?',
+        r'\b([A-Z][a-z]+(?:cillin|mycin|prazole|olol|sartan|statin|pril|dipine|azole|idine|amine|etine|azepam|ofen|formin|profen|oxacin|cycline|nazole|tadine|fenac|codone|sone|olone|asone|nisolone))\b',
         r'Rx[:\s]+([A-Za-z][A-Za-z\s-]+?)(?=\s+\d|\s*$)',
         r'^\s*\d+[.)\s]+([A-Z][a-zA-Z\s-]+?)(?:\s+\d+\s*(?:mg|g|ml))',
     ]
@@ -281,11 +343,44 @@ class PrescriptionParser:
         "SL": "Sublingual", "STAT": "Immediately",
     }
 
+    # Known drug names for validation
+    KNOWN_DRUGS = {
+        'amoxicillin', 'paracetamol', 'acetaminophen', 'ibuprofen', 'aspirin',
+        'metformin', 'omeprazole', 'atorvastatin', 'amlodipine', 'losartan',
+        'lisinopril', 'metoprolol', 'warfarin', 'clopidogrel', 'pantoprazole',
+        'ciprofloxacin', 'azithromycin', 'doxycycline', 'cetirizine', 'loratadine',
+        'diclofenac', 'naproxen', 'prednisolone', 'dexamethasone', 'insulin',
+        'glimepiride', 'rosuvastatin', 'simvastatin', 'levothyroxine', 'furosemide',
+        'ramipril', 'enalapril', 'valsartan', 'telmisartan', 'diltiazem',
+        'verapamil', 'digoxin', 'amiodarone', 'salbutamol', 'montelukast',
+        'tramadol', 'codeine', 'morphine', 'gabapentin', 'pregabalin',
+        'fluoxetine', 'sertraline', 'escitalopram', 'amitriptyline',
+        'alprazolam', 'diazepam', 'lorazepam', 'carbamazepine', 'phenytoin',
+        'erythromycin', 'clarithromycin', 'fluconazole', 'acyclovir',
+        'calcium', 'iron', 'folic acid', 'vitamin',
+    }
+
+    DRUG_SUFFIX_RE = re.compile(
+        r'(?:cillin|mycin|prazole|olol|sartan|statin|pril|dipine|azole|'
+        r'idine|amine|etine|azepam|ofen|formin|profen|oxacin|cycline|'
+        r'nazole|tadine|fenac|codone|sone|olone|asone|nisolone|mab|nib|'
+        r'tide|lukast|setron|parin|buterol|vastatin|afil|gliptin|oprazole)$', re.IGNORECASE
+    )
+
+    STOP_WORDS = {
+        'the','and','for','with','take','daily','tablet','capsule','syrup',
+        'injection','patient','doctor','clinic','hospital','date','name',
+        'address','signature','phone','instructions','warning','note',
+        'diagnosis','prescription','medical','pharmacy','dr','mr','mrs',
+        'ms','rx','refill','quantity','supply','label','dispense',
+    }
+
     @classmethod
     def parse(cls, raw_text: str, ner_entities: Optional[Dict] = None) -> Dict[str, Any]:
         if not raw_text:
             return {"rawText": "", "medications": [], "dosages": [], "frequencies": [], "durations": [], "instructions": [], "warnings": []}
 
+        # --- NER pass ---
         ner_meds, ner_dosages, ner_frequencies, ner_durations = [], [], [], []
         if ner_entities:
             for m in ner_entities.get("medications", []):
@@ -297,45 +392,133 @@ class PrescriptionParser:
             for dur in ner_entities.get("durations", []):
                 ner_durations.append(dur.get("text", "") if isinstance(dur, dict) else str(dur))
 
+        # --- Line-by-line parsing ---
+        line_parsed_meds = cls._parse_lines(raw_text)
+
+        # --- Regex pass ---
         regex_meds = cls._extract_medications(raw_text)
         regex_dosages = cls._extract_patterns(raw_text, cls.DOSAGE_PATTERNS)
         regex_frequencies = cls._extract_patterns(raw_text, cls.FREQUENCY_PATTERNS)
         regex_durations = cls._extract_patterns(raw_text, cls.DURATION_PATTERNS)
         regex_instructions = cls._extract_patterns(raw_text, cls.INSTRUCTION_PATTERNS)
 
-        medication_names, med_scores, seen_lower = [], {}, set()
+        # --- Merge: line-parsed > NER > regex ---
+        structured_meds = []
+        seen_lower = set()
+
+        for lm in line_parsed_meds:
+            if lm["name"].lower() not in seen_lower:
+                seen_lower.add(lm["name"].lower())
+                structured_meds.append(lm)
+
         for m in ner_meds:
             name = m.get("text", "") if isinstance(m, dict) else str(m)
             if name and name.lower() not in seen_lower:
-                medication_names.append(name)
-                med_scores[name] = m.get("score", 0.9) if isinstance(m, dict) else 0.9
                 seen_lower.add(name.lower())
+                score = m.get("score", 0.9) if isinstance(m, dict) else 0.9
+                idx = len(structured_meds)
+                structured_meds.append({
+                    "name": name,
+                    "dosage": ner_dosages[idx] if idx < len(ner_dosages) else "",
+                    "frequency": ner_frequencies[idx] if idx < len(ner_frequencies) else "",
+                    "duration": ner_durations[idx] if idx < len(ner_durations) else "",
+                    "instructions": "",
+                    "confidence": round(score * 100, 2),
+                })
+
         for name in regex_meds:
             if name.lower() not in seen_lower:
-                medication_names.append(name)
-                med_scores[name] = 0.7
                 seen_lower.add(name.lower())
+                structured_meds.append({
+                    "name": name, "dosage": "", "frequency": "", "duration": "",
+                    "instructions": "", "confidence": 70.0,
+                })
 
         all_dosages = list(dict.fromkeys(ner_dosages + regex_dosages))
         all_frequencies = list(dict.fromkeys(ner_frequencies + regex_frequencies))
         all_durations = list(dict.fromkeys(ner_durations + regex_durations))
 
-        expanded = []
-        for f in all_frequencies:
-            upper = f.strip().upper()
-            expanded.append(cls.ABBREVIATION_MAP.get(upper, f))
+        for med in structured_meds:
+            upper = med.get("frequency", "").strip().upper()
+            if upper in cls.ABBREVIATION_MAP:
+                med["frequency"] = cls.ABBREVIATION_MAP[upper]
+
+        expanded = [cls.ABBREVIATION_MAP.get(f.strip().upper(), f) for f in all_frequencies]
         all_frequencies = expanded
 
-        structured_meds = []
-        for i, med in enumerate(medication_names[:10]):
-            structured_meds.append({
-                "name": med,
-                "dosage": all_dosages[i] if i < len(all_dosages) else "",
-                "frequency": all_frequencies[i] if i < len(all_frequencies) else "",
-                "duration": all_durations[i] if i < len(all_durations) else "",
-                "instructions": "",
-                "confidence": round(med_scores.get(med, 0.7) * 100, 2),
+        warnings = cls._generate_warnings(structured_meds[:10], raw_text)
+
+        return {
+            "rawText": raw_text,
+            "medications": structured_meds[:10],
+            "dosages": all_dosages,
+            "frequencies": all_frequencies,
+            "durations": all_durations,
+            "instructions": regex_instructions,
+            "warnings": warnings,
+        }
+
+    @classmethod
+    def _parse_lines(cls, text: str) -> List[Dict]:
+        """Parse each line to co-locate medication name with its dosage, frequency, duration."""
+        results = []
+        lines = text.split('\n')
+        numbered_pattern = re.compile(
+            r'^\s*\d+[.)]\s*'
+            r'(?:(?:Tab(?:let)?|Cap(?:sule)?|Syrup|Inj(?:ection)?)\.?\s+)?'
+            r'([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)?)'
+            r'(?:\s+(\d+(?:\.\d+)?\s*(?:mg|g|ml|mcg|IU)))?'
+            r'(.*)', re.IGNORECASE
+        )
+        line_pattern = re.compile(
+            r'(?:(?:Tab(?:let)?|Cap(?:sule)?|Syrup|Inj(?:ection)?|Cream|Oint(?:ment)?|Drop|Susp(?:ension)?)\.?\s+)?'
+            r'([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)?)'
+            r'(?:\s+(\d+(?:\.\d+)?\s*(?:mg|g|ml|mcg|IU)))?'
+            r'(.*)', re.IGNORECASE
+        )
+        seen = set()
+        for line in lines:
+            line = line.strip()
+            if not line or len(line) < 4:
+                continue
+            match = numbered_pattern.match(line) or line_pattern.match(line)
+            if not match:
+                continue
+            name = (match.group(1) or '').strip()
+            dosage = (match.group(2) or '').strip()
+            rest = (match.group(3) or '').strip()
+            name_lower = name.lower()
+            if not name or len(name) < 3 or name_lower in cls.STOP_WORDS or name_lower in seen:
+                continue
+            is_known = name_lower in cls.KNOWN_DRUGS
+            has_suffix = bool(cls.DRUG_SUFFIX_RE.search(name_lower))
+            if not is_known and not has_suffix and not dosage:
+                continue
+            seen.add(name_lower)
+            frequency = ""
+            for fp in cls.FREQUENCY_PATTERNS:
+                fm = re.search(fp, rest, re.IGNORECASE)
+                if fm:
+                    frequency = fm.group(1) if fm.lastindex else fm.group(0)
+                    break
+            duration = ""
+            dm = re.search(r'(?:for\s*)?(\d+)\s*(days?|weeks?|months?)', rest, re.IGNORECASE)
+            if dm:
+                duration = f"{dm.group(1)} {dm.group(2)}"
+            if not dosage:
+                dose_match = re.search(r'(\d+(?:\.\d+)?)\s*(mg|g|ml|mcg|IU)', rest, re.IGNORECASE)
+                if dose_match:
+                    dosage = f"{dose_match.group(1)} {dose_match.group(2)}"
+            conf = 0.70
+            if is_known: conf += 0.10
+            if has_suffix: conf += 0.05
+            if dosage: conf += 0.05
+            if frequency: conf += 0.05
+            results.append({
+                "name": name, "dosage": dosage, "frequency": frequency,
+                "duration": duration, "instructions": "", "confidence": round(min(conf, 0.99) * 100, 2),
             })
+        return results
 
         warnings = cls._generate_warnings(structured_meds, raw_text)
 

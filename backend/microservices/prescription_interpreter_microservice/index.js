@@ -79,10 +79,14 @@ app.get('/health', async (req, res) => {
 /**
  * Upload and interpret prescription image via ML Service pipeline.
  * Pipeline:  Image → (ML OCR: Donut/EasyOCR) → NER → Structured Output
+ * Accepts field name 'file' or 'prescription' for compatibility with both
+ * the frontend and the ML service.
  */
-app.post('/interpret', upload.single('prescription'), async (req, res) => {
+app.post('/interpret', upload.any(), async (req, res) => {
     try {
-        if (!req.file) {
+        // Accept either 'file' or 'prescription' field name
+        const uploadedFile = req.files && req.files.length > 0 ? req.files[0] : null;
+        if (!uploadedFile) {
             return res.status(400).json({
                 error: 'Invalid input',
                 message: 'Prescription image is required'
@@ -94,16 +98,16 @@ app.post('/interpret', upload.single('prescription'), async (req, res) => {
 
         // Forward image to ML Service /prescription/interpret endpoint
         const mlResult = await forwardToMLService(
-            req.file.path,
-            req.file.originalname,
-            req.file.mimetype,
+            uploadedFile.path,
+            uploadedFile.originalname,
+            uploadedFile.mimetype,
             engine,
             enhanceMode
         );
 
         res.json({
-            filename: req.file.filename,
-            originalname: req.file.originalname,
+            filename: uploadedFile.filename,
+            originalname: uploadedFile.originalname,
             ...mlResult,
             timestamp: new Date().toISOString()
         });
@@ -130,10 +134,39 @@ app.post('/analyze-text', async (req, res) => {
             });
         }
 
+        // Try ML Service first for NER-powered analysis
+        try {
+            const mlResponse = await axios.post(
+                `${ML_SERVICE_URL}/prescription/analyze-text`,
+                { prescriptionText, patientInfo },
+                { timeout: 30000, headers: { 'Content-Type': 'application/json' } }
+            );
+            return res.json({
+                ...mlResponse.data,
+                timestamp: new Date().toISOString()
+            });
+        } catch (mlError) {
+            console.warn('ML Service analyze-text failed, using local fallback:', mlError.message);
+        }
+
+        // Fallback to local analysis
         const analysis = await analyzePrescriptionText(prescriptionText, patientInfo);
 
         res.json({
+            success: true,
             inputText: prescriptionText,
+            interpretation: {
+                rawText: prescriptionText,
+                medications: analysis.medications || [],
+                dosages: [],
+                instructions: [],
+                frequencies: [],
+                durations: [],
+                warnings: [],
+                interactions: [],
+                confidence: 70,
+                totalMedications: (analysis.medications || []).length,
+            },
             analysis,
             timestamp: new Date().toISOString()
         });

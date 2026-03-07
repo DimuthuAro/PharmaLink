@@ -1,0 +1,120 @@
+{
+    "search": [
+        {
+            "name": "Paracetamol",
+            "type": "generic",
+            "genericName": "paracetamol",
+            "class": "PAIN ANALGESICS",
+            "conditions": [
+                "Pain",
+                "Fever",
+                "Headache"
+            ]
+        },
+        {
+            "name": "Paracip 500 Tablet",
+            "type": "brand",
+            "genericName": "paracetamol",
+            "class": "PAIN ANALGESICS",
+            "conditions": [
+                "Pain"
+            ]
+        },
+        {
+            "name": "Metformin",
+            "type": "generic",
+            "genericName": "metformin",
+            "class": "ANTI DIABETIC",
+            "conditions": [
+                "Type 2 Diabetes"
+            ]
+        },
+        {
+            "name": "Atorvastatin",
+            "type": "generic",
+            "genericName": "atorvastatin",
+            "class": "CARDIOVASCULAR",
+            "conditions": [
+                "Hyperlipidemia"
+            ]
+        },
+        {
+            "name": "Amlodipine",
+            "type": "generic",
+            "genericName": "amlodipine",
+            "class": "CARDIOVASCULAR",
+            "conditions": [
+                "Hypertension"
+            ]
+        }
+    ],
+    "identify": {
+        "success": true,
+        "medications": [
+            {
+                "medication": "Metformin",
+                "generic_name": "metformin",
+                "conditions": [
+                    {
+                        "condition": "Type 2 Diabetes",
+                        "confidence": 0.95,
+                        "treatment_area": "Endocrinology"
+                    }
+                ],
+                "source": "curated"
+            },
+            {
+                "medication": "Atorvastatin",
+                "generic_name": "atorvastatin",
+                "conditions": [
+                    {
+                        "condition": "Hyperlipidemia",
+                        "confidence": 0.95,
+                        "treatment_area": "Cardiovascular"
+                    }
+                ],
+                "source": "curated"
+            }
+        ],
+        "combined_conditions": [
+            {
+                "condition": "Type 2 Diabetes",
+                "confidence": 0.95,
+                "treatment_area": "Endocrinology"
+            },
+            {
+                "condition": "Hyperlipidemia",
+                "confidence": 0.95,
+                "treatment_area": "Cardiovascular"
+            }
+        ],
+        "likely_treatment_summary": "Endocrinology: Type 2 Diabetes; Cardiovascular: Hyperlipidemia",
+        "processing_time_ms": 12
+    },
+    "medication_conditions": {
+        "paracetamol": {
+            "medication": "Paracetamol",
+            "generic_name": "paracetamol",
+            "conditions": [
+                {
+                    "condition": "Pain",
+                    "confidence": 0.9,
+                    "treatment_area": "Pain Management"
+                }
+            ],
+            "source": "curated"
+        },
+        "metformin": {
+            "medication": "Metformin",
+            "generic_name": "metformin",
+            "conditions": [
+                {
+                    "condition": "Type 2 Diabetes",
+                    "confidence": 0.95,
+                    "treatment_area": "Endocrinology"
+                }
+            ],
+            "source": "curated"
+        }
+    }
+}
