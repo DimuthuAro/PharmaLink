@@ -384,7 +384,7 @@ export default function PersonalizedMealPlan() {
       import.meta.env.VITE_FASTAPI_BASE || "http://localhost:8000";
     try {
       const res = await fetch(
-        `${FASTAPI}/drugs?q=${encodeURIComponent(qq)}&limit=20`
+        `${FASTAPI}/advisory/drugs?q=${encodeURIComponent(qq)}&limit=20`
       );
       const data = await res.json().catch(() => []);
       return Array.isArray(data) ? data : [];

@@ -25,7 +25,7 @@ function extractAxiosError(err) {
 
 async function checkFoodDrug({ drug_name, food_name, safe_food_limit = 10 }) {
   try {
-    const res = await http.post("/ml-food-drug-risk", {
+    const res = await http.post("/advisory/ml-food-drug-risk", {
       drug_name,
       food_name,
       safe_food_limit: Number(safe_food_limit || 10),
@@ -57,7 +57,7 @@ async function generateMealPlan(payload) {
       throw new Error("drug_names is required for /ml-meal-plan-generate");
     }
 
-    const res = await http.post("/ml-meal-plan-generate", body);
+    const res = await http.post("/advisory/ml-meal-plan-generate", body);
     return res.data;
   } catch (err) {
     const e = extractAxiosError(err);
@@ -76,7 +76,7 @@ async function predictDrugFromImage({ fileBuffer, filename, mimeType, topk = 3 }
     form.append("file", fileBuffer, { filename, contentType: mimeType });
     form.append("topk", String(topk));
 
-    const res = await axios.post(`${FASTAPI_BASE}/predict-drug-from-image`, form, {
+    const res = await axios.post(`${FASTAPI_BASE}/advisory/predict-drug-from-image`, form, {
       headers: form.getHeaders(),
       timeout: 120000,
     });
@@ -90,7 +90,7 @@ async function predictDrugFromImage({ fileBuffer, filename, mimeType, topk = 3 }
 
 async function listDrugs({ q = "", limit = 50 }) {
   try {
-    const res = await http.get("/drugs", {
+    const res = await http.get("/advisory/drugs", {
       params: { q, limit: Number(limit || 50) },
     });
     return res.data;
@@ -112,7 +112,7 @@ async function recommendDrugsFromSymptoms(payload) {
       throw new Error("symptoms is required (non-empty array) for /recommend-drugs-from-symptoms");
     }
 
-    const res = await http.post("/recommend-drugs-from-symptoms", body);
+    const res = await http.post("/advisory/recommend-drugs-from-symptoms", body);
     return res.data; // { results: [...] }
   } catch (err) {
     const e = extractAxiosError(err);

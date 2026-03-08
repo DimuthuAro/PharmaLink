@@ -288,12 +288,12 @@ export default function FoodDrugInteraction() {
 
   // --- fetchers (FastAPI) ---
   const fetchDrugs = useMemo(
-    () => async (q) => await mlRequest(`/drugs?q=${encodeURIComponent(q)}&limit=10`),
+    () => async (q) => await mlRequest(`/advisory/drugs?q=${encodeURIComponent(q)}&limit=10`),
     []
   );
 
   const fetchFoods = useMemo(
-    () => async (q) => await mlRequest(`/foods?q=${encodeURIComponent(q)}&limit=10`),
+    () => async (q) => await mlRequest(`/advisory/foods?q=${encodeURIComponent(q)}&limit=10`),
     []
   );
 

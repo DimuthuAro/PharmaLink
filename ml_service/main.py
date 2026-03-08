@@ -88,6 +88,42 @@ app.add_middleware(
 )
 
 # ---------------------------------------------------------
+# Include Apsara's Food-Drug / MealPlan / DrugImage / SymptomReco endpoints
+# Mounts Apsara's FastAPI app at /advisory prefix to avoid
+# route conflicts with existing /drugs, /foods, / endpoints.
+# ---------------------------------------------------------
+import sys as _sys
+import importlib as _importlib
+
+_project_root = str(Path(__file__).resolve().parent.parent)
+if _project_root not in _sys.path:
+    _sys.path.insert(0, _project_root)
+
+# Add app/ directory so we can import app.py as a module named "app"
+_apsara_app_dir = str(Path(__file__).resolve().parent.parent / "app")
+if _apsara_app_dir not in _sys.path:
+    _sys.path.insert(0, _apsara_app_dir)
+
+try:
+    _apsara_module = _importlib.import_module("app")
+    _apsara_app = _apsara_module.app
+
+    # Mount the entire Apsara app under /advisory prefix
+    app.mount("/advisory", _apsara_app)
+    logger.info("[apsara] Mounted Apsara FastAPI app at /advisory")
+
+    # Mount static files for food images
+    from fastapi.staticfiles import StaticFiles as _SF
+    _static_dir = Path(__file__).resolve().parent.parent / "data" / "static"
+    if _static_dir.exists():
+        app.mount("/static", _SF(directory=str(_static_dir)), name="apsara_static")
+        logger.info(f"[apsara] mounted static files: {_static_dir}")
+    logger.info("[apsara] Food-Drug, MealPlan, DrugImage, SymptomReco endpoints loaded")
+except Exception as _e:
+    logger.warning(f"[apsara] Could not load Apsara endpoints: {_e}")
+    logger.warning("[apsara] Food-Drug Interaction, MealPlan, DrugImage, SymptomReco features unavailable")
+
+# ---------------------------------------------------------
 # Model Loading (Lazy Loading Pattern)
 # ---------------------------------------------------------
 class ModelManager:
