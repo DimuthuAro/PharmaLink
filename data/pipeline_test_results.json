@@ -1,0 +1,289 @@
+{
+  "results": [
+    {
+      "id": "std_001",
+      "description": "Simple 3-drug prescription",
+      "quality_score": 88.125,
+      "found_drugs": [
+        "Amoxicillin",
+        "Ibuprofen",
+        "Omeprazole"
+      ],
+      "expected_drugs": [
+        "Amoxicillin",
+        "Ibuprofen",
+        "Omeprazole"
+      ],
+      "found_dosages": [
+        "500 mg",
+        "400 mg",
+        "20 mg"
+      ],
+      "drug_precision": 1.0,
+      "drug_recall": 1.0,
+      "drug_f1": 1.0,
+      "dosage_recall": 1.0,
+      "time_ms": 16.0,
+      "passed": true
+    },
+    {
+      "id": "std_002",
+      "description": "Prescription with medical abbreviations",
+      "quality_score": 93.80952380952381,
+      "found_drugs": [
+        "Metformin",
+        "Amlodipine",
+        "Omeprazole"
+      ],
+      "expected_drugs": [
+        "Metformin",
+        "Amlodipine",
+        "Omeprazole"
+      ],
+      "found_dosages": [
+        "500 mg",
+        "5 mg",
+        "20 mg"
+      ],
+      "drug_precision": 1.0,
+      "drug_recall": 1.0,
+      "drug_f1": 1.0,
+      "dosage_recall": 1.0,
+      "time_ms": 0.1,
+      "passed": true
+    },
+    {
+      "id": "std_003",
+      "description": "Complex 5-drug prescription",
+      "quality_score": 86.42857142857143,
+      "found_drugs": [
+        "Warfarin",
+        "Lisinopril",
+        "Atorvastatin",
+        "Metformin",
+        "Aspirin"
+      ],
+      "expected_drugs": [
+        "Warfarin",
+        "Lisinopril",
+        "Atorvastatin",
+        "Metformin",
+        "Aspirin"
+      ],
+      "found_dosages": [
+        "5 mg",
+        "10 mg",
+        "20 mg",
+        "850 mg",
+        "75 mg"
+      ],
+      "drug_precision": 1.0,
+      "drug_recall": 1.0,
+      "drug_f1": 1.0,
+      "dosage_recall": 1.0,
+      "time_ms": 0.1,
+      "passed": true
+    },
+    {
+      "id": "std_004",
+      "description": "Prescription with numbered format",
+      "quality_score": 86.12676056338027,
+      "found_drugs": [
+        "Azithromycin",
+        "Paracetamol",
+        "Cetirizine"
+      ],
+      "expected_drugs": [
+        "Azithromycin",
+        "Paracetamol",
+        "Cetirizine"
+      ],
+      "found_dosages": [
+        "500 mg",
+        "10 mg"
+      ],
+      "drug_precision": 1.0,
+      "drug_recall": 1.0,
+      "drug_f1": 1.0,
+      "dosage_recall": 1.0,
+      "time_ms": 0.1,
+      "passed": true
+    },
+    {
+      "id": "std_005",
+      "description": "Syrup and injection forms",
+      "quality_score": 95.28301886792453,
+      "found_drugs": [
+        "Amoxicillin",
+        "Ceftriaxone"
+      ],
+      "expected_drugs": [
+        "Amoxicillin",
+        "Ceftriaxone"
+      ],
+      "found_dosages": [
+        "250 mg",
+        "1 g"
+      ],
+      "drug_precision": 1.0,
+      "drug_recall": 1.0,
+      "drug_f1": 1.0,
+      "dosage_recall": 1.0,
+      "time_ms": 0.1,
+      "passed": true
+    },
+    {
+      "id": "ocr_001",
+      "description": "Mild OCR degradation",
+      "quality_score": 94.70588235294117,
+      "found_drugs": [
+        "Amoxicillin",
+        "Metformin",
+        "Omeprazole"
+      ],
+      "expected_drugs": [
+        "Amoxicillin",
+        "Metformin",
+        "Omeprazole"
+      ],
+      "found_dosages": [
+        "500 mg",
+        "20 mg"
+      ],
+      "drug_precision": 1.0,
+      "drug_recall": 1.0,
+      "drug_f1": 1.0,
+      "dosage_recall": 1.0,
+      "time_ms": 0.1,
+      "passed": true
+    },
+    {
+      "id": "ocr_002",
+      "description": "Moderate OCR degradation (spacing issues)",
+      "quality_score": 85.76923076923077,
+      "found_drugs": [
+        "Amoxicillin",
+        "Ibuprofen",
+        "Omeprazole"
+      ],
+      "expected_drugs": [
+        "Amoxicillin",
+        "Ibuprofen",
+        "Omeprazole"
+      ],
+      "found_dosages": [
+        "500 mg",
+        "400 mg",
+        "20 mg"
+      ],
+      "drug_precision": 1.0,
+      "drug_recall": 1.0,
+      "drug_f1": 1.0,
+      "dosage_recall": 1.0,
+      "time_ms": 0.1,
+      "passed": true
+    },
+    {
+      "id": "ocr_003",
+      "description": "Heavy OCR degradation (partial gibberish)",
+      "quality_score": 93.73333333333333,
+      "found_drugs": [
+        "Amoxicillin",
+        "Metformin"
+      ],
+      "expected_drugs": [
+        "Amoxicillin",
+        "Metformin"
+      ],
+      "found_dosages": [
+        "500 mg",
+        "850 mg"
+      ],
+      "drug_precision": 1.0,
+      "drug_recall": 1.0,
+      "drug_f1": 1.0,
+      "dosage_recall": 1.0,
+      "time_ms": 1.6,
+      "passed": true
+    },
+    {
+      "id": "edge_001",
+      "description": "Empty text",
+      "quality_score": 0.0,
+      "found_drugs": [],
+      "expected_drugs": [],
+      "found_dosages": [],
+      "drug_precision": 0.0,
+      "drug_recall": 1.0,
+      "drug_f1": 0.0,
+      "dosage_recall": 1.0,
+      "time_ms": 0.0,
+      "passed": true
+    },
+    {
+      "id": "edge_002",
+      "description": "Only gibberish",
+      "quality_score": 0.0,
+      "found_drugs": [],
+      "expected_drugs": [],
+      "found_dosages": [],
+      "drug_precision": 0.0,
+      "drug_recall": 1.0,
+      "drug_f1": 0.0,
+      "dosage_recall": 1.0,
+      "time_ms": 0.0,
+      "passed": true
+    },
+    {
+      "id": "edge_003",
+      "description": "Drug names without dosage",
+      "quality_score": 75.0,
+      "found_drugs": [
+        "Metformin",
+        "Omeprazole"
+      ],
+      "expected_drugs": [
+        "Amoxicillin",
+        "Metformin",
+        "Omeprazole"
+      ],
+      "found_dosages": [],
+      "drug_precision": 1.0,
+      "drug_recall": 0.667,
+      "drug_f1": 0.8,
+      "dosage_recall": 1.0,
+      "time_ms": 2.2,
+      "passed": false
+    },
+    {
+      "id": "edge_004",
+      "description": "Single drug",
+      "quality_score": 93.22580645161291,
+      "found_drugs": [
+        "Paracetamol"
+      ],
+      "expected_drugs": [
+        "Paracetamol"
+      ],
+      "found_dosages": [
+        "500 mg"
+      ],
+      "drug_precision": 1.0,
+      "drug_recall": 1.0,
+      "drug_f1": 1.0,
+      "dosage_recall": 1.0,
+      "time_ms": 0.0,
+      "passed": true
+    }
+  ],
+  "summary": {
+    "passed": 11,
+    "total": 12,
+    "avg_drug_recall": 0.972,
+    "avg_drug_precision": 0.833,
+    "avg_drug_f1": 0.817,
+    "avg_dosage_recall": 1.0,
+    "avg_time_ms": 1.7,
+    "target_70pct_met": true
+  }
+}

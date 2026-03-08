@@ -16596,52 +16596,15 @@
     "source": "suffix_pattern",
     "confidence": 0.65
   },
-  "nilvadipine": {
+  "azlocillin": {
     "conditions": [
-      "Hypertension",
-      "Angina"
+      "Bacterial Infection"
     ],
-    "treatment_area": "Calcium Channel Blocker",
+    "treatment_area": "Penicillin Antibiotic",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "barnidipine": {
-    "conditions": [
-      "Hypertension",
-      "Angina"
-    ],
-    "treatment_area": "Calcium Channel Blocker",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "telaprevir": {
-    "conditions": [
-      "Viral Infection",
-      "Herpes"
-    ],
-    "treatment_area": "Antiviral",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "amobarbital": {
-    "conditions": [
-      "Epilepsy",
-      "Insomnia"
-    ],
-    "treatment_area": "Barbiturate",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "bupranolol": {
-    "conditions": [
-      "Hypertension",
-      "Angina"
-    ],
-    "treatment_area": "Beta-Blocker",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "spectinomycin": {
+  "dirithromycin": {
     "conditions": [
       "Bacterial Infection"
     ],
@@ -16649,12 +16612,29 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "fosamprenavir": {
+  "isradipine": {
     "conditions": [
-      "Viral Infection",
-      "Herpes"
+      "Hypertension",
+      "Angina"
     ],
-    "treatment_area": "Antiviral",
+    "treatment_area": "Calcium Channel Blocker",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "benzylpenicillin": {
+    "conditions": [
+      "Bacterial Infection"
+    ],
+    "treatment_area": "Penicillin Antibiotic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "etidocaine": {
+    "conditions": [
+      "Local Anesthesia",
+      "Pain"
+    ],
+    "treatment_area": "Local Anesthetic",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
@@ -16668,31 +16648,6 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "phenformin": {
-    "conditions": [
-      "Type 2 Diabetes"
-    ],
-    "treatment_area": "Biguanide",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "afatinib": {
-    "conditions": [
-      "Cancer"
-    ],
-    "treatment_area": "Kinase Inhibitor",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "cyclizine": {
-    "conditions": [
-      "Allergy",
-      "Allergic Rhinitis"
-    ],
-    "treatment_area": "Antihistamine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
   "arotinolol": {
     "conditions": [
       "Hypertension",
@@ -16702,22 +16657,65 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "oxprenolol": {
+  "carprofen": {
     "conditions": [
-      "Hypertension",
-      "Angina"
+      "Pain",
+      "Inflammation",
+      "Fever"
     ],
-    "treatment_area": "Beta-Blocker",
+    "treatment_area": "NSAID",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "bromazepam": {
+  "simeprevir": {
     "conditions": [
-      "Anxiety",
-      "Insomnia",
-      "Seizure"
+      "Viral Infection",
+      "Herpes"
     ],
-    "treatment_area": "Benzodiazepine",
+    "treatment_area": "Antiviral",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "mezlocillin": {
+    "conditions": [
+      "Bacterial Infection"
+    ],
+    "treatment_area": "Penicillin Antibiotic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "ribostamycin": {
+    "conditions": [
+      "Bacterial Infection"
+    ],
+    "treatment_area": "Macrolide / Aminoglycoside",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "velpatasvir": {
+    "conditions": [
+      "Viral Infection",
+      "Herpes"
+    ],
+    "treatment_area": "Antiviral",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "chloroprocaine": {
+    "conditions": [
+      "Local Anesthesia",
+      "Pain"
+    ],
+    "treatment_area": "Local Anesthetic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "lumiracoxib": {
+    "conditions": [
+      "Arthritis",
+      "Pain"
+    ],
+    "treatment_area": "COX-2 Inhibitor",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
@@ -16729,7 +16727,825 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
+  "grazoprevir": {
+    "conditions": [
+      "Viral Infection",
+      "Herpes"
+    ],
+    "treatment_area": "Antiviral",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "oxymetholone": {
+    "conditions": [
+      "Inflammation",
+      "Autoimmune Disease"
+    ],
+    "treatment_area": "Corticosteroid",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "boceprevir": {
+    "conditions": [
+      "Viral Infection",
+      "Herpes"
+    ],
+    "treatment_area": "Antiviral",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "zafirlukast": {
+    "conditions": [
+      "Asthma",
+      "Allergic Rhinitis"
+    ],
+    "treatment_area": "Leukotriene Antagonist",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "telithromycin": {
+    "conditions": [
+      "Bacterial Infection"
+    ],
+    "treatment_area": "Macrolide / Aminoglycoside",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "cyclothiazide": {
+    "conditions": [
+      "Hypertension",
+      "Edema"
+    ],
+    "treatment_area": "Thiazide Diuretic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "camazepam": {
+    "conditions": [
+      "Anxiety",
+      "Insomnia",
+      "Seizure"
+    ],
+    "treatment_area": "Benzodiazepine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "pranlukast": {
+    "conditions": [
+      "Asthma",
+      "Allergic Rhinitis"
+    ],
+    "treatment_area": "Leukotriene Antagonist",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "trovafloxacin": {
+    "conditions": [
+      "Bacterial Infection",
+      "UTI"
+    ],
+    "treatment_area": "Fluoroquinolone",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "zaltoprofen": {
+    "conditions": [
+      "Pain",
+      "Inflammation",
+      "Fever"
+    ],
+    "treatment_area": "NSAID",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "lormetazepam": {
+    "conditions": [
+      "Anxiety",
+      "Insomnia",
+      "Seizure"
+    ],
+    "treatment_area": "Benzodiazepine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "elvitegravir": {
+    "conditions": [
+      "Viral Infection",
+      "Herpes"
+    ],
+    "treatment_area": "Antiviral",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "clevidipine": {
+    "conditions": [
+      "Hypertension",
+      "Angina"
+    ],
+    "treatment_area": "Calcium Channel Blocker",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "isoconazole": {
+    "conditions": [
+      "Fungal Infection"
+    ],
+    "treatment_area": "Azole Antifungal",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "dactinomycin": {
+    "conditions": [
+      "Bacterial Infection"
+    ],
+    "treatment_area": "Macrolide / Aminoglycoside",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "brigatinib": {
+    "conditions": [
+      "Cancer"
+    ],
+    "treatment_area": "Kinase Inhibitor",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "hexetidine": {
+    "conditions": [
+      "GERD",
+      "Peptic Ulcer"
+    ],
+    "treatment_area": "H2 Blocker",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "hydroflumethiazide": {
+    "conditions": [
+      "Hypertension",
+      "Edema"
+    ],
+    "treatment_area": "Thiazide Diuretic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "oseltamivir": {
+    "conditions": [
+      "Viral Infection",
+      "Herpes"
+    ],
+    "treatment_area": "Antiviral",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "ditazole": {
+    "conditions": [
+      "Fungal Infection"
+    ],
+    "treatment_area": "Azole Antifungal",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "dyphylline": {
+    "conditions": [
+      "Asthma",
+      "COPD"
+    ],
+    "treatment_area": "Methylxanthine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "delorazepam": {
+    "conditions": [
+      "Anxiety",
+      "Insomnia",
+      "Seizure"
+    ],
+    "treatment_area": "Benzodiazepine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "metacycline": {
+    "conditions": [
+      "Bacterial Infection",
+      "Acne"
+    ],
+    "treatment_area": "Tetracycline",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "chlorothiazide": {
+    "conditions": [
+      "Hypertension",
+      "Edema"
+    ],
+    "treatment_area": "Thiazide Diuretic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "perphenazine": {
+    "conditions": [
+      "Allergy",
+      "Allergic Rhinitis"
+    ],
+    "treatment_area": "Antihistamine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "manidipine": {
+    "conditions": [
+      "Hypertension",
+      "Angina"
+    ],
+    "treatment_area": "Calcium Channel Blocker",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "trandolapril": {
+    "conditions": [
+      "Hypertension",
+      "Heart Failure"
+    ],
+    "treatment_area": "ACE Inhibitor",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "lopinavir": {
+    "conditions": [
+      "Viral Infection",
+      "Herpes"
+    ],
+    "treatment_area": "Antiviral",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "propoxycaine": {
+    "conditions": [
+      "Local Anesthesia",
+      "Pain"
+    ],
+    "treatment_area": "Local Anesthetic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "spectinomycin": {
+    "conditions": [
+      "Bacterial Infection"
+    ],
+    "treatment_area": "Macrolide / Aminoglycoside",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "oxitriptan": {
+    "conditions": [
+      "Migraine"
+    ],
+    "treatment_area": "Triptan",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "chlortetracycline": {
+    "conditions": [
+      "Bacterial Infection",
+      "Acne"
+    ],
+    "treatment_area": "Tetracycline",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "alprenolol": {
+    "conditions": [
+      "Hypertension",
+      "Angina"
+    ],
+    "treatment_area": "Beta-Blocker",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "quazepam": {
+    "conditions": [
+      "Anxiety",
+      "Insomnia",
+      "Seizure"
+    ],
+    "treatment_area": "Benzodiazepine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "alosetron": {
+    "conditions": [
+      "Nausea",
+      "Vomiting"
+    ],
+    "treatment_area": "5-HT3 Antagonist",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "sulconazole": {
+    "conditions": [
+      "Fungal Infection"
+    ],
+    "treatment_area": "Azole Antifungal",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "clomocycline": {
+    "conditions": [
+      "Bacterial Infection",
+      "Acne"
+    ],
+    "treatment_area": "Tetracycline",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "practolol": {
+    "conditions": [
+      "Hypertension",
+      "Angina"
+    ],
+    "treatment_area": "Beta-Blocker",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "secobarbital": {
+    "conditions": [
+      "Epilepsy",
+      "Insomnia"
+    ],
+    "treatment_area": "Barbiturate",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "paromomycin": {
+    "conditions": [
+      "Bacterial Infection"
+    ],
+    "treatment_area": "Macrolide / Aminoglycoside",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "methyclothiazide": {
+    "conditions": [
+      "Hypertension",
+      "Edema"
+    ],
+    "treatment_area": "Thiazide Diuretic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "oxtriphylline": {
+    "conditions": [
+      "Asthma",
+      "COPD"
+    ],
+    "treatment_area": "Methylxanthine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "brexpiprazole": {
+    "conditions": [
+      "Fungal Infection"
+    ],
+    "treatment_area": "Azole Antifungal",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "acebutolol": {
+    "conditions": [
+      "Hypertension",
+      "Angina"
+    ],
+    "treatment_area": "Beta-Blocker",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
   "periciazine": {
+    "conditions": [
+      "Allergy",
+      "Allergic Rhinitis"
+    ],
+    "treatment_area": "Antihistamine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "rimexolone": {
+    "conditions": [
+      "Inflammation",
+      "Autoimmune Disease"
+    ],
+    "treatment_area": "Corticosteroid",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "sulfathiazole": {
+    "conditions": [
+      "Fungal Infection"
+    ],
+    "treatment_area": "Azole Antifungal",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "triflupromazine": {
+    "conditions": [
+      "Allergy",
+      "Allergic Rhinitis"
+    ],
+    "treatment_area": "Antihistamine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "trichlormethiazide": {
+    "conditions": [
+      "Hypertension",
+      "Edema"
+    ],
+    "treatment_area": "Thiazide Diuretic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "pramocaine": {
+    "conditions": [
+      "Local Anesthesia",
+      "Pain"
+    ],
+    "treatment_area": "Local Anesthetic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "paritaprevir": {
+    "conditions": [
+      "Viral Infection",
+      "Herpes"
+    ],
+    "treatment_area": "Antiviral",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "pentobarbital": {
+    "conditions": [
+      "Epilepsy",
+      "Insomnia"
+    ],
+    "treatment_area": "Barbiturate",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "bopindolol": {
+    "conditions": [
+      "Hypertension",
+      "Angina"
+    ],
+    "treatment_area": "Beta-Blocker",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "procaine": {
+    "conditions": [
+      "Local Anesthesia",
+      "Pain"
+    ],
+    "treatment_area": "Local Anesthetic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "asunaprevir": {
+    "conditions": [
+      "Viral Infection",
+      "Herpes"
+    ],
+    "treatment_area": "Antiviral",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "hexobarbital": {
+    "conditions": [
+      "Epilepsy",
+      "Insomnia"
+    ],
+    "treatment_area": "Barbiturate",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "nicardipine": {
+    "conditions": [
+      "Hypertension",
+      "Angina"
+    ],
+    "treatment_area": "Calcium Channel Blocker",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "mequitazine": {
+    "conditions": [
+      "Allergy",
+      "Allergic Rhinitis"
+    ],
+    "treatment_area": "Antihistamine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "troleandomycin": {
+    "conditions": [
+      "Bacterial Infection"
+    ],
+    "treatment_area": "Macrolide / Aminoglycoside",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "bupranolol": {
+    "conditions": [
+      "Hypertension",
+      "Angina"
+    ],
+    "treatment_area": "Beta-Blocker",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "imatinib": {
+    "conditions": [
+      "Cancer"
+    ],
+    "treatment_area": "Kinase Inhibitor",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "elbasvir": {
+    "conditions": [
+      "Viral Infection",
+      "Herpes"
+    ],
+    "treatment_area": "Antiviral",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "enviomycin": {
+    "conditions": [
+      "Bacterial Infection"
+    ],
+    "treatment_area": "Macrolide / Aminoglycoside",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "phendimetrazine": {
+    "conditions": [
+      "Allergy",
+      "Allergic Rhinitis"
+    ],
+    "treatment_area": "Antihistamine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "azidocillin": {
+    "conditions": [
+      "Bacterial Infection"
+    ],
+    "treatment_area": "Penicillin Antibiotic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "phenmetrazine": {
+    "conditions": [
+      "Allergy",
+      "Allergic Rhinitis"
+    ],
+    "treatment_area": "Antihistamine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "frovatriptan": {
+    "conditions": [
+      "Migraine"
+    ],
+    "treatment_area": "Triptan",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "tropisetron": {
+    "conditions": [
+      "Nausea",
+      "Vomiting"
+    ],
+    "treatment_area": "5-HT3 Antagonist",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "olmesartan": {
+    "conditions": [
+      "Hypertension"
+    ],
+    "treatment_area": "ARB",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "tasosartan": {
+    "conditions": [
+      "Hypertension"
+    ],
+    "treatment_area": "ARB",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "oxybuprocaine": {
+    "conditions": [
+      "Local Anesthesia",
+      "Pain"
+    ],
+    "treatment_area": "Local Anesthetic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "viloxazine": {
+    "conditions": [
+      "Allergy",
+      "Allergic Rhinitis"
+    ],
+    "treatment_area": "Antihistamine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "tipranavir": {
+    "conditions": [
+      "Viral Infection",
+      "Herpes"
+    ],
+    "treatment_area": "Antiviral",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "thiabendazole": {
+    "conditions": [
+      "Fungal Infection"
+    ],
+    "treatment_area": "Azole Antifungal",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "mesoridazine": {
+    "conditions": [
+      "Allergy",
+      "Allergic Rhinitis"
+    ],
+    "treatment_area": "Antihistamine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "terconazole": {
+    "conditions": [
+      "Fungal Infection"
+    ],
+    "treatment_area": "Azole Antifungal",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "sulfaphenazole": {
+    "conditions": [
+      "Fungal Infection"
+    ],
+    "treatment_area": "Azole Antifungal",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "ombitasvir": {
+    "conditions": [
+      "Viral Infection",
+      "Herpes"
+    ],
+    "treatment_area": "Antiviral",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "nisoldipine": {
+    "conditions": [
+      "Hypertension",
+      "Angina"
+    ],
+    "treatment_area": "Calcium Channel Blocker",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "fluocortolone": {
+    "conditions": [
+      "Inflammation",
+      "Autoimmune Disease"
+    ],
+    "treatment_area": "Corticosteroid",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "voxilaprevir": {
+    "conditions": [
+      "Viral Infection",
+      "Herpes"
+    ],
+    "treatment_area": "Antiviral",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "methylphenobarbital": {
+    "conditions": [
+      "Epilepsy",
+      "Insomnia"
+    ],
+    "treatment_area": "Barbiturate",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "plicamycin": {
+    "conditions": [
+      "Bacterial Infection"
+    ],
+    "treatment_area": "Macrolide / Aminoglycoside",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "articaine": {
+    "conditions": [
+      "Local Anesthesia",
+      "Pain"
+    ],
+    "treatment_area": "Local Anesthetic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "medrysone": {
+    "conditions": [
+      "Inflammation",
+      "Autoimmune Disease"
+    ],
+    "treatment_area": "Corticosteroid",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "cilastatin": {
+    "conditions": [
+      "Hyperlipidemia",
+      "High Cholesterol"
+    ],
+    "treatment_area": "Statin",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "pibrentasvir": {
+    "conditions": [
+      "Viral Infection",
+      "Herpes"
+    ],
+    "treatment_area": "Antiviral",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "cyclacillin": {
+    "conditions": [
+      "Bacterial Infection"
+    ],
+    "treatment_area": "Penicillin Antibiotic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "paramethasone": {
+    "conditions": [
+      "Inflammation",
+      "Autoimmune Disease"
+    ],
+    "treatment_area": "Corticosteroid",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "telaprevir": {
+    "conditions": [
+      "Viral Infection",
+      "Herpes"
+    ],
+    "treatment_area": "Antiviral",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "valbenazine": {
+    "conditions": [
+      "Allergy",
+      "Allergic Rhinitis"
+    ],
+    "treatment_area": "Antihistamine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "efinaconazole": {
+    "conditions": [
+      "Fungal Infection"
+    ],
+    "treatment_area": "Azole Antifungal",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "dasabuvir": {
+    "conditions": [
+      "Viral Infection",
+      "Herpes"
+    ],
+    "treatment_area": "Antiviral",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "aceprometazine": {
     "conditions": [
       "Allergy",
       "Allergic Rhinitis"
@@ -16747,25 +17563,92 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "paramethasone": {
+  "cefmetazole": {
     "conditions": [
-      "Inflammation",
-      "Autoimmune Disease"
+      "Fungal Infection"
     ],
-    "treatment_area": "Corticosteroid",
+    "treatment_area": "Azole Antifungal",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "pranlukast": {
+  "josamycin": {
     "conditions": [
-      "Asthma",
+      "Bacterial Infection"
+    ],
+    "treatment_area": "Macrolide / Aminoglycoside",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "amoxicillin": {
+    "conditions": [
+      "Bacterial Infection"
+    ],
+    "treatment_area": "Penicillin Antibiotic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "methotrimeprazine": {
+    "conditions": [
+      "Allergy",
       "Allergic Rhinitis"
     ],
-    "treatment_area": "Leukotriene Antagonist",
+    "treatment_area": "Antihistamine",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "lopinavir": {
+  "nafcillin": {
+    "conditions": [
+      "Bacterial Infection"
+    ],
+    "treatment_area": "Penicillin Antibiotic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "dimetotiazine": {
+    "conditions": [
+      "Allergy",
+      "Allergic Rhinitis"
+    ],
+    "treatment_area": "Antihistamine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "butabarbital": {
+    "conditions": [
+      "Epilepsy",
+      "Insomnia"
+    ],
+    "treatment_area": "Barbiturate",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "procaine benzylpenicillin": {
+    "conditions": [
+      "Bacterial Infection"
+    ],
+    "treatment_area": "Penicillin Antibiotic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "bevantolol": {
+    "conditions": [
+      "Hypertension",
+      "Angina"
+    ],
+    "treatment_area": "Beta-Blocker",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "moricizine": {
+    "conditions": [
+      "Allergy",
+      "Allergic Rhinitis"
+    ],
+    "treatment_area": "Antihistamine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "valaciclovir": {
     "conditions": [
       "Viral Infection",
       "Herpes"
@@ -16774,12 +17657,245 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "methylphenobarbital": {
+  "meticillin": {
     "conditions": [
-      "Epilepsy",
-      "Insomnia"
+      "Bacterial Infection"
     ],
-    "treatment_area": "Barbiturate",
+    "treatment_area": "Penicillin Antibiotic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "perindopril": {
+    "conditions": [
+      "Hypertension",
+      "Heart Failure"
+    ],
+    "treatment_area": "ACE Inhibitor",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "nitrendipine": {
+    "conditions": [
+      "Hypertension",
+      "Angina"
+    ],
+    "treatment_area": "Calcium Channel Blocker",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "nelfinavir": {
+    "conditions": [
+      "Viral Infection",
+      "Herpes"
+    ],
+    "treatment_area": "Antiviral",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "bendroflumethiazide": {
+    "conditions": [
+      "Hypertension",
+      "Edema"
+    ],
+    "treatment_area": "Thiazide Diuretic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "bromazepam": {
+    "conditions": [
+      "Anxiety",
+      "Insomnia",
+      "Seizure"
+    ],
+    "treatment_area": "Benzodiazepine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "alimemazine": {
+    "conditions": [
+      "Allergy",
+      "Allergic Rhinitis"
+    ],
+    "treatment_area": "Antihistamine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "fosamprenavir": {
+    "conditions": [
+      "Viral Infection",
+      "Herpes"
+    ],
+    "treatment_area": "Antiviral",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "oxandrolone": {
+    "conditions": [
+      "Inflammation",
+      "Autoimmune Disease"
+    ],
+    "treatment_area": "Corticosteroid",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "econazole": {
+    "conditions": [
+      "Fungal Infection"
+    ],
+    "treatment_area": "Azole Antifungal",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "pentostatin": {
+    "conditions": [
+      "Hyperlipidemia",
+      "High Cholesterol"
+    ],
+    "treatment_area": "Statin",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "clotiazepam": {
+    "conditions": [
+      "Anxiety",
+      "Insomnia",
+      "Seizure"
+    ],
+    "treatment_area": "Benzodiazepine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "cyamemazine": {
+    "conditions": [
+      "Allergy",
+      "Allergic Rhinitis"
+    ],
+    "treatment_area": "Antihistamine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "deutetrabenazine": {
+    "conditions": [
+      "Allergy",
+      "Allergic Rhinitis"
+    ],
+    "treatment_area": "Antihistamine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "thioproperazine": {
+    "conditions": [
+      "Allergy",
+      "Allergic Rhinitis"
+    ],
+    "treatment_area": "Antihistamine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "dolasetron": {
+    "conditions": [
+      "Nausea",
+      "Vomiting"
+    ],
+    "treatment_area": "5-HT3 Antagonist",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "carteolol": {
+    "conditions": [
+      "Hypertension",
+      "Angina"
+    ],
+    "treatment_area": "Beta-Blocker",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "cocaine": {
+    "conditions": [
+      "Local Anesthesia",
+      "Pain"
+    ],
+    "treatment_area": "Local Anesthetic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "levobupivacaine": {
+    "conditions": [
+      "Local Anesthesia",
+      "Pain"
+    ],
+    "treatment_area": "Local Anesthetic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "tetracaine": {
+    "conditions": [
+      "Local Anesthesia",
+      "Pain"
+    ],
+    "treatment_area": "Local Anesthetic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "delafloxacin": {
+    "conditions": [
+      "Bacterial Infection",
+      "UTI"
+    ],
+    "treatment_area": "Fluoroquinolone",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "flunitrazepam": {
+    "conditions": [
+      "Anxiety",
+      "Insomnia",
+      "Seizure"
+    ],
+    "treatment_area": "Benzodiazepine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "suprofen": {
+    "conditions": [
+      "Pain",
+      "Inflammation",
+      "Fever"
+    ],
+    "treatment_area": "NSAID",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "bacampicillin": {
+    "conditions": [
+      "Bacterial Infection"
+    ],
+    "treatment_area": "Penicillin Antibiotic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "pivampicillin": {
+    "conditions": [
+      "Bacterial Infection"
+    ],
+    "treatment_area": "Penicillin Antibiotic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "metipranolol": {
+    "conditions": [
+      "Hypertension",
+      "Angina"
+    ],
+    "treatment_area": "Beta-Blocker",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "enasidenib": {
+    "conditions": [
+      "Cancer"
+    ],
+    "treatment_area": "Kinase Inhibitor",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
@@ -16801,84 +17917,17 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "practolol": {
+  "fenoldopam": {
     "conditions": [
-      "Hypertension",
-      "Angina"
+      "Anxiety",
+      "Insomnia",
+      "Seizure"
     ],
-    "treatment_area": "Beta-Blocker",
+    "treatment_area": "Benzodiazepine",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "medrysone": {
-    "conditions": [
-      "Inflammation",
-      "Autoimmune Disease"
-    ],
-    "treatment_area": "Corticosteroid",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "clomocycline": {
-    "conditions": [
-      "Bacterial Infection",
-      "Acne"
-    ],
-    "treatment_area": "Tetracycline",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "sulfisoxazole": {
-    "conditions": [
-      "Fungal Infection"
-    ],
-    "treatment_area": "Azole Antifungal",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "hydroflumethiazide": {
-    "conditions": [
-      "Hypertension",
-      "Edema"
-    ],
-    "treatment_area": "Thiazide Diuretic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "dirithromycin": {
-    "conditions": [
-      "Bacterial Infection"
-    ],
-    "treatment_area": "Macrolide / Aminoglycoside",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "cobimetinib": {
-    "conditions": [
-      "Cancer"
-    ],
-    "treatment_area": "Kinase Inhibitor",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "articaine": {
-    "conditions": [
-      "Local Anesthesia",
-      "Pain"
-    ],
-    "treatment_area": "Local Anesthetic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "icotinib": {
-    "conditions": [
-      "Cancer"
-    ],
-    "treatment_area": "Kinase Inhibitor",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "methotrimeprazine": {
+  "cyclizine": {
     "conditions": [
       "Allergy",
       "Allergic Rhinitis"
@@ -16896,47 +17945,21 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "brigatinib": {
+  "pirenzepine": {
     "conditions": [
-      "Cancer"
+      "Epilepsy",
+      "Bipolar Disorder"
     ],
-    "treatment_area": "Kinase Inhibitor",
+    "treatment_area": "Anticonvulsant",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "camazepam": {
+  "oxprenolol": {
     "conditions": [
-      "Anxiety",
-      "Insomnia",
-      "Seizure"
+      "Hypertension",
+      "Angina"
     ],
-    "treatment_area": "Benzodiazepine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "propoxycaine": {
-    "conditions": [
-      "Local Anesthesia",
-      "Pain"
-    ],
-    "treatment_area": "Local Anesthetic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "oxacillin": {
-    "conditions": [
-      "Bacterial Infection"
-    ],
-    "treatment_area": "Penicillin Antibiotic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "chlortetracycline": {
-    "conditions": [
-      "Bacterial Infection",
-      "Acne"
-    ],
-    "treatment_area": "Tetracycline",
+    "treatment_area": "Beta-Blocker",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
@@ -16948,67 +17971,7 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "pirenzepine": {
-    "conditions": [
-      "Epilepsy",
-      "Bipolar Disorder"
-    ],
-    "treatment_area": "Anticonvulsant",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "aceprometazine": {
-    "conditions": [
-      "Allergy",
-      "Allergic Rhinitis"
-    ],
-    "treatment_area": "Antihistamine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "procaine benzylpenicillin": {
-    "conditions": [
-      "Bacterial Infection"
-    ],
-    "treatment_area": "Penicillin Antibiotic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "pivampicillin": {
-    "conditions": [
-      "Bacterial Infection"
-    ],
-    "treatment_area": "Penicillin Antibiotic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "butoconazole": {
-    "conditions": [
-      "Fungal Infection"
-    ],
-    "treatment_area": "Azole Antifungal",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "pentostatin": {
-    "conditions": [
-      "Hyperlipidemia",
-      "High Cholesterol"
-    ],
-    "treatment_area": "Statin",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "rimexolone": {
-    "conditions": [
-      "Inflammation",
-      "Autoimmune Disease"
-    ],
-    "treatment_area": "Corticosteroid",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "enasidenib": {
+  "dabrafenib": {
     "conditions": [
       "Cancer"
     ],
@@ -17016,56 +17979,20 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "azidocillin": {
+  "penbutolol": {
+    "conditions": [
+      "Hypertension",
+      "Angina"
+    ],
+    "treatment_area": "Beta-Blocker",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "viomycin": {
     "conditions": [
       "Bacterial Infection"
     ],
-    "treatment_area": "Penicillin Antibiotic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "prazepam": {
-    "conditions": [
-      "Anxiety",
-      "Insomnia",
-      "Seizure"
-    ],
-    "treatment_area": "Benzodiazepine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "pibrentasvir": {
-    "conditions": [
-      "Viral Infection",
-      "Herpes"
-    ],
-    "treatment_area": "Antiviral",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "oxitriptan": {
-    "conditions": [
-      "Migraine"
-    ],
-    "treatment_area": "Triptan",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "oxtriphylline": {
-    "conditions": [
-      "Asthma",
-      "COPD"
-    ],
-    "treatment_area": "Methylxanthine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "butabarbital": {
-    "conditions": [
-      "Epilepsy",
-      "Insomnia"
-    ],
-    "treatment_area": "Barbiturate",
+    "treatment_area": "Macrolide / Aminoglycoside",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
@@ -17078,71 +18005,24 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "tropisetron": {
-    "conditions": [
-      "Nausea",
-      "Vomiting"
-    ],
-    "treatment_area": "5-HT3 Antagonist",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "oxandrolone": {
-    "conditions": [
-      "Inflammation",
-      "Autoimmune Disease"
-    ],
-    "treatment_area": "Corticosteroid",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "alimemazine": {
-    "conditions": [
-      "Allergy",
-      "Allergic Rhinitis"
-    ],
-    "treatment_area": "Antihistamine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "tipranavir": {
-    "conditions": [
-      "Viral Infection",
-      "Herpes"
-    ],
-    "treatment_area": "Antiviral",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "spirapril": {
+  "nilvadipine": {
     "conditions": [
       "Hypertension",
-      "Heart Failure"
+      "Angina"
     ],
-    "treatment_area": "ACE Inhibitor",
+    "treatment_area": "Calcium Channel Blocker",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "loxoprofen": {
+  "phenoxymethylpenicillin": {
     "conditions": [
-      "Pain",
-      "Inflammation",
-      "Fever"
+      "Bacterial Infection"
     ],
-    "treatment_area": "NSAID",
+    "treatment_area": "Penicillin Antibiotic",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "etidocaine": {
-    "conditions": [
-      "Local Anesthesia",
-      "Pain"
-    ],
-    "treatment_area": "Local Anesthetic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "lormetazepam": {
+  "fludiazepam": {
     "conditions": [
       "Anxiety",
       "Insomnia",
@@ -17152,12 +18032,46 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "simeprevir": {
+  "butoconazole": {
     "conditions": [
-      "Viral Infection",
-      "Herpes"
+      "Fungal Infection"
     ],
-    "treatment_area": "Antiviral",
+    "treatment_area": "Azole Antifungal",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "neratinib": {
+    "conditions": [
+      "Cancer"
+    ],
+    "treatment_area": "Kinase Inhibitor",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "olsalazine": {
+    "conditions": [
+      "Allergy",
+      "Allergic Rhinitis"
+    ],
+    "treatment_area": "Antihistamine",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "alclometasone": {
+    "conditions": [
+      "Inflammation",
+      "Autoimmune Disease"
+    ],
+    "treatment_area": "Corticosteroid",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "sulfametopyrazine": {
+    "conditions": [
+      "Allergy",
+      "Allergic Rhinitis"
+    ],
+    "treatment_area": "Antihistamine",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
@@ -17170,111 +18084,25 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "nafcillin": {
+  "finafloxacin": {
     "conditions": [
-      "Bacterial Infection"
+      "Bacterial Infection",
+      "UTI"
     ],
-    "treatment_area": "Penicillin Antibiotic",
+    "treatment_area": "Fluoroquinolone",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "brexpiprazole": {
-    "conditions": [
-      "Fungal Infection"
-    ],
-    "treatment_area": "Azole Antifungal",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "dimetotiazine": {
-    "conditions": [
-      "Allergy",
-      "Allergic Rhinitis"
-    ],
-    "treatment_area": "Antihistamine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "oseltamivir": {
-    "conditions": [
-      "Viral Infection",
-      "Herpes"
-    ],
-    "treatment_area": "Antiviral",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "cyamemazine": {
-    "conditions": [
-      "Allergy",
-      "Allergic Rhinitis"
-    ],
-    "treatment_area": "Antihistamine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "trandolapril": {
+  "polythiazide": {
     "conditions": [
       "Hypertension",
-      "Heart Failure"
+      "Edema"
     ],
-    "treatment_area": "ACE Inhibitor",
+    "treatment_area": "Thiazide Diuretic",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "manidipine": {
-    "conditions": [
-      "Hypertension",
-      "Angina"
-    ],
-    "treatment_area": "Calcium Channel Blocker",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "mepivacaine": {
-    "conditions": [
-      "Local Anesthesia",
-      "Pain"
-    ],
-    "treatment_area": "Local Anesthetic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "vemurafenib": {
-    "conditions": [
-      "Cancer"
-    ],
-    "treatment_area": "Kinase Inhibitor",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "phenmetrazine": {
-    "conditions": [
-      "Allergy",
-      "Allergic Rhinitis"
-    ],
-    "treatment_area": "Antihistamine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "thioproperazine": {
-    "conditions": [
-      "Allergy",
-      "Allergic Rhinitis"
-    ],
-    "treatment_area": "Antihistamine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "neratinib": {
-    "conditions": [
-      "Cancer"
-    ],
-    "treatment_area": "Kinase Inhibitor",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "prednisone": {
+  "clocortolone": {
     "conditions": [
       "Inflammation",
       "Autoimmune Disease"
@@ -17283,7 +18111,48 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "bevantolol": {
+  "flubendazole": {
+    "conditions": [
+      "Fungal Infection"
+    ],
+    "treatment_area": "Azole Antifungal",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "butobarbital": {
+    "conditions": [
+      "Epilepsy",
+      "Insomnia"
+    ],
+    "treatment_area": "Barbiturate",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "phenformin": {
+    "conditions": [
+      "Type 2 Diabetes"
+    ],
+    "treatment_area": "Biguanide",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "ponatinib": {
+    "conditions": [
+      "Cancer"
+    ],
+    "treatment_area": "Kinase Inhibitor",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "oxacillin": {
+    "conditions": [
+      "Bacterial Infection"
+    ],
+    "treatment_area": "Penicillin Antibiotic",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "nadolol": {
     "conditions": [
       "Hypertension",
       "Angina"
@@ -17292,20 +18161,20 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "triflupromazine": {
+  "difluocortolone": {
     "conditions": [
-      "Allergy",
-      "Allergic Rhinitis"
+      "Inflammation",
+      "Autoimmune Disease"
     ],
-    "treatment_area": "Antihistamine",
+    "treatment_area": "Corticosteroid",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "isoconazole": {
+  "vemurafenib": {
     "conditions": [
-      "Fungal Infection"
+      "Cancer"
     ],
-    "treatment_area": "Azole Antifungal",
+    "treatment_area": "Kinase Inhibitor",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
@@ -17319,320 +18188,6 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "zafirlukast": {
-    "conditions": [
-      "Asthma",
-      "Allergic Rhinitis"
-    ],
-    "treatment_area": "Leukotriene Antagonist",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "cilastatin": {
-    "conditions": [
-      "Hyperlipidemia",
-      "High Cholesterol"
-    ],
-    "treatment_area": "Statin",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "fenoprofen": {
-    "conditions": [
-      "Pain",
-      "Inflammation",
-      "Fever"
-    ],
-    "treatment_area": "NSAID",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "flunitrazepam": {
-    "conditions": [
-      "Anxiety",
-      "Insomnia",
-      "Seizure"
-    ],
-    "treatment_area": "Benzodiazepine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "levobupivacaine": {
-    "conditions": [
-      "Local Anesthesia",
-      "Pain"
-    ],
-    "treatment_area": "Local Anesthetic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "paromomycin": {
-    "conditions": [
-      "Bacterial Infection"
-    ],
-    "treatment_area": "Macrolide / Aminoglycoside",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "cyclacillin": {
-    "conditions": [
-      "Bacterial Infection"
-    ],
-    "treatment_area": "Penicillin Antibiotic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "phendimetrazine": {
-    "conditions": [
-      "Allergy",
-      "Allergic Rhinitis"
-    ],
-    "treatment_area": "Antihistamine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "thiabendazole": {
-    "conditions": [
-      "Fungal Infection"
-    ],
-    "treatment_area": "Azole Antifungal",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "asunaprevir": {
-    "conditions": [
-      "Viral Infection",
-      "Herpes"
-    ],
-    "treatment_area": "Antiviral",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "raltegravir": {
-    "conditions": [
-      "Viral Infection",
-      "Herpes"
-    ],
-    "treatment_area": "Antiviral",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "quazepam": {
-    "conditions": [
-      "Anxiety",
-      "Insomnia",
-      "Seizure"
-    ],
-    "treatment_area": "Benzodiazepine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "azlocillin": {
-    "conditions": [
-      "Bacterial Infection"
-    ],
-    "treatment_area": "Penicillin Antibiotic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "ditazole": {
-    "conditions": [
-      "Fungal Infection"
-    ],
-    "treatment_area": "Azole Antifungal",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "acetophenazine": {
-    "conditions": [
-      "Allergy",
-      "Allergic Rhinitis"
-    ],
-    "treatment_area": "Antihistamine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "mezlocillin": {
-    "conditions": [
-      "Bacterial Infection"
-    ],
-    "treatment_area": "Penicillin Antibiotic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "oxymetholone": {
-    "conditions": [
-      "Inflammation",
-      "Autoimmune Disease"
-    ],
-    "treatment_area": "Corticosteroid",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "telithromycin": {
-    "conditions": [
-      "Bacterial Infection"
-    ],
-    "treatment_area": "Macrolide / Aminoglycoside",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "butobarbital": {
-    "conditions": [
-      "Epilepsy",
-      "Insomnia"
-    ],
-    "treatment_area": "Barbiturate",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "nadolol": {
-    "conditions": [
-      "Hypertension",
-      "Angina"
-    ],
-    "treatment_area": "Beta-Blocker",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "acebutolol": {
-    "conditions": [
-      "Hypertension",
-      "Angina"
-    ],
-    "treatment_area": "Beta-Blocker",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "sulfaphenazole": {
-    "conditions": [
-      "Fungal Infection"
-    ],
-    "treatment_area": "Azole Antifungal",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "metipranolol": {
-    "conditions": [
-      "Hypertension",
-      "Angina"
-    ],
-    "treatment_area": "Beta-Blocker",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "letermovir": {
-    "conditions": [
-      "Viral Infection",
-      "Herpes"
-    ],
-    "treatment_area": "Antiviral",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "meticillin": {
-    "conditions": [
-      "Bacterial Infection"
-    ],
-    "treatment_area": "Penicillin Antibiotic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "dabrafenib": {
-    "conditions": [
-      "Cancer"
-    ],
-    "treatment_area": "Kinase Inhibitor",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "alclometasone": {
-    "conditions": [
-      "Inflammation",
-      "Autoimmune Disease"
-    ],
-    "treatment_area": "Corticosteroid",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "trovafloxacin": {
-    "conditions": [
-      "Bacterial Infection",
-      "UTI"
-    ],
-    "treatment_area": "Fluoroquinolone",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "boceprevir": {
-    "conditions": [
-      "Viral Infection",
-      "Herpes"
-    ],
-    "treatment_area": "Antiviral",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "deutetrabenazine": {
-    "conditions": [
-      "Allergy",
-      "Allergic Rhinitis"
-    ],
-    "treatment_area": "Antihistamine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "enviomycin": {
-    "conditions": [
-      "Bacterial Infection"
-    ],
-    "treatment_area": "Macrolide / Aminoglycoside",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "ponatinib": {
-    "conditions": [
-      "Cancer"
-    ],
-    "treatment_area": "Kinase Inhibitor",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "clevidipine": {
-    "conditions": [
-      "Hypertension",
-      "Angina"
-    ],
-    "treatment_area": "Calcium Channel Blocker",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "nisoldipine": {
-    "conditions": [
-      "Hypertension",
-      "Angina"
-    ],
-    "treatment_area": "Calcium Channel Blocker",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "valaciclovir": {
-    "conditions": [
-      "Viral Infection",
-      "Herpes"
-    ],
-    "treatment_area": "Antiviral",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "dapiprazole": {
-    "conditions": [
-      "Fungal Infection"
-    ],
-    "treatment_area": "Azole Antifungal",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
   "phenelzine": {
     "conditions": [
       "Allergy",
@@ -17642,16 +18197,34 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "nelfinavir": {
+  "mepivacaine": {
     "conditions": [
-      "Viral Infection",
-      "Herpes"
+      "Local Anesthesia",
+      "Pain"
     ],
-    "treatment_area": "Antiviral",
+    "treatment_area": "Local Anesthetic",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "acepromazine": {
+  "spirapril": {
+    "conditions": [
+      "Hypertension",
+      "Heart Failure"
+    ],
+    "treatment_area": "ACE Inhibitor",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "amobarbital": {
+    "conditions": [
+      "Epilepsy",
+      "Insomnia"
+    ],
+    "treatment_area": "Barbiturate",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "sulfamethazine": {
     "conditions": [
       "Allergy",
       "Allergic Rhinitis"
@@ -17660,16 +18233,7 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "dasabuvir": {
-    "conditions": [
-      "Viral Infection",
-      "Herpes"
-    ],
-    "treatment_area": "Antiviral",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "paritaprevir": {
+  "raltegravir": {
     "conditions": [
       "Viral Infection",
       "Herpes"
@@ -17687,261 +18251,7 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "metacycline": {
-    "conditions": [
-      "Bacterial Infection",
-      "Acne"
-    ],
-    "treatment_area": "Tetracycline",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "difluocortolone": {
-    "conditions": [
-      "Inflammation",
-      "Autoimmune Disease"
-    ],
-    "treatment_area": "Corticosteroid",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "pramocaine": {
-    "conditions": [
-      "Local Anesthesia",
-      "Pain"
-    ],
-    "treatment_area": "Local Anesthetic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "velpatasvir": {
-    "conditions": [
-      "Viral Infection",
-      "Herpes"
-    ],
-    "treatment_area": "Antiviral",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "sulfathiazole": {
-    "conditions": [
-      "Fungal Infection"
-    ],
-    "treatment_area": "Azole Antifungal",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "chlorothiazide": {
-    "conditions": [
-      "Hypertension",
-      "Edema"
-    ],
-    "treatment_area": "Thiazide Diuretic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "grazoprevir": {
-    "conditions": [
-      "Viral Infection",
-      "Herpes"
-    ],
-    "treatment_area": "Antiviral",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "terconazole": {
-    "conditions": [
-      "Fungal Infection"
-    ],
-    "treatment_area": "Azole Antifungal",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "sulfametopyrazine": {
-    "conditions": [
-      "Allergy",
-      "Allergic Rhinitis"
-    ],
-    "treatment_area": "Antihistamine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "mesoridazine": {
-    "conditions": [
-      "Allergy",
-      "Allergic Rhinitis"
-    ],
-    "treatment_area": "Antihistamine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "carprofen": {
-    "conditions": [
-      "Pain",
-      "Inflammation",
-      "Fever"
-    ],
-    "treatment_area": "NSAID",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "viomycin": {
-    "conditions": [
-      "Bacterial Infection"
-    ],
-    "treatment_area": "Macrolide / Aminoglycoside",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "dyphylline": {
-    "conditions": [
-      "Asthma",
-      "COPD"
-    ],
-    "treatment_area": "Methylxanthine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "bopindolol": {
-    "conditions": [
-      "Hypertension",
-      "Angina"
-    ],
-    "treatment_area": "Beta-Blocker",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "moricizine": {
-    "conditions": [
-      "Allergy",
-      "Allergic Rhinitis"
-    ],
-    "treatment_area": "Antihistamine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "olmesartan": {
-    "conditions": [
-      "Hypertension"
-    ],
-    "treatment_area": "ARB",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "hexetidine": {
-    "conditions": [
-      "GERD",
-      "Peptic Ulcer"
-    ],
-    "treatment_area": "H2 Blocker",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "econazole": {
-    "conditions": [
-      "Fungal Infection"
-    ],
-    "treatment_area": "Azole Antifungal",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "oxybuprocaine": {
-    "conditions": [
-      "Local Anesthesia",
-      "Pain"
-    ],
-    "treatment_area": "Local Anesthetic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "amoxicillin": {
-    "conditions": [
-      "Bacterial Infection"
-    ],
-    "treatment_area": "Penicillin Antibiotic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "cefmetazole": {
-    "conditions": [
-      "Fungal Infection"
-    ],
-    "treatment_area": "Azole Antifungal",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "pentobarbital": {
-    "conditions": [
-      "Epilepsy",
-      "Insomnia"
-    ],
-    "treatment_area": "Barbiturate",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "viloxazine": {
-    "conditions": [
-      "Allergy",
-      "Allergic Rhinitis"
-    ],
-    "treatment_area": "Antihistamine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "voxilaprevir": {
-    "conditions": [
-      "Viral Infection",
-      "Herpes"
-    ],
-    "treatment_area": "Antiviral",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "secobarbital": {
-    "conditions": [
-      "Epilepsy",
-      "Insomnia"
-    ],
-    "treatment_area": "Barbiturate",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "hexobarbital": {
-    "conditions": [
-      "Epilepsy",
-      "Insomnia"
-    ],
-    "treatment_area": "Barbiturate",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "methyclothiazide": {
-    "conditions": [
-      "Hypertension",
-      "Edema"
-    ],
-    "treatment_area": "Thiazide Diuretic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "frovatriptan": {
-    "conditions": [
-      "Migraine"
-    ],
-    "treatment_area": "Triptan",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "phenobarbital": {
-    "conditions": [
-      "Epilepsy",
-      "Insomnia"
-    ],
-    "treatment_area": "Barbiturate",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "imatinib": {
+  "afatinib": {
     "conditions": [
       "Cancer"
     ],
@@ -17949,189 +18259,12 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "finafloxacin": {
-    "conditions": [
-      "Bacterial Infection",
-      "UTI"
-    ],
-    "treatment_area": "Fluoroquinolone",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "flubendazole": {
-    "conditions": [
-      "Fungal Infection"
-    ],
-    "treatment_area": "Azole Antifungal",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "alosetron": {
-    "conditions": [
-      "Nausea",
-      "Vomiting"
-    ],
-    "treatment_area": "5-HT3 Antagonist",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "sulconazole": {
-    "conditions": [
-      "Fungal Infection"
-    ],
-    "treatment_area": "Azole Antifungal",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "sulfamethazine": {
+  "acepromazine": {
     "conditions": [
       "Allergy",
       "Allergic Rhinitis"
     ],
     "treatment_area": "Antihistamine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "cyclothiazide": {
-    "conditions": [
-      "Hypertension",
-      "Edema"
-    ],
-    "treatment_area": "Thiazide Diuretic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "nicardipine": {
-    "conditions": [
-      "Hypertension",
-      "Angina"
-    ],
-    "treatment_area": "Calcium Channel Blocker",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "delorazepam": {
-    "conditions": [
-      "Anxiety",
-      "Insomnia",
-      "Seizure"
-    ],
-    "treatment_area": "Benzodiazepine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "fludiazepam": {
-    "conditions": [
-      "Anxiety",
-      "Insomnia",
-      "Seizure"
-    ],
-    "treatment_area": "Benzodiazepine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "chloroprocaine": {
-    "conditions": [
-      "Local Anesthesia",
-      "Pain"
-    ],
-    "treatment_area": "Local Anesthetic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "zaltoprofen": {
-    "conditions": [
-      "Pain",
-      "Inflammation",
-      "Fever"
-    ],
-    "treatment_area": "NSAID",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "olsalazine": {
-    "conditions": [
-      "Allergy",
-      "Allergic Rhinitis"
-    ],
-    "treatment_area": "Antihistamine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "elvitegravir": {
-    "conditions": [
-      "Viral Infection",
-      "Herpes"
-    ],
-    "treatment_area": "Antiviral",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "phenoxymethylpenicillin": {
-    "conditions": [
-      "Bacterial Infection"
-    ],
-    "treatment_area": "Penicillin Antibiotic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "perindopril": {
-    "conditions": [
-      "Hypertension",
-      "Heart Failure"
-    ],
-    "treatment_area": "ACE Inhibitor",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "josamycin": {
-    "conditions": [
-      "Bacterial Infection"
-    ],
-    "treatment_area": "Macrolide / Aminoglycoside",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "penbutolol": {
-    "conditions": [
-      "Hypertension",
-      "Angina"
-    ],
-    "treatment_area": "Beta-Blocker",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "dactinomycin": {
-    "conditions": [
-      "Bacterial Infection"
-    ],
-    "treatment_area": "Macrolide / Aminoglycoside",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "ribostamycin": {
-    "conditions": [
-      "Bacterial Infection"
-    ],
-    "treatment_area": "Macrolide / Aminoglycoside",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "glecaprevir": {
-    "conditions": [
-      "Viral Infection",
-      "Herpes"
-    ],
-    "treatment_area": "Antiviral",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "polythiazide": {
-    "conditions": [
-      "Hypertension",
-      "Edema"
-    ],
-    "treatment_area": "Thiazide Diuretic",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
@@ -18144,69 +18277,15 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "bacampicillin": {
+  "dapiprazole": {
     "conditions": [
-      "Bacterial Infection"
+      "Fungal Infection"
     ],
-    "treatment_area": "Penicillin Antibiotic",
+    "treatment_area": "Azole Antifungal",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "cocaine": {
-    "conditions": [
-      "Local Anesthesia",
-      "Pain"
-    ],
-    "treatment_area": "Local Anesthetic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "carteolol": {
-    "conditions": [
-      "Hypertension",
-      "Angina"
-    ],
-    "treatment_area": "Beta-Blocker",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "alprenolol": {
-    "conditions": [
-      "Hypertension",
-      "Angina"
-    ],
-    "treatment_area": "Beta-Blocker",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "bendroflumethiazide": {
-    "conditions": [
-      "Hypertension",
-      "Edema"
-    ],
-    "treatment_area": "Thiazide Diuretic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "delafloxacin": {
-    "conditions": [
-      "Bacterial Infection",
-      "UTI"
-    ],
-    "treatment_area": "Fluoroquinolone",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "valbenazine": {
-    "conditions": [
-      "Allergy",
-      "Allergic Rhinitis"
-    ],
-    "treatment_area": "Antihistamine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "suprofen": {
+  "loxoprofen": {
     "conditions": [
       "Pain",
       "Inflammation",
@@ -18216,7 +18295,33 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "ombitasvir": {
+  "barnidipine": {
+    "conditions": [
+      "Hypertension",
+      "Angina"
+    ],
+    "treatment_area": "Calcium Channel Blocker",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "phenobarbital": {
+    "conditions": [
+      "Epilepsy",
+      "Insomnia"
+    ],
+    "treatment_area": "Barbiturate",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "cobimetinib": {
+    "conditions": [
+      "Cancer"
+    ],
+    "treatment_area": "Kinase Inhibitor",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "glecaprevir": {
     "conditions": [
       "Viral Infection",
       "Herpes"
@@ -18225,38 +18330,21 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "procaine": {
-    "conditions": [
-      "Local Anesthesia",
-      "Pain"
-    ],
-    "treatment_area": "Local Anesthetic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "tetracaine": {
-    "conditions": [
-      "Local Anesthesia",
-      "Pain"
-    ],
-    "treatment_area": "Local Anesthetic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "troleandomycin": {
-    "conditions": [
-      "Bacterial Infection"
-    ],
-    "treatment_area": "Macrolide / Aminoglycoside",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "clocortolone": {
+  "prednisone": {
     "conditions": [
       "Inflammation",
       "Autoimmune Disease"
     ],
     "treatment_area": "Corticosteroid",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "letermovir": {
+    "conditions": [
+      "Viral Infection",
+      "Herpes"
+    ],
+    "treatment_area": "Antiviral",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
@@ -18269,60 +18357,15 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "perphenazine": {
+  "icotinib": {
     "conditions": [
-      "Allergy",
-      "Allergic Rhinitis"
+      "Cancer"
     ],
-    "treatment_area": "Antihistamine",
+    "treatment_area": "Kinase Inhibitor",
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "tasosartan": {
-    "conditions": [
-      "Hypertension"
-    ],
-    "treatment_area": "ARB",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "plicamycin": {
-    "conditions": [
-      "Bacterial Infection"
-    ],
-    "treatment_area": "Macrolide / Aminoglycoside",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "trichlormethiazide": {
-    "conditions": [
-      "Hypertension",
-      "Edema"
-    ],
-    "treatment_area": "Thiazide Diuretic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "lumiracoxib": {
-    "conditions": [
-      "Arthritis",
-      "Pain"
-    ],
-    "treatment_area": "COX-2 Inhibitor",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "clotiazepam": {
-    "conditions": [
-      "Anxiety",
-      "Insomnia",
-      "Seizure"
-    ],
-    "treatment_area": "Benzodiazepine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "efinaconazole": {
+  "sulfisoxazole": {
     "conditions": [
       "Fungal Infection"
     ],
@@ -18330,25 +18373,7 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "nitrendipine": {
-    "conditions": [
-      "Hypertension",
-      "Angina"
-    ],
-    "treatment_area": "Calcium Channel Blocker",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "mequitazine": {
-    "conditions": [
-      "Allergy",
-      "Allergic Rhinitis"
-    ],
-    "treatment_area": "Antihistamine",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "fenoldopam": {
+  "prazepam": {
     "conditions": [
       "Anxiety",
       "Insomnia",
@@ -18358,47 +18383,22 @@
     "source": "drugbank_suffix",
     "confidence": 0.55
   },
-  "benzylpenicillin": {
+  "fenoprofen": {
     "conditions": [
-      "Bacterial Infection"
-    ],
-    "treatment_area": "Penicillin Antibiotic",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "elbasvir": {
-    "conditions": [
-      "Viral Infection",
-      "Herpes"
-    ],
-    "treatment_area": "Antiviral",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "isradipine": {
-    "conditions": [
-      "Hypertension",
-      "Angina"
-    ],
-    "treatment_area": "Calcium Channel Blocker",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "dolasetron": {
-    "conditions": [
-      "Nausea",
-      "Vomiting"
-    ],
-    "treatment_area": "5-HT3 Antagonist",
-    "source": "drugbank_suffix",
-    "confidence": 0.55
-  },
-  "fluocortolone": {
-    "conditions": [
+      "Pain",
       "Inflammation",
-      "Autoimmune Disease"
+      "Fever"
     ],
-    "treatment_area": "Corticosteroid",
+    "treatment_area": "NSAID",
+    "source": "drugbank_suffix",
+    "confidence": 0.55
+  },
+  "acetophenazine": {
+    "conditions": [
+      "Allergy",
+      "Allergic Rhinitis"
+    ],
+    "treatment_area": "Antihistamine",
     "source": "drugbank_suffix",
     "confidence": 0.55
   }

@@ -5753,374 +5753,374 @@ saxagliptin,ANTI DIABETI,,DPP-4 Inhibitor,Type 2 Diabetes,suffix_pattern,0.65
 metformin+teneligliptin,ANTI DIABETI,,DPP-4 Inhibitor,Type 2 Diabetes,suffix_pattern,0.65
 evogliptin,ANTI DIABETI,,DPP-4 Inhibitor,Type 2 Diabetes,suffix_pattern,0.65
 rosiglitazone+metformin,ANTI DIABETI,,Biguanide,Type 2 Diabetes,suffix_pattern,0.65
-nilvadipine,,,Calcium Channel Blocker,Hypertension,drugbank_suffix,0.55
-nilvadipine,,,Calcium Channel Blocker,Angina,drugbank_suffix,0.55
-barnidipine,,,Calcium Channel Blocker,Hypertension,drugbank_suffix,0.55
-barnidipine,,,Calcium Channel Blocker,Angina,drugbank_suffix,0.55
-telaprevir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-telaprevir,,,Antiviral,Herpes,drugbank_suffix,0.55
-amobarbital,,,Barbiturate,Epilepsy,drugbank_suffix,0.55
-amobarbital,,,Barbiturate,Insomnia,drugbank_suffix,0.55
-bupranolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
-bupranolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
-spectinomycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
-fosamprenavir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-fosamprenavir,,,Antiviral,Herpes,drugbank_suffix,0.55
+azlocillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
+dirithromycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
+isradipine,,,Calcium Channel Blocker,Hypertension,drugbank_suffix,0.55
+isradipine,,,Calcium Channel Blocker,Angina,drugbank_suffix,0.55
+benzylpenicillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
+etidocaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
+etidocaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
 temazepam,,,Benzodiazepine,Anxiety,drugbank_suffix,0.55
 temazepam,,,Benzodiazepine,Insomnia,drugbank_suffix,0.55
 temazepam,,,Benzodiazepine,Seizure,drugbank_suffix,0.55
-phenformin,,,Biguanide,Type 2 Diabetes,drugbank_suffix,0.55
-afatinib,,,Kinase Inhibitor,Cancer,drugbank_suffix,0.55
-cyclizine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-cyclizine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
 arotinolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
 arotinolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
-oxprenolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
-oxprenolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
+carprofen,,,NSAID,Pain,drugbank_suffix,0.55
+carprofen,,,NSAID,Inflammation,drugbank_suffix,0.55
+carprofen,,,NSAID,Fever,drugbank_suffix,0.55
+simeprevir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+simeprevir,,,Antiviral,Herpes,drugbank_suffix,0.55
+mezlocillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
+ribostamycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
+velpatasvir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+velpatasvir,,,Antiviral,Herpes,drugbank_suffix,0.55
+chloroprocaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
+chloroprocaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
+lumiracoxib,,,COX-2 Inhibitor,Arthritis,drugbank_suffix,0.55
+lumiracoxib,,,COX-2 Inhibitor,Pain,drugbank_suffix,0.55
+flucloxacillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
+grazoprevir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+grazoprevir,,,Antiviral,Herpes,drugbank_suffix,0.55
+oxymetholone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
+oxymetholone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
+boceprevir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+boceprevir,,,Antiviral,Herpes,drugbank_suffix,0.55
+zafirlukast,,,Leukotriene Antagonist,Asthma,drugbank_suffix,0.55
+zafirlukast,,,Leukotriene Antagonist,Allergic Rhinitis,drugbank_suffix,0.55
+telithromycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
+cyclothiazide,,,Thiazide Diuretic,Hypertension,drugbank_suffix,0.55
+cyclothiazide,,,Thiazide Diuretic,Edema,drugbank_suffix,0.55
+camazepam,,,Benzodiazepine,Anxiety,drugbank_suffix,0.55
+camazepam,,,Benzodiazepine,Insomnia,drugbank_suffix,0.55
+camazepam,,,Benzodiazepine,Seizure,drugbank_suffix,0.55
+pranlukast,,,Leukotriene Antagonist,Asthma,drugbank_suffix,0.55
+pranlukast,,,Leukotriene Antagonist,Allergic Rhinitis,drugbank_suffix,0.55
+trovafloxacin,,,Fluoroquinolone,Bacterial Infection,drugbank_suffix,0.55
+trovafloxacin,,,Fluoroquinolone,UTI,drugbank_suffix,0.55
+zaltoprofen,,,NSAID,Pain,drugbank_suffix,0.55
+zaltoprofen,,,NSAID,Inflammation,drugbank_suffix,0.55
+zaltoprofen,,,NSAID,Fever,drugbank_suffix,0.55
+lormetazepam,,,Benzodiazepine,Anxiety,drugbank_suffix,0.55
+lormetazepam,,,Benzodiazepine,Insomnia,drugbank_suffix,0.55
+lormetazepam,,,Benzodiazepine,Seizure,drugbank_suffix,0.55
+elvitegravir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+elvitegravir,,,Antiviral,Herpes,drugbank_suffix,0.55
+clevidipine,,,Calcium Channel Blocker,Hypertension,drugbank_suffix,0.55
+clevidipine,,,Calcium Channel Blocker,Angina,drugbank_suffix,0.55
+isoconazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
+dactinomycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
+brigatinib,,,Kinase Inhibitor,Cancer,drugbank_suffix,0.55
+hexetidine,,,H2 Blocker,GERD,drugbank_suffix,0.55
+hexetidine,,,H2 Blocker,Peptic Ulcer,drugbank_suffix,0.55
+hydroflumethiazide,,,Thiazide Diuretic,Hypertension,drugbank_suffix,0.55
+hydroflumethiazide,,,Thiazide Diuretic,Edema,drugbank_suffix,0.55
+oseltamivir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+oseltamivir,,,Antiviral,Herpes,drugbank_suffix,0.55
+ditazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
+dyphylline,,,Methylxanthine,Asthma,drugbank_suffix,0.55
+dyphylline,,,Methylxanthine,COPD,drugbank_suffix,0.55
+delorazepam,,,Benzodiazepine,Anxiety,drugbank_suffix,0.55
+delorazepam,,,Benzodiazepine,Insomnia,drugbank_suffix,0.55
+delorazepam,,,Benzodiazepine,Seizure,drugbank_suffix,0.55
+metacycline,,,Tetracycline,Bacterial Infection,drugbank_suffix,0.55
+metacycline,,,Tetracycline,Acne,drugbank_suffix,0.55
+chlorothiazide,,,Thiazide Diuretic,Hypertension,drugbank_suffix,0.55
+chlorothiazide,,,Thiazide Diuretic,Edema,drugbank_suffix,0.55
+perphenazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+perphenazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+manidipine,,,Calcium Channel Blocker,Hypertension,drugbank_suffix,0.55
+manidipine,,,Calcium Channel Blocker,Angina,drugbank_suffix,0.55
+trandolapril,,,ACE Inhibitor,Hypertension,drugbank_suffix,0.55
+trandolapril,,,ACE Inhibitor,Heart Failure,drugbank_suffix,0.55
+lopinavir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+lopinavir,,,Antiviral,Herpes,drugbank_suffix,0.55
+propoxycaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
+propoxycaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
+spectinomycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
+oxitriptan,,,Triptan,Migraine,drugbank_suffix,0.55
+chlortetracycline,,,Tetracycline,Bacterial Infection,drugbank_suffix,0.55
+chlortetracycline,,,Tetracycline,Acne,drugbank_suffix,0.55
+alprenolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
+alprenolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
+quazepam,,,Benzodiazepine,Anxiety,drugbank_suffix,0.55
+quazepam,,,Benzodiazepine,Insomnia,drugbank_suffix,0.55
+quazepam,,,Benzodiazepine,Seizure,drugbank_suffix,0.55
+alosetron,,,5-HT3 Antagonist,Nausea,drugbank_suffix,0.55
+alosetron,,,5-HT3 Antagonist,Vomiting,drugbank_suffix,0.55
+sulconazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
+clomocycline,,,Tetracycline,Bacterial Infection,drugbank_suffix,0.55
+clomocycline,,,Tetracycline,Acne,drugbank_suffix,0.55
+practolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
+practolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
+secobarbital,,,Barbiturate,Epilepsy,drugbank_suffix,0.55
+secobarbital,,,Barbiturate,Insomnia,drugbank_suffix,0.55
+paromomycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
+methyclothiazide,,,Thiazide Diuretic,Hypertension,drugbank_suffix,0.55
+methyclothiazide,,,Thiazide Diuretic,Edema,drugbank_suffix,0.55
+oxtriphylline,,,Methylxanthine,Asthma,drugbank_suffix,0.55
+oxtriphylline,,,Methylxanthine,COPD,drugbank_suffix,0.55
+brexpiprazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
+acebutolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
+acebutolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
+periciazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+periciazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+rimexolone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
+rimexolone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
+sulfathiazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
+triflupromazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+triflupromazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+trichlormethiazide,,,Thiazide Diuretic,Hypertension,drugbank_suffix,0.55
+trichlormethiazide,,,Thiazide Diuretic,Edema,drugbank_suffix,0.55
+pramocaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
+pramocaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
+paritaprevir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+paritaprevir,,,Antiviral,Herpes,drugbank_suffix,0.55
+pentobarbital,,,Barbiturate,Epilepsy,drugbank_suffix,0.55
+pentobarbital,,,Barbiturate,Insomnia,drugbank_suffix,0.55
+bopindolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
+bopindolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
+procaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
+procaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
+asunaprevir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+asunaprevir,,,Antiviral,Herpes,drugbank_suffix,0.55
+hexobarbital,,,Barbiturate,Epilepsy,drugbank_suffix,0.55
+hexobarbital,,,Barbiturate,Insomnia,drugbank_suffix,0.55
+nicardipine,,,Calcium Channel Blocker,Hypertension,drugbank_suffix,0.55
+nicardipine,,,Calcium Channel Blocker,Angina,drugbank_suffix,0.55
+mequitazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+mequitazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+troleandomycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
+bupranolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
+bupranolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
+imatinib,,,Kinase Inhibitor,Cancer,drugbank_suffix,0.55
+elbasvir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+elbasvir,,,Antiviral,Herpes,drugbank_suffix,0.55
+enviomycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
+phendimetrazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+phendimetrazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+azidocillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
+phenmetrazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+phenmetrazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+frovatriptan,,,Triptan,Migraine,drugbank_suffix,0.55
+tropisetron,,,5-HT3 Antagonist,Nausea,drugbank_suffix,0.55
+tropisetron,,,5-HT3 Antagonist,Vomiting,drugbank_suffix,0.55
+olmesartan,,,ARB,Hypertension,drugbank_suffix,0.55
+tasosartan,,,ARB,Hypertension,drugbank_suffix,0.55
+oxybuprocaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
+oxybuprocaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
+viloxazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+viloxazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+tipranavir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+tipranavir,,,Antiviral,Herpes,drugbank_suffix,0.55
+thiabendazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
+mesoridazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+mesoridazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+terconazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
+sulfaphenazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
+ombitasvir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+ombitasvir,,,Antiviral,Herpes,drugbank_suffix,0.55
+nisoldipine,,,Calcium Channel Blocker,Hypertension,drugbank_suffix,0.55
+nisoldipine,,,Calcium Channel Blocker,Angina,drugbank_suffix,0.55
+fluocortolone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
+fluocortolone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
+voxilaprevir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+voxilaprevir,,,Antiviral,Herpes,drugbank_suffix,0.55
+methylphenobarbital,,,Barbiturate,Epilepsy,drugbank_suffix,0.55
+methylphenobarbital,,,Barbiturate,Insomnia,drugbank_suffix,0.55
+plicamycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
+articaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
+articaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
+medrysone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
+medrysone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
+cilastatin,,,Statin,Hyperlipidemia,drugbank_suffix,0.55
+cilastatin,,,Statin,High Cholesterol,drugbank_suffix,0.55
+pibrentasvir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+pibrentasvir,,,Antiviral,Herpes,drugbank_suffix,0.55
+cyclacillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
+paramethasone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
+paramethasone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
+telaprevir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+telaprevir,,,Antiviral,Herpes,drugbank_suffix,0.55
+valbenazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+valbenazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+efinaconazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
+dasabuvir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+dasabuvir,,,Antiviral,Herpes,drugbank_suffix,0.55
+aceprometazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+aceprometazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+diflorasone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
+diflorasone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
+cefmetazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
+josamycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
+amoxicillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
+methotrimeprazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+methotrimeprazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+nafcillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
+dimetotiazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+dimetotiazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+butabarbital,,,Barbiturate,Epilepsy,drugbank_suffix,0.55
+butabarbital,,,Barbiturate,Insomnia,drugbank_suffix,0.55
+procaine benzylpenicillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
+bevantolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
+bevantolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
+moricizine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+moricizine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+valaciclovir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+valaciclovir,,,Antiviral,Herpes,drugbank_suffix,0.55
+meticillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
+perindopril,,,ACE Inhibitor,Hypertension,drugbank_suffix,0.55
+perindopril,,,ACE Inhibitor,Heart Failure,drugbank_suffix,0.55
+nitrendipine,,,Calcium Channel Blocker,Hypertension,drugbank_suffix,0.55
+nitrendipine,,,Calcium Channel Blocker,Angina,drugbank_suffix,0.55
+nelfinavir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+nelfinavir,,,Antiviral,Herpes,drugbank_suffix,0.55
+bendroflumethiazide,,,Thiazide Diuretic,Hypertension,drugbank_suffix,0.55
+bendroflumethiazide,,,Thiazide Diuretic,Edema,drugbank_suffix,0.55
 bromazepam,,,Benzodiazepine,Anxiety,drugbank_suffix,0.55
 bromazepam,,,Benzodiazepine,Insomnia,drugbank_suffix,0.55
 bromazepam,,,Benzodiazepine,Seizure,drugbank_suffix,0.55
-flucloxacillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
-periciazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-periciazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-diflorasone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
-diflorasone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
-paramethasone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
-paramethasone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
-pranlukast,,,Leukotriene Antagonist,Asthma,drugbank_suffix,0.55
-pranlukast,,,Leukotriene Antagonist,Allergic Rhinitis,drugbank_suffix,0.55
-lopinavir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-lopinavir,,,Antiviral,Herpes,drugbank_suffix,0.55
-methylphenobarbital,,,Barbiturate,Epilepsy,drugbank_suffix,0.55
-methylphenobarbital,,,Barbiturate,Insomnia,drugbank_suffix,0.55
+alimemazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+alimemazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+fosamprenavir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+fosamprenavir,,,Antiviral,Herpes,drugbank_suffix,0.55
+oxandrolone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
+oxandrolone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
+econazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
+pentostatin,,,Statin,Hyperlipidemia,drugbank_suffix,0.55
+pentostatin,,,Statin,High Cholesterol,drugbank_suffix,0.55
+clotiazepam,,,Benzodiazepine,Anxiety,drugbank_suffix,0.55
+clotiazepam,,,Benzodiazepine,Insomnia,drugbank_suffix,0.55
+clotiazepam,,,Benzodiazepine,Seizure,drugbank_suffix,0.55
+cyamemazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+cyamemazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+deutetrabenazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+deutetrabenazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+thioproperazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+thioproperazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+dolasetron,,,5-HT3 Antagonist,Nausea,drugbank_suffix,0.55
+dolasetron,,,5-HT3 Antagonist,Vomiting,drugbank_suffix,0.55
+carteolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
+carteolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
+cocaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
+cocaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
+levobupivacaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
+levobupivacaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
+tetracaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
+tetracaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
+delafloxacin,,,Fluoroquinolone,Bacterial Infection,drugbank_suffix,0.55
+delafloxacin,,,Fluoroquinolone,UTI,drugbank_suffix,0.55
+flunitrazepam,,,Benzodiazepine,Anxiety,drugbank_suffix,0.55
+flunitrazepam,,,Benzodiazepine,Insomnia,drugbank_suffix,0.55
+flunitrazepam,,,Benzodiazepine,Seizure,drugbank_suffix,0.55
+suprofen,,,NSAID,Pain,drugbank_suffix,0.55
+suprofen,,,NSAID,Inflammation,drugbank_suffix,0.55
+suprofen,,,NSAID,Fever,drugbank_suffix,0.55
+bacampicillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
+pivampicillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
+metipranolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
+metipranolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
+enasidenib,,,Kinase Inhibitor,Cancer,drugbank_suffix,0.55
 cilazapril,,,ACE Inhibitor,Hypertension,drugbank_suffix,0.55
 cilazapril,,,ACE Inhibitor,Heart Failure,drugbank_suffix,0.55
 pipotiazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
 pipotiazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-practolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
-practolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
-medrysone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
-medrysone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
-clomocycline,,,Tetracycline,Bacterial Infection,drugbank_suffix,0.55
-clomocycline,,,Tetracycline,Acne,drugbank_suffix,0.55
-sulfisoxazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
-hydroflumethiazide,,,Thiazide Diuretic,Hypertension,drugbank_suffix,0.55
-hydroflumethiazide,,,Thiazide Diuretic,Edema,drugbank_suffix,0.55
-dirithromycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
-cobimetinib,,,Kinase Inhibitor,Cancer,drugbank_suffix,0.55
-articaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
-articaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
-icotinib,,,Kinase Inhibitor,Cancer,drugbank_suffix,0.55
-methotrimeprazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-methotrimeprazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-moexipril,,,ACE Inhibitor,Hypertension,drugbank_suffix,0.55
-moexipril,,,ACE Inhibitor,Heart Failure,drugbank_suffix,0.55
-brigatinib,,,Kinase Inhibitor,Cancer,drugbank_suffix,0.55
-camazepam,,,Benzodiazepine,Anxiety,drugbank_suffix,0.55
-camazepam,,,Benzodiazepine,Insomnia,drugbank_suffix,0.55
-camazepam,,,Benzodiazepine,Seizure,drugbank_suffix,0.55
-propoxycaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
-propoxycaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
-oxacillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
-chlortetracycline,,,Tetracycline,Bacterial Infection,drugbank_suffix,0.55
-chlortetracycline,,,Tetracycline,Acne,drugbank_suffix,0.55
-benznidazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
-pirenzepine,,,Anticonvulsant,Epilepsy,drugbank_suffix,0.55
-pirenzepine,,,Anticonvulsant,Bipolar Disorder,drugbank_suffix,0.55
-aceprometazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-aceprometazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-procaine benzylpenicillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
-pivampicillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
-butoconazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
-pentostatin,,,Statin,Hyperlipidemia,drugbank_suffix,0.55
-pentostatin,,,Statin,High Cholesterol,drugbank_suffix,0.55
-rimexolone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
-rimexolone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
-enasidenib,,,Kinase Inhibitor,Cancer,drugbank_suffix,0.55
-azidocillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
-prazepam,,,Benzodiazepine,Anxiety,drugbank_suffix,0.55
-prazepam,,,Benzodiazepine,Insomnia,drugbank_suffix,0.55
-prazepam,,,Benzodiazepine,Seizure,drugbank_suffix,0.55
-pibrentasvir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-pibrentasvir,,,Antiviral,Herpes,drugbank_suffix,0.55
-oxitriptan,,,Triptan,Migraine,drugbank_suffix,0.55
-oxtriphylline,,,Methylxanthine,Asthma,drugbank_suffix,0.55
-oxtriphylline,,,Methylxanthine,COPD,drugbank_suffix,0.55
-butabarbital,,,Barbiturate,Epilepsy,drugbank_suffix,0.55
-butabarbital,,,Barbiturate,Insomnia,drugbank_suffix,0.55
-promazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-promazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-tropisetron,,,5-HT3 Antagonist,Nausea,drugbank_suffix,0.55
-tropisetron,,,5-HT3 Antagonist,Vomiting,drugbank_suffix,0.55
-oxandrolone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
-oxandrolone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
-alimemazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-alimemazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-tipranavir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-tipranavir,,,Antiviral,Herpes,drugbank_suffix,0.55
-spirapril,,,ACE Inhibitor,Hypertension,drugbank_suffix,0.55
-spirapril,,,ACE Inhibitor,Heart Failure,drugbank_suffix,0.55
-loxoprofen,,,NSAID,Pain,drugbank_suffix,0.55
-loxoprofen,,,NSAID,Inflammation,drugbank_suffix,0.55
-loxoprofen,,,NSAID,Fever,drugbank_suffix,0.55
-etidocaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
-etidocaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
-lormetazepam,,,Benzodiazepine,Anxiety,drugbank_suffix,0.55
-lormetazepam,,,Benzodiazepine,Insomnia,drugbank_suffix,0.55
-lormetazepam,,,Benzodiazepine,Seizure,drugbank_suffix,0.55
-simeprevir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-simeprevir,,,Antiviral,Herpes,drugbank_suffix,0.55
-rolitetracycline,,,Tetracycline,Bacterial Infection,drugbank_suffix,0.55
-rolitetracycline,,,Tetracycline,Acne,drugbank_suffix,0.55
-nafcillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
-brexpiprazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
-dimetotiazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-dimetotiazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-oseltamivir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-oseltamivir,,,Antiviral,Herpes,drugbank_suffix,0.55
-cyamemazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-cyamemazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-trandolapril,,,ACE Inhibitor,Hypertension,drugbank_suffix,0.55
-trandolapril,,,ACE Inhibitor,Heart Failure,drugbank_suffix,0.55
-manidipine,,,Calcium Channel Blocker,Hypertension,drugbank_suffix,0.55
-manidipine,,,Calcium Channel Blocker,Angina,drugbank_suffix,0.55
-mepivacaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
-mepivacaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
-vemurafenib,,,Kinase Inhibitor,Cancer,drugbank_suffix,0.55
-phenmetrazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-phenmetrazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-thioproperazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-thioproperazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-neratinib,,,Kinase Inhibitor,Cancer,drugbank_suffix,0.55
-prednisone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
-prednisone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
-bevantolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
-bevantolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
-triflupromazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-triflupromazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-isoconazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
-halazepam,,,Benzodiazepine,Anxiety,drugbank_suffix,0.55
-halazepam,,,Benzodiazepine,Insomnia,drugbank_suffix,0.55
-halazepam,,,Benzodiazepine,Seizure,drugbank_suffix,0.55
-zafirlukast,,,Leukotriene Antagonist,Asthma,drugbank_suffix,0.55
-zafirlukast,,,Leukotriene Antagonist,Allergic Rhinitis,drugbank_suffix,0.55
-cilastatin,,,Statin,Hyperlipidemia,drugbank_suffix,0.55
-cilastatin,,,Statin,High Cholesterol,drugbank_suffix,0.55
-fenoprofen,,,NSAID,Pain,drugbank_suffix,0.55
-fenoprofen,,,NSAID,Inflammation,drugbank_suffix,0.55
-fenoprofen,,,NSAID,Fever,drugbank_suffix,0.55
-flunitrazepam,,,Benzodiazepine,Anxiety,drugbank_suffix,0.55
-flunitrazepam,,,Benzodiazepine,Insomnia,drugbank_suffix,0.55
-flunitrazepam,,,Benzodiazepine,Seizure,drugbank_suffix,0.55
-levobupivacaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
-levobupivacaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
-paromomycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
-cyclacillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
-phendimetrazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-phendimetrazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-thiabendazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
-asunaprevir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-asunaprevir,,,Antiviral,Herpes,drugbank_suffix,0.55
-raltegravir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-raltegravir,,,Antiviral,Herpes,drugbank_suffix,0.55
-quazepam,,,Benzodiazepine,Anxiety,drugbank_suffix,0.55
-quazepam,,,Benzodiazepine,Insomnia,drugbank_suffix,0.55
-quazepam,,,Benzodiazepine,Seizure,drugbank_suffix,0.55
-azlocillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
-ditazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
-acetophenazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-acetophenazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-mezlocillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
-oxymetholone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
-oxymetholone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
-telithromycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
-butobarbital,,,Barbiturate,Epilepsy,drugbank_suffix,0.55
-butobarbital,,,Barbiturate,Insomnia,drugbank_suffix,0.55
-nadolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
-nadolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
-acebutolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
-acebutolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
-sulfaphenazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
-metipranolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
-metipranolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
-letermovir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-letermovir,,,Antiviral,Herpes,drugbank_suffix,0.55
-meticillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
-dabrafenib,,,Kinase Inhibitor,Cancer,drugbank_suffix,0.55
-alclometasone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
-alclometasone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
-trovafloxacin,,,Fluoroquinolone,Bacterial Infection,drugbank_suffix,0.55
-trovafloxacin,,,Fluoroquinolone,UTI,drugbank_suffix,0.55
-boceprevir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-boceprevir,,,Antiviral,Herpes,drugbank_suffix,0.55
-deutetrabenazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-deutetrabenazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-enviomycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
-ponatinib,,,Kinase Inhibitor,Cancer,drugbank_suffix,0.55
-clevidipine,,,Calcium Channel Blocker,Hypertension,drugbank_suffix,0.55
-clevidipine,,,Calcium Channel Blocker,Angina,drugbank_suffix,0.55
-nisoldipine,,,Calcium Channel Blocker,Hypertension,drugbank_suffix,0.55
-nisoldipine,,,Calcium Channel Blocker,Angina,drugbank_suffix,0.55
-valaciclovir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-valaciclovir,,,Antiviral,Herpes,drugbank_suffix,0.55
-dapiprazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
-phenelzine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-phenelzine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-nelfinavir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-nelfinavir,,,Antiviral,Herpes,drugbank_suffix,0.55
-acepromazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-acepromazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-dasabuvir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-dasabuvir,,,Antiviral,Herpes,drugbank_suffix,0.55
-paritaprevir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-paritaprevir,,,Antiviral,Herpes,drugbank_suffix,0.55
-flumethasone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
-flumethasone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
-metacycline,,,Tetracycline,Bacterial Infection,drugbank_suffix,0.55
-metacycline,,,Tetracycline,Acne,drugbank_suffix,0.55
-difluocortolone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
-difluocortolone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
-pramocaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
-pramocaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
-velpatasvir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-velpatasvir,,,Antiviral,Herpes,drugbank_suffix,0.55
-sulfathiazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
-chlorothiazide,,,Thiazide Diuretic,Hypertension,drugbank_suffix,0.55
-chlorothiazide,,,Thiazide Diuretic,Edema,drugbank_suffix,0.55
-grazoprevir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-grazoprevir,,,Antiviral,Herpes,drugbank_suffix,0.55
-terconazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
-sulfametopyrazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-sulfametopyrazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-mesoridazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-mesoridazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-carprofen,,,NSAID,Pain,drugbank_suffix,0.55
-carprofen,,,NSAID,Inflammation,drugbank_suffix,0.55
-carprofen,,,NSAID,Fever,drugbank_suffix,0.55
-viomycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
-dyphylline,,,Methylxanthine,Asthma,drugbank_suffix,0.55
-dyphylline,,,Methylxanthine,COPD,drugbank_suffix,0.55
-bopindolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
-bopindolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
-moricizine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-moricizine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-olmesartan,,,ARB,Hypertension,drugbank_suffix,0.55
-hexetidine,,,H2 Blocker,GERD,drugbank_suffix,0.55
-hexetidine,,,H2 Blocker,Peptic Ulcer,drugbank_suffix,0.55
-econazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
-oxybuprocaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
-oxybuprocaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
-amoxicillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
-cefmetazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
-pentobarbital,,,Barbiturate,Epilepsy,drugbank_suffix,0.55
-pentobarbital,,,Barbiturate,Insomnia,drugbank_suffix,0.55
-viloxazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-viloxazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-voxilaprevir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-voxilaprevir,,,Antiviral,Herpes,drugbank_suffix,0.55
-secobarbital,,,Barbiturate,Epilepsy,drugbank_suffix,0.55
-secobarbital,,,Barbiturate,Insomnia,drugbank_suffix,0.55
-hexobarbital,,,Barbiturate,Epilepsy,drugbank_suffix,0.55
-hexobarbital,,,Barbiturate,Insomnia,drugbank_suffix,0.55
-methyclothiazide,,,Thiazide Diuretic,Hypertension,drugbank_suffix,0.55
-methyclothiazide,,,Thiazide Diuretic,Edema,drugbank_suffix,0.55
-frovatriptan,,,Triptan,Migraine,drugbank_suffix,0.55
-phenobarbital,,,Barbiturate,Epilepsy,drugbank_suffix,0.55
-phenobarbital,,,Barbiturate,Insomnia,drugbank_suffix,0.55
-imatinib,,,Kinase Inhibitor,Cancer,drugbank_suffix,0.55
-finafloxacin,,,Fluoroquinolone,Bacterial Infection,drugbank_suffix,0.55
-finafloxacin,,,Fluoroquinolone,UTI,drugbank_suffix,0.55
-flubendazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
-alosetron,,,5-HT3 Antagonist,Nausea,drugbank_suffix,0.55
-alosetron,,,5-HT3 Antagonist,Vomiting,drugbank_suffix,0.55
-sulconazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
-sulfamethazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-sulfamethazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-cyclothiazide,,,Thiazide Diuretic,Hypertension,drugbank_suffix,0.55
-cyclothiazide,,,Thiazide Diuretic,Edema,drugbank_suffix,0.55
-nicardipine,,,Calcium Channel Blocker,Hypertension,drugbank_suffix,0.55
-nicardipine,,,Calcium Channel Blocker,Angina,drugbank_suffix,0.55
-delorazepam,,,Benzodiazepine,Anxiety,drugbank_suffix,0.55
-delorazepam,,,Benzodiazepine,Insomnia,drugbank_suffix,0.55
-delorazepam,,,Benzodiazepine,Seizure,drugbank_suffix,0.55
-fludiazepam,,,Benzodiazepine,Anxiety,drugbank_suffix,0.55
-fludiazepam,,,Benzodiazepine,Insomnia,drugbank_suffix,0.55
-fludiazepam,,,Benzodiazepine,Seizure,drugbank_suffix,0.55
-chloroprocaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
-chloroprocaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
-zaltoprofen,,,NSAID,Pain,drugbank_suffix,0.55
-zaltoprofen,,,NSAID,Inflammation,drugbank_suffix,0.55
-zaltoprofen,,,NSAID,Fever,drugbank_suffix,0.55
-olsalazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-olsalazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-elvitegravir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-elvitegravir,,,Antiviral,Herpes,drugbank_suffix,0.55
-phenoxymethylpenicillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
-perindopril,,,ACE Inhibitor,Hypertension,drugbank_suffix,0.55
-perindopril,,,ACE Inhibitor,Heart Failure,drugbank_suffix,0.55
-josamycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
-penbutolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
-penbutolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
-dactinomycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
-ribostamycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
-glecaprevir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-glecaprevir,,,Antiviral,Herpes,drugbank_suffix,0.55
-polythiazide,,,Thiazide Diuretic,Hypertension,drugbank_suffix,0.55
-polythiazide,,,Thiazide Diuretic,Edema,drugbank_suffix,0.55
-amprenavir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-amprenavir,,,Antiviral,Herpes,drugbank_suffix,0.55
-bacampicillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
-cocaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
-cocaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
-carteolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
-carteolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
-alprenolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
-alprenolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
-bendroflumethiazide,,,Thiazide Diuretic,Hypertension,drugbank_suffix,0.55
-bendroflumethiazide,,,Thiazide Diuretic,Edema,drugbank_suffix,0.55
-delafloxacin,,,Fluoroquinolone,Bacterial Infection,drugbank_suffix,0.55
-delafloxacin,,,Fluoroquinolone,UTI,drugbank_suffix,0.55
-valbenazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-valbenazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-suprofen,,,NSAID,Pain,drugbank_suffix,0.55
-suprofen,,,NSAID,Inflammation,drugbank_suffix,0.55
-suprofen,,,NSAID,Fever,drugbank_suffix,0.55
-ombitasvir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-ombitasvir,,,Antiviral,Herpes,drugbank_suffix,0.55
-procaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
-procaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
-tetracaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
-tetracaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
-troleandomycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
-clocortolone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
-clocortolone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
-sulfamerazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-sulfamerazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-perphenazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-perphenazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
-tasosartan,,,ARB,Hypertension,drugbank_suffix,0.55
-plicamycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
-trichlormethiazide,,,Thiazide Diuretic,Hypertension,drugbank_suffix,0.55
-trichlormethiazide,,,Thiazide Diuretic,Edema,drugbank_suffix,0.55
-lumiracoxib,,,COX-2 Inhibitor,Arthritis,drugbank_suffix,0.55
-lumiracoxib,,,COX-2 Inhibitor,Pain,drugbank_suffix,0.55
-clotiazepam,,,Benzodiazepine,Anxiety,drugbank_suffix,0.55
-clotiazepam,,,Benzodiazepine,Insomnia,drugbank_suffix,0.55
-clotiazepam,,,Benzodiazepine,Seizure,drugbank_suffix,0.55
-efinaconazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
-nitrendipine,,,Calcium Channel Blocker,Hypertension,drugbank_suffix,0.55
-nitrendipine,,,Calcium Channel Blocker,Angina,drugbank_suffix,0.55
-mequitazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
-mequitazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
 fenoldopam,,,Benzodiazepine,Anxiety,drugbank_suffix,0.55
 fenoldopam,,,Benzodiazepine,Insomnia,drugbank_suffix,0.55
 fenoldopam,,,Benzodiazepine,Seizure,drugbank_suffix,0.55
-benzylpenicillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
-elbasvir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
-elbasvir,,,Antiviral,Herpes,drugbank_suffix,0.55
-isradipine,,,Calcium Channel Blocker,Hypertension,drugbank_suffix,0.55
-isradipine,,,Calcium Channel Blocker,Angina,drugbank_suffix,0.55
-dolasetron,,,5-HT3 Antagonist,Nausea,drugbank_suffix,0.55
-dolasetron,,,5-HT3 Antagonist,Vomiting,drugbank_suffix,0.55
-fluocortolone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
-fluocortolone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
+cyclizine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+cyclizine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+moexipril,,,ACE Inhibitor,Hypertension,drugbank_suffix,0.55
+moexipril,,,ACE Inhibitor,Heart Failure,drugbank_suffix,0.55
+pirenzepine,,,Anticonvulsant,Epilepsy,drugbank_suffix,0.55
+pirenzepine,,,Anticonvulsant,Bipolar Disorder,drugbank_suffix,0.55
+oxprenolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
+oxprenolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
+benznidazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
+dabrafenib,,,Kinase Inhibitor,Cancer,drugbank_suffix,0.55
+penbutolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
+penbutolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
+viomycin,,,Macrolide / Aminoglycoside,Bacterial Infection,drugbank_suffix,0.55
+promazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+promazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+nilvadipine,,,Calcium Channel Blocker,Hypertension,drugbank_suffix,0.55
+nilvadipine,,,Calcium Channel Blocker,Angina,drugbank_suffix,0.55
+phenoxymethylpenicillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
+fludiazepam,,,Benzodiazepine,Anxiety,drugbank_suffix,0.55
+fludiazepam,,,Benzodiazepine,Insomnia,drugbank_suffix,0.55
+fludiazepam,,,Benzodiazepine,Seizure,drugbank_suffix,0.55
+butoconazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
+neratinib,,,Kinase Inhibitor,Cancer,drugbank_suffix,0.55
+olsalazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+olsalazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+alclometasone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
+alclometasone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
+sulfametopyrazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+sulfametopyrazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+rolitetracycline,,,Tetracycline,Bacterial Infection,drugbank_suffix,0.55
+rolitetracycline,,,Tetracycline,Acne,drugbank_suffix,0.55
+finafloxacin,,,Fluoroquinolone,Bacterial Infection,drugbank_suffix,0.55
+finafloxacin,,,Fluoroquinolone,UTI,drugbank_suffix,0.55
+polythiazide,,,Thiazide Diuretic,Hypertension,drugbank_suffix,0.55
+polythiazide,,,Thiazide Diuretic,Edema,drugbank_suffix,0.55
+clocortolone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
+clocortolone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
+flubendazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
+butobarbital,,,Barbiturate,Epilepsy,drugbank_suffix,0.55
+butobarbital,,,Barbiturate,Insomnia,drugbank_suffix,0.55
+phenformin,,,Biguanide,Type 2 Diabetes,drugbank_suffix,0.55
+ponatinib,,,Kinase Inhibitor,Cancer,drugbank_suffix,0.55
+oxacillin,,,Penicillin Antibiotic,Bacterial Infection,drugbank_suffix,0.55
+nadolol,,,Beta-Blocker,Hypertension,drugbank_suffix,0.55
+nadolol,,,Beta-Blocker,Angina,drugbank_suffix,0.55
+difluocortolone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
+difluocortolone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
+vemurafenib,,,Kinase Inhibitor,Cancer,drugbank_suffix,0.55
+halazepam,,,Benzodiazepine,Anxiety,drugbank_suffix,0.55
+halazepam,,,Benzodiazepine,Insomnia,drugbank_suffix,0.55
+halazepam,,,Benzodiazepine,Seizure,drugbank_suffix,0.55
+phenelzine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+phenelzine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+mepivacaine,,,Local Anesthetic,Local Anesthesia,drugbank_suffix,0.55
+mepivacaine,,,Local Anesthetic,Pain,drugbank_suffix,0.55
+spirapril,,,ACE Inhibitor,Hypertension,drugbank_suffix,0.55
+spirapril,,,ACE Inhibitor,Heart Failure,drugbank_suffix,0.55
+amobarbital,,,Barbiturate,Epilepsy,drugbank_suffix,0.55
+amobarbital,,,Barbiturate,Insomnia,drugbank_suffix,0.55
+sulfamethazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+sulfamethazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+raltegravir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+raltegravir,,,Antiviral,Herpes,drugbank_suffix,0.55
+flumethasone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
+flumethasone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
+afatinib,,,Kinase Inhibitor,Cancer,drugbank_suffix,0.55
+acepromazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+acepromazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+amprenavir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+amprenavir,,,Antiviral,Herpes,drugbank_suffix,0.55
+dapiprazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
+loxoprofen,,,NSAID,Pain,drugbank_suffix,0.55
+loxoprofen,,,NSAID,Inflammation,drugbank_suffix,0.55
+loxoprofen,,,NSAID,Fever,drugbank_suffix,0.55
+barnidipine,,,Calcium Channel Blocker,Hypertension,drugbank_suffix,0.55
+barnidipine,,,Calcium Channel Blocker,Angina,drugbank_suffix,0.55
+phenobarbital,,,Barbiturate,Epilepsy,drugbank_suffix,0.55
+phenobarbital,,,Barbiturate,Insomnia,drugbank_suffix,0.55
+cobimetinib,,,Kinase Inhibitor,Cancer,drugbank_suffix,0.55
+glecaprevir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+glecaprevir,,,Antiviral,Herpes,drugbank_suffix,0.55
+prednisone,,,Corticosteroid,Inflammation,drugbank_suffix,0.55
+prednisone,,,Corticosteroid,Autoimmune Disease,drugbank_suffix,0.55
+letermovir,,,Antiviral,Viral Infection,drugbank_suffix,0.55
+letermovir,,,Antiviral,Herpes,drugbank_suffix,0.55
+sulfamerazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+sulfamerazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
+icotinib,,,Kinase Inhibitor,Cancer,drugbank_suffix,0.55
+sulfisoxazole,,,Azole Antifungal,Fungal Infection,drugbank_suffix,0.55
+prazepam,,,Benzodiazepine,Anxiety,drugbank_suffix,0.55
+prazepam,,,Benzodiazepine,Insomnia,drugbank_suffix,0.55
+prazepam,,,Benzodiazepine,Seizure,drugbank_suffix,0.55
+fenoprofen,,,NSAID,Pain,drugbank_suffix,0.55
+fenoprofen,,,NSAID,Inflammation,drugbank_suffix,0.55
+fenoprofen,,,NSAID,Fever,drugbank_suffix,0.55
+acetophenazine,,,Antihistamine,Allergy,drugbank_suffix,0.55
+acetophenazine,,,Antihistamine,Allergic Rhinitis,drugbank_suffix,0.55
