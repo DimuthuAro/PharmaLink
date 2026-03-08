@@ -20,15 +20,22 @@ import {
     Bars3Icon,
     XMarkIcon,
     ChevronDownIcon,
+    EyeIcon,
+    SparklesIcon,
+    FireIcon,
 } from "@heroicons/react/24/outline";
 
 const NAV_ITEMS = [
     { id: "dashboard", label: "Dashboard", path: "/dashboard", icon: HomeIcon },
     { id: "interaction-check", label: "Drug Interaction", path: "/interaction-check", icon: ShieldCheckIcon },
     { id: "advisory", label: "Food–Drug Interaction", path: "/advisory", icon: LightBulbIcon },
+    { id: "meal-plan", label: "Meal Plan Advisor", path: "/meal-plan", icon: EyeIcon },
+    { id: "drug-image", label: "Drug Image Prediction", path: "/drug-image", icon: FireIcon },
+    { id: "drug-recommender", label: "Drug Recommender", path: "/drug-recommender", icon: BeakerIcon },
+    { id: "treatment-identifier", label: "Treatment Identifier", path: "/treatment-identifier", icon: ShieldCheckIcon },
     { id: "comparator", label: "Cross-Brand Comparator", path: "/comparator", icon: ScaleIcon },
     { id: "prescription", label: "Prescription Interpreter", path: "/prescription", icon: DocumentTextIcon },
-    { id: "treatment", label: "Treatment Identifier", path: "/treatment-identifier", icon: BeakerIcon },
+    { id: "treatment", label: "Treatment Identifier", path: "/treatment-identifier", icon: SparklesIcon },
     { id: "history", label: "History", path: "/history", icon: ClockIcon },
 ];
 

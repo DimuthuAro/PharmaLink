@@ -19,6 +19,8 @@ const TreatmentIdentifier = React.lazy(() => import('../pages/TreatmentIdentifie
 const Profile = React.lazy(() => import('../pages/Profile.jsx'))
 const Setting = React.lazy(() => import('../pages/Setting.jsx'))
 const ProtectedTestPage = React.lazy(() => import('../pages/ProtectedTestPage.jsx'))
+const DrugImagePredict = React.lazy(() => import('../pages/DrugImagePredict.jsx'))
+const DrugRecommender = React.lazy(() => import('../pages/SymptomDrugRecommend.jsx'))
 
 const LazyPage = ({ children }) => (
   <Suspense fallback={
@@ -39,7 +41,6 @@ const unprotected_routes = [
 const protected_routes = createProtectedRoutes([
   { path: '/dashboard', element: <AppLayout><LazyPage><Dashboard /></LazyPage></AppLayout> },
   { path: '/interaction-check', element: <AppLayout><LazyPage><InteractionCheck /></LazyPage></AppLayout> },
-  { path: '/e', element: <AppLayout><LazyPage><ProtectedTestPage /></LazyPage></AppLayout> },
   { path: '/advisory', element: <AppLayout><LazyPage><FoodDrugInteraction /></LazyPage></AppLayout> },
   { path: "/history", element: <AppLayout><LazyPage><History /></LazyPage></AppLayout> },
   { path: "/meal-plan", element: <AppLayout><LazyPage><MealPlan /></LazyPage></AppLayout> },
@@ -47,7 +48,9 @@ const protected_routes = createProtectedRoutes([
   { path: '/comparator', element: <AppLayout><LazyPage><CrossBrandComparator /></LazyPage></AppLayout> },
   { path: '/treatment-identifier', element: <AppLayout><LazyPage><TreatmentIdentifier /></LazyPage></AppLayout> },
   { path: '/profile', element: <LazyPage><Profile /></LazyPage> },
-  { path: '/settings', element: <LazyPage><Setting /></LazyPage> }
+  { path: '/settings', element: <LazyPage><Setting /></LazyPage> },
+  { path: '/drug-image', element: <AppLayout><LazyPage><DrugImagePredict /></LazyPage></AppLayout> },
+  { path: '/drug-recommender', element: <AppLayout><LazyPage><DrugRecommender /></LazyPage></AppLayout> }
 ])
 
 export { unprotected_routes, protected_routes }

@@ -2,10 +2,18 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../auth/auth.jsx";
+import BrandLogo from "../components/brandLogo2.jsx";
+import UserAvatar from "../components/UserAvatar.jsx";
 import { advisoryRequest, mlRequest } from "../utils/api.js";
 
 import {
+  HomeIcon,
+  UserCircleIcon as UserCircle,
+  ArrowRightOnRectangleIcon,
+  PhotoIcon,
   ShieldCheckIcon,
+  ClipboardDocumentListIcon,
+  ClockIcon,
   ArrowPathIcon,
   ExclamationTriangleIcon,
   CheckCircleIcon,
@@ -239,7 +247,9 @@ function SignalsGrid({ signals }) {
 export default function FoodDrugInteraction() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated, user, token } = useAuth();
+  const { isAuthenticated, user, logout, token } = useAuth();
+
+  const [activeTab, setActiveTab] = useState("food-drug");
 
   const [selectedDrugIndex, setSelectedDrugIndex] = useState(null);
   const [selectedDrugName, setSelectedDrugName] = useState("");
@@ -286,6 +296,13 @@ export default function FoodDrugInteraction() {
     () => async (q) => await mlRequest(`/foods?q=${encodeURIComponent(q)}&limit=10`),
     []
   );
+
+  const handleNavigation = useCallback((path) => navigate(path), [navigate]);
+
+  const handleLogout = useCallback(() => {
+    logout();
+    navigate("/");
+  }, [logout, navigate]);
 
   const resetAll = () => {
     setSelectedDrugIndex(null);
@@ -353,7 +370,27 @@ export default function FoodDrugInteraction() {
   const resultSignals = pickSignals(result || {});
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
+      <div className="flex">
+
+        {/* MAIN */}
+        <div className="flex-1">
+          {/* TOP HEADER */}
+          <header className="h-16 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 flex items-center px-4 md:px-6 sticky top-0 z-40 shadow-sm">
+            <div className="leading-tight">
+              <div className="text-base md:text-lg font-extrabold text-[#2f2971]">
+                Health Advisory Center
+              </div>
+              <div className="text-xs text-slate-500">
+                Smart Healthcare Tools for Food–Drug Safety, Personalized
+                Nutrition & Pill Identification
+              </div>
+            </div>
+          </header>
+
+          {/* CONTENT */}
+          <main className="p-4 md:p-6 lg:p-8">
+            <div className="max-w-5xl mx-auto">
               {/* Page Header */}
               <div className="mb-8">
                 <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-2">
@@ -720,14 +757,37 @@ export default function FoodDrugInteraction() {
               </div>
 
               {/* Footer */}
-      <footer className="mt-12 pt-6 border-t border-slate-200 dark:border-gray-700">
-        <div className="flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500 dark:text-gray-500">
+              <footer className="mt-12 pt-6 border-t border-slate-200">
+                <div className="flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500">
                   <div className="flex items-center gap-2">
-            <span>&copy; {new Date().getFullYear()} PharmaLink. All rights reserved.</span>
+
+                    <span>© {new Date().getFullYear()} PharmaLink. All rights reserved.</span>
                   </div>
                   <span>For academic and research purposes only. Always consult a healthcare professional.</span>
                 </div>
               </footer>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      {/* Custom Scrollbar Styles */}
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #f1f5f9;
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #94a3b8;
+        }
+      `}</style>
     </div>
   );
 }
