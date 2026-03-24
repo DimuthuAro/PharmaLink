@@ -1615,29 +1615,77 @@ class CombinedRecoResponse(BaseModel):
 # =========================================================
 # SAFE FOODS SUGGESTION (SINGLE DRUG)
 # =========================================================
-def suggest_safe_foods_for_drug(drug_row: pd.Series, limit: int = 10) -> List[Dict[str, Any]]:
-    pool = unified_foods.copy()
+def suggest_safe_foods_for_drug(
+    drug_row: pd.Series,
+    limit: int = 10,
+    foods_source: pd.DataFrame = mealplan_foods,
+) -> List[Dict[str, Any]]:
+    pool = foods_source.copy()
     pool = quality_filter(pool)
 
-    pool["pred_severity"] = predict_severity_batch(drug_row, pool)
+    if pool.empty:
+        return []
 
+    pool["pred_severity"] = predict_severity_batch(drug_row, pool)
     safe_df = pool[pool["pred_severity"] == 0].copy()
+
     if safe_df.empty:
         return []
 
-    if "protein" not in safe_df.columns:
-        safe_df["protein"] = 0.0
+    # fallback missing numeric cols
+    for col in ["protein", "carbs", "fat", "fiber", "sugars", "sodium", "energy"]:
+        if col not in safe_df.columns:
+            safe_df[col] = 0.0
+        safe_df[col] = pd.to_numeric(safe_df[col], errors="coerce").fillna(0.0)
 
+    if "food_type" not in safe_df.columns:
+        safe_df["food_type"] = "unknown"
+
+    safe_df["Food_norm"] = safe_df["Food"].astype(str).str.strip().str.lower()
+
+    # Better ranking:
+    # - still safe only
+    # - reduce fish/protein-only dominance
+    # - prefer moderate calories, lower sodium/fat
     safe_df["rank_score"] = (
-        (safe_df["pred_severity"] * 10)
-        - safe_df["protein"].fillna(0)
-        + (safe_df["energy"].fillna(0) - 300).abs() / 100
+        (safe_df["energy"].fillna(0) - 250).abs() / 100
+        + safe_df["sodium"].fillna(0) / 1000
+        + safe_df["fat"].fillna(0) / 100
     )
 
-    safe_df = safe_df.sort_values("rank_score").head(int(limit))
+    safe_df = safe_df.sort_values(["rank_score", "Food_norm"]).reset_index(drop=True)
+
+    # Diversity by food_type first
+    diverse_rows = []
+    used_food_types = set()
+
+    for _, row in safe_df.iterrows():
+        ft = str(row.get("food_type", "unknown")).strip().lower() or "unknown"
+        if ft not in used_food_types:
+            diverse_rows.append(row)
+            used_food_types.add(ft)
+        if len(diverse_rows) >= int(limit):
+            break
+
+    # If not enough, fill remaining from rest
+    if len(diverse_rows) < int(limit):
+        chosen_foods = {
+            str(r["Food"]).strip().lower()
+            for r in diverse_rows
+        }
+        for _, row in safe_df.iterrows():
+            fname = str(row["Food"]).strip().lower()
+            if fname in chosen_foods:
+                continue
+            diverse_rows.append(row)
+            chosen_foods.add(fname)
+            if len(diverse_rows) >= int(limit):
+                break
+
+    selected_df = pd.DataFrame(diverse_rows).head(int(limit))
 
     out: List[Dict[str, Any]] = []
-    for _, r in safe_df.iterrows():
+    for _, r in selected_df.iterrows():
         out.append({
             "food": str(r["Food"]),
             "food_type": str(r.get("food_type", "unknown")),
@@ -1867,23 +1915,27 @@ def ml_food_drug_risk(body: FoodDrugRequest):
     idx = drug_indices[0]
     drug_row = drug_clean.iloc[idx]
 
-    matches = unified_foods[unified_foods["Food"].astype(str).str.lower() == str(body.food_name).lower()]
+    matches = unified_foods[
+        unified_foods["Food"].astype(str).str.lower() == str(body.food_name).strip().lower()
+    ]
     if matches.empty:
         raise HTTPException(status_code=404, detail=f"Food '{body.food_name}' not found")
 
     food_row = matches.iloc[0]
+
     sev_ml, reasons_ml = ml_predict_one(drug_row, food_row)
     sev_ml, reasons_ml = apply_rule_overrides(drug_row, food_row, sev_ml, reasons_ml)
-
 
     exp = explain_features(drug_row, food_row)
     exp["reason_details"] = build_reason_details(drug_row, food_row, reasons_ml)
 
-
-
     safe_foods: List[Dict[str, Any]] = []
     if int(sev_ml) >= 1:
-        safe_foods = suggest_safe_foods_for_drug(drug_row, limit=int(body.safe_food_limit or 10))
+        safe_foods = suggest_safe_foods_for_drug(
+            drug_row=drug_row,
+            limit=int(body.safe_food_limit or 10),
+            foods_source=mealplan_foods,   # use meal-plan DB here
+        )
 
     return FoodDrugResponse(
         drug=str(drug_row["Name"]),
@@ -1891,10 +1943,9 @@ def ml_food_drug_risk(body: FoodDrugRequest):
         severity=int(sev_ml),
         message=risk_map[int(sev_ml)],
         reasons=reasons_ml,
-        explanation=exp,   # updated
-        safe_foods=safe_foods
+        explanation=exp,
+        safe_foods=safe_foods,
     )
-
 
 
 @app.get("/ml-meal-plan")
