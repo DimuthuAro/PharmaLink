@@ -1487,6 +1487,7 @@ class FoodDrugRequest(BaseModel):
     drug_name: str
     food_name: str
     safe_food_limit: int = 10
+    diversify_seed: Optional[int] = None
 
 
 class SafeFoodItem(BaseModel):
@@ -1619,12 +1620,18 @@ def suggest_safe_foods_for_drug(
     drug_row: pd.Series,
     limit: int = 10,
     foods_source: pd.DataFrame = mealplan_foods,
+    exclude_foods: Optional[Set[str]] = None,
+    recent_clusters: Optional[Set[int]] = None,
+    rng: Optional[np.random.Generator] = None, 
 ) -> List[Dict[str, Any]]:
     pool = foods_source.copy()
     pool = quality_filter(pool)
 
     if pool.empty:
         return []
+
+    exclude_foods = {normalize_food_name(x) for x in (exclude_foods or set())}
+    recent_clusters = set(recent_clusters or set())
 
     pool["pred_severity"] = predict_severity_batch(drug_row, pool)
     safe_df = pool[pool["pred_severity"] == 0].copy()
@@ -1641,51 +1648,118 @@ def suggest_safe_foods_for_drug(
     if "food_type" not in safe_df.columns:
         safe_df["food_type"] = "unknown"
 
-    safe_df["Food_norm"] = safe_df["Food"].astype(str).str.strip().str.lower()
+    if "cluster_id" not in safe_df.columns:
+        safe_df["cluster_id"] = -1
 
-    # Better ranking:
-    # - still safe only
-    # - reduce fish/protein-only dominance
-    # - prefer moderate calories, lower sodium/fat
+    safe_df["Food_norm"] = safe_df["Food"].astype(str).str.strip().str.lower()
+    safe_df = safe_df.drop_duplicates(subset=["Food_norm"], keep="first").reset_index(drop=True)
+
+    # remove explicitly excluded foods
+    if exclude_foods:
+        safe_df = safe_df[~safe_df["Food_norm"].isin(exclude_foods)].copy()
+
+    if safe_df.empty:
+        return []
+
+    # Base ranking
     safe_df["rank_score"] = (
         (safe_df["energy"].fillna(0) - 250).abs() / 100
         + safe_df["sodium"].fillna(0) / 1000
         + safe_df["fat"].fillna(0) / 100
     )
 
-    safe_df = safe_df.sort_values(["rank_score", "Food_norm"]).reset_index(drop=True)
+    # preference for more balanced foods
+    safe_df["nutrition_bonus"] = (
+        safe_df["protein"].fillna(0) * 0.04
+        + safe_df["fiber"].fillna(0) * 0.06
+        - safe_df["sugars"].fillna(0) * 0.03
+    )
 
-    # Diversity by food_type first
-    diverse_rows = []
+    # penalties to reduce repetition
+    safe_df["repeat_food_penalty"] = safe_df["Food_norm"].apply(
+        lambda x: 3.0 if x in exclude_foods else 0.0
+    )
+    safe_df["repeat_cluster_penalty"] = safe_df["cluster_id"].apply(
+        lambda x: 1.5 if int(x) in recent_clusters and int(x) != -1 else 0.0
+    )
+
+    # final score: lower is better
+    safe_df["final_rank"] = (
+        safe_df["rank_score"]
+        + safe_df["repeat_food_penalty"]
+        + safe_df["repeat_cluster_penalty"]
+        - safe_df["nutrition_bonus"]
+    )
+
+    # keep only good candidates, not always the exact same top rows
+    candidate_pool = safe_df.sort_values("final_rank").head(min(len(safe_df), 40)).copy()
+
+    # random shuffle inside similar quality bands
+    if rng is None:
+        rng = np.random.default_rng()
+
+    candidate_pool["noise"] = rng.uniform(0.0, 0.35, size=len(candidate_pool))
+    #candidate_pool["noise"] = np.random.uniform(0.0, 0.35, size=len(candidate_pool))
+    candidate_pool["sample_rank"] = candidate_pool["final_rank"] + candidate_pool["noise"]
+    candidate_pool = candidate_pool.sort_values("sample_rank").reset_index(drop=True)
+
+    selected_rows = []
     used_food_types = set()
+    used_clusters = set()
 
-    for _, row in safe_df.iterrows():
+    # pass 1: maximize diversity by food_type + cluster
+    for _, row in candidate_pool.iterrows():
         ft = str(row.get("food_type", "unknown")).strip().lower() or "unknown"
-        if ft not in used_food_types:
-            diverse_rows.append(row)
-            used_food_types.add(ft)
-        if len(diverse_rows) >= int(limit):
+        cid = int(row.get("cluster_id", -1))
+
+        if ft in used_food_types:
+            continue
+        if cid in used_clusters and cid != -1:
+            continue
+
+        selected_rows.append(row)
+        used_food_types.add(ft)
+        if cid != -1:
+            used_clusters.add(cid)
+
+        if len(selected_rows) >= int(limit):
             break
 
-    # If not enough, fill remaining from rest
-    if len(diverse_rows) < int(limit):
-        chosen_foods = {
-            str(r["Food"]).strip().lower()
-            for r in diverse_rows
-        }
-        for _, row in safe_df.iterrows():
+    # pass 2: allow same food_type but avoid same cluster
+    if len(selected_rows) < int(limit):
+        chosen_foods = {str(r["Food"]).strip().lower() for r in selected_rows}
+        for _, row in candidate_pool.iterrows():
+            fname = str(row["Food"]).strip().lower()
+            cid = int(row.get("cluster_id", -1))
+            if fname in chosen_foods:
+                continue
+            if cid in used_clusters and cid != -1:
+                continue
+
+            selected_rows.append(row)
+            chosen_foods.add(fname)
+            if cid != -1:
+                used_clusters.add(cid)
+
+            if len(selected_rows) >= int(limit):
+                break
+
+    # pass 3: fill remaining from rest
+    if len(selected_rows) < int(limit):
+        chosen_foods = {str(r["Food"]).strip().lower() for r in selected_rows}
+        for _, row in candidate_pool.iterrows():
             fname = str(row["Food"]).strip().lower()
             if fname in chosen_foods:
                 continue
-            diverse_rows.append(row)
+
+            selected_rows.append(row)
             chosen_foods.add(fname)
-            if len(diverse_rows) >= int(limit):
+
+            if len(selected_rows) >= int(limit):
                 break
 
-    selected_df = pd.DataFrame(diverse_rows).head(int(limit))
-
     out: List[Dict[str, Any]] = []
-    for _, r in selected_df.iterrows():
+    for _, r in pd.DataFrame(selected_rows).head(int(limit)).iterrows():
         out.append({
             "food": str(r["Food"]),
             "food_type": str(r.get("food_type", "unknown")),
@@ -1699,6 +1773,7 @@ def suggest_safe_foods_for_drug(
             "severity": int(r.get("pred_severity", 0)),
             "reasons": predict_reasons_one(drug_row, r),
             "explanation": explain_features(drug_row, r),
+            "cluster_id": int(r.get("cluster_id", -1)),
         })
     return out
 
@@ -1905,6 +1980,9 @@ def list_mealplan_foods(q: Optional[str] = None, limit: int = 50):
 
 @app.post("/ml-food-drug-risk", response_model=FoodDrugResponse)
 def ml_food_drug_risk(body: FoodDrugRequest):
+    rng = np.random.default_rng(
+      body.diversify_seed if body.diversify_seed is not None else secrets.randbits(32)
+    )
     if not body.drug_name or not body.food_name:
         raise HTTPException(status_code=400, detail="drug_name and food_name are required")
 
@@ -1934,7 +2012,10 @@ def ml_food_drug_risk(body: FoodDrugRequest):
         safe_foods = suggest_safe_foods_for_drug(
             drug_row=drug_row,
             limit=int(body.safe_food_limit or 10),
-            foods_source=mealplan_foods,   # use meal-plan DB here
+            foods_source=mealplan_foods,
+            exclude_foods={str(food_row["Food"])},
+            recent_clusters={int(food_row.get("cluster_id", -1))} if "cluster_id" in food_row else set(),
+            rng=rng,   
         )
 
     return FoodDrugResponse(
