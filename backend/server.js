@@ -1,3 +1,4 @@
+//backend/server.js
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
@@ -7,13 +8,13 @@ const rateLimit = require("express-rate-limit");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const path = require("path");
 
-// Load .env (Windows-safe)
+// Load .env
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 // Local infra
 const connectDB = require("./config/database");
 
-// Logger (fallback to console if your logger file is missing)
+// Logger fallback
 let logger;
 try {
   logger = require("./shared_infrastructure/logger");
@@ -22,12 +23,23 @@ try {
     info: console.log,
     warn: console.warn,
     error: console.error,
-    stream: { write: (msg) => console.log(msg.trim()) }
+    stream: { write: (msg) => console.log(msg.trim()) },
   };
 }
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:8081",
+  "http://10.130.51.238:8081",
+  process.env.FRONTEND_URL,
+  process.env.MOBILE_BASE_URL,
+].filter(Boolean);
+
+logger.info("Allowed CORS origins:");
+allowedOrigins.forEach((origin) => logger.info(`- ${origin}`));
 
 /* =========================
    SECURITY & CORE MIDDLEWARE
@@ -39,8 +51,18 @@ app.use(helmet());
 // CORS
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
-    credentials: true
+    origin: function (origin, callback) {
+      // Requests like mobile app, Postman, curl may not send origin
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      logger.warn(`CORS blocked for origin: ${origin}`);
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
+    credentials: true,
   })
 );
 
@@ -57,7 +79,7 @@ app.use(
     max: 1000,
     message: "Too many requests from this IP, please try again later.",
     standardHeaders: true,
-    legacyHeaders: false
+    legacyHeaders: false,
   })
 );
 
@@ -76,10 +98,8 @@ connectDB();
    ROUTES
 ========================= */
 const userRoutes = require("./routes/user");
-//const interactionRoutes = require("./routes/interactions");
 
 app.use("/api/users", userRoutes);
-//app.use("/api/interactions", interactionRoutes);
 
 /* =========================
    HEALTH
@@ -87,7 +107,8 @@ app.use("/api/users", userRoutes);
 app.get("/health", async (req, res) => {
   res.status(200).json({
     status: "OK",
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    port: PORT,
   });
 });
 
@@ -95,29 +116,30 @@ app.get("/health", async (req, res) => {
    MICROSERVICE PROXIES
 ========================= */
 
-// helper to build a safe proxy (with good error message)
 function proxyTo(target, basePath) {
   return createProxyMiddleware({
     target,
     changeOrigin: true,
-    pathRewrite: { [`^${basePath}`]: "" },
-    proxyTimeout: 60_000,
-    timeout: 60_000,
+    pathRewrite: {
+      [`^${basePath}`]: "",
+    },
+    proxyTimeout: 60000,
+    timeout: 60000,
     onError(err, req, res) {
-      logger.error(`[proxy error] ${basePath} -> ${target}`, err.message);
+      logger.error(`[proxy error] ${basePath} -> ${target}: ${err.message}`);
       if (!res.headersSent) {
         res.status(502).json({
           error: "Microservice unavailable",
           service: basePath,
           target,
-          details: err.message
+          details: err.message,
         });
       }
-    }
+    },
   });
 }
 
-// drug interaction microservice
+// Drug interaction microservice
 app.use(
   "/api/drug-interactions",
   proxyTo(
@@ -126,7 +148,7 @@ app.use(
   )
 );
 
-// personalized advisory microservice (YOUR PART)
+// Personalized advisory microservice
 app.use(
   "/api/advisory",
   proxyTo(
@@ -135,7 +157,7 @@ app.use(
   )
 );
 
-// crossbrand comparator microservice
+// Cross-brand comparator microservice
 app.use(
   "/api/comparator",
   proxyTo(
@@ -144,7 +166,7 @@ app.use(
   )
 );
 
-// prescription interpreter microservice
+// Prescription interpreter microservice
 app.use(
   "/api/prescription",
   proxyTo(
@@ -158,9 +180,13 @@ app.use(
 ========================= */
 app.use((err, req, res, next) => {
   logger.error(err.stack || err);
+
   res.status(500).json({
     error: "Something went wrong",
-    message: process.env.NODE_ENV === "development" ? err.message : "Internal server error"
+    message:
+      process.env.NODE_ENV === "development"
+        ? err.message
+        : "Internal server error",
   });
 });
 
@@ -170,16 +196,17 @@ app.use((err, req, res, next) => {
 app.use("*", (req, res) => {
   res.status(404).json({
     error: "Route not found",
-    path: req.originalUrl
+    path: req.originalUrl,
   });
 });
 
 /* =========================
    START SERVER
 ========================= */
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, "0.0.0.0", () => {
   logger.info(`Pharmalink Backend Gateway running on port ${PORT}`);
   logger.info(`Environment: ${process.env.NODE_ENV || "development"}`);
+  logger.info(`Health check: http://localhost:${PORT}/health`);
 });
 
 process.on("SIGTERM", () => {
