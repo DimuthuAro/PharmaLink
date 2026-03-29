@@ -86,44 +86,43 @@ Prawn Curry ,Protein/Meat,Dinner,protein,non_veg,200,18,0,10,1,1,450,0,0,1 cup,/
 Egg Curry ,Protein,Lunch,protein,egg,190,10,0,13,0,1,260,0,0,1 cup,/static/foods/Egg Curry .jpg
 Egg Curry ,Protein,Dinner,protein,egg,190,10,0,13,0,1,260,0,0,1 cup,/static/foods/Egg Curry .jpg
 Dhal Curry (Parippu) ,Meal/Protein,Dinner,side,veg,180,9,0,6,6,2,320,0,0,1 cup,/static/foods/Dhal Curry (Parippu).avif 
-Potato Curry ,Roots,Lunch,side,veg,210,4,0,9,3,2,380,0,0,,/static/foods/
-Potato Curry ,Roots,Dinner,side,veg,210,4,0,9,3,2,380,0,0,,/static/foods/
-Brinjal Moju ,Vegetable,Lunch,side,veg,160,2,0,9,3,8,420,0,0,,/static/foods/
-Brinjal Moju ,Vegetable,Dinner,side,veg,160,2,0,9,3,8,420,0,0,,/static/foods/
-Pumpkin Curry ,Vegetable,Lunch,side,veg,140,3,0,5,4,6,250,0,0,,/static/foods/
-Jackfruit Curry (Polos) ,Vegetable,Lunch,side,veg,190,4,0,8,6,3,360,0,0,,/static/foods/
-Young Jackfruit Curry (Kos) ,Vegetable,Lunch,side,veg,170,4,0,6,7,3,320,0,0,,/static/foods/
-Cuttlefish Curry ,Protein/Meat,Lunch,protein,non_veg,230,22,0,12,0,0,520,0,0,,/static/foods/
-Cuttlefish Curry ,Protein/Meat,Dinner,protein,non_veg,230,22,0,12,0,0,520,0,0,,/static/foods/
-Beef Curry ,Protein/Meat,Lunch,protein,non_veg,300,22,0,22,1,1,520,0,0,,/static/foods/
-Beef Curry ,Protein/Meat,Dinner,protein,non_veg,300,22,0,22,1,1,520,0,0,,/static/foods/
-Gotukola Sambol ,Vegetable,Lunch,side,veg,90,3,0,5,4,2,180,0,0,,/static/foods/
-Kankun Mallung ,Vegetable,Lunch,side,veg,80,3,0,4,3,1,160,0,0,,/static/foods/
-Mukunuwenna Mallum ,Vegetable,Lunch,side,veg,75,3,0,4,3,1,160,0,0,,/static/foods/
+Potato Curry ,Roots,Lunch,side,veg,210,4,0,9,3,2,380,0,0,1 cup,/static/foods/Potato Curry.jpg
+Potato Curry ,Roots,Dinner,side,veg,210,4,0,9,3,2,380,0,0,1 cup,/static/foods/Potato Curry.jpg
+Brinjal Moju ,Vegetable,Lunch,side,veg,160,2,0,9,3,8,420,0,0,1 cup,/static/foods/Brinjal Moju.jpg 
+Brinjal Moju ,Vegetable,Dinner,side,veg,160,2,0,9,3,8,420,0,0,1 cup,/static/foods/Brinjal Moju.jpg 
+Pumpkin Curry ,Vegetable,Lunch,side,veg,140,3,0,5,4,6,250,0,0,1 cup,/static/foods/Pumpkin Curry.jpg 
+Jackfruit Curry (Polos) ,Vegetable,Lunch,side,veg,190,4,0,8,6,3,360,0,0,1 cup,/static/foods/Jackfruit Curry (Polos).jpg 
+Young Jackfruit Curry (Kos) ,Vegetable,Lunch,side,veg,170,4,0,6,7,3,320,0,0,1 cup,/static/foods/Young Jackfruit Curry (Kos).jpg 
+Cuttlefish Curry ,Protein/Meat,Lunch,protein,non_veg,230,22,0,12,0,0,520,0,0,1 cup,/static/foods/Cuttlefish Curry.jpeg 
+Cuttlefish Curry ,Protein/Meat,Dinner,protein,non_veg,230,22,0,12,0,0,520,0,0,1 cup,/static/foods/Cuttlefish Curry.jpeg 
+Beef Curry ,Protein/Meat,Lunch,protein,non_veg,300,22,0,22,1,1,520,0,0,1 cup,/static/foods/Beef Curry.jpg 
+Beef Curry ,Protein/Meat,Dinner,protein,non_veg,300,22,0,22,1,1,520,0,0,1 cup,/static/foods/Beef Curry.jpg 
+Gotukola Sambol ,Vegetable,Lunch,side,veg,90,3,0,5,4,2,180,0,0,1 cup,/static/foods/Gotukola Sambol.jpg 
+Kankun Mallung ,Vegetable,Lunch,side,veg,80,3,0,4,3,1,160,0,0,1 cup,/static/foods/Kankun Mallung.webp 
+Mukunuwenna Mallum ,Vegetable,Lunch,side,veg,75,3,0,4,3,1,160,0,0,1 cup,/static/foods/Mukunuwenna Mallum.jpg 
 Beetroot Curry ,Vegetable,Lunch,side,veg,120,3,0,6,4,6,220,0,0,1 cup,/static/foods/Beetroot Curry.avif
-Okra (Bandakka) Curry ,Vegetable,Lunch,side,veg,110,3,0,6,4,3,240,0,0,,/static/foods/
-Fried Beans Sambol  ,Vegetable,Lunch,side,veg,130,4,0,5,5,3,240,0,0,,/static/foods/
-Carrot Curry,Vegetable,Lunch,side,veg,130,2,0,6,4,7,220,0,0,,/static/foods/
-Cucumber Salad ,Vegetable,Lunch,side,veg,50,2,0,1,2,5,80,0,0,,/static/foods/
-Cucumber Salad ,Vegetable,Dinner,side,veg,50,2,0,1,2,5,80,0,0,,/static/foods/
-Papadam ,Snack,Lunch,side,veg,140,4,0,7,1,1,300,0,0,,/static/foods/
-Papadam ,Snack,Dinner,side,veg,140,4,0,7,1,1,300,0,0,,/static/foods/
-Mixed Greens Mallum ,Vegetable,Lunch,side,veg,85,3,0,5,3,1,160,0,0,,/static/foods/
-Vegetable Roti ,Grain,Breakfast,side,veg,280,7,0,11,4,2,520,0,0,,/static/foods/
-Parippu Wade ,Snack,Breakfast,side,veg,320,10,0,14,6,2,520,0,0,,/static/foods/
-Isso Wade ,Snack,Dinner,side,non_veg,340,12,0,15,4,2,620,0,0,,/static/foods/
-Manioc Chips ,Snack,Dinner,side,veg,250,2,0,13,3,0,320,0,0,,/static/foods/
-Boiled Manioc (Cassava) ,Roots,Breakfast,main,veg,220,2,0,0.5,3,2,15,0,0,,/static/foods/
-Roasted Peanuts ,Grain,Breakfast,side,veg,170,7,0,14,3,1,5,0,0,,/static/foods/
-Curd (Buffalo) + Treacle ,Dairy,Lunch,side,veg,260,9,0,12,0,26,120,0,0,,/static/foods/
-Parippu Wade ,Snack,Dinner,side,veg,320,10,0,14,6,2,520,0,0,,/static/foods/
-Vegetable Soup,Vegetable,Dinner,main,veg,60,4,10,0.5,4,2,132,0,0,,/static/foods/
-Vegetable Soup,Vegetable,Breakfast,side,veg,60,4,10,0.5,4,2,132,0,0,,/static/foods/
+Okra (Bandakka) Curry ,Vegetable,Lunch,side,veg,110,3,0,6,4,3,240,0,0,1 cup,/static/foods/Okra (Bandakka) Curry.jpg 
+Fried Beans Sambol  ,Vegetable,Lunch,side,veg,130,4,0,5,5,3,240,0,0,1 cup,/static/foods/Fried Beans Sambol.jpg 
+Carrot Curry,Vegetable,Lunch,side,veg,130,2,0,6,4,7,220,0,0,1 cup,/static/foods/Carrot Curry.jpg
+Cucumber Salad ,Vegetable,Lunch,side,veg,50,2,0,1,2,5,80,0,0,1 cup,/static/foods/Cucumber Salad.jpg 
+Cucumber Salad ,Vegetable,Dinner,side,veg,50,2,0,1,2,5,80,0,0,1 cup,/static/foods/Cucumber Salad.jpg 
+Papadam ,Snack,Lunch,side,veg,140,4,0,7,1,1,300,0,0,3 Slices,/static/foods/Papadam.jpg 
+Papadam ,Snack,Dinner,side,veg,140,4,0,7,1,1,300,0,0,3 Slices,/static/foods/Papadam.jpg 
+Mixed Greens Mallum ,Vegetable,Lunch,side,veg,85,3,0,5,3,1,160,0,0,1 cup,/static/foods/Mixed Greens Mallum.jpg 
+Parippu Wade ,Snack,Dinner,side,veg,320,10,0,14,6,2,520,0,0,2 Slices,/static/foods/Parippu Wade.png 
+Isso Wade ,Snack,Dinner,side,non_veg,340,12,0,15,4,2,620,0,0,2 Slices,/static/foods/Isso Wade.jpeg 
+Manioc Chips ,Snack,Dinner,side,veg,250,2,0,13,3,0,320,0,0,1 cup,/static/foods/Manioc Chips.webp 
+Boiled Manioc (Cassava) ,Roots,Breakfast,main,veg,220,2,0,0.5,3,2,15,0,0,3 Slices,/static/foods/Boiled Manioc (Cassava).webp 
+Roasted Peanuts ,Grain,Lunch,side,veg,170,7,0,14,3,1,5,0,0,1 cup,/static/foods/Roasted Peanuts.jpg 
+Curd (Buffalo) + Treacle ,Dairy,Lunch,side,veg,260,9,0,12,0,26,120,0,0,1 cup,/static/foods/Curd (Buffalo) + Treacle.jpg 
+Parippu Wade ,Snack,Dinner,side,veg,320,10,0,14,6,2,520,0,0,2 Slices,/static/foods/Parippu Wade.png 
+Vegetable Soup,Vegetable,Dinner,main,veg,60,4,10,0.5,4,2,132,0,0,1 cup,/static/foods/Vegetable Soup.jpg
+Vegetable Soup,Vegetable,Breakfast,side,veg,60,4,10,0.5,4,2,132,0,0,1 cup,/static/foods/Vegetable Soup.jpg
 Beet Root Salad,Vegetable,Lunch,side,veg,45,2.1,8,0.9,2.8,5,110,0,0,1 cup,/static/foods/
 Carrot Salad,Vegetable,Lunch,side,veg,41,0.9,10,0.2,2.8,0,0,0,0,1 cup,/static/foods/
 Lotus Root Curry,Meals,Lunch,side,veg,66,2,16,0.1,3,0,281,0,0,1 cup,/static/foods/
 Leeks Sambola,Vegetable,Lunch,side,veg,32.3,1.6,4.9,0.25,2.27,3.15,<5,0,0,1 cup,/static/foods/
-Mushroom Curry,Meal/Protein,Lunch,side,veg,81,3.2,7.1,4.4,4,3,101,0,0,1 cup,/static/foods/
+Mushroom Curry,Meal/Protein,Lunch,side,veg,81,3.2,7.1,4.4,4,3,101,0,0,1 cup,/static/foods/Mushroom Curry.jpg
 Anguna Kola Mallum ,Vegetable,Lunch,side,veg,0,0,0,0,0,0,0,1,0,1 cup,/static/foods/
 Kathurumurunga Mallum,Vegetable,Lunch,side,veg,28,0,5.2,0.2,2.6,0,0,1,0,1 cup,/static/foods/
 Cassava Leaves,Vegetable,Lunch,side,veg,91,1,7,0.2,0.5,0,36,1,0,1 cup,/static/foods/
@@ -158,13 +157,13 @@ Fruit & Yogurt Smoothie ,Beverage/Meal,Breakfast,side,non_veg,280,12,55,3,7,40,7
 Fruit & Yogurt Smoothie ,Beverage/Meal,Dinner,side,non_veg,280,12,55,3,7,40,70,0,0,1 Glass,/static/foods/
 Brown Rice ,Grain,Lunch,main,veg,215,5,45,1.8,3.5,0.4,10,0,0,1 cup,/static/foods/
 Bell Pepper Salad,Vegetable,Lunch,side,veg,31,1.2,6,0.3,2.1,4.2,4,0,0,1 cup,/static/foods/
-Pita Bread ,Grain,Breakfast,main,veg,170,6,35,1.5,5,2,320,0,0,4 Slices,/static/foods/
-Fried Pork Chop ,Protein/Meat,Dinner,main,non_veg,220,30,0,10,0,0,70,0,0,4 Slices,/static/foods/
-Mashed Potatoes ,Vegetable,Dinner,main,veg,230,4,35,8,3,2,350,0,0,1 cup,/static/foods/
-Chicken Caesar Salad ,Meal/Protein,Dinner,side,non_veg,470,30,15,30,3,3,890,0,0,1 cup,/static/foods/
-Orange Juice ,Beverage,Lunch,side,veg,112,1.7,25.8,0.5,0.7,20.8,2,0,0,1 Glass,/static/foods/
-Bacon,Protein/Meat,Dinner,side,non_veg,86,6,0.2,6.8,0,0.1,330,0,0,2 Slices,/static/foods/
-Mushroom Curry,Meal/Protein,Dinner,side,veg,81,3.2,7.1,4.4,4,3,101,0,0,1 cup,/static/foods/
+Pita Bread ,Grain,Breakfast,main,veg,170,6,35,1.5,5,2,320,0,0,4 Slices,/static/foods/Pita Bread.jpg
+Fried Pork Chop ,Protein/Meat,Dinner,main,non_veg,220,30,0,10,0,0,70,0,0,4 Slices,/static/foods/Fried Pork Chop.jpg
+Mashed Potatoes ,Vegetable,Dinner,main,veg,230,4,35,8,3,2,350,0,0,1 cup,/static/foods/Mashed Potatoes.jpg
+Chicken Caesar Salad ,Meal/Protein,Dinner,main,non_veg,470,30,15,30,3,3,890,0,0,1 cup,/static/foods/Chicken Caesar Salad.jpg 
+Orange Juice ,Beverage,Lunch,side,veg,112,1.7,25.8,0.5,0.7,20.8,2,0,0,1 Glass,/static/foods/Orange Juice.jpg 
+Bacon,Protein/Meat,Dinner,side,non_veg,86,6,0.2,6.8,0,0.1,330,0,0,2 Slices,/static/foods/Bacon.jpg
+Mushroom Curry,Meal/Protein,Dinner,side,veg,81,3.2,7.1,4.4,4,3,101,0,0,1 cup,/static/foods/Mushroom Curry.jpg
 Mixed Nuts ,Nut,Dinner,side,veg,200,6,8,18,3,2,1,0,0,1 cup,/static/foods/
 Mixed Nuts ,Nut,Breakfast,side,veg,200,6,8,18,3,2,1,0,0,1 cup,/static/foods/
 Asparagus ,Vegetable,Lunch,side,veg,40,4.3,7.4,0.4,3.6,3.5,4,0,0,1 cup,/static/foods/
@@ -282,3 +281,12 @@ Salami ,Protein/Processed,Lunch,side,non_veg,110,6,1,9,0,0.5,500,0,0,3 slices,/s
 Soy Milk ,Beverage/Dairy-Alt,Dinner,side,veg,110,8,9,4.5,2,6,125,0,0,1 cup,/static/foods/Soy Milk .jpg
 Guacamole,Vegetable/Condiment,Dinner,main,veg,90,1,4,8,3,0.5,120,0,0,1/4 cup,/static/foods/Guacamole.jpg
 Grilled Cheese Sandwich,Meal/Processed,Breakfast,main,non_veg,390,15,32,22,3,4,800,0,0,1,/static/foods/Grilled Cheese Sandwich.jpg
+Pita Bread ,Grain,Dinner,main,veg,170,6,35,1.5,5,2,320,0,0,4 Slices,/static/foods/Pita Bread.jpg
+Fried Pork Chop ,Protein/Meat,Lunch,side,non_veg,220,30,0,10,0,0,70,0,0,4 Slices,/static/foods/Fried Pork Chop.jpg
+Chicken Caesar Salad ,Meal/Protein,Lunch,side,non_veg,470,30,15,30,3,3,890,0,0,1 cup,/static/foods/Chicken Caesar Salad.jpg 
+Orange Juice ,Beverage,Breakfast,side,veg,112,1.7,25.8,0.5,0.7,20.8,2,0,0,1 Glass,/static/foods/Orange Juice.jpg 
+Orange Juice ,Beverage,Dinner,side,veg,112,1.7,25.8,0.5,0.7,20.8,2,0,0,1 Glass,/static/foods/Orange Juice.jpg 
+Fried Beans Sambol  ,Vegetable,Dinner,side,veg,130,4,0,5,5,3,240,0,0,1 cup,/static/foods/Fried Beans Sambol.jpg 
+Isso Wade ,Snack,Dinner,side,non_veg,340,12,0,15,4,2,620,0,0,2 Slices,/static/foods/Isso Wade.jpeg 
+Boiled Manioc (Cassava) ,Roots,Dinner,main,veg,220,2,0,0.5,3,2,15,0,0,3 Slices,/static/foods/Boiled Manioc (Cassava).webp 
+Boiled Manioc (Cassava) ,Roots,Lunch,side,veg,220,2,0,0.5,3,2,15,0,0,3 Slices,/static/foods/Boiled Manioc (Cassava).webp 
