@@ -20,6 +20,7 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="advisory/FoodDrugInteraction" />
           <Stack.Screen name="advisory/PersonalizedMealPlan" />
+          <Stack.Screen name="advisory/DrugImagePredict" />
         </Stack>
         <StatusBar style="light" />
       </ThemeProvider>
