@@ -1,0 +1,293 @@
+Food,food_type,consumption_type,energy,protein,carbs,fat,fiber,sugars,sodium,is_leafy_green,is_alcohol,quantity
+Yellow Rice,main,meal,469,16.9,0,18.8,1,0.5,5,0,0,1 cup
+Fried Halmesso,protein,meal,75,7.5,0,4.5,0,0,70,0,0,1 cup
+Fried Karawala,protein,meal,85,9,0,5,0,0,70,0,0,1 cup
+Kola Mallum,vegetable,meal,80,1,0,5,2,2,200,0,0,1 cup
+Kiri Hodi (Fish),protein,meal,280,22,8,18,2,3,520,0,0,1 cup
+Soya meat curry ,protein,meal,134,5.5,13,6.2,4.7,4.3,340,0,0,1 cup
+Boiled Potatoes,main,meal,100,1,0,0.1,0,0,0,0,0,1 cup
+Chicken Curry,protein,meal,100,27,0,8,2,2,200,0,0,1 cup
+Chicken Gravy,side,meal,100,3.5,0,1.5,0,0,70,0,0,1 cup
+Egg Yolk,protein,meal,100,2.5,0,4.2,0,0,70,0,0,1
+Mango Chutney,side,meal,100,0.5,0,0,2.5,10,5,0,0,1 cup
+Boiled Jackfruit Seed,protein,meal,100,0.6,0,0.1,2.5,10,5,0,0,1 cup
+Boiled Chickpeas,protein,meal,100,9,0,2.6,6,3,10,0,0,1 cup
+Boiled Mung,protein,meal,100,7,0,0.4,6,3,10,0,0,1 cup
+Boiled Sweet Potato,main,meal,100,1.6,0,0.1,0,0,0,0,0,1 cup
+Cucumber Flesh,snack,snack,100,0.3,0,0.05,2.5,10,5,0,0,1 cup
+Roast Peanut,snack,snack,300,13,0,26,6,3,10,0,0,1 cup
+Roast Green Pea,snack,snack,190,14,0,4.5,6,3,10,0,0,1 cup
+Roasted Gram,snack,snack,200,12,0,2,6,3,10,0,0,1 cup
+Orange,snack,snack,62,1.2,0,0.2,1,3,50,0,0,1
+Guava,snack,snack,37,1,0,0.2,1,3,50,0,0,1
+Ambun Kesel,snack,snack,90,1.3,0,0.3,1.5,8,250,0,0,1
+Ambul Kesel,snack,snack,45,0.5,0,0.1,1,3,50,0,0,1
+Cavendish Banana,snack,snack,134,1.7,0,0.5,1,3,50,0,0,1
+Dried Grapes,snack,snack,299,3.1,0,0.5,1,3,50,0,0,1 cup
+Jackfruit,snack,snack,33,0.6,0,0.2,2.5,10,5,0,0,1 cup
+Avocado,snack,snack,80,1,0,7.4,1,3,50,0,0,1
+Watermelon Juice,drink,beverage,30,0.6,0,0.2,1,3,50,0,0,1 Glass
+Watermelon Juice,dessert,dessert,30,0.6,0,0.2,1,3,50,0,0,1 Glass
+Helapa,dessert,dessert,440,11,0,17,1,3,50,0,0,2 Slices
+Helapa,dessert,dessert,440,11,0,17,1,3,50,0,0,2 Slices
+Wandu,dessert,dessert,205,2,0,1,6,3,10,0,0,2 Pieces
+Wandu,protein,meal,205,2,0,1,6,3,10,0,0,2 Pieces
+Aggala,main,meal,326,9.8,0,10.4,1.5,8,250,0,0,2 Balls
+Lavariya,protein,meal,310,4,0,10,1.5,8,250,0,0,2 Pieces
+Lavariya,protein,meal,310,4,0,10,1.5,8,250,0,0,2 Pieces
+Yogurt,protein,meal,90,5,0,3,0,10,60,0,0,1 cup
+Yogurt,protein,meal,90,5,0,3,0,10,60,0,0,1 cup
+Yogurt,drink,beverage,90,5,0,3,0,10,60,0,0,1 cup
+Oats,drink,beverage,150,5,0,3,1,0.5,5,0,0,1 cup
+Fried Tilapia,snack,snack,110,22,0,2.5,0,0,50,0,0,2 Fishes
+Fried Tilapia,snack,snack,110,22,0,2.5,0,0,50,0,0,2 Slices
+Salmon ,snack,snack,208,20,0,13,0,0,70,0,0,2 Slices
+Salmon ,main,meal,208,20,0,13,0,0,70,0,0,2 Slices
+Tuna,main,meal,132,29,0,0.6,0,0,70,0,0,2 Slices
+Tuna,main,meal,132,29,0,0.6,0,0,70,0,0,2 Slices
+Greek Yogurt,protein,meal,100,10,0,5,0,4,60,0,0,1 cup
+Whole Milk,main,meal,130,7,0,7,0,12,50,0,0,1 Glass
+Skim Milk,main,meal,80,8,0,0,0,12,50,0,0,1 Glass
+Apple,drink,beverage,80,0,0,0,2.4,10,1,0,0,1
+Apple,protein,meal,80,0,0,0,2.4,10,1,0,0,1
+Apple,side,meal,80,0,0,0,2.4,10,1,0,0,1
+Almonds,side,meal,180,6,0,15,7,3,5,0,0,1 cup
+Almonds,vegetable,meal,180,6,0,15,7,3,5,0,0,1 cup
+Walnuts,side,meal,190,4,0,18,7,3,5,0,0,1 cup
+Walnuts,drink,beverage,190,4,0,18,7,3,5,0,0,1 cup
+Kiribath (Milk Rice) ,drink,beverage,260,6,0,8,2,2,180,0,0,2 Slices
+String Hoppers (Idiyappam) ,drink,beverage,240,5,0,1,2,1,120,0,0,5 Slices
+String Hoppers (Idiyappam) ,main,meal,240,5,0,1,2,1,120,0,0,5 Slices
+Hoppers (Appa) ,main,meal,220,4,0,5,2,2,200,0,0,5 Slices
+Egg Hopper (Biththara Appa) ,protein,meal,180,8,0,7,1,1,250,0,0,1 Hopper
+Pol Roti ,main,meal,320,6,0,13,4,2,280,0,0,2 Slices
+Pittu (Coconut) ,protein,meal,300,6,0,9,4,2,180,0,0,2 Slices
+Kola Kenda (Herbal Porridge) ,protein,meal,160,4,0,4,3,1,120,0,0,1 Glass
+Dhal Curry (Parippu) ,protein,meal,180,9,0,6,6,2,320,0,0,1 cup
+Lunu Miris ,protein,meal,60,1,0,3,2,3,180,0,0,1 cup
+Pol Sambol ,protein,meal,150,2,0,12,4,2,220,0,0,1 cup
+Kiri Hodi (Tomato) ,main,meal,170,3,0,14,1,2,220,0,0,1 cup
+Seeni Sambol ,vegetable,meal,90,1,0,3,1,10,180,0,0,1 cup
+Ceylon Tea  ,vegetable,meal,5,0.2,0,0,0,0,5,0,0,1 cup
+Ginger Tea  ,vegetable,meal,10,0.2,0,0,0,0,5,0,0,1 cup
+King Coconut Water ,vegetable,meal,55,1,0,0,0,11,60,0,0,1 Glass
+Red Rice,protein,meal,240,5,0,2,3,0,10,0,0,1 cup
+White Rice,protein,meal,205,4,0,0.5,1,0,5,0,0,1 cup
+Fried Rice (Chicken) ,vegetable,meal,520,22,0,16,4,4,720,0,0,1 cup
+Fried Rice (Vegetable) ,vegetable,meal,520,0,0,16,4,4,720,0,0,1 cup
+Fish Curry (Tuna) ,vegetable,meal,220,20,0,12,1,1,380,0,0,1 cup
+Fish Curry (Tuna) ,vegetable,meal,220,20,0,12,1,1,380,0,0,1 cup
+Ambul Thiyal (Sour Fish) ,vegetable,meal,180,19,0,10,0,0,300,0,0,1 cup
+Ambul Thiyal (Sour Fish) ,protein,meal,180,19,0,10,0,0,300,0,0,1 cup
+Black Pork Curry ,vegetable,meal,320,20,0,24,1,1,520,0,0,1 cup
+Black Pork Curry ,vegetable,meal,320,20,0,24,1,1,520,0,0,1 cup
+Prawn Curry ,side,meal,200,18,0,10,1,1,450,0,0,1 cup
+Prawn Curry ,vegetable,meal,200,18,0,10,1,1,450,0,0,1 cup
+Egg Curry ,snack,snack,190,10,0,13,0,1,260,0,0,1 cup
+Egg Curry ,snack,snack,190,10,0,13,0,1,260,0,0,1 cup
+Dhal Curry (Parippu) ,snack,snack,180,9,0,6,6,2,320,0,0,1 cup
+Potato Curry ,main,meal,210,4,0,9,3,2,380,0,0,1 cup
+Potato Curry ,snack,snack,210,4,0,9,3,2,380,0,0,1 cup
+Brinjal Moju ,dessert,dessert,160,2,0,9,3,8,420,0,0,1 cup
+Brinjal Moju ,vegetable,meal,160,2,0,9,3,8,420,0,0,1 cup
+Pumpkin Curry ,vegetable,meal,140,3,0,5,4,6,250,0,0,1 cup
+Jackfruit Curry (Polos) ,vegetable,meal,190,4,0,8,6,3,360,0,0,1 cup
+Young Jackfruit Curry (Kos) ,vegetable,meal,170,4,0,6,7,3,320,0,0,1 cup
+Cuttlefish Curry ,vegetable,meal,230,22,0,12,0,0,520,0,0,1 cup
+Cuttlefish Curry ,vegetable,meal,230,22,0,12,0,0,520,0,0,1 cup
+Beef Curry ,vegetable,meal,300,22,0,22,1,1,520,0,0,1 cup
+Beef Curry ,vegetable,meal,300,22,0,22,1,1,520,0,0,1 cup
+Gotukola Sambol ,vegetable,meal,90,3,0,5,4,2,180,0,0,1 cup
+Kankun Mallung ,main,meal,80,3,0,4,3,1,160,0,0,1 cup
+Mukunuwenna Mallum ,drink,beverage,75,3,0,4,3,1,160,0,0,1 cup
+Beetroot Curry ,protein,meal,120,3,0,6,4,6,220,0,0,1 cup
+Okra (Bandakka) Curry ,main,meal,110,3,0,6,4,3,240,0,0,1 cup
+Fried Beans Sambol  ,drink,beverage,130,4,0,5,5,3,240,0,0,1 cup
+Carrot Curry,main,meal,130,2,0,6,4,7,220,0,0,1 cup
+Cucumber Salad ,snack,snack,50,2,0,1,2,5,80,0,0,1 cup
+Cucumber Salad ,main,meal,50,2,0,1,2,5,80,0,0,1 cup
+Papadam ,snack,snack,140,4,0,7,1,1,300,0,0,3 Slices
+Papadam ,main,meal,140,4,0,7,1,1,300,0,0,3 Slices
+Mixed Greens Mallum ,snack,snack,85,3,0,5,3,1,160,0,0,1 cup
+Parippu Wade ,protein,meal,320,10,0,14,6,2,520,0,0,2 Slices
+Isso Wade ,drink,beverage,340,12,0,15,4,2,620,0,0,2 Slices
+Manioc Chips ,main,meal,250,2,0,13,3,0,320,0,0,1 cup
+Boiled Manioc (Cassava) ,protein,meal,220,2,0,0.5,3,2,15,0,0,3 Slices
+Roasted Peanuts ,protein,meal,170,7,0,14,3,1,5,0,0,1 cup
+Curd (Buffalo) + Treacle ,main,meal,260,9,0,12,0,26,120,0,0,1 cup
+Parippu Wade ,protein,meal,320,10,0,14,6,2,520,0,0,2 Slices
+Vegetable Soup,protein,meal,60,4,10,0.5,4,2,132,0,0,1 cup
+Vegetable Soup,snack,snack,60,4,10,0.5,4,2,132,0,0,1 cup
+Beet Root Salad,protein,meal,45,2.1,8,0.9,2.8,5,110,0,0,1 cup
+Carrot Salad,drink,beverage,41,0.9,10,0.2,2.8,0,0,0,0,1 cup
+Lotus Root Curry,snack,snack,66,2,16,0.1,3,0,281,0,0,1 cup
+Leeks Sambola,drink,beverage,32.3,1.6,4.9,0.25,2.27,3.15,<5,0,0,1 cup
+Mushroom Curry,main,meal,81,3.2,7.1,4.4,4,3,101,0,0,1 cup
+Anguna Kola Mallum ,vegetable,meal,0,0,0,0,0,0,0,1,0,1 cup
+Kathurumurunga Mallum,main,meal,28,0,5.2,0.2,2.6,0,0,1,0,1 cup
+Cassava Leaves,protein,meal,91,1,7,0.2,0.5,0,36,1,0,1 cup
+Whole Wheat Toast ,main,meal,80,4,14,1,2,2,140,0,0,1 Slice
+Black Coffee,protein,meal,5,0.3,0,0.1,0,0,5,0,0,1 cup
+Grilled Chicken Salad,drink,beverage,350,30,10,20,5,4,400,0,0,1 cup
+Quinoa ,protein,meal,222,8,39,3.6,5,1,13,0,0,1 cup
+Steamed Broccoli ,snack,snack,55,3.7,11.2,0.6,5.1,2,40,0,0,1 cup
+Greek Yogurt ,vegetable,meal,150,25,8,3,0,7,85,0,0,1 cup
+Oatmeal,snack,snack,160,6,28,3,4,1,2,0,0,1 cup
+Blueberries ,main,meal,42,0.5,11,0.2,1.8,7,1,0,0,1/2 cup
+Turkey Sandwich ,protein,meal,340,22,34,12,5,6,850,0,0,4 Slices
+Carrot Sticks ,vegetable,meal,52,1.2,12.3,0.3,3.6,6,88,0,0,1 cup
+Spaghetti Bolognese,main,meal,460,20,55,18,6,10,700,0,0,1 cup
+Frosted Flakes ,protein,meal,130,2,31,0,1,11,190,0,0,1 cup
+Lentil Soup ,protein,meal,230,15,35,3,12,6,650,0,0,1 cup
+Beef Steak ,side,meal,270,11,55,1.5,2,5,430,0,0,1 piece
+Avocado Toast ,protein,meal,160,4.3,36,0.2,3.8,1,17,0,0,Medium
+Hard-Boiled Egg ,drink,beverage,260,7,28,15,10,1,350,0,0,1 Slice
+Chicken Wrap ,side,meal,78,6.3,0.6,5.3,0,0.5,62,0,0,1 Large
+Hard-Boiled Egg ,drink,beverage,410,25,38,17,5,3,780,0,0,1 Wrap
+Baked Potato ,snack,snack,78,6.3,0.6,5.3,0,0.5,62,0,0,1 Large
+Black Beans ,vegetable,meal,160,4.3,36,0.2,3.8,1,17,0,0,Medium
+Chicken Noodle Soup ,snack,snack,114,7.6,20.4,0.5,7.5,0.3,1,0,0,1/2 cup
+Celery Sticks ,protein,meal,150,7,18,5,2,2,890,0,0,1 cup
+Green Beans ,main,meal,14,0.6,3,0.2,1.4,1.2,77,0,0,1 cup
+Green Tea ,snack,snack,31,1.8,7,0.2,2.7,3.3,6,0,0,1 cup
+Pancakes ,snack,snack,2,0.5,0,0,0,0,2,0,0,1 cup
+Fruit & Yogurt Smoothie ,protein,meal,180,5,30,5,1,6,450,0,0,2 Medium
+Brown Rice ,main,meal,180,5,30,5,1,6,450,0,0,2 Medium
+Bell Pepper Salad,vegetable,meal,280,12,55,3,7,40,70,0,0,1 Glass
+Pita Bread ,vegetable,meal,280,12,55,3,7,40,70,0,0,1 Glass
+Fried Pork Chop ,snack,snack,215,5,45,1.8,3.5,0.4,10,0,0,1 cup
+Mashed Potatoes ,main,meal,31,1.2,6,0.3,2.1,4.2,4,0,0,1 cup
+Chicken Caesar Salad ,protein,meal,170,6,35,1.5,5,2,320,0,0,4 Slices
+Orange Juice ,drink,beverage,220,30,0,10,0,0,70,0,0,4 Slices
+Bacon,snack,snack,230,4,35,8,3,2,350,0,0,1 cup
+Mushroom Curry,drink,beverage,470,30,15,30,3,3,890,0,0,1 cup
+Mixed Nuts ,main,meal,112,1.7,25.8,0.5,0.7,20.8,2,0,0,1 Glass
+Asparagus ,main,meal,86,6,0.2,6.8,0,0.1,330,0,0,2 Slices
+Raisins ,drink,beverage,81,3.2,7.1,4.4,4,3,101,0,0,1 cup
+Vegetable Macaroni ,vegetable,meal,200,6,8,18,3,2,1,0,0,1 cup
+Chicken Macaroni ,snack,snack,200,6,8,18,3,2,1,0,0,1 cup
+Tomato Soup ,snack,snack,40,4.3,7.4,0.4,3.6,3.5,4,0,0,1 cup
+Grilled Cheese Sandwich,snack,snack,130,1.3,34,0.2,1.6,25,5,0,0,1/4 cup
+Beef Tacos ,protein,meal,350,2,40,17,2,5,750,0,0,1 cup
+Refried Beans ,snack,snack,350,2,40,17,2,5,750,0,0,1 cup
+Guacamole,protein,meal,350,10,40,17,2,5,750,0,0,1 cup
+Clam Chowder ,snack,snack,350,10,40,17,2,5,750,0,0,1 cup
+Iced Tea ,snack,snack,170,4,25,6,4,15,900,0,0,1 cup
+Garlic Bread ,snack,snack,390,15,32,22,3,4,800,0,0,1
+Chocolate Milk ,protein,meal,380,18,28,22,5,3,600,0,0,2 hard shell
+Potato Chips ,snack,snack,115,7,19,1,6,1,480,0,0,1/2 cup
+Caprese Salad,snack,snack,90,1,4,8,3,0.5,120,0,0,1/4 cup
+Cherries ,protein,meal,200,10,18,9,1,2,870,0,0,1 cup
+Turkey Bacon ,snack,snack,180,0,46,0,0,46,15,0,0,1 Glass
+Grits ,drink,beverage,150,4,18,7,1,1,310,0,0,1 Slice
+Beef Jerky ,dessert,dessert,200,8,26,8,1,24,160,0,0,1 Glass
+Figs ,snack,snack,160,2,15,10,1,0.5,170,0,0,1 cup
+Lobster ,side,meal,240,10,8,18,2,5,350,0,0,1 cup
+Corn on the Cob ,protein,meal,77,1.6,19,0.5,2.5,15,0,0,0,1 cup
+French Onion Soup ,vegetable,meal,70,6,1,5,0,0.5,360,0,0,2 Slices
+Seaweed Salad ,drink,beverage,150,3,32,1,2,0.5,320,0,0,1 cup
+Croutons,protein,meal,46,0.9,11.1,0.4,2.3,6.7,2,0,0,1 Medium
+Shepherd's Pie ,main,meal,116,9.4,3.1,7.2,0.5,2.5,590,0,0,1 cup
+Fried Halibut ,protein,meal,74,0.6,19.2,0.3,2.9,16.2,2,0,0,2 Medium
+Lemonade ,protein,meal,76,16,0,0.7,0,0,250,0,0,1 cup
+Pistachios ,vegetable,meal,125,5,29,1.5,3,5,2,0,0,1 Large
+Oat Milk ,drink,beverage,150,6,15,7,2,5,800,0,0,1 cup
+Biscuits and Gravy ,protein,meal,60,2,8,3,2,4,350,0,0,1/2 cup
+Corn Flakes ,main,meal,50,1.5,7,2,0.5,0.5,140,0,0,1/4 cup
+T-Bone Steak ,protein,meal,400,20,35,20,6,7,850,0,0,1 serving
+Creamed Spinach ,protein,meal,125,24,0,2.5,0,0,60,0,0,1
+Pecans ,drink,beverage,99,0.1,26,0,0.1,25,30,0,0,1 Glass
+Cucumber Slices ,drink,beverage,159,5.7,7.7,12.8,3,2.2,2,0,0,1 oz shelled
+Olives ,drink,beverage,120,3,16,5,2,7,100,0,0,1 cup
+Chicken Alfredo ,drink,beverage,480,10,45,28,2,3,1100,0,0,(1 serving)
+Breadstick ,drink,beverage,100,2,24,0,1,3,200,0,0,1 cup
+Cobb Salad,drink,beverage,460,38,0,33,0,0,110,0,0,6 oz
+Mandarin Orange ,drink,beverage,190,5,8,16,3,2,450,0,0,1/2 cup
+Cashews ,drink,beverage,196,2.6,3.9,20.4,2.7,1.1,0,0,0,1 oz 
+Eggo Waffle (2 waffles),drink,beverage,16,0.7,3.6,0.1,0.5,1.7,2,0,0,1 cup
+Pulled Pork Sandwich,drink,beverage,35,0.2,1,3.5,0.5,0,210,0,0,5 Larges
+Macadamia Nuts ,drink,beverage,680,35,45,38,4,5,980,0,0,1/2 cup
+Tomato Soup ,drink,beverage,160,4,28,3,1,2,350,0,0,1 Large
+Grilled Cheese Sandwich,drink,beverage,510,30,12,38,7,6,800,0,0,1 cup
+Beef Tacos ,drink,beverage,37,0.6,9.3,0.2,1.3,7.3,1,0,0,1 Medium
+Refried Beans ,drink,beverage,163,4.3,9.2,13.1,0.9,1.4,140,0,0,1 cup
+Guacamole,drink,beverage,180,4,30,5,1,4,400,0,0,2 Waffles
+Garlic Bread ,drink,beverage,480,25,48,20,3,15,900,0,0,1
+Chocolate Milk ,drink,beverage,204,2.2,3.9,21.5,2.4,1.3,1,0,0,1 oz
+Potato Chips ,drink,beverage,170,4,25,6,4,15,900,0,0,1 cup
+Cherries ,drink,beverage,390,15,32,22,3,4,800,0,0,1
+Turkey Bacon ,drink,beverage,380,18,28,22,5,3,600,0,0,2 hard shell
+Kiwifruit ,drink,beverage,115,7,19,1,6,1,480,0,0,1/2 cup
+Figs ,drink,beverage,115,7,19,1,6,1,480,0,0,1/2 cup
+Lobster ,drink,beverage,90,1,4,8,3,0.5,120,0,0,1/4 cup
+Corn on the Cob ,drink,beverage,150,4,18,7,1,1,310,0,0,1 Slice
+Halibut ,drink,beverage,200,8,26,8,1,24,160,0,0,1 Glass
+Lemonade ,drink,beverage,160,2,15,10,1,0.5,170,0,0,1 cup
+Biscuits and Gravy ,drink,beverage,77,1.6,19,0.5,2.5,15,0,0,0,1 cup
+Pecans ,drink,beverage,77,1.6,19,0.5,2.5,15,0,0,0,1 cup
+Eggo Waffle ,drink,beverage,70,6,1,5,0,0.5,360,0,0,2 Slices
+Almond Milk (Unsweetened),drink,beverage,46,0.9,11.1,0.4,2.3,6.7,2,0,0,1 Medium
+Lemon Bar ,drink,beverage,46,0.9,11.1,0.4,2.3,6.7,2,0,0,1 Medium
+Rice Krispies ,drink,beverage,74,0.6,19.2,0.3,2.9,16.2,2,0,0,1
+Pickle,drink,beverage,74,0.6,19.2,0.3,2.9,16.2,2,0,0,1
+Lobster Bisque ,drink,beverage,76,16,0,0.7,0,0,250,0,0,1 cup
+Sauerkraut ,drink,beverage,125,5,29,1.5,3,5,2,0,0,1 Large
+Soy Milk ,drink,beverage,125,24,0,2.5,0,0,60,0,0,1
+Chicken Tikka Masala ,drink,beverage,99,0.1,26,0,0.1,25,30,0,0,1 Glass
+Naan Roti,drink,beverage,99,0.1,26,0,0.1,25,30,0,0,1 Glass
+Sweet & Sour Chicken ,drink,beverage,480,10,45,28,2,3,1100,0,0,(1 serving)
+Sweet & Sour Chicken ,main,meal,196,2.6,3.9,20.4,2.7,1.1,0,0,0,1 oz 
+Egg Drop Soup ,main,meal,180,4,30,5,1,4,400,0,0,2  Waffles
+Potato Salad ,snack,snack,30,1,0,2.5,1,0,160,0,0,1 cup
+Cranberry Juice ,snack,snack,150,1.5,0,6,0.5,15,80,0,0,1 Square
+Chicken Piccata ,dessert,dessert,160,3,0,0.5,0.5,4,290,0,0,1/2 cup
+Angel Hair Pasta ,main,meal,5,0.2,0,0.1,0.3,0.5,300,0,0, 1 spear dill
+Salami ,dessert,dessert,250,8,0,18,1,3,850,0,0,1 cup
+Shrimp Scampi ,dessert,dessert,250,8,0,18,1,3,850,0,0,1 cup
+Fried Halmesso,snack,snack,7,0.3,1.5,0,1,0.6,234,0,0,1/4 cup
+Fried Karawala,side,meal,7,0.3,1.5,0,1,0.6,234,0,0,1/4 cup
+Chicken Curry,main,meal,110,8,9,4.5,2,6,125,0,0,1 cup
+Chicken Gravy,main,meal,480,30,20,30,5,8,900,0,0,1/2 cup)
+Egg Yolk,protein,meal,260,8,45,5,2,3,450,0,0,1 piece
+Boiled Sweet Potato,main,meal,260,8,45,5,2,3,450,0,0,1 piece
+Roast Peanut,vegetable,meal,380,18,45,15,3,25,750,0,0,1 cup
+Roast Green Pea,main,meal,380,18,45,15,3,25,750,0,0,1 cup
+Roasted Gram,main,meal,65,5,6,2,0.5,1,780,0,0,1 cup
+Pol Sambol ,protein,meal,65,5,6,2,0.5,1,780,0,0,1 cup
+Kiri Hodi (Tomato) ,main,meal,180,2,19,11,2,3,500,0,0,1/2 cup
+Ceylon Tea  ,protein,meal,130,0,33,0,0,30,10,0,0,1 Glass
+White Rice,main,meal,130,0,33,0,0,30,10,0,0,1 Glass
+Salami ,main,meal,350,30,10,20,1,2,600,0,0,1 serving
+Soy Milk ,main,meal,200,7,42,1,2,1,1,0,0,1 cup
+Guacamole,main,meal,110,6,1,9,0,0.5,500,0,0,3 slices
+Grilled Cheese Sandwich,protein,meal,380,22,40,15,3,3,750,0,0,1 cup
+Pita Bread ,protein,meal,380,22,40,15,3,3,750,0,0,1 cup
+Fried Pork Chop ,protein,meal,469,16.9,0,18.8,1,0.5,5,0,0,1 cup
+Chicken Caesar Salad ,main,meal,75,7.5,0,4.5,0,0,70,0,0,1 cup
+Orange Juice ,main,meal,85,9,0,5,0,0,70,0,0,1 cup
+Fried Beans Sambol  ,main,meal,100,27,0,8,2,2,200,0,0,1 cup
+Isso Wade ,main,meal,100,3.5,0,1.5,0,0,70,0,0,1 cup
+Boiled Manioc (Cassava) ,main,meal,100,2.5,0,4.2,0,0,70,0,0,1
+"Pittu (Wheat, With Coconut)",main,meal,100,1.6,0,0.1,0,0,0,0,0,1 cup
+Uppuma (Tempered With Vegetables),main,meal,300,13,0,26,6,3,10,0,0,1 cup
+"Pittu (Rice, Without Coconut)",main,meal,190,14,0,4.5,6,3,10,0,0,1 cup
+"Pittu (Rice & Wheat, With Coconut)",main,meal,200,12,0,2,6,3,10,0,0,1 cup
+"Pittu (Rice & Wheat, Without Coconut)",main,meal,150,2,0,12,4,2,220,0,0,1 cup
+Thalapa (Millet),main,meal,170,3,0,14,1,2,220,0,0,1 cup
+Butter,side,meal,5,0.2,0,0,0,0,5,0,0,1 cup
+Dressing (French),side,meal,205,4,0,0.5,1,0,5,0,0,1 cup
+Ghee,side,meal,205,4,0,0.5,1,0,5,0,0,1 cup
+Margarine,side,meal,110,6,1,9,0,0.5,500,0,0,3 slices
+Yeast Extract,side,meal,110,8,9,4.5,2,6,125,0,0,1 cup
+Manila Tamarind,snack,snack,90,1,4,8,3,0.5,120,0,0,1/4 cup
+Maldives Fish (Dry),protein,meal,112,1.7,25.8,0.5,0.7,20.8,2,0,0,1 Glass
+Chicken Gravy (With Coconut Milk),protein,meal,130,4,0,5,5,3,240,0,0,1 cup
+Coconut Milk Gravy,side,meal,340,12,0,15,4,2,620,0,0,2 Slices
+Gravy Without Coconut Milk (Thin),side,meal,220,2,0,0.5,3,2,15,0,0,3 Slices
+Gravy Without Coconut Milk (Thick),side,meal,220,2,0,0.5,3,2,15,0,0,3 Slices
+Tomato Sauce,side,meal,110,1.5,25,0.5,1,20,900,0,0,100g
+"Gravy (Coconut Milk, Thin)",side,meal,90,1,4,8,0.5,2,300,0,0,100g
+"Gravy (Coconut Milk,Thick)",side,meal,180,2,6,18,1,3,350,0,0,100g
+Fish Gravy,protein,meal,120,10,3,7,0.5,1,400,0,0,100g
+Fish Gravy (Coconut Milk),protein,meal,160,10,4,12,0.5,2,450,0,0,100g
+Potato Gravy,vegetable,meal,110,2,18,3,2,2,350,0,0,100g

@@ -122,6 +122,10 @@ meal_foods_raw = _read_csv(new_food_path)
 
 print("Loaded new_foodset.csv from:", new_food_path)
 
+classified_food_path = _find_csv("classified_new_foodset_complete.csv", required=True)
+classified_foods_raw = _read_csv(classified_food_path)
+print("Loaded classified_new_foodset_complete.csv from:", classified_food_path)
+
 # =========================================================
 # LOAD RECOMMENDER CSVs
 # =========================================================
@@ -210,13 +214,57 @@ meal_foods = meal_foods_raw.rename(
     }
 )
 
+classified_foods = classified_foods_raw.rename(
+    columns={
+        "Food_Item": "Food",
+        "Food Product": "Food",
+        "Food": "Food",
+        "Calories": "energy",
+        "Calories (kcal)": "energy",
+        "Energy": "energy",
+        "Protein (g)": "protein",
+        "Protein(g)": "protein",
+        "Protein": "protein",
+        "Carbohydrate (g)": "carbs",
+        "Carbohydrate(g)": "carbs",
+        "Carbs": "carbs",
+        "Carbohydrates": "carbs",
+        "Fat (g)": "fat",
+        "Fat(g)": "fat",
+        "Fat": "fat",
+        "Fiber (g)": "fiber",
+        "Fiber(g)": "fiber",
+        "Fibre (g)": "fiber",
+        "Fiber": "fiber",
+        "Sugars (g)": "sugars",
+        "Sugar (g)": "sugars",
+        "Sugars": "sugars",
+        "Sodium (mg)": "sodium",
+        "Sodium": "sodium",
+        "Meal_Type": "meal_type",
+        "Meal type": "meal_type",
+        "Food_type": "food_type",
+        "Food Type": "food_type",
+        "food_type": "food_type",
+        "Diet_Type": "diet_type",
+        "diet_type": "diet_type",
+        "Consumption_Type": "consumption_type",
+        "consumption_type": "consumption_type",
+        "Consume_Type": "consumption_type",
+        "Quantity": "quantity",
+        "quantity": "quantity",
+        "Image": "image",
+        "image": "image",
+    }
+)
+
 core_cols = [
     "Food",
     "energy", "protein", "fat", "carbs", "fiber",
     "sugars", "sodium",
     "calcium", "iron", "vitamin_c", "vitamin_a", "vitamin_k_proxy",
     "is_alcohol", "is_leafy_green",
-    "meal_type", "food_type",
+    "meal_type", "food_type", "consumption_type",
     "diet_type", "category",
     "quantity","image",
 ]
@@ -228,7 +276,7 @@ num_cols = [
 ]
 
 flag_cols = ["is_alcohol", "is_leafy_green"]
-text_cols = ["Food", "category", "meal_type", "food_type", "diet_type",]
+text_cols = ["Food", "category", "meal_type", "food_type", "diet_type", "consumption_type"]
 raw_text_cols = ["quantity", "image"]
 
 
@@ -242,6 +290,7 @@ def _ensure_cols(df: pd.DataFrame, cols: List[str]) -> pd.DataFrame:
 
 food_subset = _ensure_cols(food_subset, core_cols)
 meal_foods = _ensure_cols(meal_foods, core_cols)
+classified_foods = _ensure_cols(classified_foods, core_cols)
 
 
 def _clean_food_df(df: pd.DataFrame) -> pd.DataFrame:
@@ -270,7 +319,7 @@ def _clean_food_df(df: pd.DataFrame) -> pd.DataFrame:
             df.loc[df[c].str.lower().isin(["nan", "none"]), c] = ""
 
     # normalize unknown tags
-    for c in ["food_type", "meal_type", "diet_type"]:
+    for c in ["food_type", "meal_type", "diet_type", "consumption_type"]:
         if c in df.columns:
             df.loc[df[c].isin(["0", "nan", "none", ""]), c] = "unknown"
 
@@ -282,9 +331,10 @@ def _clean_food_df(df: pd.DataFrame) -> pd.DataFrame:
 
 food_subset = _clean_food_df(food_subset)
 meal_foods = _clean_food_df(meal_foods)
+classified_foods = _clean_food_df(classified_foods)
 
 # unified foods (food_subset + new_foodset)
-unified_foods = pd.concat([food_subset[core_cols], meal_foods[core_cols]], ignore_index=True)
+unified_foods = pd.concat([food_subset[core_cols], classified_foods[core_cols]], ignore_index=True)
 unified_foods = unified_foods.drop_duplicates(subset=["Food"], keep="first").reset_index(drop=True)
 unified_foods = _clean_food_df(unified_foods)
 
@@ -292,6 +342,10 @@ unified_foods = _clean_food_df(unified_foods)
 mealplan_foods = meal_foods[core_cols].copy()
 mealplan_foods = mealplan_foods.drop_duplicates(subset=["Food"], keep="first").reset_index(drop=True)
 mealplan_foods = _clean_food_df(mealplan_foods)
+
+alternative_foods = classified_foods[core_cols].copy()
+alternative_foods = alternative_foods.drop_duplicates(subset=["Food"], keep="first").reset_index(drop=True)
+alternative_foods = _clean_food_df(alternative_foods)
 
 
 # =========================================================
@@ -342,6 +396,7 @@ else:
 
 unified_foods["cluster_id"] = -1
 mealplan_foods["cluster_id"] = -1
+alternative_foods["cluster_id"] = -1
 
 if cluster_model is not None:
     try:
@@ -355,6 +410,11 @@ if cluster_model is not None:
     except Exception as e:
         print("WARNING: failed to assign mealplan cluster_id:", repr(e))
         mealplan_foods["cluster_id"] = -1
+    try:
+        alternative_foods["cluster_id"] = cluster_model.predict(alternative_foods["Food"].astype(str).tolist())
+    except Exception as e:
+        print("WARNING: failed to assign alternative cluster_id:", repr(e))
+    alternative_foods["cluster_id"] = -1
 
 
 severity_model_path = MODEL_DIR / SEVERITY_MODEL_NAME
@@ -814,8 +874,24 @@ def apply_food_type_autofix(df: pd.DataFrame) -> pd.DataFrame:
 # Apply to both
 unified_foods = apply_food_type_autofix(unified_foods)
 mealplan_foods = apply_food_type_autofix(mealplan_foods)
+alternative_foods = apply_food_type_autofix(alternative_foods)
 
+def filter_by_consumption_type(df: pd.DataFrame, reference_food_row: pd.Series) -> pd.DataFrame:
+    if df.empty:
+        return df
 
+    ref_type = str(reference_food_row.get("consumption_type", "")).strip().lower()
+    if not ref_type:
+        return df
+
+    if "consumption_type" not in df.columns:
+        return df
+
+    out = df[
+        df["consumption_type"].astype(str).str.strip().str.lower() == ref_type
+    ].copy()
+
+    return out if not out.empty else df
 # =========================================================
 # ALLERGEN FUNCTIONS
 # =========================================================
@@ -1619,10 +1695,11 @@ class CombinedRecoResponse(BaseModel):
 def suggest_safe_foods_for_drug(
     drug_row: pd.Series,
     limit: int = 10,
-    foods_source: pd.DataFrame = mealplan_foods,
+    foods_source: pd.DataFrame = alternative_foods,
     exclude_foods: Optional[Set[str]] = None,
     recent_clusters: Optional[Set[int]] = None,
-    rng: Optional[np.random.Generator] = None, 
+    rng: Optional[np.random.Generator] = None,
+    reference_food_row: Optional[pd.Series] = None,
 ) -> List[Dict[str, Any]]:
     pool = foods_source.copy()
     pool = quality_filter(pool)
@@ -1660,7 +1737,12 @@ def suggest_safe_foods_for_drug(
 
     if safe_df.empty:
         return []
+    
+    if reference_food_row is not None:
+        safe_df = filter_by_consumption_type(safe_df, reference_food_row)
 
+    if safe_df.empty:
+        return []
     # Base ranking
     safe_df["rank_score"] = (
         (safe_df["energy"].fillna(0) - 250).abs() / 100
@@ -1958,6 +2040,7 @@ def list_foods(q: Optional[str] = None, limit: int = 50):
         "food_type": str(r.get("food_type", "")),
         "diet_type": str(r.get("diet_type", "")),
         "cluster_id": int(r.get("cluster_id", -1)),
+        "consumption_type": str(r.get("consumption_type", "")),
     } for _, r in df.iterrows()]
 
 
@@ -2012,10 +2095,11 @@ def ml_food_drug_risk(body: FoodDrugRequest):
         safe_foods = suggest_safe_foods_for_drug(
             drug_row=drug_row,
             limit=int(body.safe_food_limit or 10),
-            foods_source=mealplan_foods,
+            foods_source=alternative_foods,
             exclude_foods={str(food_row["Food"])},
             recent_clusters={int(food_row.get("cluster_id", -1))} if "cluster_id" in food_row else set(),
-            rng=rng,   
+            rng=rng,
+            reference_food_row=food_row,
         )
 
     return FoodDrugResponse(
