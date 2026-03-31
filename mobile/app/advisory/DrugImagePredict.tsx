@@ -1,3 +1,4 @@
+//app/advisory/DrugImagePredict.tsx
 import React, { useMemo, useState } from "react";
 import {
   View,
@@ -11,6 +12,9 @@ import {
   Image,
   StatusBar,
   Alert,
+  Linking,
+  Platform,
+  TextInput,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -19,7 +23,8 @@ import * as ImagePicker from "expo-image-picker";
 
 import { useAuth } from "../../context/AuthContext";
 import BrandLogo from "../../components/BrandLogo";
-import { advisoryRequest, ML_API } from "../../utils/api";
+import { ADVISORY_API } from "../../utils/api";
+import { WebView } from "react-native-webview";
 
 // ─────────────────────────── Types ───────────────────────────
 type User = {
@@ -56,10 +61,10 @@ type PredictionItem = {
 const MENU_ITEMS = [
   { label: "Dashboard",             icon: "home-outline"             as const, path: "/dashboard",                    replace: true  },
   { label: "Food Drug Interaction", icon: "shield-checkmark-outline" as const, path: "/advisory/FoodDrugInteraction", replace: true  },
-  { label: "Meal Plan Advisor",     icon: "clipboard-outline"        as const, path: "/advisory/MealPlan",            replace: true  },
+  { label: "Meal Plan Advisor",     icon: "clipboard-outline"        as const, path: "/advisory/PersonalizedMealPlan",            replace: true  },
   { label: "Drug Image Analyzer",   icon: "image-outline"            as const, path: "/advisory/drug-image",          replace: false },
   { label: "Drug Recommender",      icon: "sparkles-outline"         as const, path: "/advisory/symptom-drug",        replace: false },
-  { label: "History",               icon: "time-outline"             as const, path: "/history",                      replace: false },
+  { label: "History",               icon: "time-outline"             as const, path: "/advisory/History",                      replace: false },
 ];
 
 // ─────────────────────────── Helpers ───────────────────────────
@@ -135,6 +140,29 @@ function confidenceMeta(conf?: number) {
   return { label: "Low confidence", color: "#991B1B", bg: "#FEF2F2", border: "#FCA5A5" };
 }
 
+function getMapSearchQuery(item: PredictionItem, manualQuery?: string) {
+  const q = String(manualQuery || "").trim();
+  if (q) return `${q} pharmacy Sri Lanka`;
+
+  const drug = item?.brand_name || item?.drug_name || "pharmacy";
+  return `${drug} pharmacies in Sri Lanka`;
+}
+
+function getEmbeddedMapUrl(item: PredictionItem, manualQuery?: string) {
+  const query = encodeURIComponent(getMapSearchQuery(item, manualQuery));
+  return `https://www.google.com/maps?q=${query}&z=7&output=embed`;
+}
+
+function getOpenMapUrl(item: PredictionItem, manualQuery?: string) {
+  const query = encodeURIComponent(getMapSearchQuery(item, manualQuery));
+  return `https://www.google.com/maps/search/?api=1&query=${query}`;
+}
+
+function getSriLankaPharmacyMapUrl(drugName?: string) {
+  const q = encodeURIComponent(`${drugName || "pharmacy"} pharmacies in Sri Lanka`);
+  return `https://www.google.com/maps/search/?api=1&query=${q}`;
+}
+
 // ─────────────────────────── API upload helper ───────────────────────────
 async function predictDrugImageMobile({
   token,
@@ -147,22 +175,25 @@ async function predictDrugImageMobile({
 }) {
   const formData = new FormData();
 
-  formData.append("file", {
-    uri: imageUri,
-    name: "drug-image.jpg",
-    type: "image/jpeg",
-  } as any);
+  const imgResponse = await fetch(imageUri);
+  const blob = await imgResponse.blob();
 
+  formData.append("file", blob, "drug-image.jpg");
   formData.append("topk", String(topk));
 
-  const res = await fetch(`${ML_API}/predict-drug-from-image?topk=${topk}`, {
+  const res = await fetch(`${ADVISORY_API}/drug-image/predict`, {
     method: "POST",
     headers: token ? { Authorization: `Bearer ${token}` } : {},
     body: formData,
   });
 
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw data;
+
+  if (!res.ok) {
+    console.log("PREDICT ERROR RESPONSE:", data);
+    throw data;
+  }
+
   return data;
 }
 
@@ -192,6 +223,21 @@ function PredictionCard({ item }: { item: PredictionItem }) {
   const warnings = useMemo(() => toBulletList(item?.warnings), [item?.warnings]);
   const sideEffects = useMemo(() => toBulletList(item?.side_effects), [item?.side_effects]);
 
+  const defaultQuery = prettyText(
+    item?.brand_name || item?.drug_name || "Sri Lanka pharmacies"
+  );
+  const [searchText, setSearchText] = useState("");
+  const [mapQuery, setMapQuery] = useState(defaultQuery);
+
+  function handleMapSearch() {
+    const q = searchText.trim();
+    if (!q) {
+      setMapQuery(defaultQuery);
+      return;
+    }
+    setMapQuery(q);
+  }
+
   return (
     <View style={styles.resultCard}>
       <View style={styles.resultTop}>
@@ -201,7 +247,7 @@ function PredictionCard({ item }: { item: PredictionItem }) {
 
         <View style={{ flex: 1 }}>
           <Text style={styles.resultDrugName}>
-            {item?.brand_name || item?.drug_name || "Unknown Drug"}
+            {prettyText(item?.brand_name || item?.drug_name || "Unknown Drug")}
           </Text>
 
           {item?.generic_name ? (
@@ -242,6 +288,67 @@ function PredictionCard({ item }: { item: PredictionItem }) {
           </Text>
         </View>
       ) : null}
+
+      <View style={styles.mapCard}>
+        <Text style={styles.mapTitle}>Search nearby pharmacies</Text>
+
+        <View style={styles.searchRow}>
+          <View style={styles.searchInputWrap}>
+            <Ionicons name="search-outline" size={18} color="#94A3B8" />
+            <TextInput
+              value={searchText}
+              onChangeText={setSearchText}
+              placeholder="Ex: Kaduwela pharmacy"
+              placeholderTextColor="#94A3B8"
+              style={styles.searchInput}
+              returnKeyType="search"
+              onSubmitEditing={handleMapSearch}
+            />
+          </View>
+
+          <TouchableOpacity
+            style={styles.searchBtn}
+            activeOpacity={0.85}
+            onPress={handleMapSearch}
+          >
+            <Text style={styles.searchBtnText}>Search</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.mapHint}>
+          Showing map for: {mapQuery}
+        </Text>
+
+        <View style={styles.mapFrame}>
+          {Platform.OS === "web" ? (
+            <iframe
+              src={getEmbeddedMapUrl(item, mapQuery)}
+              style={{ width: "100%", height: "100%", border: "0" }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Sri Lanka Pharmacy Map"
+            />
+          ) : (
+            <WebView
+              source={{ uri: getEmbeddedMapUrl(item, mapQuery) }}
+              style={styles.webview}
+              javaScriptEnabled
+              domStorageEnabled
+              startInLoadingState
+              scrollEnabled={false}
+            />
+          )}
+        </View>
+
+        <TouchableOpacity
+          style={styles.openMapBtn}
+          activeOpacity={0.85}
+          onPress={() => Linking.openURL(getOpenMapUrl(item, mapQuery))}
+        >
+          <Ionicons name="open-outline" size={16} color="#fff" />
+          <Text style={styles.openMapBtnText}>Open in Maps</Text>
+        </TouchableOpacity>
+      </View>
 
       <InfoSection title="Uses" items={uses} />
       <InfoSection title="Dosage Info" items={dosage} />
@@ -339,6 +446,22 @@ export default function DrugImageScreen() {
         topk: 1,
       });
 
+      if (!data.accepted) {
+        setPrediction(null);
+      
+        if (
+          data.message?.includes("clear medicine object") ||
+          data.message?.includes("screenshot") ||
+          data.message?.includes("text image")
+        ) {
+          setErr("Please upload a clear medicine image (pill).");
+        } else {
+          setErr(data.message || "Please upload a clear medicine image (pill).");
+        }
+      
+        return;
+      }
+
       const first = Array.isArray(data?.predictions) ? data.predictions[0] : null;
       if (!first) {
         setErr("No prediction returned.");
@@ -347,7 +470,14 @@ export default function DrugImageScreen() {
 
       setPrediction(first);
     } catch (e: any) {
-      setErr(e?.error || e?.details || e?.message || "Prediction failed");
+      console.log("PREDICTION FAILED:", e);
+      setErr(
+        e?.detail?.[0]?.msg ||
+        e?.error ||
+        e?.details ||
+        e?.message ||
+        "Prediction failed"
+      );
     } finally {
       setSubmitting(false);
     }
@@ -361,7 +491,6 @@ export default function DrugImageScreen() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        {/* ── HEADER ── */}
         <View style={styles.header}>
           <BrandLogo withText size={34} />
           <TouchableOpacity
@@ -373,11 +502,10 @@ export default function DrugImageScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* ── HERO ── */}
         <View style={styles.pageHero}>
           <View style={styles.heroBadge}>
             <View style={styles.heroBadgeDot} />
-            <Text style={styles.heroBadgeText}>IMAGE-BASED DRUG IDENTIFICATION</Text>
+            <Text style={styles.heroBadgeText}>HEALTH ADVISORY CENTER</Text>
           </View>
           <Text style={styles.pageTitle}>Drug Image Analyzer</Text>
           <Text style={styles.pageDesc}>
@@ -385,7 +513,6 @@ export default function DrugImageScreen() {
           </Text>
         </View>
 
-        {/* ── UPLOAD CARD ── */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
             <View style={styles.cardIcon}>
@@ -463,7 +590,6 @@ export default function DrugImageScreen() {
           </View>
         </View>
 
-        {/* ── ERROR ── */}
         {err ? (
           <View style={styles.errorBox}>
             <View style={styles.errorIconWrap}>
@@ -476,7 +602,6 @@ export default function DrugImageScreen() {
           </View>
         ) : null}
 
-        {/* ── RESULT PANEL ── */}
         <View style={styles.resultPanel}>
           <View style={styles.resultHead}>
             <View style={styles.resultHeadIcon}>
@@ -510,7 +635,6 @@ export default function DrugImageScreen() {
         </Text>
       </ScrollView>
 
-      {/* ── DRAWER ── */}
       <Modal
         visible={showSidebar}
         animationType="slide"
@@ -568,7 +692,7 @@ export default function DrugImageScreen() {
                 style={styles.drawerItem}
                 onPress={() => {
                   setShowSidebar(false);
-                  router.push("/profile" as any);
+                  router.push("/Profile" as any);
                 }}
               >
                 <Ionicons name="person-circle-outline" size={22} color="#fff" />
@@ -987,6 +1111,25 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
 
+  mapBtn: {
+    marginBottom: 12,
+    backgroundColor: "#EEEDFE",
+    borderWidth: 1,
+    borderColor: "#D8D5F4",
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+  },
+  mapBtnText: {
+    color: "#2f2971",
+    fontSize: 13,
+    fontWeight: "700",
+  },
+
   infoSection: {
     marginTop: 10,
     paddingTop: 10,
@@ -1091,4 +1234,96 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingTop: 12,
   },
+
+  mapCard: {
+  marginBottom: 12,
+  backgroundColor: "#F8FAFC",
+  borderWidth: 1,
+  borderColor: "#E2E8F0",
+  borderRadius: 16,
+  padding: 12,
+},
+
+mapTitle: {
+  fontSize: 13,
+  fontWeight: "800",
+  color: "#2f2971",
+  marginBottom: 10,
+},
+searchRow: {
+  flexDirection: "row",
+  gap: 10,
+  alignItems: "center",
+  marginBottom: 10,
+},
+
+searchInputWrap: {
+  flex: 1,
+  height: 48,
+  borderWidth: 1,
+  borderColor: "#CBD5E1",
+  backgroundColor: "#FFFFFF",
+  borderRadius: 14,
+  paddingHorizontal: 14,
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 8,
+},
+
+searchInput: {
+  flex: 1,
+  fontSize: 14,
+  color: "#0F172A",
+},
+
+searchBtn: {
+  height: 48,
+  paddingHorizontal: 20,
+  borderRadius: 14,
+  backgroundColor: "#2f2971",
+  alignItems: "center",
+  justifyContent: "center",
+},
+searchBtnText: {
+  color: "#FFFFFF",
+  fontSize: 14,
+  fontWeight: "700",
+},
+mapHint: {
+  fontSize: 11,
+  color: "#64748B",
+  marginBottom: 10,
+  lineHeight: 16,
+},
+
+mapFrame: {
+  width: "100%",
+  height: 240,
+  borderRadius: 14,
+  overflow: "hidden",
+  backgroundColor: "#E5E7EB",
+  marginBottom: 12,
+},
+
+webview: {
+  flex: 1,
+  backgroundColor: "transparent",
+},
+
+openMapBtn: {
+  backgroundColor: "#2f2971",
+  borderRadius: 12,
+  paddingVertical: 12,
+  paddingHorizontal: 14,
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 8,
+},
+
+openMapBtnText: {
+  color: "#FFFFFF",
+  fontSize: 13,
+  fontWeight: "700",
+},
 });

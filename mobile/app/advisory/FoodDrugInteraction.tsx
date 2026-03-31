@@ -198,7 +198,7 @@ const MENU_ITEMS = [
   { label: "Meal Plan Advisor",   icon: "clipboard-outline"        as const, path: "/advisory/PersonalizedMealPlan", replace: false },
   { label: "Drug Image Analyzer", icon: "image-outline"            as const, path: "/advisory/DrugImagePredict",          replace: false },
   { label: "Drug Recommender",    icon: "sparkles-outline"         as const, path: "/advisory/symptom-drug",        replace: false },
-  { label: "History",             icon: "time-outline"             as const, path: "/history",                      replace: false },
+  { label: "History",             icon: "time-outline"             as const, path: "/advisory/History",                      replace: false },
 ];
 
 // ─────────────────────────── Main Screen ───────────────────────────
@@ -551,7 +551,7 @@ export default function FoodDrugInteractionScreen() {
             {/* Bottom */}
             <View style={styles.drawerBottom}>
               <TouchableOpacity style={styles.drawerItem} activeOpacity={0.8}
-                onPress={() => { setShowSidebar(false); router.push("/profile" as any); }}>
+                onPress={() => { setShowSidebar(false); router.push("/Profile" as any); }}>
                 <Ionicons name="person-circle-outline" size={22} color="#FFFFFF" />
                 <Text style={styles.drawerItemText}>My Profile</Text>
               </TouchableOpacity>

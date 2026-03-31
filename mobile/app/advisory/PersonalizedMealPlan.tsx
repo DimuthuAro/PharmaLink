@@ -45,7 +45,7 @@ const MENU_ITEMS = [
   { label: "Meal Plan Advisor",     icon: "clipboard-outline"        as const, path: "/advisory/MealPlan",            replace: true  },
   { label: "Drug Image Analyzer",   icon: "image-outline"            as const, path: "/advisory/DrugImagePredict",          replace: false },
   { label: "Drug Recommender",      icon: "sparkles-outline"         as const, path: "/advisory/symptom-drug",        replace: false },
-  { label: "History",               icon: "time-outline"             as const, path: "/history",                      replace: false },
+  { label: "History",               icon: "time-outline"             as const, path: "/advisory/History",                      replace: false },
 ];
 
 // ─────────────────────────── Helpers ───────────────────────────
@@ -488,7 +488,7 @@ export default function PersonalizedMealPlanScreen() {
             </ScrollView>
             <View style={styles.drawerDivider} />
             <View style={styles.drawerBottom}>
-              <TouchableOpacity style={styles.drawerItem} onPress={() => { setShowSidebar(false); router.push("/profile" as any); }}>
+              <TouchableOpacity style={styles.drawerItem} onPress={() => { setShowSidebar(false); router.push("/Profile" as any); }}>
                 <Ionicons name="person-circle-outline" size={22} color="#fff" />
                 <Text style={styles.drawerItemText}>My Profile</Text>
               </TouchableOpacity>
