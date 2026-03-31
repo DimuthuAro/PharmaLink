@@ -191,16 +191,23 @@ export default function DrugImagePredict() {
 
     try {
       setLoading(true);
-      const res = await predictDrugImage({
-        token,
-        file,
-        topk: topk || 1,
-      });
-      setResult(res);
-
-      // Optional: auto set map query based on result (keeps it helpful)
-      // If you want: mapSearch = "Kaduwela pharmacies" default, keep as-is.
-      setTempSearch("");
+        const res = await predictDrugImage({
+          token,
+          file,
+          topk: topk || 1,
+        });
+        
+        if (!res?.accepted) {
+          setResult(null);
+          setError(
+            res?.message ||
+              "Please upload a clear medicine image (pill)."
+          );
+          return;
+        }
+        
+        setResult(res);
+        setTempSearch("");
     } catch (e) {
       const msg =
         e?.error || e?.details || e?.message || "Drug image prediction failed.";
@@ -709,14 +716,14 @@ export default function DrugImagePredict() {
                               );
                             })}
 
-                            {!result?.predictions?.length && (
-                              <div className="rounded-2xl border-2 border-slate-200 bg-slate-50 p-6 text-center">
-                                <ExclamationTriangleIcon className="h-12 w-12 text-slate-400 mx-auto mb-3" />
-                                <p className="text-sm font-semibold text-slate-600">
-                                  No predictions returned. Please try another image.
-                                </p>
-                              </div>
-                            )}
+                             {!result?.predictions?.length && (
+                               <div className="rounded-2xl border-2 border-slate-200 bg-slate-50 p-6 text-center">
+                                 <ExclamationTriangleIcon className="h-12 w-12 text-slate-400 mx-auto mb-3" />
+                                 <p className="text-sm font-semibold text-slate-600">
+                                   Please upload a clear medicine image (pill, blister, or bottle).
+                                 </p>
+                               </div>
+                             )}
                           </div>
                         </div>
                       )}
