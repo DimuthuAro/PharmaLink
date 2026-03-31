@@ -2180,13 +2180,40 @@ def _norm(s: str) -> str:
     s = re.sub(r"[^a-z0-9]+", "", s)
     return s
 
+def image_seems_invalid_for_drug(img: Image.Image) -> Tuple[bool, str]:
+    gray = np.array(img.convert("L"))
+
+    brightness = float(gray.mean())
+    std = float(gray.std())
+
+    h, w = gray.shape[:2]
+    if h < 80 or w < 80:
+        return True, "Image is too small. Please upload a clearer medicine photo."
+
+    if brightness < 20:
+        return True, "Image is too dark. Please upload a clearer medicine photo."
+
+    # reject only very flat / blank-like images
+    if std < 10:
+        return True, "Image does not appear to contain a clear medicine object."
+
+    # screenshot / text-like heuristic
+    edge_x = np.abs(np.diff(gray.astype(np.int16), axis=1)).mean()
+    edge_y = np.abs(np.diff(gray.astype(np.int16), axis=0)).mean()
+    edge_score = (edge_x + edge_y) / 2.0
+    unique_vals = len(np.unique(gray))
+
+    if brightness < 120 and edge_score > 12 and unique_vals < 120:
+        return True, "This looks like a screenshot or text image, not a medicine photo."
+
+    return False, ""
+
 
 @app.post("/predict-drug-from-image")
 async def predict_drug_from_image_api(
     file: UploadFile = File(...),
-    topk: int = 1,   # default topk=1
+    topk: int = 1,
 ):
-    # validate image file
     if not file.content_type or not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="Upload a valid image.")
 
@@ -2196,21 +2223,48 @@ async def predict_drug_from_image_api(
     except Exception:
         raise HTTPException(status_code=400, detail="Invalid image data.")
 
-    # sanitize topk (force >=1)
+    # basic image rejection
+    bad, reason = image_seems_invalid_for_drug(img)
+    if bad:
+        return {
+            "accepted": False,
+            "predictions": [],
+            "message": reason
+        }
+
     try:
         topk_int = int(topk)
     except Exception:
         topk_int = 1
+
     if topk_int <= 0:
         topk_int = 1
 
-    #  predict (but we will still return only 1)
-    preds = predict_drug_from_image_core(img, topk=topk_int)
+    # get at least top-2 for margin checking
+    preds = predict_drug_from_image_core(img, topk=max(topk_int, 2))
 
-    #  enrich predictions (if drug_vision_info.csv exists)
+    if not preds:
+        return {
+            "accepted": False,
+            "predictions": [],
+            "message": "Could not identify a medicine from this image."
+        }
+
+    top_pred = preds[0]
+    top_conf = float(top_pred.get("confidence", 0.0))
+    second_conf = float(preds[1].get("confidence", 0.0)) if len(preds) > 1 else 0.0
+    margin = top_conf - second_conf
+
+    # reject uncertain / suspicious predictions
+    if top_conf < 0.60 or margin < 0.10:
+        return {
+            "accepted": False,
+            "predictions": [],
+            "message": "This image does not look like a supported medicine image. Please upload a clear pill, blister, or bottle photo."
+        }
+
     enriched: List[Dict[str, Any]] = []
 
-    # cache _brand_key only once (avoid recompute each request)
     if drug_vision_info is not None and "_brand_key" not in drug_vision_info.columns:
         drug_vision_info["_brand_key"] = drug_vision_info["brand_name"].apply(_norm)
 
@@ -2218,14 +2272,12 @@ async def predict_drug_from_image_api(
         pred_name = str(p.get("drug_name", ""))
         key = _norm(pred_name)
 
-        # no csv => return raw prediction
         if drug_vision_info is None:
             enriched.append(p)
             continue
 
         m = drug_vision_info[drug_vision_info["_brand_key"] == key]
 
-        # fallback: fuzzy match
         if m.empty:
             choices = drug_vision_info["_brand_key"].tolist()
             close = get_close_matches(key, choices, n=1, cutoff=0.8)
@@ -2241,8 +2293,10 @@ async def predict_drug_from_image_api(
         else:
             enriched.append(p)
 
-    # ALWAYS return ONLY 1 prediction
-    return {"predictions": enriched[:1]}
+    return {
+        "accepted": True,
+        "predictions": enriched[:1]
+    }
 
 
 @app.post("/symptom-predict", response_model=SymptomPredictResponse)
