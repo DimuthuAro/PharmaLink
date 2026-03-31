@@ -1,0 +1,298 @@
+Food,food_type,consumption_type
+Yellow Rice,main,meal
+Fried Halmesso,protein,meal
+Fried Karawala,protein,meal
+Kola Mallum,vegetable,meal
+Kiri Hodi (Fish),protein,meal
+Soya meat curry,protein,meal
+Boiled Potatoes,main,meal
+Chicken Curry,protein,meal
+Chicken Gravy,side,meal
+Egg Yolk,protein,meal
+Mango Chutney,side,meal
+Boiled Jackfruit Seed,protein,meal
+Boiled Chickpeas,protein,meal
+Boiled Mung,protein,meal
+Boiled Sweet Potato,main,meal
+Cucumber Flesh,snack,snack
+Roast Peanut,snack,snack
+Roast Green Pea,snack,snack
+Roasted Gram,snack,snack
+Orange,snack,snack
+Guava,snack,snack
+Ambun Kesel,snack,snack
+Ambul Kesel,snack,snack
+Cavendish Banana,snack,snack
+Dried Grapes,snack,snack
+Jackfruit,snack,snack
+Avocado,snack,snack
+Watermelon Juice,drink,beverage
+Helapa,dessert,dessert
+Wandu,dessert,dessert
+Aggala,dessert,dessert
+Lavariya,dessert,dessert
+Yogurt,protein,meal
+Oats,main,meal
+Fried Tilapia,protein,meal
+Salmon,protein,meal
+Tuna,protein,meal
+Greek Yogurt,protein,meal
+Whole Milk,drink,beverage
+Skim Milk,drink,beverage
+Apple,snack,snack
+Almonds,snack,snack
+Walnuts,snack,snack
+Kiribath (Milk Rice),main,meal
+String Hoppers (Idiyappam),main,meal
+Hoppers (Appa),main,meal
+Egg Hopper (Biththara Appa),protein,meal
+Pol Roti,main,meal
+Pittu (Coconut),main,meal
+Kola Kenda (Herbal Porridge),drink,beverage
+Dhal Curry (Parippu),protein,meal
+Lunu Miris,side,meal
+Pol Sambol,side,meal
+Kiri Hodi (Tomato),vegetable,meal
+Seeni Sambol,side,meal
+Ceylon Tea,drink,beverage
+Ginger Tea,drink,beverage
+King Coconut Water,drink,beverage
+Red Rice,main,meal
+White Rice,main,meal
+Fried Rice (Chicken),protein,meal
+Fried Rice (Vegetable),main,meal
+Fish Curry (Tuna),protein,meal
+Ambul Thiyal (Sour Fish),protein,meal
+Black Pork Curry,protein,meal
+Prawn Curry,protein,meal
+Egg Curry,protein,meal
+Potato Curry,main,meal
+Brinjal Moju,vegetable,meal
+Pumpkin Curry,vegetable,meal
+Jackfruit Curry (Polos),vegetable,meal
+Young Jackfruit Curry (Kos),vegetable,meal
+Cuttlefish Curry,protein,meal
+Beef Curry,protein,meal
+Gotukola Sambol,vegetable,meal
+Kankun Mallung,vegetable,meal
+Mukunuwenna Mallum,vegetable,meal
+Beetroot Curry,vegetable,meal
+Okra (Bandakka) Curry,vegetable,meal
+Fried Beans Sambol,protein,meal
+Carrot Curry,vegetable,meal
+Cucumber Salad,vegetable,meal
+Papadam,side,meal
+Mixed Greens Mallum,vegetable,meal
+Parippu Wade,snack,snack
+Isso Wade,snack,snack
+Manioc Chips,snack,snack
+Boiled Manioc (Cassava),main,meal
+Roasted Peanuts,snack,snack
+Curd (Buffalo) + Treacle,dessert,dessert
+Vegetable Soup,vegetable,meal
+Beet Root Salad,vegetable,meal
+Carrot Salad,vegetable,meal
+Lotus Root Curry,vegetable,meal
+Leeks Sambola,vegetable,meal
+Mushroom Curry,vegetable,meal
+Anguna Kola Mallum,vegetable,meal
+Kathurumurunga Mallum,vegetable,meal
+Cassava Leaves,vegetable,meal
+Whole Wheat Toast,main,meal
+Black Coffee,drink,beverage
+Grilled Chicken Salad,protein,meal
+Quinoa,main,meal
+Steamed Broccoli,drink,beverage
+Oatmeal,main,meal
+Blueberries,snack,snack
+Turkey Sandwich,main,meal
+Carrot Sticks,snack,snack
+Spaghetti Bolognese,main,meal
+Frosted Flakes,snack,snack
+Lentil Soup,protein,meal
+Beef Steak,drink,beverage
+Avocado Toast,main,meal
+Hard-Boiled Egg,protein,meal
+Chicken Wrap,protein,meal
+Baked Potato,main,meal
+Black Beans,protein,meal
+Chicken Noodle Soup,protein,meal
+Celery Sticks,snack,snack
+Green Beans,protein,meal
+Green Tea,drink,beverage
+Pancakes,snack,snack
+Fruit & Yogurt Smoothie,drink,beverage
+Brown Rice,main,meal
+Bell Pepper Salad,vegetable,meal
+Pita Bread,main,meal
+Fried Pork Chop,protein,meal
+Mashed Potatoes,main,meal
+Chicken Caesar Salad,protein,meal
+Orange Juice,drink,beverage
+Bacon,protein,meal
+Mixed Nuts,snack,snack
+Asparagus,vegetable,meal
+Raisins,snack,snack
+Vegetable Macaroni,main,meal
+Chicken Macaroni,protein,meal
+Tomato Soup,vegetable,meal
+Grilled Cheese Sandwich,main,meal
+Beef Tacos,protein,meal
+Refried Beans,protein,meal
+Guacamole,side,meal
+Clam Chowder,protein,meal
+Iced Tea,drink,beverage
+Garlic Bread,side,meal
+Chocolate Milk,drink,beverage
+Potato Chips,snack,snack
+Caprese Salad,vegetable,meal
+Cherries,snack,snack
+Turkey Bacon,protein,meal
+Grits,main,meal
+Beef Jerky,snack,snack
+Figs,snack,snack
+Lobster,protein,meal
+Corn on the Cob,main,meal
+French Onion Soup,vegetable,meal
+Seaweed Salad,vegetable,meal
+Croutons,snack,snack
+Shepherd's Pie,main,meal
+Fried Halibut,protein,meal
+Lemonade,drink,beverage
+Pistachios,snack,snack
+Oat Milk,drink,beverage
+Biscuits and Gravy,main,meal
+Corn Flakes,main,meal
+T-Bone Steak,drink,beverage
+Creamed Spinach,vegetable,meal
+Pecans,snack,snack
+Cucumber Slices,snack,snack
+Olives,snack,snack
+Chicken Alfredo,protein,meal
+Breadstick,snack,snack
+Cobb Salad,protein,meal
+Mandarin Orange,snack,snack
+Cashews,snack,snack
+Eggo Waffle (2 waffles),snack,snack
+Pulled Pork Sandwich,protein,meal
+Macadamia Nuts,snack,snack
+Kiwifruit,snack,snack
+Halibut,protein,meal
+Eggo Waffle,snack,snack
+Almond Milk (Unsweetened),drink,beverage
+Lemon Bar,dessert,dessert
+Rice Krispies,snack,snack
+Pickle,side,meal
+Lobster Bisque,protein,meal
+Sauerkraut,vegetable,meal
+Soy Milk,drink,beverage
+Chicken Tikka Masala,protein,meal
+Naan Roti,main,meal
+Sweet & Sour Chicken,protein,meal
+Egg Drop Soup,protein,meal
+Potato Salad,vegetable,meal
+Cranberry Juice,drink,beverage
+Chicken Piccata,protein,meal
+Angel Hair Pasta,main,meal
+Salami,protein,meal
+Shrimp Scampi,protein,meal
+Beer,drink,beverage
+Arak,drink,beverage
+Kasippu,drink,beverage
+"Liquor (Toddy, Coconut)",drink,beverage
+"Liquor (Toddy, Kitul)",drink,beverage
+"Liquor (Toddy, Palmyra)",drink,beverage
+"Liquor, Hard (>35% Abv), Non-Specific",drink,beverage
+"Coconut Water (Botteled, Sweetend)",drink,beverage
+"Coconut Water (Fresh, Unsweetend)",drink,beverage
+Fruit And Milk Drink,drink,beverage
+Fruit Cordial (With Water),drink,beverage
+"Fruit Drink (Botteled,Ready-To-Drink)",drink,beverage
+"Fruit Nectar (Botteled,Ready-To-Drink)",drink,beverage
+Fruit Squah (With Water),drink,beverage
+Juice (Sweetend),drink,beverage
+Lime Juice,drink,beverage
+Passion Fruit Juice,drink,beverage
+"Lemon Or Lime Juice (Fresh, Water & Sugar)",drink,beverage
+"Lemon Or Lime Juice (Fresh, Water,No Sugar)",drink,beverage
+"Lime Juice (Fresh,Raw (100% Juice))",drink,beverage
+Apple Juice (Unsweetened (100% Juice)),drink,beverage
+Mango Juice (Unsweetened (100% Juice)),drink,beverage
+Orange Juice (Unsweetened (100% Juice)),drink,beverage
+Kenda (Finger Millet),drink,beverage
+Kenda (Leafy Vegetable & Rice),drink,beverage
+Cola,drink,beverage
+Cream Soda,drink,beverage
+Energy Drink,drink,beverage
+Fruit-Flavored Soda,drink,beverage
+Ginger Beer,drink,beverage
+Lemon-Lime Soda,drink,beverage
+Orange Soda,drink,beverage
+Coffee (Brewed),drink,beverage
+"Coffee, (Made From Instant Coffee Powder)",drink,beverage
+"Cooling Drink (Chinese,Infusion)",drink,beverage
+Tea (Brewed From Black Tea Leaves),drink,beverage
+Tea (Made From Instant Black Tea Powder),drink,beverage
+Tea (Brewed From Herbs & Spices),drink,beverage
+Tea (Brewed From Green Tea),drink,beverage
+Water,drink,beverage
+Bread (Wholemeal),main,meal
+Bread (White),main,meal
+Bun (Currant),snack,snack
+"Bun (White, Plain)",snack,snack
+Bun (Iced Or Sugar Glazed),dessert,dessert
+Roast Paan,main,meal
+Bun (Jam),dessert,dessert
+Bun (Cream),dessert,dessert
+Bun (Curry Filled),snack,snack
+Papadum,side,meal
+Parata,main,meal
+Coconut Roti,main,meal
+Egg Roti,protein,meal
+"Roti (Wheat, Plain)",main,meal
+Vegetable Roti,vegetable,meal
+"Roti (Millet, Plain)",main,meal
+Dosa,main,meal
+Egg Dosa,protein,meal
+Plain Dosa (With Filling),main,meal
+Egg Hoppers,protein,meal
+Hoppers,main,meal
+String Hoppers (Rice Flour),main,meal
+String Hoppers (Wheat Flour),main,meal
+String Hoppers (Rice & Wheat Flour),main,meal
+Beef Kottu,protein,meal
+Egg Kottu,protein,meal
+Chicken Kottu,protein,meal
+Idli (Millet),main,meal
+Idli (Rice & Dal),main,meal
+Idli (Semolina),main,meal
+"Pittu (Millet, With Coconut)",main,meal
+"Pittu (Rice, With Coconut)",main,meal
+"Pittu (Wheat, With Coconut)",main,meal
+Uppuma (Tempered With Vegetables),main,meal
+"Pittu (Rice, Without Coconut)",main,meal
+"Pittu (Rice & Wheat, With Coconut)",main,meal
+"Pittu (Rice & Wheat, Without Coconut)",main,meal
+Thalapa (Millet),main,meal
+Butter,side,meal
+Dressing (French),side,meal
+Ghee,side,meal
+Margarine,side,meal
+Yeast Extract,side,meal
+Manila Tamarind,snack,snack
+"Chili (Green, Fresh)",side,meal
+"Chili (Red, Dried)",side,meal
+"Chili (Red, Fresh)",side,meal
+Chili (Fried),side,meal
+"Ginger (Fresh, Grated)",side,meal
+Maldives Fish (Dry),protein,meal
+Chicken Gravy (With Coconut Milk),protein,meal
+Coconut Milk Gravy,side,meal
+Gravy Without Coconut Milk (Thin),side,meal
+Gravy Without Coconut Milk (Thick),side,meal
+Tomato Sauce,side,meal
+"Gravy (Coconut Milk, Thin)",side,meal
+"Gravy (Coconut Milk,Thick)",side,meal
+Fish Gravy,protein,meal
+Fish Gravy (Coconut Milk),protein,meal
+Potato Gravy,vegetable,meal
