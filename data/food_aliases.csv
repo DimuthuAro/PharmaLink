@@ -1,0 +1,68 @@
+canonical_food,alias,category
+milk,milk,dairy
+milk,dairy milk,dairy
+milk,milk tea,dairy
+milk,glass of milk,dairy
+yogurt,yogurt,dairy
+yogurt,yoghurt,dairy
+yogurt,curd,dairy
+yogurt,curd rice,dairy
+iron,iron-rich food,iron_rich
+iron,iron food,iron_rich
+iron,iron-rich meal,iron_rich
+iron,iron-rich vegetables,iron_rich
+iron,beans containing iron,iron_rich
+iron,lentils rich in iron,iron_rich
+food,food,general_food
+food,meal,general_food
+food,breakfast,general_food
+food,lunch,general_food
+food,dinner,general_food
+food,toast,general_food
+food,meal immediately,general_food
+spinach,spinach,leafy_green
+spinach,spinach leaves,leafy_green
+leafy greens,leafy greens,leafy_green
+leafy greens,green leafy vegetables,leafy_green
+leafy greens,green salad,leafy_green
+leafy greens,greens,leafy_green
+coffee,coffee,caffeine
+coffee,coffee tea,caffeine
+coffee,latte,caffeine
+coffee,cappuccino,caffeine
+alcohol,alcohol,alcohol
+alcohol,beer,alcohol
+alcohol,wine,alcohol
+alcohol,liquor,alcohol
+high_carb,high carb meal,carbohydrate
+high_carb,high-carb meal,carbohydrate
+high_carb,high-carb snacks,carbohydrate
+high_carb,rice,carbohydrate
+high_carb,noodles,carbohydrate
+high_carb,carb-heavy meal,carbohydrate
+sugar,sugar,sugary
+sugar,sweets,sugary
+sugar,sugary snacks,sugary
+sugar,sugary food,sugary
+sugar,dessert,sugary
+salt,salt,sodium
+salt,salty food,sodium
+salt,salty foods,sodium
+salt,salty snacks,sodium
+salt,high-salt food,sodium
+salt,salt-rich meals,sodium
+grapefruit,grapefruit,citrus
+grapefruit,grapefruit juice,citrus
+high_fat,high-fat meal,fat
+high_fat,high fat meal,fat
+high_fat,fatty meal,fat
+high_fat,fatty food,fat
+high_fat,fatty meals,fat
+high_fiber,high-fiber food,fiber
+high_fiber,high fiber food,fiber
+high_fiber,high-fiber meal,fiber
+high_fiber,fiber-rich food,fiber
+high_fiber,fiber-rich meals,fiber
+smoking,smoking,lifestyle
+smoking,smoke,lifestyle
+smoking,cigarettes,lifestyle

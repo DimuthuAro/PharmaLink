@@ -1,0 +1,41 @@
+rule_id,rule_category,drug_keyword,food_keyword,symptom_keyword,event_pattern,risk_type,severity,explanation_template,advice_template,timing_window,confidence_base,clinical_strength
+
+R001,food_drug,antibiotic,dairy,,took->ate,calcium_antibiotic,1,"Dairy products may reduce absorption of some antibiotics such as tetracyclines or fluoroquinolones.","Consider separating dairy and the medicine by 2–4 hours if advised.","2-4h",0.80,strong
+R002,food_drug,antibiotic,milk,,took->drank,calcium_antibiotic,1,"Milk contains calcium which may bind with certain antibiotics and reduce absorption.","Avoid taking milk close to antibiotic doses if relevant.","2-4h",0.82,strong
+R003,food_drug,levothyroxine,iron,,took->ate,iron_levothyroxine,1,"Iron supplements or foods may reduce absorption of levothyroxine.","Take levothyroxine on an empty stomach and separate iron by several hours.","4h",0.90,strong
+R004,food_drug,levothyroxine,food,,took->ate,absorption_issue,1,"Food intake may reduce absorption of levothyroxine.","Take before breakfast as advised.","30min before",0.92,strong
+R005,food_drug,warfarin,leafy greens,,ate,vitk_warfarin,1,"Vitamin K–rich foods may affect warfarin activity.","Maintain consistent intake rather than avoiding completely.","consistent",0.88,strong
+R006,food_drug,warfarin,spinach,,ate,vitk_warfarin,1,"Spinach contains vitamin K which may influence warfarin effect.","Keep intake consistent and monitor INR.","consistent",0.85,strong
+R007,food_drug,sedative,alcohol,,took->drank,cns_alcohol,2,"Alcohol can increase drowsiness and sedation when combined with certain medicines.","Avoid alcohol while taking sedating medications.","24h",0.92,strong
+R008,food_drug,antibiotic,calcium,,took->ate,calcium_antibiotic,1,"Calcium-containing foods or supplements may reduce absorption of some antibiotics.","Separate intake times if advised.","2-4h",0.80,strong
+R009,food_drug,levothyroxine,soy,,took->ate,absorption_issue,1,"Soy products may reduce absorption of levothyroxine in some cases.","Avoid consuming soy close to medication time.","4h",0.75,moderate
+R010,food_drug,antidiabetic,high_carb,,took->ate,glycemic_control,1,"High carbohydrate meals may influence blood glucose control when using antidiabetic drugs.","Monitor glucose and follow dietary advice.","2h",0.70,moderate
+
+R011,timing,NSAID,,stomach pain,skipped->took,empty_stomach_irritation,1,"Taking certain painkillers on an empty stomach may cause gastric irritation.","Consider taking with food if recommended.","with food",0.90,strong
+R012,timing,antidiabetic,,dizziness,skipped->took,low_sugar,1,"Skipping meals while using some diabetes medications may lead to low blood sugar.","Avoid skipping meals.","meal required",0.88,strong
+R013,timing,antibiotic,,nausea,took->felt,side_effect_variation,0,"Some antibiotics may cause gastrointestinal discomfort depending on timing.","Follow instructions given with the medicine.","varies",0.70,moderate
+R014,timing,iron,,none,took->ate,absorption_issue,1,"Food may reduce absorption of iron supplements.","Taking on an empty stomach may improve absorption if tolerated.","empty stomach",0.85,strong
+R015,timing,vitamin,,none,took->ate,absorption_improve,0,"Some vitamins are better absorbed with food.","Taking with meals may improve absorption.","with food",0.75,strong
+R016,timing,antibiotic,,none,took->ate,absorption_variation,0,"Food may affect how quickly some antibiotics are absorbed.","Follow prescription instructions.","varies",0.65,moderate
+R017,timing,thyroid,food,,took->ate,absorption_issue,1,"Food intake may reduce absorption of thyroid medications.","Take consistently before meals.","30min before",0.88,strong
+R018,timing,diabetes,,dizziness,skipped->took->felt,low_sugar,1,"Dizziness may occur if medication is taken without adequate food intake.","Maintain regular meals.","meal required",0.85,strong
+
+R019,lifestyle,anxiety,coffee,,took->drank,caffeine_effect,1,"Caffeine may increase anxiety symptoms and potentially counteract treatment effects.","Limit caffeine intake.","same day",0.75,moderate
+R020,lifestyle,sedative,alcohol,drowsiness,took->drank->felt,cns_alcohol,2,"Alcohol may enhance sedative effects and increase drowsiness.","Avoid alcohol.","24h",0.92,strong
+R021,lifestyle,diabetes,sugar,,ate,glycemic_control,1,"High sugar intake may affect blood glucose control.","Limit sugary foods.","daily",0.80,strong
+R022,lifestyle,hypertension,salt,,ate,sodium_effect,1,"High sodium intake may increase blood pressure.","Reduce salt intake.","daily",0.90,strong
+R023,lifestyle,statin,grapefruit,,ate,enzyme_inhibition,2,"Grapefruit may affect metabolism of certain statins.","Avoid grapefruit unless advised otherwise.","24h",0.90,strong
+R024,lifestyle,antidepressant,alcohol,,took->drank,cns_alcohol,2,"Alcohol may worsen side effects of antidepressants.","Avoid alcohol.","24h",0.90,strong
+R025,lifestyle,asthma,smoking,,habit,trigger_effect,2,"Smoking may worsen asthma symptoms and reduce treatment effectiveness.","Avoid smoking.","continuous",0.95,strong
+
+R026,symptom_based,antibiotic,dairy,nausea,took->ate->felt,possible_interaction,1,"Nausea may be related to how the medicine was taken or food interactions.","Adjust timing and consult advice if symptoms persist.","2-4h",0.75,moderate
+R027,symptom_based,NSAID,,stomach pain,skipped->took->felt,empty_stomach_irritation,1,"Stomach pain may occur if taken without food.","Consider taking with meals.","with food",0.90,strong
+R028,symptom_based,antidiabetic,,dizziness,skipped->took->felt,low_sugar,1,"Dizziness may be due to low blood sugar.","Eat regularly and monitor glucose.","meal required",0.88,strong
+R029,symptom_based,sedative,alcohol,drowsiness,took->drank->felt,cns_alcohol,2,"Drowsiness may be increased due to alcohol interaction.","Avoid alcohol.","24h",0.92,strong
+R030,symptom_based,warfarin,leafy greens,,ate->effect,vitk_warfarin,1,"Variation in vitamin K intake may affect anticoagulation.","Maintain consistency.","consistent",0.85,strong
+
+R031,general,,alcohol,,habit,general_interaction,1,"Alcohol may interact with many medications.","Limit alcohol intake.","general",0.70,moderate
+R032,general,,high_fat,,ate,absorption_delay,0,"High-fat meals may delay absorption of some drugs.","Avoid heavy meals if advised.","2h",0.65,heuristic
+R033,general,,high_fiber,,ate,absorption_delay,0,"High fiber foods may slow absorption of certain medications.","Separate intake times if necessary.","1-2h",0.65,heuristic
+R034,general,,none,,missed_dose,missed_dose,1,"Missing doses may reduce effectiveness of treatment.","Take medication as prescribed.","schedule",0.95,strong
+R035,general,,none,,double_dose,overdose,2,"Taking extra doses may increase risk of side effects.","Do not exceed prescribed dose.","immediate",0.95,strong

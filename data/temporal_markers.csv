@@ -1,0 +1,24 @@
+phrase,meaning
+before,before
+after,after
+then,sequence_next
+later,delayed_next
+with,simultaneous
+while,simultaneous
+during,simultaneous
+right after,immediate_after
+soon after,immediate_after
+immediately after,immediate_after
+not long after,immediate_after
+shortly after,immediate_after
+a while after,delayed_next
+some time after,delayed_next
+without food,empty_stomach
+without eating,empty_stomach
+on an empty stomach,empty_stomach
+didn’t eat,empty_stomach
+did not eat,empty_stomach
+skipped breakfast,empty_stomach
+skipped lunch,empty_stomach
+skipped dinner,empty_stomach
+skipped meals,empty_stomach
