@@ -212,6 +212,114 @@ function SignalsGrid({ signals }) {
   );
 }
 
+function toMinutes(timeStr) {
+  if (!timeStr || typeof timeStr !== "string") return null;
+
+  const parts = timeStr.split(":").map(Number);
+  if (parts.length < 2 || Number.isNaN(parts[0]) || Number.isNaN(parts[1])) return null;
+
+  return parts[0] * 60 + parts[1];
+}
+
+function TimingTimeline({ avoidFrom, medTime, avoidUntil, foodGroup }) {
+  const start = toMinutes(avoidFrom);
+  const med = toMinutes(medTime);
+  const end = toMinutes(avoidUntil);
+
+  const hasWindow =
+    start != null &&
+    med != null &&
+    end != null &&
+    start < med &&
+    med < end;
+
+  if (!hasWindow) {
+    return (
+      <div className="mt-4 rounded-2xl border border-dashed border-purple-200 bg-white/80 p-4">
+        <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+          <ClockIcon className="h-4 w-4 text-purple-600" />
+          Timing window not available
+        </div>
+        <p className="mt-2 text-sm text-slate-600">
+          Avoid <strong>{foodGroup || "this food group"}</strong> while using this medicine.
+        </p>
+      </div>
+    );
+  }
+
+  const before = med - start;
+  const after = end - med;
+  const total = before + after || 1;
+
+  const beforeWidth = `${(before / total) * 100}%`;
+  const afterWidth = `${(after / total) * 100}%`;
+
+  return (
+    <div className="mt-4 rounded-2xl border border-purple-200 bg-white/80 p-4">
+      <div className="flex items-center justify-between text-xs sm:text-sm font-bold text-slate-700">
+        <span>{formatTime12(avoidFrom)}</span>
+        <span className="text-purple-900">{formatTime12(medTime)}</span>
+        <span>{formatTime12(avoidUntil)}</span>
+      </div>
+
+      <div className="mt-4 flex items-center gap-3">
+        <div
+  className="h-3 rounded-full bg-gradient-to-r from-purple-600 to-violet-400 shadow-sm transition-all duration-500 hover:scale-105 hover:shadow-lg"
+  style={{ width: afterWidth, minWidth: "48px" }}
+  title={`Avoid ${foodGroup || "this food"} after medication`}
+/>
+
+        <div
+  className="h-10 w-10 sm:h-12 sm:w-12 shrink-0 rounded-full border-2 border-purple-300 bg-white shadow-md flex items-center justify-center transition-all duration-300"
+  title="Medicine time"
+>
+  <span className="text-sm sm:text-lg animate-pulse">💊</span>
+</div>
+
+        <div
+          className="h-3 rounded-full bg-gradient-to-r from-purple-600 to-violet-400 shadow-sm"
+          style={{ width: afterWidth, minWidth: "48px" }}
+          title="Avoid after medicine"
+        />
+      </div>
+
+      <div className="mt-3 grid grid-cols-3 gap-2 text-[11px] sm:text-xs font-semibold text-slate-600">
+        <div className="text-left">Avoid before</div>
+        <div className="text-center text-purple-800">Take medicine</div>
+        <div className="text-right">Avoid after</div>
+      </div>
+      <div className="mt-3 text-center">
+  <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-200">
+    Safe to consume food after {formatTime12(avoidUntil)}
+  </span>
+</div>
+
+      <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2">
+        <div className="rounded-xl bg-fuchsia-50 border border-fuchsia-200 p-3">
+          <div className="text-[11px] uppercase tracking-wide font-bold text-fuchsia-700">
+            Before medicine
+          </div>
+          <div className="mt-1 text-sm font-bold text-slate-900">{before} mins</div>
+        </div>
+
+        <div className="rounded-xl bg-purple-50 border border-purple-200 p-3">
+          <div className="text-[11px] uppercase tracking-wide font-bold text-purple-700">
+            Medication
+          </div>
+          <div className="mt-1 text-sm font-bold text-slate-900">{formatTime12(medTime)}</div>
+        </div>
+
+        <div className="rounded-xl bg-violet-50 border border-violet-200 p-3">
+          <div className="text-[11px] uppercase tracking-wide font-bold text-violet-700">
+            After medicine
+          </div>
+          <div className="mt-1 text-sm font-bold text-slate-900">{after} mins</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* --------------------------------- Page ---------------------------------- */
 export default function FoodDrugInteraction() {
   const navigate = useNavigate();
@@ -730,58 +838,53 @@ const handleCheck = async () => {
   {timingAdvice.length > 0 ? (
     <div className="space-y-4">
       {timingAdvice.map((t, i) => {
-        const sameTime =
-          t.avoid_from &&
-          t.avoid_until &&
-          t.avoid_from === t.avoid_until;
+  const sameTime =
+    t.avoid_from &&
+    t.avoid_until &&
+    t.avoid_from === t.avoid_until;
 
-        return (
-          <div
-            key={i}
-            className="rounded-2xl border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-white p-5 shadow-sm"
-          >
-            {/* Title */}
-            <div className="font-bold text-slate-900 text-base mb-2">
-              {t.title}
-            </div>
+  return (
+    <div
+      key={i}
+      className="rounded-2xl border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-white p-5 shadow-sm"
+    >
+      <div className="font-bold text-slate-900 text-base mb-2">{t.title}</div>
 
-            {/* Medicine Time */}
-            <div className="text-sm text-slate-700 flex items-center gap-2">
-              <ClockIcon className="h-4 w-4 text-purple-600" />
-              Take medicine at:
-              <span className="font-bold text-purple-900">
-                {formatTime12(t.take_medicine_at)}
-              </span>
-            </div>
+      <div className="text-sm text-slate-700 flex items-center gap-2">
+        <ClockIcon className="h-4 w-4 text-purple-600" />
+        Take medicine at:
+        <span className="font-bold text-purple-900">
+          {formatTime12(t.take_medicine_at)}
+        </span>
+      </div>
 
-            {/* Avoid Section */}
-            <div className="text-sm text-slate-700 mt-2">
-              {t.avoid_from && t.avoid_until && !sameTime ? (
-                <>
-                  Avoid <strong>{t.food_group}</strong> from{" "}
-                  <span className="font-bold">
-                    {formatTime12(t.avoid_from)}
-                  </span>{" "}
-                  to{" "}
-                  <span className="font-bold">
-                    {formatTime12(t.avoid_until)}
-                  </span>
-                </>
-              ) : (
-                <>
-                  Avoid <strong>{t.food_group}</strong> completely while using
-                  this medicine.
-                </>
-              )}
-            </div>
+      <div className="text-sm text-slate-700 mt-2">
+        {t.avoid_from && t.avoid_until && !sameTime ? (
+          <>
+            Avoid <strong>{t.food_group}</strong> from{" "}
+            <span className="font-bold">{formatTime12(t.avoid_from)}</span> to{" "}
+            <span className="font-bold">{formatTime12(t.avoid_until)}</span>
+          </>
+        ) : (
+          <>
+            Avoid <strong>{t.food_group}</strong> completely while using this medicine.
+          </>
+        )}
+      </div>
 
-            {/* Message */}
-            <div className="mt-3 p-3 rounded-xl bg-white border border-purple-200 text-sm text-purple-900">
-              {t.message}
-            </div>
-          </div>
-        );
-      })}
+      <TimingTimeline
+        avoidFrom={t.avoid_from}
+        medTime={t.take_medicine_at}
+        avoidUntil={t.avoid_until}
+        foodGroup={t.food_group}
+      />
+
+      <div className="mt-4 p-3 rounded-xl bg-white border border-purple-200 text-sm text-purple-900">
+        {t.message}
+      </div>
+    </div>
+  );
+})}
     </div>
   ) : (
     <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
