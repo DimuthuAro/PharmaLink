@@ -23,6 +23,7 @@ from pydantic import BaseModel, Field
 from fastapi.staticfiles import StaticFiles
 
 import numpy as np
+from datetime import datetime, time, timedelta
 
 
 # =========================================================
@@ -614,6 +615,51 @@ REASON_UI: Dict[str, Dict[str, str]] = {
         "advice": "Avoid alcohol while using this medicine."
     },
 }
+TIMING_RULES: Dict[str, Dict[str, Any]] = {
+    "calcium_antibiotic": {
+        "title": "Dairy / Calcium Timing",
+        "food_group": "Calcium-rich foods and dairy",
+        "avoid_before_hours": 2,
+        "avoid_after_hours": 4,
+        "message": "Avoid calcium-rich foods 2 hours before and 4 hours after this medicine."
+    },
+    "iron_levothyroxine": {
+        "title": "Iron Timing",
+        "food_group": "Iron-rich foods",
+        "avoid_before_hours": 2,
+        "avoid_after_hours": 4,
+        "message": "Avoid iron-rich foods 2 hours before and 4 hours after this medicine."
+    },
+    "high_fiber_absorption": {
+        "title": "High-Fiber Timing",
+        "food_group": "High-fiber foods",
+        "avoid_before_hours": 1,
+        "avoid_after_hours": 2,
+        "message": "Avoid high-fiber foods close to medicine time because they may slow absorption."
+    },
+    "cns_alcohol": {
+        "title": "Alcohol Timing",
+        "food_group": "Alcoholic drinks",
+        "avoid_before_hours": 0,
+        "avoid_after_hours": 24,
+        "message": "Avoid alcohol while using this medicine."
+    },
+    "vitk_warfarin": {
+        "title": "Vitamin K Consistency",
+        "food_group": "Vitamin K-rich leafy foods",
+        "avoid_before_hours": 0,
+        "avoid_after_hours": 0,
+        "message": "Do not suddenly increase or decrease vitamin K intake. Keep it consistent every day.",
+        "consistency_only": True
+    },
+    "glycemic_control": {
+        "title": "Carbohydrate Timing",
+        "food_group": "High-carbohydrate foods",
+        "avoid_before_hours": 0,
+        "avoid_after_hours": 2,
+        "message": "Avoid large high-carbohydrate meals close to medicine time and monitor blood sugar."
+    }
+}
 
 def _pretty_food(food_row: pd.Series) -> str:
     return str(food_row.get("Food", "")).strip()
@@ -665,10 +711,81 @@ def build_reason_details(drug_row: pd.Series, food_row: pd.Series, reasons: List
         out.append({
             "tag": tag,
             "title": title,
-            "generated_text": generated,   # ✅ මේකම ඔයාට ඕන sentence එක
+            "generated_text": generated,   
             "advice": advice,
         })
     return out
+
+def _parse_time_hhmm(value: str) -> Optional[datetime]:
+    """
+    Accept both HH:MM and HH:MM:SS inputs.
+    Some browsers send seconds with <input type=\"time\">, so be lenient.
+    """
+    if value is None:
+        return None
+
+    val = str(value).strip()
+    for fmt in ("%H:%M", "%H:%M:%S"):
+        try:
+            return datetime.strptime(val, fmt)
+        except Exception:
+            continue
+    return None
+
+
+def generate_timing_advice(medication_time: Optional[str], reason_tags: List[str]) -> List[Dict[str, Any]]:
+    if not medication_time:
+        return []
+
+    base_time = _parse_time_hhmm(medication_time)
+    if base_time is None:
+        return []
+
+    advice: List[Dict[str, Any]] = []
+    seen = set()
+
+    for tag in reason_tags or []:
+        if tag in seen:
+            continue
+        seen.add(tag)
+
+        rule = TIMING_RULES.get(tag)
+        if not rule:
+            continue
+
+        title = str(rule.get("title", tag.replace("_", " ").title()))
+        food_group = str(rule.get("food_group", "Relevant foods"))
+        message = str(rule.get("message", ""))
+
+        if bool(rule.get("consistency_only", False)):
+            advice.append({
+                "reason_tag": tag,
+                "title": title,
+                "food_group": food_group,
+                "take_medicine_at": base_time.strftime("%H:%M"),
+                "avoid_from": None,
+                "avoid_until": None,
+                "message": message,
+            })
+            continue
+
+        before_h = float(rule.get("avoid_before_hours", 0))
+        after_h = float(rule.get("avoid_after_hours", 0))
+
+        avoid_from = base_time - timedelta(hours=before_h)
+        avoid_until = base_time + timedelta(hours=after_h)
+
+        advice.append({
+            "reason_tag": tag,
+            "title": title,
+            "food_group": food_group,
+            "take_medicine_at": base_time.strftime("%H:%M"),
+            "avoid_from": avoid_from.strftime("%H:%M"),
+            "avoid_until": avoid_until.strftime("%H:%M"),
+            "message": message,
+        })
+
+    return advice
 
 
 ANTIDIABETIC_KEYWORDS = [
@@ -722,6 +839,19 @@ def apply_rule_overrides(drug_row, food_row, sev_ml: int, reasons: List[str]):
     if fiber >= 5.0:
         if "high_fiber_absorption" not in rs:
             rs.append("high_fiber_absorption")
+
+    # 3) Calcium + antibiotics (generic)
+    calcium = float(food_row.get("calcium", 0.0))
+    drug_text = (
+        str(drug_row.get("Name", "")) + " " +
+        str(drug_row.get("Contains", "")) + " " +
+        str(drug_row.get("combined_text", ""))
+    ).lower()
+    
+    if calcium >= 100 and ("cillin" in drug_text or "antibiotic" in drug_text):
+        sev = max(sev, 1)
+        if "calcium_antibiotic" not in rs:
+            rs.append("calcium_antibiotic")
 
     return sev, rs
 
@@ -1133,8 +1263,8 @@ def explain_features(drug_row: pd.Series, food_row: pd.Series) -> dict:
         notes.append(f"High calcium (~{calcium:.0f}mg) → may reduce absorption of some antibiotics.")
     if iron >= 5:
         notes.append(f"Iron present (~{iron:.1f}mg) → may interact with levothyroxine.")
-    if vitk >= 100 or leafy == 1:
-        notes.append(f"Vitamin K / leafy signal (vitK≈{vitk:.0f}) → may affect warfarin.")
+    if (vitk >= 100 or leafy == 1) and ("warfarin" in drug_contains or "anticoagulant" in drug_text):
+       notes.append(f"Vitamin K / leafy signal (vitK≈{vitk:.0f}) → may affect warfarin.")
     if fat >= 20:
         notes.append(f"High fat (~{fat:.1f}g) → may change absorption for ‘empty stomach’ drugs.")
     if fiber >= 5:
@@ -1562,8 +1692,18 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 class FoodDrugRequest(BaseModel):
     drug_name: str
     food_name: str
+    medication_time: Optional[str] = None   # format: "08:00"
     safe_food_limit: int = 10
     diversify_seed: Optional[int] = None
+    
+class TimingAdviceItem(BaseModel):
+    reason_tag: str
+    title: str
+    food_group: str
+    take_medicine_at: str
+    avoid_from: Optional[str] = None
+    avoid_until: Optional[str] = None
+    message: str
 
 
 class SafeFoodItem(BaseModel):
@@ -1588,6 +1728,7 @@ class FoodDrugResponse(BaseModel):
     message: str
     reasons: List[str] = []
     explanation: dict = {}
+    timing_advice: List[TimingAdviceItem] = []
     safe_foods: List[SafeFoodItem] = []
 
 
@@ -1773,6 +1914,7 @@ def suggest_safe_foods_for_drug(
         - safe_df["nutrition_bonus"]
     )
 
+
     # keep only good candidates, not always the exact same top rows
     candidate_pool = safe_df.sort_values("final_rank").head(min(len(safe_df), 40)).copy()
 
@@ -1858,6 +2000,16 @@ def suggest_safe_foods_for_drug(
             "cluster_id": int(r.get("cluster_id", -1)),
         })
     return out
+
+# ❗ NEW: remove foods based on interaction reason
+def filter_safe_by_reason(safe_df: pd.DataFrame, reasons: List[str]) -> pd.DataFrame:
+    df = safe_df.copy()
+
+    # Calcium + antibiotic → remove dairy/calcium foods
+    if "calcium_antibiotic" in reasons:
+        df = df[~df.apply(is_calcium_rich, axis=1)]
+
+    return df
 
 def _split_pipe_list(s: Any) -> List[str]:
     if s is None:
@@ -1997,6 +2149,19 @@ def _build_symptom_input(symptoms: List[str]) -> pd.DataFrame:
     X_df = pd.DataFrame([x], columns=symptom_feature_cols)
     return X_df
 
+def is_calcium_rich(food_row: pd.Series) -> bool:
+    calcium = float(food_row.get("calcium", 0.0))
+    name = str(food_row.get("Food", food_row.get("food", ""))).lower()
+
+    dairy_keywords = ["milk", "cheese", "yogurt", "curd", "butter", "cream"]
+
+    if calcium >= 80:
+        return True
+
+    if any(k in name for k in dairy_keywords):
+        return True
+
+    return False
 # =========================================================
 # ENDPOINTS
 # =========================================================
@@ -2090,6 +2255,8 @@ def ml_food_drug_risk(body: FoodDrugRequest):
     exp = explain_features(drug_row, food_row)
     exp["reason_details"] = build_reason_details(drug_row, food_row, reasons_ml)
 
+    timing_advice = generate_timing_advice(body.medication_time, reasons_ml)
+
     safe_foods: List[Dict[str, Any]] = []
     if int(sev_ml) >= 1:
         safe_foods = suggest_safe_foods_for_drug(
@@ -2101,6 +2268,10 @@ def ml_food_drug_risk(body: FoodDrugRequest):
             rng=rng,
             reference_food_row=food_row,
         )
+    if safe_foods:
+        safe_df = pd.DataFrame(safe_foods)
+        safe_df = filter_safe_by_reason(safe_df, reasons_ml)
+        safe_foods = safe_df.to_dict(orient="records")
 
     return FoodDrugResponse(
         drug=str(drug_row["Name"]),
@@ -2109,6 +2280,7 @@ def ml_food_drug_risk(body: FoodDrugRequest):
         message=risk_map[int(sev_ml)],
         reasons=reasons_ml,
         explanation=exp,
+        timing_advice=timing_advice,
         safe_foods=safe_foods,
     )
 

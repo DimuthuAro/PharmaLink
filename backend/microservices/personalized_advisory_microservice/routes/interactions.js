@@ -73,7 +73,7 @@ async function resolveDrugNamesFromIndices(drug_indices) {
  */
 router.post("/food-drug/check", auth, async (req, res) => {
   try {
-    const { drug_name, food_name, safe_food_limit } = req.body;
+    const { drug_name, food_name, safe_food_limit, medication_time } = req.body;
 
     if (!drug_name || !food_name) {
       return res.status(400).json({ error: "drug_name and food_name required" });
@@ -82,6 +82,7 @@ router.post("/food-drug/check", auth, async (req, res) => {
     const result = await checkFoodDrug({
       drug_name: String(drug_name),
       food_name: String(food_name),
+      medication_time: medication_time || null,
       safe_food_limit: Number(safe_food_limit ?? 10)
     });
 
@@ -92,7 +93,18 @@ router.post("/food-drug/check", auth, async (req, res) => {
       result
     });
 
-    res.json({ saved: true, interactionId: doc._id, ...result });
+    res.json({
+  saved: true,
+  interactionId: doc._id,
+  drug: result.drug,
+  food: result.food,
+  severity: result.severity,
+  message: result.message,
+  reasons: result.reasons,
+  explanation: result.explanation,
+  timing_advice: result.timing_advice,
+  safe_foods: result.safe_foods
+});
   } catch (e) {
     res.status(500).json({ error: "Food-drug check failed", details: String(e) });
   }

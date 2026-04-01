@@ -1,45 +1,87 @@
 // PharmaLink/frontend/src/services/advisoryApi.js
-import { advisoryRequest , apiUpload} from "../utils/api";
+import { apiUpload } from "../utils/api";
+
+const ADVISORY_API =
+  import.meta.env.VITE_ADVISORY_API || "http://localhost:3002";
+
+async function parseJsonResponse(res) {
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
+    throw new Error(
+      data?.error || data?.details || data?.message || "Request failed"
+    );
+  }
+
+  return data;
+}
 
 /** Food–Drug check */
-export function foodDrugCheck({ token, drug_name, food_name, safe_food_limit = 10 }) {
-  return advisoryRequest("/food-drug/check", {
+export async function foodDrugCheck({
+  token,
+  drug_name,
+  food_name,
+  safe_food_limit = 10,
+  medication_time,
+}) {
+  const res = await fetch(`${ADVISORY_API}/food-drug/check`, {
     method: "POST",
-    token,
-    body: { drug_name, food_name, safe_food_limit },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      drug_name,
+      food_name,
+      safe_food_limit,
+      medication_time,
+    }),
   });
+
+  return parseJsonResponse(res);
 }
 
 /** Get history (filtered) */
-export function getHistory({ token, type }) {
+export async function getHistory({ token, type }) {
   const qs = type ? `?type=${encodeURIComponent(type)}` : "";
-  return advisoryRequest(`/history${qs}`, { token });
+
+  const res = await fetch(`${ADVISORY_API}/history${qs}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return parseJsonResponse(res);
 }
 
 /** Delete ONE history item */
-export function deleteHistoryItem({ token, id }) {
-  return advisoryRequest(`/history/${id}`, {
+export async function deleteHistoryItem({ token, id }) {
+  const res = await fetch(`${ADVISORY_API}/history/${id}`, {
     method: "DELETE",
-    token,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
+
+  return parseJsonResponse(res);
 }
 
 /** Clear history by type (or all if no type) */
-export function clearHistory({ token, type }) {
+export async function clearHistory({ token, type }) {
   const qs = type ? `?type=${encodeURIComponent(type)}` : "";
-  return advisoryRequest(`/history${qs}`, {
+
+  const res = await fetch(`${ADVISORY_API}/history${qs}`, {
     method: "DELETE",
-    token,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
+
+  return parseJsonResponse(res);
 }
 
-/**
- * View stored image (returns a Blob)
- * Use this in History modal
- */
+/** View stored image (returns a Blob) */
 export async function fetchHistoryImageBlob({ token, id }) {
-  const ADVISORY_API = import.meta.env.VITE_ADVISORY_API || "http://localhost:3002";
-
   const res = await fetch(`${ADVISORY_API}/history/${id}/image`, {
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -59,8 +101,8 @@ export async function fetchHistoryImageBlob({ token, id }) {
 /** Drug Image Prediction (multipart upload) */
 export function predictDrugImage({ token, file, topk = 3 }) {
   const formData = new FormData();
-  formData.append("file", file);         // must be "file"
-  formData.append("topk", String(topk)); // backend reads req.body.topk
+  formData.append("file", file);
+  formData.append("topk", String(topk));
 
   return apiUpload("/drug-image/predict", {
     formData,
@@ -69,17 +111,25 @@ export function predictDrugImage({ token, file, topk = 3 }) {
   });
 }
 
-
 /** Recommend Drugs From Symptoms */
-export function recommendDrugsFromSymptoms({
+export async function recommendDrugsFromSymptoms({
   token,
   symptoms,
   top_k_diseases = 3,
   patient = {},
 }) {
-  return advisoryRequest("/symptoms/recommend-drugs", {
+  const res = await fetch(`${ADVISORY_API}/symptoms/recommend-drugs`, {
     method: "POST",
-    token,
-    body: { symptoms, top_k_diseases, patient },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      symptoms,
+      top_k_diseases,
+      patient,
+    }),
   });
+
+  return parseJsonResponse(res);
 }

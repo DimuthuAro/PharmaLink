@@ -23,11 +23,12 @@ function extractAxiosError(err) {
   return { status, msg, data };
 }
 
-async function checkFoodDrug({ drug_name, food_name, safe_food_limit = 10 }) {
+async function checkFoodDrug({ drug_name, food_name, safe_food_limit = 10, medication_time }) {
   try {
     const res = await http.post("/ml-food-drug-risk", {
       drug_name,
       food_name,
+      medication_time: medication_time || null,
       safe_food_limit: Number(safe_food_limit || 10),
     });
     return res.data;
