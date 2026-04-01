@@ -25,6 +25,8 @@ from fastapi.staticfiles import StaticFiles
 import numpy as np
 from datetime import datetime, time, timedelta
 
+from rule_matching_engine import RuleMatchingEngine
+
 
 # =========================================================
 # PATHS
@@ -1686,6 +1688,8 @@ app.add_middleware(
 STATIC_DIR = DATA_DIR / "static"
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
+story_engine = RuleMatchingEngine(data_dir=str(DATA_DIR))
+
 # =========================================================
 # API MODELS
 # =========================================================
@@ -1829,6 +1833,9 @@ class SymptomDrugRecoItem(BaseModel):
 class CombinedRecoResponse(BaseModel):
     direct_symptom_recommendations: List[SymptomDrugRecoItem] = []
     predicted_disease_recommendations: List[DiseaseDrugRecoItem] = []
+
+class StoryAnalysisRequest(BaseModel):
+    text: str
 
 # =========================================================
 # SAFE FOODS SUGGESTION (SINGLE DRUG)
@@ -2641,3 +2648,15 @@ def recommend_drugs_from_sypmtoms(body: RecommendDrugsRequest):
         "direct_symptom_recommendations": direct_out,
         "predicted_disease_recommendations": disease_out
     }
+
+
+@app.post("/analyze-patient-story")
+def analyze_patient_story(body: StoryAnalysisRequest):
+    text = str(body.text).strip()
+    if not text:
+        raise HTTPException(status_code=400, detail="text is required")
+
+    try:
+        return story_engine.analyze_text(text)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Story analysis failed: {e}")
