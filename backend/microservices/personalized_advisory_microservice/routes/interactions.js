@@ -12,6 +12,7 @@ const {
   predictDrugFromImage,
   listDrugs,
   recommendDrugsFromSymptoms,
+  analyzePatientStory,
 } = require("../services/mlClient");
 
 const router = express.Router();
@@ -420,11 +421,11 @@ router.delete("/history", auth, async (req, res) => {
 
     const q = { userId: req.user.userId };
 
-    const allowed = ["food_drug", "meal_plan", "drug_image_prediction", "symptom_drug_reco"];
+    const allowed = ["food_drug", "meal_plan", "drug_image_prediction", "symptom_drug_reco","patient_story_analysis"];
     if (type) {
       if (!allowed.includes(String(type))) {
         return res.status(400).json({
-          error: "Invalid type. Use food_drug|meal_plan|drug_image_prediction|symptom_drug_reco",
+          error: "Invalid type. Use food_drug|meal_plan|drug_image_prediction|symptom_drug_reco|patient_story_analysis",
         });
       }
       q.type = String(type);
@@ -485,6 +486,42 @@ router.post("/symptoms/recommend-drugs", auth, async (req, res) => {
     return res.status(500).json({
       error: "Recommend drugs failed",
       details: String(e?.response?.data?.detail || e?.message || e)
+    });
+  }
+});
+
+
+/**
+ * 9) ANALYZE PATIENT STORY (saved)
+ * POST /patient-story/analyze
+ * body: { text: "..." }
+ */
+router.post("/patient-story/analyze", auth, async (req, res) => {
+  try {
+    const text = String(req.body?.text || "").trim();
+
+    if (!text) {
+      return res.status(400).json({ error: "text required" });
+    }
+
+    const result = await analyzePatientStory({ text });
+
+    const doc = await Interaction.create({
+      userId: req.user.userId,
+      type: "patient_story_analysis",
+      input: { text },
+      result,
+    });
+
+    return res.json({
+      saved: true,
+      interactionId: doc._id,
+      ...result,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      error: "Patient story analysis failed",
+      details: String(e?.message || e),
     });
   }
 });

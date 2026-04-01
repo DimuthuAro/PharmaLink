@@ -123,10 +123,27 @@ async function recommendDrugsFromSymptoms(payload) {
   }
 }
 
+async function analyzePatientStory({ text }) {
+  try {
+    const body = { text: String(text || "").trim() };
+
+    if (!body.text) {
+      throw new Error("text is required for /analyze-patient-story");
+    }
+
+    const res = await http.post("/analyze-patient-story", body);
+    return res.data;
+  } catch (err) {
+    const e = extractAxiosError(err);
+    throw new Error(`FastAPI /analyze-patient-story failed (${e.status || "?"}): ${e.msg}`);
+  }
+}
+
 module.exports = {
   checkFoodDrug,
   generateMealPlan,
   predictDrugFromImage,
   listDrugs,
   recommendDrugsFromSymptoms,
+  analyzePatientStory,
 };
