@@ -123,19 +123,20 @@ async function recommendDrugsFromSymptoms(payload) {
   }
 }
 
-async function analyzePatientStory({ text }) {
-  try {
-    const body = { text: String(text || "").trim() };
 
-    if (!body.text) {
-      throw new Error("text is required for /analyze-patient-story");
+async function predictStoryDistilBert({ story }) {
+  try {
+    const body = { story: String(story || "").trim() };
+
+    if (!body.story) {
+      throw new Error("story is required for /predict-story-distilbert");
     }
 
-    const res = await http.post("/analyze-patient-story", body);
+    const res = await http.post("/predict-story-distilbert", body);
     return res.data;
   } catch (err) {
     const e = extractAxiosError(err);
-    throw new Error(`FastAPI /analyze-patient-story failed (${e.status || "?"}): ${e.msg}`);
+    throw new Error(`FastAPI /predict-story-distilbert failed (${e.status || "?"}): ${e.msg}`);
   }
 }
 
@@ -145,5 +146,5 @@ module.exports = {
   predictDrugFromImage,
   listDrugs,
   recommendDrugsFromSymptoms,
-  analyzePatientStory,
+  predictStoryDistilBert,
 };

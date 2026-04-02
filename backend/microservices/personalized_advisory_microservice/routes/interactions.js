@@ -13,6 +13,7 @@ const {
   listDrugs,
   recommendDrugsFromSymptoms,
   analyzePatientStory,
+  predictStoryDistilBert,
 } = require("../services/mlClient");
 
 const router = express.Router();
@@ -346,7 +347,13 @@ router.get("/history", auth, async (req, res) => {
     const q = { userId: req.user.userId };
 
     // type filter (optional)
-    const allowed = ["food_drug", "meal_plan", "drug_image_prediction", "symptom_drug_reco"];
+    const allowed = [
+  "food_drug",
+  "meal_plan",
+  "drug_image_prediction",
+  "symptom_drug_reco",
+  "patient_story_analysis_distilbert",
+];
     if (type) {
       if (!allowed.includes(String(type))) {
         return res.status(400).json({ error: "Invalid type. Use food_drug|meal_plan|drug_image_prediction|symptom_drug_reco" });
@@ -421,11 +428,11 @@ router.delete("/history", auth, async (req, res) => {
 
     const q = { userId: req.user.userId };
 
-    const allowed = ["food_drug", "meal_plan", "drug_image_prediction", "symptom_drug_reco","patient_story_analysis"];
+    const allowed = ["food_drug", "meal_plan", "drug_image_prediction", "symptom_drug_reco","patient_story_analysis_distilbert"];
     if (type) {
       if (!allowed.includes(String(type))) {
         return res.status(400).json({
-          error: "Invalid type. Use food_drug|meal_plan|drug_image_prediction|symptom_drug_reco|patient_story_analysis",
+          error: "Invalid type. Use food_drug|meal_plan|drug_image_prediction|symptom_drug_reco|patient_story_analysis_distilbert",
         });
       }
       q.type = String(type);
@@ -491,25 +498,27 @@ router.post("/symptoms/recommend-drugs", auth, async (req, res) => {
 });
 
 
-/**
- * 9) ANALYZE PATIENT STORY (saved)
- * POST /patient-story/analyze
- * body: { text: "..." }
- */
-router.post("/patient-story/analyze", auth, async (req, res) => {
-  try {
-    const text = String(req.body?.text || "").trim();
 
-    if (!text) {
-      return res.status(400).json({ error: "text required" });
+
+/**
+ * 9) ANALYZE PATIENT STORY WITH DISTILBERT (saved)
+ * POST /patient-story/analyze-distilbert
+ * body: { story: "..." }
+ */
+router.post("/patient-story/analyze-distilbert", auth, async (req, res) => {
+  try {
+    const story = String(req.body?.story || "").trim();
+
+    if (!story) {
+      return res.status(400).json({ error: "story required" });
     }
 
-    const result = await analyzePatientStory({ text });
+    const result = await predictStoryDistilBert({ story });
 
     const doc = await Interaction.create({
       userId: req.user.userId,
-      type: "patient_story_analysis",
-      input: { text },
+      type: "patient_story_analysis_distilbert",
+      input: { story },
       result,
     });
 
@@ -520,7 +529,7 @@ router.post("/patient-story/analyze", auth, async (req, res) => {
     });
   } catch (e) {
     return res.status(500).json({
-      error: "Patient story analysis failed",
+      error: "DistilBERT patient story analysis failed",
       details: String(e?.message || e),
     });
   }
