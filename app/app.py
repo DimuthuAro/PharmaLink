@@ -26,7 +26,9 @@ import numpy as np
 from datetime import datetime, time, timedelta
 
 from rule_matching_engine import RuleMatchingEngine
-
+import os
+from openai import OpenAI
+from transformers import DistilBertTokenizerFast, DistilBertForSequenceClassification
 
 # =========================================================
 # PATHS
@@ -35,9 +37,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent  # PharmaLink/
 DATA_DIR = BASE_DIR / "data"
 MODEL_DIR = BASE_DIR / "model"
 
+DISTILBERT_MODEL_DIR = Path(BASE_DIR /"PharmaLink_model")
+DISTILBERT_LABEL_ENCODER_PATH = MODEL_DIR / "distilbert_label_encoder.joblib"
+DISTILBERT_RULES_PATH = DATA_DIR / "narrative_rules_knowledge_base.csv"
+
 print("BASE_DIR:", BASE_DIR)
 print("DATA_DIR:", DATA_DIR, "exists:", DATA_DIR.exists())
 print("MODEL_DIR:", MODEL_DIR, "exists:", MODEL_DIR.exists())
+
+print("DISTILBERT_MODEL_DIR:", DISTILBERT_MODEL_DIR, "exists:", DISTILBERT_MODEL_DIR.exists())
+print("DISTILBERT_LABEL_ENCODER_PATH:", DISTILBERT_LABEL_ENCODER_PATH, "exists:", DISTILBERT_LABEL_ENCODER_PATH.exists())
+print("DISTILBERT_RULES_PATH:", DISTILBERT_RULES_PATH, "exists:", DISTILBERT_RULES_PATH.exists())
 
 
 # =========================================================
@@ -536,6 +546,32 @@ if symptom_model_path.exists() and symptom_features_path.exists():
         symptom_model = None
 else:
     print("WARNING: symptom model files not found in model/.")
+
+
+# =========================================================
+# DISTILBERT STORY MODEL
+# =========================================================
+distilbert_tokenizer = None
+distilbert_model = None
+distilbert_label_encoder = None
+distilbert_rules_df = None
+
+if DISTILBERT_MODEL_DIR.exists() and DISTILBERT_LABEL_ENCODER_PATH.exists() and DISTILBERT_RULES_PATH.exists():
+    try:
+        distilbert_tokenizer = DistilBertTokenizerFast.from_pretrained(str(DISTILBERT_MODEL_DIR))
+        distilbert_model = DistilBertForSequenceClassification.from_pretrained(str(DISTILBERT_MODEL_DIR))
+        distilbert_label_encoder = joblib.load(DISTILBERT_LABEL_ENCODER_PATH)
+        distilbert_rules_df = pd.read_csv(DISTILBERT_RULES_PATH)
+        distilbert_model.eval()
+        print("Loaded DistilBERT interaction model")
+    except Exception as e:
+        print("WARNING: failed to load DistilBERT interaction model:", repr(e))
+        distilbert_tokenizer = None
+        distilbert_model = None
+        distilbert_label_encoder = None
+        distilbert_rules_df = None
+else:
+    print("WARNING: DistilBERT files not found.")
 
 # =========================================================
 # FEATURE LIST (severity/reason)
@@ -1689,6 +1725,156 @@ STATIC_DIR = DATA_DIR / "static"
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 story_engine = RuleMatchingEngine(data_dir=str(DATA_DIR))
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+openai_client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
+
+STANDARD_DOCTOR_NOTE = (
+    "This information is for guidance only. Please follow your doctor’s or pharmacist’s advice for your specific treatment."
+)
+
+# =========================================================
+# DISTILBERT STORY HELPERS
+# =========================================================
+def normalize_story_text(text: str) -> str:
+    text = str(text).lower().strip()
+    text = re.sub(r"[^a-z0-9\s]+", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
+
+def story_token_list(value):
+    if pd.isna(value):
+        return []
+    return [t.strip().lower() for t in str(value).split() if t.strip()]
+
+def story_contains_phrase(story, phrase):
+    phrase = normalize_story_text(phrase)
+    if not phrase or phrase == "none":
+        return False
+    return phrase in story
+
+def score_story_rule(story, row):
+    score = 0
+    story = normalize_story_text(story)
+
+    drug_kw = str(row.get("drug_keyword", "") or "").strip().lower()
+    food_kw = str(row.get("food_keyword", "") or "").strip().lower()
+    extra_kws = story_token_list(row.get("extra_keywords", ""))
+
+    if drug_kw and drug_kw != "none" and story_contains_phrase(story, drug_kw):
+        score += 5
+    if food_kw and food_kw != "none" and story_contains_phrase(story, food_kw):
+        score += 5
+
+    for kw in extra_kws:
+        if kw in story:
+            score += 2
+
+    if drug_kw and food_kw and story_contains_phrase(story, drug_kw) and story_contains_phrase(story, food_kw):
+        score += 6
+
+    return score
+
+def get_best_story_rule(story, predicted_category):
+    if distilbert_rules_df is None:
+        return None
+
+    matched_rules = distilbert_rules_df[
+        distilbert_rules_df["interaction_category"] == predicted_category
+    ].copy()
+
+    if matched_rules.empty:
+        return None
+
+    matched_rules["rule_score"] = matched_rules.apply(
+        lambda row: score_story_rule(story, row), axis=1
+    )
+
+    matched_rules = matched_rules.sort_values(
+        by=["rule_score", "confidence_base"],
+        ascending=[False, False]
+    )
+
+    return matched_rules.iloc[0]
+
+def predict_story_with_distilbert(story: str):
+    if distilbert_tokenizer is None or distilbert_model is None or distilbert_label_encoder is None:
+        raise HTTPException(status_code=500, detail="DistilBERT story model not loaded.")
+
+    story = str(story).strip()
+    if not story:
+        raise HTTPException(status_code=400, detail="story is required")
+
+    encoded = distilbert_tokenizer(
+        story,
+        truncation=True,
+        padding="max_length",
+        max_length=128,
+        return_tensors="pt"
+    )
+
+    with torch.no_grad():
+        outputs = distilbert_model(**encoded)
+        logits = outputs.logits
+        probs = torch.softmax(logits, dim=1)[0]
+
+    pred_idx = int(torch.argmax(probs).item())
+    predicted_category = distilbert_label_encoder.inverse_transform([pred_idx])[0]
+    confidence = float(probs[pred_idx].item())
+
+    best_rule = get_best_story_rule(story, predicted_category)
+    matched_rule_score = 0.0 if best_rule is None else float(best_rule.get("rule_score", 0.0))
+
+    # Fallback for weak / meaningless inputs
+    if confidence < 0.50 or matched_rule_score <= 0:
+        fallback_row = None
+
+        if distilbert_rules_df is not None:
+            fallback_matches = distilbert_rules_df[
+                distilbert_rules_df["interaction_category"] == "insufficient_information"
+            ]
+            if not fallback_matches.empty:
+                fallback_row = fallback_matches.iloc[0]
+
+        result = {
+            "story": story,
+            "interaction_category": "insufficient_information",
+            "confidence": confidence,
+            "rule_found": fallback_row is not None,
+            "severity": 0,
+            "matched_rule_score": matched_rule_score,
+            "matched_drug_keyword": "",
+            "matched_food_keyword": ""
+        }
+
+        if fallback_row is not None:
+            result["explanation"] = str(fallback_row["explanation"])
+            result["advice"] = str(fallback_row["advice"])
+            result["timing_window"] = str(fallback_row["timing_window"])
+        else:
+            result["explanation"] = "Not enough information to determine interaction."
+            result["advice"] = "Please provide the medicine name, food or drink, and timing details."
+            result["timing_window"] = "unknown"
+
+        return result
+
+    result = {
+        "story": story,
+        "interaction_category": predicted_category,
+        "confidence": confidence,
+        "rule_found": False
+    }
+
+    if best_rule is not None:
+        result["rule_found"] = True
+        result["severity"] = int(best_rule["severity"])
+        result["explanation"] = str(best_rule["explanation"])
+        result["advice"] = str(best_rule["advice"])
+        result["timing_window"] = str(best_rule["timing_window"])
+        result["matched_rule_score"] = matched_rule_score
+        result["matched_drug_keyword"] = str(best_rule.get("drug_keyword", ""))
+        result["matched_food_keyword"] = str(best_rule.get("food_keyword", ""))
+
+    return result
 
 # =========================================================
 # API MODELS
@@ -1836,6 +2022,12 @@ class CombinedRecoResponse(BaseModel):
 
 class StoryAnalysisRequest(BaseModel):
     text: str
+    use_llm: bool = True
+    language: str = "en"   # "en" or "si"
+
+class DistilBertStoryRequest(BaseModel):
+    story: str
+    
 
 # =========================================================
 # SAFE FOODS SUGGESTION (SINGLE DRUG)
@@ -2169,6 +2361,159 @@ def is_calcium_rich(food_row: pd.Series) -> bool:
         return True
 
     return False
+
+
+def rewrite_story_explanation_with_llm(result: Dict[str, Any], language: str = "en") -> str:
+    base_explanation = str(result.get("explanation", "")).strip()
+    base_advice = str(result.get("advice", "")).strip()
+
+    if not base_explanation:
+        return STANDARD_DOCTOR_NOTE
+
+    if openai_client is None:
+        combined = base_explanation
+        if base_advice:
+            combined += " " + base_advice
+        combined += " " + STANDARD_DOCTOR_NOTE
+        return combined.strip()
+
+    parsed = result.get("parsed", {}) or {}
+
+    language_instruction = (
+        "Write the output in clear, patient-friendly Sinhala."
+        if str(language).lower() == "si"
+        else "Write the output in clear, patient-friendly English."
+    )
+
+    prompt = f"""
+You are rewriting a medical interaction explanation for a patient.
+
+Rules:
+- Do not add new medical facts.
+- Do not change the meaning.
+- Do not change severity, risk, or advice.
+- Write exactly one friendly paragraph.
+- Keep the tone warm, simple, and standard.
+- End with this exact sentence:
+"{STANDARD_DOCTOR_NOTE}"
+
+Structured context:
+- Drug: {parsed.get('drug') or parsed.get('drug_class') or 'medicine'}
+- Food: {parsed.get('food') or parsed.get('food_category') or 'food'}
+- Symptom: {parsed.get('symptom') or 'not specified'}
+- Severity: {result.get('severity')}
+- Risk type: {result.get('risk_type')}
+
+Base explanation:
+{base_explanation}
+
+Base advice:
+{base_advice}
+
+{language_instruction}
+""".strip()
+
+    try:
+        response = openai_client.responses.create(
+            model="gpt-5",
+            input=prompt,
+        )
+        text = (response.output_text or "").strip()
+        if not text:
+            raise ValueError("Empty LLM output")
+        return text
+    except Exception:
+        combined = base_explanation
+        if base_advice:
+            combined += " " + base_advice
+        combined += " " + STANDARD_DOCTOR_NOTE
+        return combined.strip()
+
+
+
+def get_greeting_reply(text: str) -> str | None:
+    text = text.lower().strip()
+
+    if "good morning" in text:
+        return (
+            "Good morning! 😊 I can help you check possible interactions between medicines and food, drinks, or timing.\n\n"
+            "Please tell me:\n"
+            "- the medicine name\n"
+            "- what you ate or drank\n"
+            "- and when you took them\n\n"
+            "Example:\n"
+            "'I took my antibiotic and then drank milk.'"
+        )
+
+    if "good afternoon" in text:
+        return (
+            "Good afternoon! 😊 I can help you check possible interactions between medicines and food, drinks, or timing.\n\n"
+            "Please tell me:\n"
+            "- the medicine name\n"
+            "- what you ate or drank\n"
+            "- and when you took them\n\n"
+            "Example:\n"
+            "'I took my antibiotic and then drank milk.'"
+        )
+
+    if "good evening" in text:
+        return (
+            "Good evening! 😊 I can help you check possible interactions between medicines and food, drinks, or timing.\n\n"
+            "Please tell me:\n"
+            "- the medicine name\n"
+            "- what you ate or drank\n"
+            "- and when you took them\n\n"
+            "Example:\n"
+            "'I took my antibiotic and then drank milk.'"
+        )
+
+    if "good night" in text:
+        return (
+            "Good night! 😊 I can still help you check possible interactions between medicines and food, drinks, or timing.\n\n"
+            "Please tell me:\n"
+            "- the medicine name\n"
+            "- what you ate or drank\n"
+            "- and when you took them\n\n"
+            "Example:\n"
+            "'I took my antibiotic and then drank milk.'"
+        )
+
+    if "good day" in text:
+        return (
+            "Good day! 😊 I can help you check possible interactions between medicines and food, drinks, or timing.\n\n"
+            "Please tell me:\n"
+            "- the medicine name\n"
+            "- what you ate or drank\n"
+            "- and when you took them\n\n"
+            "Example:\n"
+            "'I took my antibiotic and then drank milk.'"
+        )
+
+    if any(g in text for g in ["hi", "hello", "hey", "can you help", "help me"]):
+        return (
+            "Hello! 😊 I can help you check possible interactions between medicines and food, drinks, or timing.\n\n"
+            "Please tell me:\n"
+            "- the medicine name\n"
+            "- what you ate or drank\n"
+            "- and when you took them\n\n"
+            "Example:\n"
+            "'I took my antibiotic and then drank milk.'"
+        )
+
+    return None
+
+    return any(g in text for g in goods)
+
+def detect_overdose(text: str):
+    text = text.lower()
+
+    overdose_keywords = [
+        "twice", "double", "two doses", "extra dose",
+        "overdose", "took twice", "double dose",
+        "took two pills", "accidentally took twice"
+    ]
+
+    return any(k in text for k in overdose_keywords)
 # =========================================================
 # ENDPOINTS
 # =========================================================
@@ -2471,6 +2816,34 @@ def image_seems_invalid_for_drug(img: Image.Image) -> Tuple[bool, str]:
 
     return False, ""
 
+def generate_general_advice(text: str, language: str = "en") -> str:
+    if openai_client is None:
+        return "Please consult a healthcare professional for proper advice."
+
+    prompt = f"""
+A user said: "{text}"
+
+Give a short, friendly, patient-safe health explanation.
+Do NOT assume specific drugs.
+Do NOT give strong medical claims.
+Give general advice only.
+
+End with:
+"This information is for guidance only. Please follow your doctor’s or pharmacist’s advice for your specific treatment."
+
+Language: {language}
+"""
+
+    try:
+        resp = openai_client.responses.create(
+            model="gpt-4.1-mini",
+            input=prompt,
+            temperature=0.3,
+        )
+        return resp.output_text.strip()
+    except:
+        return "Please consult a healthcare professional."
+
 
 @app.post("/predict-drug-from-image")
 async def predict_drug_from_image_api(
@@ -2657,6 +3030,96 @@ def analyze_patient_story(body: StoryAnalysisRequest):
         raise HTTPException(status_code=400, detail="text is required")
 
     try:
-        return story_engine.analyze_text(text)
+        result = story_engine.analyze_text(text)
+
+        # NO MATCH → LLM fallback
+        if not result.get("matched"):
+            result["type"] = "llm_fallback"   # HERE
+
+            if body.use_llm:
+                result["explanation"] = generate_general_advice(text, body.language)
+
+            result["doctor_note"] = STANDARD_DOCTOR_NOTE
+            return result
+
+        # MATCH → rule-based
+        result["type"] = "rule_based"   
+
+        result["explanation_original"] = result.get("explanation", "")
+
+        if body.use_llm:
+            result["explanation"] = rewrite_story_explanation_with_llm(
+                result=result,
+                language=body.language
+            )
+
+        result["doctor_note"] = STANDARD_DOCTOR_NOTE
+
+        return result
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Story analysis failed: {e}")
+    
+
+@app.post("/predict-story-distilbert")
+def predict_story_distilbert(body: DistilBertStoryRequest):
+    story = str(body.story).strip()
+
+    if not story:
+        raise HTTPException(status_code=400, detail="story is required")
+    
+    # BEFORE model prediction
+    if detect_overdose(story):
+        return {
+        "story": story,
+        "interaction_category": "overdose",
+        "confidence": 0.95,
+        "rule_found": True,
+        "severity": 2,
+        "explanation": "Taking more than the prescribed dose can increase the risk of harmful side effects or toxicity.",
+        "advice": "Do not take extra doses. Contact a healthcare provider if you are unsure or feel unwell.",
+        "timing_window": "immediate",
+        "matched_rule_score": 10,
+        "matched_drug_keyword": "medicine",
+        "matched_food_keyword": "none"
+    }
+
+    # Greeting handling
+    greeting_reply = get_greeting_reply(story)
+    if greeting_reply is not None:
+        return {
+            "message": greeting_reply
+        }
+    
+
+    # Too short / unclear input
+    if len(story.split()) < 3:
+        return {
+            "story": story,
+            "interaction_category": "insufficient_information",
+            "confidence": 0.0,
+            "rule_found": False,
+            "severity": 0,
+            "explanation": "I don't have enough details to assess a possible interaction.",
+            "advice": "Please mention:\n- the medicine name\n- what you ate or drank\n- and the timing\n\nExample:\n'I took metformin and then ate a sugary dessert'",
+            "timing_window": "unknown",
+            "matched_rule_score": 0,
+            "matched_drug_keyword": "",
+            "matched_food_keyword": ""
+        }
+
+    # Normal prediction
+    result = predict_story_with_distilbert(story)
+
+    # Improve ambiguous fallback response
+    if result["interaction_category"] == "insufficient_information":
+        result["explanation"] = "I don't have enough details to assess a possible interaction."
+        result["advice"] = (
+            "Please mention:\n"
+            "- the medicine name\n"
+            "- what you ate or drank\n"
+            "- and the timing\n\n"
+            "Example:\n'I took metformin and then ate a sugary dessert'"
+        )
+
+    return result
