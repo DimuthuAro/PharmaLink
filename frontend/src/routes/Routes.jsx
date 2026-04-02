@@ -12,6 +12,7 @@ import Profile from '../pages/Profile.jsx'
 import Settings from '../pages/Setting.jsx'
 import DrugImagePredict from '../pages/DrugImagePredict.jsx'
 import SymptomDrugRecommend from '../pages/SymptomDrugRecommend.jsx'
+import PatientStoryAnalyzer from '../pages/PatientStoryAnalyzer.jsx'
 
 const unprotected_routes = [
   { path: '/login', element: <LogIn /> },
@@ -28,7 +29,8 @@ const protected_routes = createProtectedRoutes([
   { path: "/drug-image", element: <DrugImagePredict/>},
   { path: "/profile", element: <Profile /> },
   { path: "/settings", element: <Settings/>},
-  { path: "/symptom-drug", element: <SymptomDrugRecommend/>}
+  { path: "/symptom-drug", element: <SymptomDrugRecommend/>},
+  { path: "/story-analyzer", element: <PatientStoryAnalyzer/> }
 ])
 
 export { unprotected_routes, protected_routes }

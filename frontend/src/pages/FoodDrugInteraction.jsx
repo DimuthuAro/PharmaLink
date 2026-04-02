@@ -546,7 +546,7 @@ const handleCheck = async () => {
             <button
               onClick={() => {
                 setActiveTab("symptom-drug");
-                handleNavigation("/symptom-drug");
+                handleNavigation("/story-analyzer");
               }}
               className={`relative w-full flex items-center gap-3 px-6 py-3.5 text-sm font-semibold transition-all duration-200 ${
                 activeTab === "symptom-drug"
@@ -555,7 +555,7 @@ const handleCheck = async () => {
               }`}
             >
               <SparklesIcon className="h-5 w-5" />
-              Drug Recommender
+              Patient Story Analyzer
             </button>
 
             <button
@@ -710,13 +710,13 @@ const handleCheck = async () => {
                           Medicine Time
                         </label>
                         <input
-  type="text"
-  inputMode="numeric"
-  placeholder="HH:MM"
-  value={medicationTime}
-  onChange={(e) => setMedicationTime(e.target.value)}
-  className="w-full px-4 py-3.5 border-2 border-slate-200 rounded-2xl text-sm font-bold bg-white outline-none focus:border-purple-300 focus:ring-4 focus:ring-purple-100 transition-all"
-/>
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="HH:MM"
+                          value={medicationTime}
+                          onChange={(e) => setMedicationTime(e.target.value)}
+                          className="w-full px-4 py-3.5 border-2 border-slate-200 rounded-2xl text-sm font-bold bg-white outline-none focus:border-purple-300 focus:ring-4 focus:ring-purple-100 transition-all"
+                        />
                       </div>
 
                       <div className="md:col-span-2 flex items-end">
