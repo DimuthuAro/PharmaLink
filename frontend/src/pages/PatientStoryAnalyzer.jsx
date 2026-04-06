@@ -506,7 +506,7 @@ const SidebarContent = () => (
                                 : "bg-slate-700 text-slate-300"
                             }`}
                           >
-                            {msg.type === "bot" ? "Rx" : "U"}
+                            {msg.type === "bot" ? "A" : "U"}
                           </div>
 
                           <div

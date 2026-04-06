@@ -690,59 +690,59 @@ const handleCheck = async () => {
                       />
                     </div>
 
-                    <div className="mt-6 grid gap-4 md:grid-cols-4">
-                      <div className="md:col-span-1">
-                        <label className="block text-sm font-bold text-slate-700 mb-2">
-                          Safe Alternatives Limit
-                        </label>
-                        <input
-                          type="number"
-                          min={1}
-                          max={30}
-                          value={safeLimit}
-                          onChange={(e) => setSafeLimit(e.target.value)}
-                          className="w-full px-4 py-3.5 border-2 border-slate-200 rounded-2xl text-sm font-bold bg-white outline-none focus:border-purple-300 focus:ring-4 focus:ring-purple-100 transition-all"
-                        />
-                      </div>
+                    <div className="mt-6 grid gap-4 md:grid-cols-4 items-end">
+  <div className="md:col-span-1">
+    <label className="block text-sm font-bold text-slate-700 mb-2">
+      Safe Alternatives Limit
+    </label>
+    <input
+      type="number"
+      min={1}
+      max={30}
+      value={safeLimit}
+      onChange={(e) => setSafeLimit(e.target.value)}
+      className="w-full h-[52px] px-4 border-2 border-slate-200 rounded-2xl text-sm font-bold bg-white outline-none focus:border-purple-300 focus:ring-4 focus:ring-purple-100 transition-all"
+    />
+  </div>
 
-                      <div className="md:col-span-1">
-                        <label className="block text-sm font-bold text-slate-700 mb-2">
-                          Medicine Time
-                        </label>
-                        <input
-                          type="text"
-                          inputMode="numeric"
-                          placeholder="HH:MM"
-                          value={medicationTime}
-                          onChange={(e) => setMedicationTime(e.target.value)}
-                          className="w-full px-4 py-3.5 border-2 border-slate-200 rounded-2xl text-sm font-bold bg-white outline-none focus:border-purple-300 focus:ring-4 focus:ring-purple-100 transition-all"
-                        />
-                      </div>
+  <div className="md:col-span-1">
+    <label className="block text-sm font-bold text-slate-700 mb-2">
+      Medicine Time
+    </label>
+    <input
+      type="text"
+      inputMode="numeric"
+      placeholder="HH:MM"
+      value={medicationTime}
+      onChange={(e) => setMedicationTime(e.target.value)}
+      className="w-full h-[52px] px-4 border-2 border-slate-200 rounded-2xl text-sm font-bold bg-white outline-none focus:border-purple-300 focus:ring-4 focus:ring-purple-100 transition-all"
+    />
+  </div>
 
-                      <div className="md:col-span-2 flex items-end">
-                        <button
-                          onClick={handleCheck}
-                          disabled={loadingCheck}
-                          className={`group w-full inline-flex items-center justify-center gap-3 rounded-2xl px-6 py-4 text-base font-bold shadow-lg text-white transition-all duration-300 ${
-                            loadingCheck
-                              ? "bg-slate-300 cursor-not-allowed"
-                              : "bg-gradient-to-r from-[#2f2971] to-[#3d3086] hover:from-[#3d3086] hover:to-[#2f2971] hover:shadow-xl hover:shadow-purple-500/50 transform hover:scale-[1.02]"
-                          }`}
-                        >
-                          {loadingCheck ? (
-                            <>
-                              <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" />
-                              Analyzing...
-                            </>
-                          ) : (
-                            <>
-                              <SparklesIcon className="h-5 w-5 group-hover:rotate-12 transition-transform" />
-                              Check Interaction
-                            </>
-                          )}
-                        </button>
-                      </div>
-                    </div>
+  <div className="md:col-span-2">
+    <button
+      onClick={handleCheck}
+      disabled={loadingCheck}
+      className={`group w-full inline-flex items-center justify-center gap-3 rounded-2xl px-6 h-[52px] text-base font-bold shadow-lg text-white transition-all duration-300 ${
+        loadingCheck
+          ? "bg-slate-300 cursor-not-allowed"
+          : "bg-gradient-to-r from-[#2f2971] to-[#3d3086] hover:from-[#3d3086] hover:to-[#2f2971] hover:shadow-xl hover:shadow-purple-500/50 transform hover:scale-[1.02]"
+      }`}
+    >
+      {loadingCheck ? (
+        <>
+          <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" />
+          Analyzing...
+        </>
+      ) : (
+        <>
+          <SparklesIcon className="h-5 w-5 group-hover:rotate-12 transition-transform" />
+          Check Interaction
+        </>
+      )}
+    </button>
+  </div>
+</div>
                   </div>
 
                   {result && risk != null && (
