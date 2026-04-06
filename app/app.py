@@ -25,7 +25,7 @@ from fastapi.staticfiles import StaticFiles
 import numpy as np
 from datetime import datetime, time, timedelta
 
-from rule_matching_engine import RuleMatchingEngine
+#from rule_matching_engine import RuleMatchingEngine
 import os
 from openai import OpenAI
 from transformers import DistilBertTokenizerFast, DistilBertForSequenceClassification
@@ -1724,7 +1724,7 @@ app.add_middleware(
 STATIC_DIR = DATA_DIR / "static"
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
-story_engine = RuleMatchingEngine(data_dir=str(DATA_DIR))
+#story_engine = RuleMatchingEngine(data_dir=str(DATA_DIR))
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 openai_client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
@@ -3023,42 +3023,7 @@ def recommend_drugs_from_sypmtoms(body: RecommendDrugsRequest):
     }
 
 
-@app.post("/analyze-patient-story")
-def analyze_patient_story(body: StoryAnalysisRequest):
-    text = str(body.text).strip()
-    if not text:
-        raise HTTPException(status_code=400, detail="text is required")
 
-    try:
-        result = story_engine.analyze_text(text)
-
-        # NO MATCH → LLM fallback
-        if not result.get("matched"):
-            result["type"] = "llm_fallback"   # HERE
-
-            if body.use_llm:
-                result["explanation"] = generate_general_advice(text, body.language)
-
-            result["doctor_note"] = STANDARD_DOCTOR_NOTE
-            return result
-
-        # MATCH → rule-based
-        result["type"] = "rule_based"   
-
-        result["explanation_original"] = result.get("explanation", "")
-
-        if body.use_llm:
-            result["explanation"] = rewrite_story_explanation_with_llm(
-                result=result,
-                language=body.language
-            )
-
-        result["doctor_note"] = STANDARD_DOCTOR_NOTE
-
-        return result
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Story analysis failed: {e}")
     
 
 @app.post("/predict-story-distilbert")
