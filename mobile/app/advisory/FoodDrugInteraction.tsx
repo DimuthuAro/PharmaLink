@@ -1,3 +1,4 @@
+// FoodDrugInteraction.tsx
 import React, { useEffect, useMemo, useState } from "react";
 import {
   View,
@@ -26,7 +27,9 @@ type DrugItem = { index?: number; name?: string; is_alcohol?: number | boolean }
 type FoodItem = { Food?: string; name?: string; contains?: string; is_alcohol?: number | boolean };
 type ReasonDetail = { tag?: string; title?: string; generated_text?: string; advice?: string };
 type ExplanationType = { explanation_points?: string[]; food_signals?: Record<string, any>; reason_details?: ReasonDetail[] };
-type ResultType = { drug?: string; food?: string; message?: string; risk?: number; severity?: number; explanation?: ExplanationType; safe_foods?: any[] };
+type TimingAdviceItem = {title?: string;take_medicine_at?: string;avoid_from?: string;avoid_until?: string;food_group?: string;message?: string;};
+type ResultType = { drug?: string; food?: string; message?: string; risk?: number; severity?: number; explanation?: ExplanationType; safe_foods?: any[]; timing_advice?: TimingAdviceItem[]; };
+
 
 // ─────────────────────────── Risk config (semantic colors) ───────────────────────────
 const riskMeta: Record<number, {
@@ -94,6 +97,31 @@ function prettifyFoodName(value?: string) {
     .join(" ");
 }
 
+function formatTime12(t?: string) {
+  if (!t) return "";
+
+  const [h, m] = t.split(":").map(Number);
+  if (isNaN(h) || isNaN(m)) return t;
+
+  const ampm = h >= 12 ? "PM" : "AM";
+  const hour = h % 12 === 0 ? 12 : h % 12;
+
+  return `${hour.toString().padStart(2, "0")}:${m
+    .toString()
+    .padStart(2, "0")} ${ampm}`;
+}
+
+function toMinutes(timeStr?: string | null) {
+  if (!timeStr || typeof timeStr !== "string") return null;
+
+  const parts = timeStr.split(":").map(Number);
+  if (parts.length < 2 || Number.isNaN(parts[0]) || Number.isNaN(parts[1])) {
+    return null;
+  }
+
+  return parts[0] * 60 + parts[1];
+}
+
 // ─────────────────────────── SignalsGrid ───────────────────────────
 function SignalsGrid({ signals }: { signals: Record<string, any> }) {
   const items = [
@@ -113,6 +141,93 @@ function SignalsGrid({ signals }: { signals: Record<string, any> }) {
           <Text style={styles.signalValue}>{v}</Text>
         </View>
       ))}
+    </View>
+  );
+}
+
+function TimingTimeline({
+  avoidFrom,
+  medTime,
+  avoidUntil,
+  foodGroup,
+}: {
+  avoidFrom?: string | null;
+  medTime?: string | null;
+  avoidUntil?: string | null;
+  foodGroup?: string | null;
+}) {
+  const start = toMinutes(avoidFrom);
+  const med = toMinutes(medTime);
+  const end = toMinutes(avoidUntil);
+
+  const hasWindow =
+    start != null && med != null && end != null && start < med && med < end;
+
+  if (!hasWindow) {
+    return (
+      <View style={styles.timelineFallback}>
+        <View style={styles.timelineTitleRow}>
+          <Ionicons name="time-outline" size={16} color="#7C3AED" />
+          <Text style={styles.timelineFallbackTitle}>Timing window not available</Text>
+        </View>
+        <Text style={styles.timelineFallbackText}>
+          Avoid {foodGroup || "this food group"} while using this medicine.
+        </Text>
+      </View>
+    );
+  }
+
+  const before = med - start;
+  const after = end - med;
+  const total = before + after || 1;
+
+  const beforeFlex = before / total;
+  const afterFlex = after / total;
+
+  return (
+    <View style={styles.timelineWrap}>
+      <View style={styles.timelineTimeRow}>
+        <Text style={styles.timelineTime}>{formatTime12(avoidFrom || "")}</Text>
+        <Text style={styles.timelineTimeActive}>{formatTime12(medTime || "")}</Text>
+        <Text style={styles.timelineTime}>{formatTime12(avoidUntil || "")}</Text>
+      </View>
+
+      <View style={styles.timelineBarRow}>
+        <View style={[styles.timelineBar, { flex: beforeFlex }]} />
+        <View style={styles.timelinePillCircle}>
+          <Text style={styles.timelinePillEmoji}>💊</Text>
+        </View>
+        <View style={[styles.timelineBar, { flex: afterFlex }]} />
+      </View>
+
+      <View style={styles.timelineLabelRow}>
+        <Text style={styles.timelineLabel}>Avoid before</Text>
+        <Text style={styles.timelineLabelCenter}>Take medicine</Text>
+        <Text style={styles.timelineLabel}>Avoid after</Text>
+      </View>
+
+      <View style={styles.timelineSafeBadge}>
+        <Text style={styles.timelineSafeBadgeText}>
+          Safe to consume food after {formatTime12(avoidUntil || "")}
+        </Text>
+      </View>
+
+      <View style={styles.timelineStatsRow}>
+        <View style={styles.timelineStatCard}>
+          <Text style={styles.timelineStatLabel}>Before medicine</Text>
+          <Text style={styles.timelineStatValue}>{before} mins</Text>
+        </View>
+
+        <View style={styles.timelineStatCardPurple}>
+          <Text style={styles.timelineStatLabelPurple}>Medication</Text>
+          <Text style={styles.timelineStatValue}>{formatTime12(medTime || "")}</Text>
+        </View>
+
+        <View style={styles.timelineStatCardViolet}>
+          <Text style={styles.timelineStatLabelViolet}>After medicine</Text>
+          <Text style={styles.timelineStatValue}>{after} mins</Text>
+        </View>
+      </View>
     </View>
   );
 }
@@ -197,7 +312,7 @@ const MENU_ITEMS = [
   { label: "Food Drug Interaction",icon: "shield-checkmark-outline" as const, path: "/advisory/FoodDrugInteraction", replace: true  },
   { label: "Meal Plan Advisor",   icon: "clipboard-outline"        as const, path: "/advisory/PersonalizedMealPlan", replace: false },
   { label: "Drug Image Analyzer", icon: "image-outline"            as const, path: "/advisory/DrugImagePredict",          replace: false },
-  { label: "Drug Recommender",    icon: "sparkles-outline"         as const, path: "/advisory/symptom-drug",        replace: false },
+  { label: "Patient Story Analyzer", icon: "sparkles-outline"         as const, path: "/advisory/PatientStoryAnalyzer",        replace: false },
   { label: "History",             icon: "time-outline"             as const, path: "/advisory/History",                      replace: false },
 ];
 
@@ -207,6 +322,7 @@ export default function FoodDrugInteractionScreen() {
 
   const [selectedDrugName, setSelectedDrugName]   = useState("");
   const [selectedFoodName, setSelectedFoodName]   = useState("");
+  const [medicationTime, setMedicationTime]       = useState("");
   const [safeLimit, setSafeLimit]                 = useState("10");
   const [result, setResult]                       = useState<ResultType | null>(null);
   const [safeFoods, setSafeFoods]                 = useState<any[]>([]);
@@ -223,32 +339,59 @@ export default function FoodDrugInteractionScreen() {
   const fetchFoods = useMemo(() => async (q: string) => await searchFoods(q, 10), []);
 
   const resetAll = () => {
-    setSelectedDrugName(""); setSelectedFoodName(""); setSafeFoods([]);
+    setSelectedDrugName(""); setSelectedFoodName(""); setSafeFoods([]); setMedicationTime("");
     setResult(null); setError(""); setExpandedSafe({}); setExpandedReason({});
     setShowResultExplain(true); setSafeLimit("10");
   };
 
-  const handleCheck = async () => {
-    const drug_name = selectedDrugName.trim();
-    const food_name = selectedFoodName.trim();
-    if (!drug_name || !food_name) { setError("Please select both a drug and a food item."); return; }
-    setError(""); setLoadingCheck(true);
-    try {
-      const res = await foodDrugCheck({ token, drug_name, food_name, safe_food_limit: Number(safeLimit || 10) });
-      setResult(res);
-      const safeFromRes = Array.isArray(res?.safe_foods) ? res.safe_foods : [];
-      setSafeFoods(safeFromRes.filter((f: any) => f?.explanation?.food_signals?.is_alcohol !== 1));
-      setExpandedSafe({}); setExpandedReason({}); setShowResultExplain(true);
-    } catch (err: any) {
-      setError(err?.error || err?.details || err?.message || "Error checking interaction. Please try again.");
-    } finally { setLoadingCheck(false); }
-  };
+const handleCheck = async () => {
+  const drug_name = selectedDrugName.trim();
+  const food_name = selectedFoodName.trim();
+  const medTime = medicationTime.trim();
+
+  if (!drug_name || !food_name) {
+    setError("Please select both a drug and a food item.");
+    return;
+  }
+
+  if (!/^\d{2}:\d{2}$/.test(medTime)) {
+    setError("Please enter medicine time in HH:MM format.");
+    return;
+  }
+
+  setError("");
+  setLoadingCheck(true);
+
+  try {
+    const res = await foodDrugCheck({
+      token,
+      drug_name,
+      food_name,
+      safe_food_limit: Number(safeLimit || 10),
+      medication_time: medTime,
+    });
+
+    setResult(res);
+    const safeFromRes = Array.isArray(res?.safe_foods) ? res.safe_foods : [];
+    setSafeFoods(
+      safeFromRes.filter((f: any) => f?.explanation?.food_signals?.is_alcohol !== 1)
+    );
+    setExpandedSafe({});
+    setExpandedReason({});
+    setShowResultExplain(true);
+  } catch (err: any) {
+    setError(err?.error || err?.details || err?.message || "Error checking interaction. Please try again.");
+  } finally {
+    setLoadingCheck(false);
+  }
+};
 
   const risk  = result ? normalizeRisk(result) : null;
   const rmeta = risk != null ? riskMeta[risk] || riskMeta[1] : null;
   const resultExplainPoints  = pickExplainPoints(result || {});
   const resultReasonDetails  = Array.isArray(result?.explanation?.reason_details) ? result!.explanation!.reason_details! : [];
   const resultSignals        = pickSignals(result || {});
+  const timingAdvice = Array.isArray(result?.timing_advice) ? result.timing_advice : [];
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
@@ -321,6 +464,17 @@ export default function FoodDrugInteractionScreen() {
             <TextInput value={safeLimit} onChangeText={setSafeLimit} keyboardType="numeric" style={styles.limitInput} />
           </View>
 
+          <View style={styles.limitRow}>
+  <Text style={styles.inputLabel}>Medicine Time</Text>
+  <TextInput
+    value={medicationTime}
+    onChangeText={setMedicationTime}
+    placeholder="HH:MM"
+    placeholderTextColor="#CBD5E1"
+    style={styles.limitInput}
+  />
+</View>
+
           <TouchableOpacity onPress={handleCheck} disabled={loadingCheck} activeOpacity={0.9}
             style={[styles.primaryBtn, loadingCheck && styles.primaryBtnDisabled]}>
             {loadingCheck ? (
@@ -387,6 +541,79 @@ export default function FoodDrugInteractionScreen() {
                 })}
               </View>
             )}
+
+            <View style={styles.sectionBlock}>
+  <View style={styles.sectionTitleRow}>
+    <Ionicons name="time-outline" size={16} color={rmeta.iconColor} />
+    <Text style={[styles.sectionTitle, { color: rmeta.textColor }]}>Timing Guidance</Text>
+  </View>
+
+  {timingAdvice.length > 0 ? (
+    <View style={styles.timingList}>
+      {timingAdvice.map((t, i) => {
+        const sameTime =
+          t.avoid_from &&
+          t.avoid_until &&
+          t.avoid_from === t.avoid_until;
+
+        return (
+          <View
+            key={i}
+            style={[
+              styles.timingCard,
+              { borderColor: rmeta.borderColor, backgroundColor: "rgba(255,255,255,0.9)" },
+            ]}
+          >
+            <Text style={styles.timingCardTitle}>{t.title}</Text>
+
+            <View style={styles.timingTakeRow}>
+              <Ionicons name="time-outline" size={14} color="#7C3AED" />
+              <Text style={styles.timingTakeText}>
+                Take medicine at:{" "}
+                <Text style={styles.timingTakeValue}>
+                  {formatTime12(t.take_medicine_at || "")}
+                </Text>
+              </Text>
+            </View>
+
+            <Text style={styles.timingDesc}>
+              {t.avoid_from && t.avoid_until && !sameTime ? (
+                <>
+                  Avoid <Text style={styles.boldText}>{t.food_group}</Text> from{" "}
+                  <Text style={styles.boldText}>{formatTime12(t.avoid_from)}</Text> to{" "}
+                  <Text style={styles.boldText}>{formatTime12(t.avoid_until)}</Text>
+                </>
+              ) : (
+                <>
+                  Avoid <Text style={styles.boldText}>{t.food_group}</Text> completely while using this medicine.
+                </>
+              )}
+            </Text>
+
+            <TimingTimeline
+              avoidFrom={t.avoid_from}
+              medTime={t.take_medicine_at}
+              avoidUntil={t.avoid_until}
+              foodGroup={t.food_group}
+            />
+
+            {!!t.message && (
+              <View style={styles.timingMessageBox}>
+                <Text style={styles.timingMessageText}>{t.message}</Text>
+              </View>
+            )}
+          </View>
+        );
+      })}
+    </View>
+  ) : (
+    <View style={styles.timingEmptyBox}>
+      <Text style={styles.timingEmptyText}>
+        No timing guidance available. Please select a medicine time and try again.
+      </Text>
+    </View>
+  )}
+</View>
 
             {/* Scientific explanation */}
             <View style={styles.sectionBlock}>
@@ -767,4 +994,224 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingTop: 12,
   },
+
+  timingList: {
+  gap: 12,
+},
+timingCard: {
+  borderWidth: 1,
+  borderRadius: 16,
+  padding: 14,
+},
+timingCardTitle: {
+  fontSize: 14,
+  fontWeight: "700",
+  color: "#0F172A",
+  marginBottom: 8,
+},
+timingTakeRow: {
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 6,
+  marginBottom: 8,
+},
+timingTakeText: {
+  fontSize: 12,
+  color: "#475569",
+},
+timingTakeValue: {
+  fontWeight: "800",
+  color: "#6D28D9",
+},
+timingDesc: {
+  fontSize: 12,
+  color: "#475569",
+  lineHeight: 18,
+  marginBottom: 12,
+},
+boldText: {
+  fontWeight: "700",
+  color: "#0F172A",
+},
+timingMessageBox: {
+  marginTop: 12,
+  backgroundColor: "#FFFFFF",
+  borderWidth: 1,
+  borderColor: "#DDD6FE",
+  borderRadius: 12,
+  padding: 10,
+},
+timingMessageText: {
+  fontSize: 12,
+  color: "#5B21B6",
+  lineHeight: 18,
+},
+timingEmptyBox: {
+  borderWidth: 1,
+  borderColor: "#E2E8F0",
+  backgroundColor: "#F8FAFC",
+  borderRadius: 14,
+  padding: 12,
+},
+timingEmptyText: {
+  fontSize: 12,
+  color: "#64748B",
+},
+timelineWrap: {
+  marginTop: 12,
+  borderWidth: 1,
+  borderColor: "#DDD6FE",
+  backgroundColor: "#FAF5FF",
+  borderRadius: 16,
+  padding: 12,
+},
+timelineFallback: {
+  marginTop: 12,
+  borderWidth: 1,
+  borderColor: "#DDD6FE",
+  borderStyle: "dashed",
+  backgroundColor: "#FFFFFF",
+  borderRadius: 16,
+  padding: 12,
+},
+timelineTitleRow: {
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 6,
+},
+timelineFallbackTitle: {
+  fontSize: 12,
+  fontWeight: "700",
+  color: "#334155",
+},
+timelineFallbackText: {
+  marginTop: 8,
+  fontSize: 12,
+  color: "#475569",
+  lineHeight: 18,
+},
+timelineTimeRow: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  marginBottom: 12,
+},
+timelineTime: {
+  fontSize: 11,
+  fontWeight: "700",
+  color: "#475569",
+},
+timelineTimeActive: {
+  fontSize: 11,
+  fontWeight: "800",
+  color: "#6D28D9",
+},
+timelineBarRow: {
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 8,
+},
+timelineBar: {
+  height: 10,
+  borderRadius: 999,
+  backgroundColor: "#7C3AED",
+  minWidth: 48,
+},
+timelinePillCircle: {
+  width: 40,
+  height: 40,
+  borderRadius: 20,
+  borderWidth: 2,
+  borderColor: "#C4B5FD",
+  backgroundColor: "#FFFFFF",
+  alignItems: "center",
+  justifyContent: "center",
+},
+timelinePillEmoji: {
+  fontSize: 16,
+},
+timelineLabelRow: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  marginTop: 10,
+},
+timelineLabel: {
+  fontSize: 10,
+  fontWeight: "700",
+  color: "#64748B",
+},
+timelineLabelCenter: {
+  fontSize: 10,
+  fontWeight: "700",
+  color: "#6D28D9",
+},
+timelineSafeBadge: {
+  marginTop: 12,
+  alignSelf: "center",
+  backgroundColor: "#DCFCE7",
+  borderWidth: 1,
+  borderColor: "#BBF7D0",
+  borderRadius: 999,
+  paddingHorizontal: 12,
+  paddingVertical: 6,
+},
+timelineSafeBadgeText: {
+  fontSize: 10,
+  fontWeight: "800",
+  color: "#15803D",
+},
+timelineStatsRow: {
+  flexDirection: "row",
+  gap: 8,
+  marginTop: 12,
+},
+timelineStatCard: {
+  flex: 1,
+  backgroundColor: "#FDF4FF",
+  borderWidth: 1,
+  borderColor: "#F5D0FE",
+  borderRadius: 12,
+  padding: 10,
+},
+timelineStatCardPurple: {
+  flex: 1,
+  backgroundColor: "#F5F3FF",
+  borderWidth: 1,
+  borderColor: "#DDD6FE",
+  borderRadius: 12,
+  padding: 10,
+},
+timelineStatCardViolet: {
+  flex: 1,
+  backgroundColor: "#F5F3FF",
+  borderWidth: 1,
+  borderColor: "#DDD6FE",
+  borderRadius: 12,
+  padding: 10,
+},
+timelineStatLabel: {
+  fontSize: 9,
+  fontWeight: "700",
+  color: "#A21CAF",
+  textTransform: "uppercase",
+  marginBottom: 4,
+},
+timelineStatLabelPurple: {
+  fontSize: 9,
+  fontWeight: "700",
+  color: "#7C3AED",
+  textTransform: "uppercase",
+  marginBottom: 4,
+},
+timelineStatLabelViolet: {
+  fontSize: 9,
+  fontWeight: "700",
+  color: "#6D28D9",
+  textTransform: "uppercase",
+  marginBottom: 4,
+},
+timelineStatValue: {
+  fontSize: 12,
+  fontWeight: "800",
+  color: "#0F172A",
+},
 });

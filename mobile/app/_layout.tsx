@@ -21,6 +21,7 @@ export default function RootLayout() {
           <Stack.Screen name="advisory/FoodDrugInteraction" />
           <Stack.Screen name="advisory/PersonalizedMealPlan" />
           <Stack.Screen name="advisory/DrugImagePredict" />
+          <Stack.Screen name="advisory/PatientStoryAnalyzer"/>
           <Stack.Screen name="advisory/History"/>
           <Stack.Screen name="Profile"/>
         </Stack>

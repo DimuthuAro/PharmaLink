@@ -62,7 +62,7 @@ const MENU_ITEMS = [
   { label: "Food Drug Interaction", icon: "shield-checkmark-outline" as const, path: "/advisory/FoodDrugInteraction", replace: true },
   { label: "Meal Plan Advisor", icon: "clipboard-outline" as const, path: "/advisory/PersonalizedMealPlan", replace: true },
   { label: "Drug Image Analyzer", icon: "image-outline" as const, path: "/advisory/drug-image", replace: false },
-  { label: "Drug Recommender", icon: "sparkles-outline" as const, path: "/advisory/symptom-drug", replace: false },
+  { label: "Patient Story Analyzer", icon: "sparkles-outline"         as const, path: "/advisory/PatientStoryAnalyzer", replace: false },
   { label: "History", icon: "time-outline" as const, path: "/advisory/History", replace: false },
 ];
 

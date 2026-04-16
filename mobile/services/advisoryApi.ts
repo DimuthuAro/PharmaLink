@@ -1,4 +1,3 @@
-// services/advisoryApi.ts
 import { advisoryRequest, apiUpload } from "../utils/api";
 
 type FoodDrugCheckParams = {
@@ -6,6 +5,7 @@ type FoodDrugCheckParams = {
   drug_name: string;
   food_name: string;
   safe_food_limit?: number;
+  medication_time: string | null;
 };
 
 type HistoryParams = {
@@ -30,17 +30,30 @@ type PredictDrugImageParams = {
   formData: FormData;
 };
 
+type AnalyzePatientStoryParams = {
+  token?: string;
+  text: string;
+  use_llm?: boolean;
+  language?: string;
+};
+
+type AnalyzePatientStoryDistilBertParams = {
+  token?: string;
+  story: string;
+};
+
 /** Food–Drug check */
 export function foodDrugCheck({
   token,
   drug_name,
   food_name,
   safe_food_limit = 10,
+  medication_time = null,
 }: FoodDrugCheckParams) {
   return advisoryRequest("/food-drug/check", {
     method: "POST",
     token,
-    body: { drug_name, food_name, safe_food_limit },
+    body: { drug_name, food_name, safe_food_limit, medication_time },
   });
 }
 
@@ -104,5 +117,31 @@ export function recommendDrugsFromSymptoms({
     method: "POST",
     token,
     body: { symptoms, top_k_diseases, patient },
+  });
+}
+
+/** Analyze Patient Story */
+export function analyzePatientStory({
+  token,
+  text,
+  use_llm = true,
+  language = "en",
+}: AnalyzePatientStoryParams) {
+  return advisoryRequest("/patient-story/analyze", {
+    method: "POST",
+    token,
+    body: { text, use_llm, language },
+  });
+}
+
+/** Analyze Patient Story - DistilBERT */
+export function analyzePatientStoryDistilBert({
+  token,
+  story,
+}: AnalyzePatientStoryDistilBertParams) {
+  return advisoryRequest("/patient-story/analyze-distilbert", {
+    method: "POST",
+    token,
+    body: { story },
   });
 }

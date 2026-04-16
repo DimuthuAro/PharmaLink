@@ -1,3 +1,4 @@
+// FoodDrugInteraction.jsx
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../auth/auth.jsx";
