@@ -1,7 +1,8 @@
 // PharmaLink/frontend/src/utils/api.js
-const AUTH_API = import.meta.env.VITE_AUTH_API || "http://localhost:3000";
-const ADVISORY_API = import.meta.env.VITE_ADVISORY_API || "http://localhost:3002";
-const ML_API = import.meta.env.VITE_ML_API || "http://127.0.0.1:8000";
+const HOST = import.meta.env.VITE_API_HOST || window?.location?.hostname || "127.0.0.1";
+const AUTH_API = import.meta.env.VITE_AUTH_API || `http://${HOST}:3000`;
+const ADVISORY_API = import.meta.env.VITE_ADVISORY_API || `http://${HOST}:3002`;
+const ML_API = import.meta.env.VITE_ML_API || `http://${HOST}:8000`;
 
 export async function authRequest(path, opts) {
   return apiBaseRequest(AUTH_API, path, opts);

@@ -117,7 +117,8 @@ function resolveImageUrl(img) {
 
   if (v.startsWith("http://") || v.startsWith("https://")) return v;
 
-  const FASTAPI = import.meta.env.VITE_FASTAPI_BASE || "http://localhost:8000";
+  const HOST = import.meta.env.VITE_API_HOST || window?.location?.hostname || "127.0.0.1";
+  const FASTAPI = import.meta.env.VITE_FASTAPI_BASE || `http://${HOST}:8000`;
 
   if (v.startsWith("/")) return `${FASTAPI}${v}`;
 
@@ -382,8 +383,8 @@ export default function PersonalizedMealPlan() {
     const qq = String(q || "").trim();
     if (!qq) return [];
 
-    const FASTAPI =
-      import.meta.env.VITE_FASTAPI_BASE || "http://localhost:8000";
+    const HOST = import.meta.env.VITE_API_HOST || window?.location?.hostname || "127.0.0.1";
+    const FASTAPI = import.meta.env.VITE_FASTAPI_BASE || `http://${HOST}:8000`;
     try {
       const res = await fetch(
         `${FASTAPI}/drugs?q=${encodeURIComponent(qq)}&limit=20`
