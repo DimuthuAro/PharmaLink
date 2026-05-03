@@ -151,7 +151,7 @@ export default function DashboardScreen() {
       {
         id: 2,
         title: "Health Advisory Center",
-        description: "Food-drug safety, personalized nutrition, and pill identification.",
+        description: "Food-drug safety, personalized nutrition,pill identification & patient story assistant",
         icon: "bulb-outline",
         path: "/advisory/FoodDrugInteraction",
         stats: "AI-Powered",
@@ -170,8 +170,8 @@ export default function DashboardScreen() {
       },
       {
         id: 4,
-        title: "Prescription Interpreter",
-        description: "AI-powered handwritten prescription analysis.",
+        title: "Treatment Identifier",
+        description: "AI-powered prescription analysis and treatment recommendations.",
         icon: "document-text-outline",
         path: "/prescription",
         stats: `${stats.accuracyRate}% accuracy`,

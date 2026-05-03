@@ -143,8 +143,8 @@ const Dashboard = () => {
       },
       {
         id: 4,
-        title: "Prescription Interpreter",
-        description: "AI-powered handwritten prescription analysis",
+        title: "Treatment Identifier",
+        description: "AI-powered prescription analysis and treatment recommendations",
         icon: DocumentText,
         path: "/prescription",
         stats: `${stats.accuracyRate}% accuracy`,
