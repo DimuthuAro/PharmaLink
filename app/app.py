@@ -306,6 +306,18 @@ meal_foods = _ensure_cols(meal_foods, core_cols)
 classified_foods = _ensure_cols(classified_foods, core_cols)
 
 
+def normalize_image_path(value: str) -> str:
+    s = str(value or "").strip()
+    if not s:
+        return ""
+    return re.sub(
+        r"\s+\.(jpg|jpeg|png|webp|avif)$",
+        r".\1",
+        s,
+        flags=re.IGNORECASE,
+    )
+
+
 def _clean_food_df(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
 
@@ -330,6 +342,15 @@ def _clean_food_df(df: pd.DataFrame) -> pd.DataFrame:
             df[c] = df[c].where(df[c].notna(), "")  # NaN -> ""
             df[c] = df[c].astype(str).str.strip()
             df.loc[df[c].str.lower().isin(["nan", "none"]), c] = ""
+
+    # sanitize image paths
+    if "image" in df.columns:
+        df["image"] = df["image"].astype(str).str.replace(
+            r"\s+\.(jpg|jpeg|png|webp|avif)$",
+            r".\1",
+            regex=True,
+            case=False,
+        )
 
     # normalize unknown tags
     for c in ["food_type", "meal_type", "diet_type", "consumption_type"]:
@@ -1643,7 +1664,7 @@ def build_one_meal_for_drugs(
         if r is None:
             return None
         q = str(r.get("quantity") or "").strip()
-        img = str(r.get("image") or "").strip()
+        img = normalize_image_path(r.get("image") or "")
         allergens = resolve_allergens(r["Food"])
         prefs = {
             "vegetarian": bool(r.get("pref_vegetarian", False)),
@@ -2754,7 +2775,7 @@ def ml_meal_plan_generate(body: MealPlanRequest):
                     energy=float(it.get("energy", 0.0)),
                     severity=int(it.get("severity", 0)),
                     quantity=(str(it.get("quantity")).strip() if it.get("quantity") else None),
-                    image=(str(it.get("image")).strip() if it.get("image") else None),
+                    image=(normalize_image_path(it.get("image")) if it.get("image") else None),
                     reasons=list(it.get("reasons", [])),
                     allergens_detected=list(it.get("allergens_detected", [])),
                     preferences=dict(it.get("preferences", {})),
