@@ -1,19 +1,32 @@
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { getUser } from "@/utils/auth";
+import { View, ActivityIndicator } from "react-native";
 
 export default function RootLayout() {
   const [loading, setLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
-    getUser().then((u) => {
-      setLoggedIn(!!u)
-      setLoading(false);
-    });
+    getUser()
+      .then((u) => {
+        setLoggedIn(!!u);
+      })
+      .catch((error) => {
+        console.warn("getUser error:", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
-  if (loading) return null;
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#fff" }}>
+        <ActivityIndicator size="large" color="#0066cc" />
+      </View>
+    );
+  }
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
