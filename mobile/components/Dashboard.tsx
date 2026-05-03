@@ -31,7 +31,7 @@ const features: Feature[] = [
     id: "drug-interaction",
     title: "Drug Interactions",
     description: "Check medicine-to-medicine interactions",
-    icon: "pills",
+    icon: "pill",
     color: "#2563eb",
     bgColor: "rgba(37,99,235,0.12)",
     borderColor: "rgba(37,99,235,0.25)",
