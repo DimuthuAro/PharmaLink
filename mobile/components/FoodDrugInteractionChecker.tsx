@@ -10,6 +10,7 @@ import {
   FlatList,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { checkFoodDrugInteractions } from "../utils/api";
 
 type FoodDrugInteraction = {
   food: string;
@@ -22,37 +23,6 @@ type FoodDrugInteraction = {
 type Props = {
   onClose?: () => void;
 };
-
-const mockFoodDrugData: FoodDrugInteraction[] = [
-  {
-    food: "Grapefruit",
-    drug: "Statins",
-    effect: "Increased statin levels in blood",
-    severity: "severe",
-    advice: "Avoid grapefruit and grapefruit juice entirely",
-  },
-  {
-    food: "Dairy Products",
-    drug: "Antibiotics (Tetracyclines)",
-    effect: "Reduced antibiotic absorption",
-    severity: "moderate",
-    advice: "Take 2 hours before or 6 hours after dairy",
-  },
-  {
-    food: "Vitamin K rich foods",
-    drug: "Warfarin",
-    effect: "Reduced anticoagulant effect",
-    severity: "moderate",
-    advice: "Maintain consistent intake, don't avoid",
-  },
-  {
-    food: "Caffeine",
-    drug: "Beta-blockers",
-    effect: "Increased heart rate",
-    severity: "mild",
-    advice: "Limit caffeine intake",
-  },
-];
 
 const severityStyles = {
   mild: {
@@ -92,10 +62,17 @@ export default function FoodDrugInteractionChecker({ onClose }: Props) {
     if (!drug.trim() || !food.trim()) return;
 
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 600));
-    setResults(mockFoodDrugData);
-    setChecked(true);
-    setLoading(false);
+    try {
+      const response = await checkFoodDrugInteractions(drug, food);
+      setResults(response.interactions || [response] || []);
+      setChecked(true);
+    } catch (error) {
+      console.error("Error checking food-drug interaction:", error);
+      setResults([]);
+      setChecked(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleClear = () => {

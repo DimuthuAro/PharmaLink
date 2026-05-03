@@ -10,6 +10,7 @@ import {
   Image,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { analyzePrescription } from "../utils/api";
 
 type PrescriptionData = {
   patientName: string;
@@ -24,18 +25,6 @@ type Props = {
   onClose?: () => void;
 };
 
-const mockPrescriptionData: PrescriptionData = {
-  patientName: "John Doe",
-  doctor: "Dr. Smith, MD",
-  date: "2025-05-03",
-  medicines: [
-    { name: "Amoxicillin", dosage: "500mg", frequency: "3 times daily", duration: "7 days" },
-    { name: "Ibuprofen", dosage: "200mg", frequency: "As needed", duration: "14 days" },
-  ],
-  notes: "Take with food. Avoid dairy 2 hours after Amoxicillin",
-  confidence: 0.94,
-};
-
 export default function PrescriptionAnalyzer({ onClose }: Props) {
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -43,13 +32,23 @@ export default function PrescriptionAnalyzer({ onClose }: Props) {
   const [data, setData] = useState<PrescriptionData | null>(null);
 
   const handleSelectImage = async () => {
-    // Simulated image selection
+    // In a real app, you'd pick an image from camera/gallery
+    // For now, we'll send a placeholder to the API
+    const placeholderImage = "data:image/jpeg;base64,/9j/4AAQSkZJRg...";
+    
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    setImage("prescription.jpg");
-    setData(mockPrescriptionData);
-    setAnalyzed(true);
-    setLoading(false);
+    try {
+      const response = await analyzePrescription(placeholderImage);
+      setImage("prescription.jpg");
+      setData(response.data || response);
+      setAnalyzed(true);
+    } catch (error) {
+      console.error("Error analyzing prescription:", error);
+      setData(null);
+      setAnalyzed(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleReset = () => {
@@ -59,7 +58,7 @@ export default function PrescriptionAnalyzer({ onClose }: Props) {
   };
 
   const confidenceColor =
-    mockPrescriptionData.confidence > 0.9 ? "#16a34a" : mockPrescriptionData.confidence > 0.75 ? "#f59e0b" : "#ef4444";
+    data?.confidence && data.confidence > 0.9 ? "#16a34a" : data?.confidence && data.confidence > 0.75 ? "#f59e0b" : "#ef4444";
 
   return (
     <View style={styles.container}>

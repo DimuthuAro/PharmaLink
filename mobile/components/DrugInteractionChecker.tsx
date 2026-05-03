@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { checkDrugInteractions } from "../utils/api";
 
 type InteractionRisk = "safe" | "moderate" | "high";
 
@@ -23,23 +24,6 @@ type Interaction = {
 type Props = {
   onClose?: () => void;
 };
-
-const mockInteractions: Interaction[] = [
-  {
-    drug1: "Aspirin",
-    drug2: "Warfarin",
-    risk: "high",
-    description: "Increased bleeding risk",
-    recommendation: "Avoid combination or closely monitor PT/INR",
-  },
-  {
-    drug1: "Lisinopril",
-    drug2: "Potassium",
-    risk: "moderate",
-    description: "Risk of hyperkalemia",
-    recommendation: "Monitor potassium levels regularly",
-  },
-];
 
 const riskStyles = {
   safe: { bg: "rgba(34,197,94,0.12)", border: "rgba(34,197,94,0.25)", text: "#166534", icon: "#16a34a" },
@@ -74,10 +58,26 @@ export default function DrugInteractionChecker({ onClose }: Props) {
     if (filled.length < 2) return;
 
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 800)); // Simulate API call
-    setResults(mockInteractions);
-    setChecked(true);
-    setLoading(false);
+    try {
+      const response = await checkDrugInteractions(filled);
+      setResults(response.interactions || []);
+      setChecked(true);
+    } catch (error) {
+      console.error("Error checking interactions:", error);
+      // Fallback to mock data if API fails
+      setResults([
+        {
+          drug1: filled[0],
+          drug2: filled[1],
+          risk: "moderate",
+          description: "Unable to fetch real data. Please try again.",
+          recommendation: "Contact healthcare provider for accurate information",
+        },
+      ]);
+      setChecked(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const highRiskCount = useMemo(() => results.filter((r) => r.risk === "high").length, [results]);

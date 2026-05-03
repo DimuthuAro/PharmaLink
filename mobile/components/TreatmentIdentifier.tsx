@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { searchTreatments } from "../utils/api";
 
 type Treatment = {
   id: string;
@@ -23,36 +24,6 @@ type Treatment = {
 type Props = {
   onClose?: () => void;
 };
-
-const mockTreatments: Treatment[] = [
-  {
-    id: "1",
-    condition: "Headache",
-    medication: "Paracetamol",
-    dosage: "500-1000mg",
-    duration: "Every 4-6 hours",
-    effectiveness: "high",
-    sideEffects: ["Rare: Liver damage with overdose"],
-  },
-  {
-    id: "2",
-    condition: "Headache",
-    medication: "Ibuprofen",
-    dosage: "200-400mg",
-    duration: "Every 6-8 hours",
-    effectiveness: "high",
-    sideEffects: ["GI upset", "Increased bleeding risk"],
-  },
-  {
-    id: "3",
-    condition: "Headache",
-    medication: "Aspirin",
-    dosage: "325-650mg",
-    duration: "Every 4-6 hours",
-    effectiveness: "medium",
-    sideEffects: ["Stomach irritation", "Bleeding risk"],
-  },
-];
 
 const effectivenessStyles = {
   high: { bg: "rgba(34,197,94,0.12)", text: "#166534", label: "Highly Effective" },
@@ -70,10 +41,17 @@ export default function TreatmentIdentifier({ onClose }: Props) {
     if (!symptom.trim()) return;
 
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setResults(mockTreatments);
-    setSearched(true);
-    setLoading(false);
+    try {
+      const response = await searchTreatments(symptom);
+      setResults(response.treatments || response || []);
+      setSearched(true);
+    } catch (error) {
+      console.error("Error searching treatments:", error);
+      setResults([]);
+      setSearched(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

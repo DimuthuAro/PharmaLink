@@ -1,11 +1,17 @@
 import axios from "axios";
+import { Platform } from "react-native";
 
-const API_BASE_URL = "http://10.0.2.2:8000";
+// Backend API base URL
+// For Android emulator: 10.0.2.2 accesses host machine
+// For web/iOS: use localhost
+const API_BASE_URL = Platform.OS === "android" 
+  ? "http://10.0.2.2:3000"
+  : "http://localhost:3000";
 
 export const api = axios.create({
-    baseURL:API_BASE_URL,
-    timeout:20000,
-})
+    baseURL: API_BASE_URL,
+    timeout: 30000,
+});
 
 //---- Drug + food lookup ----
 export const fetchDrugs = async (query: string = "") => {
@@ -64,4 +70,85 @@ export const generateMealPlan = async (payload: {
 }) => {
   const res = await api.post("/meal-plan", payload);
   return res.data;
+};
+
+// ===== NEW BACKEND INTEGRATION ENDPOINTS =====
+
+// Drug Interactions
+export const checkDrugInteractions = async (drugs: string[]) => {
+  try {
+    const res = await api.post("/api/drug-interactions/check", { drugs });
+    return res.data;
+  } catch (error) {
+    console.error("Drug interactions error:", error);
+    throw error;
+  }
+};
+
+// Food-Drug Interactions (Advisory)
+export const checkFoodDrugInteractions = async (drug: string, food: string) => {
+  try {
+    const res = await api.post("/api/advisory/check", { drug, food });
+    return res.data;
+  } catch (error) {
+    console.error("Food-drug interaction error:", error);
+    throw error;
+  }
+};
+
+// Prescription Analysis
+export const analyzePrescription = async (imageData: string) => {
+  try {
+    const res = await api.post("/api/prescription/analyze", { image: imageData });
+    return res.data;
+  } catch (error) {
+    console.error("Prescription analysis error:", error);
+    throw error;
+  }
+};
+
+// Cross-Brand Comparator
+export const searchMedicines = async (medicineName: string) => {
+  try {
+    const res = await api.get("/api/comparator/search", { 
+      params: { q: medicineName } 
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Medicine search error:", error);
+    throw error;
+  }
+};
+
+export const getAllMedications = async () => {
+  try {
+    const res = await api.get("/api/comparator/all-medications");
+    return res.data;
+  } catch (error) {
+    console.error("Get medications error:", error);
+    throw error;
+  }
+};
+
+// Treatment Identifier
+export const searchTreatments = async (symptom: string) => {
+  try {
+    const res = await api.post("/api/treatment/search", { symptom });
+    return res.data;
+  } catch (error) {
+    console.error("Treatment search error:", error);
+    throw error;
+  }
+};
+
+export const getTreatmentsByCondition = async (condition: string) => {
+  try {
+    const res = await api.get("/api/treatment/condition", { 
+      params: { q: condition } 
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Get treatments error:", error);
+    throw error;
+  }
 };

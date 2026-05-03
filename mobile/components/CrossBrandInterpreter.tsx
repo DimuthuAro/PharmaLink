@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { searchMedicines } from "../utils/api";
 
 type BrandOption = {
   brand: string;
@@ -21,30 +22,6 @@ type BrandOption = {
 type Props = {
   onClose?: () => void;
 };
-
-const mockBrands: BrandOption[] = [
-  {
-    brand: "Aspirin Max",
-    generic: "Acetylsalicylic Acid",
-    price: 4.99,
-    availability: "in-stock",
-    description: "Fast-acting pain relief",
-  },
-  {
-    brand: "GeneriSprin",
-    generic: "Acetylsalicylic Acid",
-    price: 2.49,
-    availability: "in-stock",
-    description: "Cost-effective alternative",
-  },
-  {
-    brand: "PainAway",
-    generic: "Acetylsalicylic Acid",
-    price: 3.99,
-    availability: "limited",
-    description: "Extended relief formula",
-  },
-];
 
 const availabilityStyles = {
   "in-stock": { bg: "rgba(34,197,94,0.12)", text: "#166534", label: "In Stock" },
@@ -62,10 +39,17 @@ export default function CrossBrandInterpreter({ onClose }: Props) {
     if (!medicineName.trim()) return;
 
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setResults(mockBrands);
-    setSearched(true);
-    setLoading(false);
+    try {
+      const response = await searchMedicines(medicineName);
+      setResults(response.medicines || response || []);
+      setSearched(true);
+    } catch (error) {
+      console.error("Error searching medicines:", error);
+      setResults([]);
+      setSearched(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const cheapest = results.length > 0 ? Math.min(...results.map((r) => r.price)) : 0;
