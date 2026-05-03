@@ -14,6 +14,8 @@ import { getUser, User } from "../utils/auth";
 import DrugInteractionChecker from "./DrugInteractionChecker";
 import FoodDrugInteractionChecker from "./FoodDrugInteractionChecker";
 import PrescriptionAnalyzer from "./PrescriptionAnalyzer";
+import CrossBrandInterpreter from "./CrossBrandInterpreter";
+import TreatmentIdentifier from "./TreatmentIdentifier";
 
 type Feature = {
   id: string;
@@ -56,6 +58,26 @@ const features: Feature[] = [
     bgColor: "rgba(139,92,246,0.12)",
     borderColor: "rgba(139,92,246,0.25)",
     component: PrescriptionAnalyzer,
+  },
+  {
+    id: "cross-brand",
+    title: "Cross-Brand Comparator",
+    description: "Compare brands & find alternative medications",
+    icon: "compare",
+    color: "#f59e0b",
+    bgColor: "rgba(245,158,11,0.12)",
+    borderColor: "rgba(245,158,11,0.25)",
+    component: CrossBrandInterpreter,
+  },
+  {
+    id: "treatment",
+    title: "Treatment Identifier",
+    description: "Find suitable treatments for your symptoms",
+    icon: "hospital-box",
+    color: "#a855f7",
+    bgColor: "rgba(168,85,247,0.12)",
+    borderColor: "rgba(168,85,247,0.25)",
+    component: TreatmentIdentifier,
   },
 ];
 
