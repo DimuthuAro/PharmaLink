@@ -1,0 +1,556 @@
+narrative_id,rule_id,narrative_text,drug,food_raw,food_category,symptom,event_sequence,event_2,event_3,temporal_order,interaction_category,label_valid
+,,,,,,,,,,,,
+N001,R002,I took amoxicillin and then drank milk,amoxicillin,,milk,,took_drug,drank_food,,drug_before_food,calcium_antibiotic,1
+N002,R002,"After taking my antibiotic, I had a glass of milk",antibiotic,,milk,,took_drug,drank_food,,drug_before_food,calcium_antibiotic,1
+N003,R002,I drank milk right after taking amoxicillin,amoxicillin,,milk,,took_drug,drank_food,,drug_before_food,calcium_antibiotic,1
+N004,R001,I had yogurt after my antibiotic dose,antibiotic,,yogurt,,took_drug,ate_food,,drug_before_food,calcium_antibiotic,1
+N005,R001,I took my antibiotic and ate yogurt soon after,antibiotic,,yogurt,,took_drug,ate_food,,drug_before_food,calcium_antibiotic,1
+,,,,,,,,,,,,
+N006,R003,I took levothyroxine and later ate iron-rich food,levothyroxine,,iron,,took_drug,ate_food,,drug_before_food,iron_levothyroxine,1
+N007,R003,"After taking my thyroid medicine, I ate spinach with iron",levothyroxine,,iron,,took_drug,ate_food,,drug_before_food,iron_levothyroxine,1
+N008,R004,I took levothyroxine and then had breakfast,levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+,,,,,,,,,,,,
+N009,R005,I ate spinach while on warfarin,warfarin,,spinach,,ate_food,,,food_only,vitk_warfarin,1
+N010,R005,I had a salad with leafy greens during warfarin treatment,warfarin,,leafy greens,,ate_food,,,food_only,vitk_warfarin,1
+,,,,,,,,,,,,
+N011,R007,I took my sedative and drank alcohol at night,sedative,,alcohol,,took_drug,drank_food,,drug_before_food,cns_alcohol,1
+N012,R007,I had alcohol after taking sleeping pills,sedative,,alcohol,,took_drug,drank_food,,drug_before_food,cns_alcohol,1
+,,,,,,,,,,,,
+N013,R010,I took metformin and ate a high carb meal,metformin,,high_carb,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+N014,R010,"After taking diabetes medicine, I ate a lot of rice",antidiabetic,,high_carb,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+,,,,,,,,,,,,
+N015,R011,I skipped breakfast and took diclofenac,NSAID,,,stomach pain,skipped_meal,took_drug,,meal_before_drug,empty_stomach_irritation,1
+N016,R011,I took a painkiller without eating and felt stomach pain,NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+,,,,,,,,,,,,
+N017,R012,I skipped lunch and took my diabetes medicine then felt dizzy,antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+N018,R012,I took my diabetes tablet without eating and felt weak,antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+,,,,,,,,,,,,
+N019,R013,I took antibiotics and felt nauseous later,antibiotic,,,nausea,took_drug,felt_symptom,,drug_then_symptom,side_effect_variation,1
+N020,R013,"After my antibiotic dose, I experienced nausea",antibiotic,,,nausea,took_drug,felt_symptom,,drug_then_symptom,side_effect_variation,1
+,,,,,,,,,,,,
+N021,R014,I took iron tablets with food,iron,,food,,took_drug,ate_food,,drug_with_food,absorption_issue,1
+N022,R014,I ate immediately after taking iron supplements,iron,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+,,,,,,,,,,,,
+N023,R015,I took vitamins with my meal,vitamin,,food,,took_drug,ate_food,,drug_with_food,absorption_improve,1
+N024,R015,I had my vitamins during lunch,vitamin,,food,,took_drug,ate_food,,drug_with_food,absorption_improve,1
+,,,,,,,,,,,,
+N025,R019,I drank coffee after taking anxiety medication,anxiety,,coffee,,took_drug,drank_food,,drug_before_food,caffeine_effect,1
+N026,R019,I take coffee with my anxiety medicine daily,anxiety,,coffee,,took_drug,drank_food,,drug_with_food,caffeine_effect,1
+,,,,,,,,,,,,
+N027,R020,I drank alcohol after taking a sedative and felt very sleepy,sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,1
+N028,R020,"After alcohol and sleeping pills, I felt extremely drowsy",sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,1
+,,,,,,,,,,,,
+N029,R021,I ate sugary food while on diabetes medication,diabetes,,sugar,,ate_food,,,food_only,glycemic_control,1
+N030,R021,I had sweets after taking diabetes medicine,diabetes,,sugar,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+,,,,,,,,,,,,
+N031,R022,I ate salty food while taking hypertension medicine,hypertension,,salt,,ate_food,,,food_only,sodium_effect,1
+N032,R022,I consume high salt meals during hypertension treatment,hypertension,,salt,,ate_food,,,food_only,sodium_effect,1
+,,,,,,,,,,,,
+N033,R023,I ate grapefruit while taking statins,statin,,grapefruit,,ate_food,,,food_only,enzyme_inhibition,1
+N034,R023,I had grapefruit juice during statin therapy,statin,,grapefruit,,drank_food,,,food_only,enzyme_inhibition,1
+,,,,,,,,,,,,
+N035,R024,I drank alcohol while taking antidepressants,antidepressant,,alcohol,,took_drug,drank_food,,drug_with_food,cns_alcohol,1
+N036,R024,I take alcohol with my antidepressant medication,antidepressant,,alcohol,,took_drug,drank_food,,drug_with_food,cns_alcohol,1
+,,,,,,,,,,,,
+N037,R025,I smoke regularly while having asthma,asthma,,smoking,,habit,,,habit,trigger_effect,1
+N038,R025,I continued smoking during asthma treatment,asthma,,smoking,,habit,,,habit,trigger_effect,1
+,,,,,,,,,,,,
+N039,R026,I took antibiotics with milk and felt nauseous,antibiotic,,milk,nausea,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,possible_interaction,1
+N040,R026,"After milk and antibiotics, I felt uncomfortable",antibiotic,,milk,nausea,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,possible_interaction,1
+,,,,,,,,,,,,
+N041,R027,I took painkillers without food and had stomach pain,NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+N042,R028,I skipped meals and took diabetes medicine then felt dizzy,antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+,,,,,,,,,,,,
+N043,R029,I drank alcohol with sedatives and felt very sleepy,sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,1
+N044,R030,I ate leafy vegetables during warfarin therapy,warfarin,,leafy greens,,ate_food,,,food_only,vitk_warfarin,1
+,,,,,,,,,,,,
+N045,R031,I drink alcohol while taking medicine,general,,alcohol,,habit,,,habit,general_interaction,1
+N046,R032,I ate a high fat meal with my medicine,general,,high_fat,,ate_food,,,food_only,absorption_delay,1
+N047,R033,I had high fiber food with my tablets,general,,high_fiber,,ate_food,,,food_only,absorption_delay,1
+,,,,,,,,,,,,
+N048,R034,I forgot to take my medicine yesterday,general,,,none,missed_dose,,,missed_dose,missed_dose,1
+N049,R035,I accidentally took two doses of my medicine,general,,,none,double_dose,,,double_dose,overdose,1
+,,,,,,,,,,,,
+N050,R004,I ate breakfast right after taking my thyroid medicine,levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+,,,,,,,,,,,,
+N051,R002,I swallowed amoxicillin and had milk afterward,amoxicillin,,milk,,took_drug,drank_food,,drug_before_food,calcium_antibiotic,1
+N052,R002,"After my amoxicillin capsule, I drank a cup of milk",amoxicillin,,milk,,took_drug,drank_food,,drug_before_food,calcium_antibiotic,1
+N053,R001,I took my antibiotic and ate curd soon after,antibiotic,,curd,,took_drug,ate_food,,drug_before_food,calcium_antibiotic,1
+N054,R001,"Right after antibiotics, I had yogurt for breakfast",antibiotic,,yogurt,,took_drug,ate_food,,drug_before_food,calcium_antibiotic,1
+N055,R003,I took levothyroxine and later ate lentils rich in iron,levothyroxine,,iron,,took_drug,ate_food,,drug_before_food,iron_levothyroxine,1
+N056,R003,"After my thyroid tablet, I had an iron-rich meal",levothyroxine,,iron,,took_drug,ate_food,,drug_before_food,iron_levothyroxine,1
+N057,R004,I took levothyroxine and ate toast immediately after,levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+N058,R004,I had breakfast just after taking my thyroid medicine,levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+N059,R005,I ate kale while taking warfarin,warfarin,,leafy greens,,ate_food,,,food_only,vitk_warfarin,1
+N060,R005,"During warfarin treatment, I kept eating green salads",warfarin,,leafy greens,,ate_food,,,food_only,vitk_warfarin,1
+N061,R007,I took a sleeping tablet and later drank beer,sedative,,alcohol,,took_drug,drank_food,,drug_before_food,cns_alcohol,2
+N062,R007,"After my sedative dose, I had some wine",sedative,,alcohol,,took_drug,drank_food,,drug_before_food,cns_alcohol,2
+N063,R010,I took metformin and then ate a sugary dessert,metformin,,high_carb,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+N064,R010,"After my diabetes tablet, I ate noodles and rice",antidiabetic,,high_carb,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+N065,R011,"I skipped dinner, took diclofenac, and my stomach hurt later",NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+N066,R011,"I missed breakfast, took an NSAID, and later felt stomach pain",NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+N067,R011,"Without eating anything, I took diclofenac and my stomach started hurting",NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+N068,R012,"I skipped breakfast, took my diabetes tablet, and felt dizzy afterward",antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+N069,R012,I took my antidiabetic medicine on an empty stomach and later felt weak,antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+N070,R013,"After taking antibiotics, I felt some nausea later in the day",antibiotic,,,nausea,took_drug,felt_symptom,,drug_then_symptom,side_effect_variation,1
+N071,R013,I used my antibiotic dose and then started feeling nauseous,antibiotic,,,nausea,took_drug,felt_symptom,,drug_then_symptom,side_effect_variation,1
+N072,R014,I swallowed my iron tablet together with breakfast,iron,,food,,took_drug,ate_food,,drug_with_food,absorption_issue,1
+N073,R014,"Right after taking iron supplements, I ate my meal",iron,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+N074,R015,I had my vitamins together with dinner,vitamin,,food,,took_drug,ate_food,,drug_with_food,absorption_improve,1
+N075,R015,I took vitamin tablets while having lunch,vitamin,,food,,took_drug,ate_food,,drug_with_food,absorption_improve,1
+N076,R019,I had coffee after taking my anxiety tablet,anxiety,,coffee,,took_drug,drank_food,,drug_before_food,caffeine_effect,1
+N077,R019,I usually drink coffee with my anxiety medication,anxiety,,coffee,,took_drug,drank_food,,drug_with_food,caffeine_effect,1
+N078,R020,"I took a sedative, drank alcohol, and then felt very drowsy",sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+N079,R020,"After taking sleeping pills with alcohol, I became very sleepy",sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+N080,R021,I ate sweets while taking diabetes medication,diabetes,,sugar,,ate_food,,,food_only,glycemic_control,1
+N081,R021,"After my diabetes medicine, I had sugary snacks",diabetes,,sugar,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+N082,R022,I ate a salty meal while using hypertension medicine,hypertension,,salt,,ate_food,,,food_only,sodium_effect,1
+N083,R022,"During hypertension treatment, I kept eating high-salt food",hypertension,,salt,,ate_food,,,food_only,sodium_effect,1
+N084,R023,I had grapefruit juice while taking statins,statin,,grapefruit,,drank_food,,,food_only,enzyme_inhibition,1
+N085,R023,I ate grapefruit during my statin treatment,statin,,grapefruit,,ate_food,,,food_only,enzyme_inhibition,1
+N086,R024,I drank alcohol after taking antidepressants,antidepressant,,alcohol,,took_drug,drank_food,,drug_before_food,cns_alcohol,1
+N087,R024,I used my antidepressant medicine and later had alcohol,antidepressant,,alcohol,,took_drug,drank_food,,drug_before_food,cns_alcohol,1
+N088,R025,I still smoke even though I have asthma,asthma,,smoking,,habit,,,habit,trigger_effect,1
+N089,R025,"While being treated for asthma, I continued smoking",asthma,,smoking,,habit,,,habit,trigger_effect,1
+N090,R026,I took antibiotics with milk and later felt nauseous,antibiotic,,milk,nausea,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,possible_interaction,1
+N091,R026,"After my antibiotic and milk, I started feeling uncomfortable",antibiotic,,milk,nausea,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,possible_interaction,1
+N092,R027,I took painkillers without food and then had stomach pain,NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+N093,R028,"I skipped meals, took my diabetes medicine, and felt dizzy later",antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+N094,R029,I drank alcohol with sedatives and felt unusually sleepy,sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+N095,R030,I ate leafy greens regularly during warfarin treatment,warfarin,,leafy greens,,ate_food,,,food_only,vitk_warfarin,1
+N096,R031,I drink alcohol while taking medication,unknown,,alcohol,,habit,,,habit,general_interaction,1
+N097,R032,I ate a high-fat meal with my tablets,unknown,,high_fat,,ate_food,,,food_only,absorption_delay,1
+N098,R033,I had a high-fiber meal with my medicine,unknown,,high_fiber,,ate_food,,,food_only,absorption_delay,1
+N099,R034,I forgot one of my medicine doses yesterday,unknown,,,none,missed_dose,,,missed_dose,missed_dose,1
+N100,R035,I mistakenly took an extra dose of my medicine,unknown,,,none,double_dose,,,double_dose,overdose,1
+N101,R002,I took amoxicillin and then had milk after lunch,amoxicillin,,milk,,took_drug,drank_food,,drug_before_food,calcium_antibiotic,1
+N102,R002,"After taking my antibiotic, I drank a glass of milk",antibiotic,,milk,,took_drug,drank_food,,drug_before_food,calcium_antibiotic,1
+N103,R001,I took antibiotics and ate yogurt afterward,antibiotic,,yogurt,,took_drug,ate_food,,drug_before_food,calcium_antibiotic,1
+N104,R001,"After my antibiotic dose, I had some yogurt",antibiotic,,yogurt,,took_drug,ate_food,,drug_before_food,calcium_antibiotic,1
+,,,,,,,,,,,,
+N105,R003,I took levothyroxine and later ate beans rich in iron,levothyroxine,,iron,,took_drug,ate_food,,drug_before_food,iron_levothyroxine,1
+N106,R003,"After my thyroid medication, I ate an iron-rich meal",levothyroxine,,iron,,took_drug,ate_food,,drug_before_food,iron_levothyroxine,1
+N107,R004,I took levothyroxine and immediately had breakfast,levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+N108,R004,I ate food right after taking my thyroid tablet,levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+,,,,,,,,,,,,
+N109,R005,I ate spinach during my warfarin treatment,warfarin,,spinach,,ate_food,none,none,food_only,vitk_warfarin,1
+N110,R005,"While on warfarin, I consumed leafy greens regularly",warfarin,,leafy greens,,ate_food,none,none,food_only,vitk_warfarin,1
+,,,,,,,,,,,,
+N111,R007,I took a sedative and later drank alcohol,sedative,,alcohol,,took_drug,drank_food,,drug_before_food,cns_alcohol,2
+N112,R007,"After taking sleeping pills, I drank beer",sedative,,alcohol,,took_drug,drank_food,,drug_before_food,cns_alcohol,2
+,,,,,,,,,,,,
+N113,R010,I took metformin and then ate a high-carb meal,metformin,,high_carb,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+N114,R010,"After my diabetes medication, I ate rice and sweets",antidiabetic,,high_carb,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+,,,,,,,,,,,,
+N115,R011,"I skipped breakfast and took an NSAID, then had stomach pain",NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+N116,R011,I took a painkiller without food and later felt stomach discomfort,NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+,,,,,,,,,,,,
+N117,R012,"I skipped meals, took my diabetes medicine, and felt dizzy",antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+N118,R012,I took my antidiabetic tablet without eating and felt weak,antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+,,,,,,,,,,,,
+N119,R013,I took antibiotics and later felt nauseous,antibiotic,,,nausea,took_drug,felt_symptom,,drug_then_symptom,side_effect_variation,1
+N120,R013,"After taking antibiotics, I experienced nausea",antibiotic,,,nausea,took_drug,felt_symptom,,drug_then_symptom,side_effect_variation,1
+,,,,,,,,,,,,
+N121,R014,I took iron tablets with my meal,iron,,food,,took_drug,ate_food,,drug_with_food,absorption_issue,1
+N122,R014,I ate food immediately after taking iron supplements,iron,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+,,,,,,,,,,,,
+N123,R015,I took vitamins together with my meal,vitamin,,food,,took_drug,ate_food,,drug_with_food,absorption_improve,1
+N124,R015,I had my vitamins while eating lunch,vitamin,,food,,took_drug,ate_food,,drug_with_food,absorption_improve,1
+,,,,,,,,,,,,
+N125,R019,I drank coffee after taking anxiety medication,anxiety,,coffee,,took_drug,drank_food,,drug_before_food,caffeine_effect,1
+N126,R019,I take my anxiety medicine with coffee,anxiety,,coffee,,took_drug,drank_food,,drug_with_food,caffeine_effect,1
+,,,,,,,,,,,,
+N127,R020,"I took a sedative, drank alcohol, and felt very sleepy",sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+N128,R020,"After alcohol and sleeping pills, I became extremely drowsy",sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+,,,,,,,,,,,,
+N129,R021,I ate sugary foods while on diabetes medication,diabetes,,sugar,,ate_food,,,food_only,glycemic_control,1
+N130,R021,I had sweets after taking my diabetes medicine,diabetes,,sugar,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+,,,,,,,,,,,,
+N131,R022,I ate salty food while taking hypertension medication,hypertension,,salt,,ate_food,,,food_only,sodium_effect,1
+N132,R022,I consumed high-salt meals during hypertension treatment,hypertension,,salt,,ate_food,,,food_only,sodium_effect,1
+,,,,,,,,,,,,
+N133,R023,I ate grapefruit while taking statins,statin,,grapefruit,,ate_food,,,food_only,enzyme_inhibition,1
+N134,R023,I drank grapefruit juice during statin therapy,statin,,grapefruit,,drank_food,,,food_only,enzyme_inhibition,1
+,,,,,,,,,,,,
+N135,R024,I drank alcohol while taking antidepressants,antidepressant,,alcohol,,took_drug,drank_food,,drug_with_food,cns_alcohol,1
+N136,R024,I take alcohol with my antidepressant medication,antidepressant,,alcohol,,took_drug,drank_food,,drug_with_food,cns_alcohol,1
+,,,,,,,,,,,,
+N137,R025,I smoke regularly while having asthma,asthma,,smoking,,habit,,,habit,trigger_effect,1
+N138,R025,I continued smoking during asthma treatment,asthma,,smoking,,habit,,,habit,trigger_effect,1
+,,,,,,,,,,,,
+N139,R026,I took antibiotics with milk and felt nauseous,antibiotic,,milk,nausea,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,possible_interaction,1
+N140,R026,"After taking antibiotics and milk, I felt uncomfortable",antibiotic,,milk,nausea,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,possible_interaction,1
+,,,,,,,,,,,,
+N141,R031,I drink alcohol while taking medicine,unknown,,alcohol,,habit,,,habit,general_interaction,1
+N142,R032,I ate a high-fat meal with my medication,unknown,,high_fat,,ate_food,,,food_only,absorption_delay,1
+N143,R033,I ate high-fiber food with my tablets,unknown,,high_fiber,,ate_food,,,food_only,absorption_delay,1
+,,,,,,,,,,,,
+N144,R034,I forgot to take my medicine yesterday,unknown,,,none,missed_dose,,,missed_dose,missed_dose,1
+N145,R035,I accidentally took two doses of my medicine,unknown,,,none,double_dose,,,double_dose,overdose,1
+,,,,,,,,,,,,
+N146,R011,I took NSAIDs without food and felt stomach pain,NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+N147,R012,"I skipped meals and took diabetes medicine, then felt dizzy",antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+N148,R020,I drank alcohol with sedatives and felt very sleepy,sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+N149,R005,I ate leafy vegetables during warfarin therapy,warfarin,,leafy greens,,ate_food,,,food_only,vitk_warfarin,1
+N150,R004,I ate breakfast right after taking my thyroid medicine,levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+N151,R002,I took amoxicillin and drank milk shortly after,amoxicillin,,milk,,took_drug,drank_food,,drug_before_food,calcium_antibiotic,1
+N152,R002,"After taking antibiotics, I drank milk tea",antibiotic,,milk,,took_drug,drank_food,,drug_before_food,calcium_antibiotic,1
+N153,R001,I took antibiotics and ate yogurt later,antibiotic,,yogurt,,took_drug,ate_food,,drug_before_food,calcium_antibiotic,1
+N154,R001,I had curd after my antibiotic dose,antibiotic,,curd,,took_drug,ate_food,,drug_before_food,calcium_antibiotic,1
+,,,,,,,,,,,,
+N155,R003,I took levothyroxine and later ate iron-rich lentils,levothyroxine,,iron,,took_drug,ate_food,,drug_before_food,iron_levothyroxine,1
+N156,R003,"After thyroid medicine, I had iron-rich food",levothyroxine,,iron,,took_drug,ate_food,,drug_before_food,iron_levothyroxine,1
+N157,R004,I took levothyroxine and ate breakfast immediately,levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+N158,R004,I had food right after my thyroid tablet,levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+,,,,,,,,,,,,
+N159,R005,I ate green leafy vegetables while on warfarin,warfarin,,leafy greens,,ate_food,,,food_only,vitk_warfarin,1
+N160,R005,"During warfarin therapy, I ate spinach regularly",warfarin,,spinach,,ate_food,,,food_only,vitk_warfarin,1
+,,,,,,,,,,,,
+N161,R007,I took a sedative and then drank alcohol,sedative,,alcohol,,took_drug,drank_food,,drug_before_food,cns_alcohol,2
+N162,R007,"After sleeping pills, I had beer",sedative,,alcohol,,took_drug,drank_food,,drug_before_food,cns_alcohol,2
+,,,,,,,,,,,,
+N163,R010,I took metformin and ate sweets afterward,metformin,,high_carb,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+N164,R010,"After my diabetes medicine, I had sugary food",antidiabetic,,high_carb,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+,,,,,,,,,,,,
+N165,R011,"I skipped meals and took an NSAID, then had stomach pain",NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+N166,R011,I took diclofenac without eating and felt stomach discomfort,NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+,,,,,,,,,,,,
+N167,R012,"I skipped meals, took my diabetes medicine, and felt dizzy",antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+N168,R012,I took antidiabetic medicine without food and felt weak,antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+,,,,,,,,,,,,
+N169,R013,I took antibiotics and felt nauseous afterward,antibiotic,,,nausea,took_drug,felt_symptom,,drug_then_symptom,side_effect_variation,1
+N170,R013,"After taking antibiotics, I started feeling nausea",antibiotic,,,nausea,took_drug,felt_symptom,,drug_then_symptom,side_effect_variation,1
+,,,,,,,,,,,,
+N171,R014,I took iron tablets and ate food immediately,iron,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+N172,R014,I had food right after taking iron supplements,iron,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+,,,,,,,,,,,,
+N173,R015,I took vitamins with my meal,vitamin,,food,,took_drug,ate_food,,drug_with_food,absorption_improve,1
+N174,R015,I had vitamin tablets while eating lunch,vitamin,,food,,took_drug,ate_food,,drug_with_food,absorption_improve,1
+,,,,,,,,,,,,
+N175,R019,I drank coffee after taking anxiety medication,anxiety,,coffee,,took_drug,drank_food,,drug_before_food,caffeine_effect,1
+N176,R019,I take coffee together with anxiety medicine,anxiety,,coffee,,took_drug,drank_food,,drug_with_food,caffeine_effect,1
+,,,,,,,,,,,,
+N177,R020,I took sedatives and drank alcohol and felt sleepy,sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+N178,R020,"After alcohol and sleeping pills, I felt very drowsy",sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+,,,,,,,,,,,,
+N179,R021,I ate sugary foods while on diabetes medication,diabetes,,sugar,,ate_food,,,food_only,glycemic_control,1
+N180,R021,I had sweets after diabetes medicine,diabetes,,sugar,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+,,,,,,,,,,,,
+N181,R022,I ate salty food while taking hypertension medicine,hypertension,,salt,,ate_food,,,food_only,sodium_effect,1
+N182,R022,I consume high salt meals regularly with hypertension treatment,hypertension,,salt,,ate_food,,,food_only,sodium_effect,1
+,,,,,,,,,,,,
+N183,R023,I ate grapefruit while taking statins,statin,,grapefruit,,ate_food,,,food_only,enzyme_inhibition,1
+N184,R023,I drank grapefruit juice during statin treatment,statin,,grapefruit,,drank_food,,,food_only,enzyme_inhibition,1
+,,,,,,,,,,,,
+N185,R024,I drank alcohol while taking antidepressants,antidepressant,,alcohol,,took_drug,drank_food,,drug_with_food,cns_alcohol,1
+N186,R024,I take alcohol with antidepressant medication,antidepressant,,alcohol,,took_drug,drank_food,,drug_with_food,cns_alcohol,1
+,,,,,,,,,,,,
+N187,R025,I smoke regularly while having asthma,asthma,,smoking,,habit,,,habit,trigger_effect,1
+N188,R025,I continued smoking during asthma treatment,asthma,,smoking,,habit,,,habit,trigger_effect,1
+,,,,,,,,,,,,
+N189,R026,I took antibiotics with milk and felt nauseous,antibiotic,,milk,nausea,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,possible_interaction,1
+N190,R026,"After milk and antibiotics, I felt discomfort",antibiotic,,milk,nausea,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,possible_interaction,1
+,,,,,,,,,,,,
+N191,R027,I took painkillers without food and felt stomach pain,NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+N192,R028,I skipped meals and took diabetes medicine then felt dizzy,antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+,,,,,,,,,,,,
+N193,R029,I drank alcohol with sedatives and felt sleepy,sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+N194,R030,I ate leafy greens during warfarin therapy,warfarin,,leafy greens,,ate_food,,,food_only,vitk_warfarin,1
+,,,,,,,,,,,,
+N195,R031,I drink alcohol while taking medication,unknown,,alcohol,,habit,,,habit,general_interaction,1
+N196,R032,I ate a high-fat meal with my medicine,unknown,,high_fat,,ate_food,,,food_only,absorption_delay,1
+N197,R033,I had high-fiber food with my tablets,unknown,,high_fiber,,ate_food,,,food_only,absorption_delay,1
+,,,,,,,,,,,,
+N198,R034,I forgot to take my medicine,unknown,,,none,missed_dose,,,missed_dose,missed_dose,1
+N199,R035,I accidentally took an extra dose of medicine,unknown,,,none,double_dose,,,double_dose,overdose,1
+,,,,,,,,,,,,
+N200,R004,I ate breakfast right after taking levothyroxine,levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+N201,R002,I had my amoxicillin tablet and later drank milk tea,amoxicillin,,milk,,took_drug,drank_food,,drug_before_food,calcium_antibiotic,1
+N202,R002,"After using my antibiotic, I drank milk in the evening",antibiotic,,milk,,took_drug,drank_food,,drug_before_food,calcium_antibiotic,1
+N203,R001,I ate yogurt a while after taking my antibiotic,antibiotic,,yogurt,,took_drug,ate_food,,drug_before_food,calcium_antibiotic,1
+N204,R001,I consumed curd sometime after my antibiotic dose,antibiotic,,curd,,took_drug,ate_food,,drug_before_food,calcium_antibiotic,1
+,,,,,,,,,,,,
+N205,R003,I took levothyroxine early morning and later ate iron-rich food,levothyroxine,,iron,,took_drug,ate_food,,drug_before_food,iron_levothyroxine,1
+N206,R003,"After my thyroid medication, I had beans containing iron",levothyroxine,,iron,,took_drug,ate_food,,drug_before_food,iron_levothyroxine,1
+N207,R004,I ate breakfast right after taking levothyroxine tablet,levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+N208,R004,"Immediately after my thyroid medicine, I ate some food",levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+,,,,,,,,,,,,
+N209,R005,I included spinach in my meals while on warfarin,warfarin,,spinach,,ate_food,,,food_only,vitk_warfarin,1
+N210,R005,"While taking warfarin, I often ate leafy vegetables",warfarin,,leafy greens,,ate_food,,,food_only,vitk_warfarin,1
+,,,,,,,,,,,,
+N211,R007,I drank alcohol after taking a sedative tablet,sedative,,alcohol,,took_drug,drank_food,,drug_before_food,cns_alcohol,2
+N212,R007,I had wine later after my sleeping medication,sedative,,alcohol,,took_drug,drank_food,,drug_before_food,cns_alcohol,2
+,,,,,,,,,,,,
+N213,R010,I ate sugary food after taking metformin,metformin,,high_carb,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+N214,R010,"After my diabetes medicine, I consumed high-carb snacks",antidiabetic,,high_carb,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+,,,,,,,,,,,,
+N215,R011,I took NSAIDs on an empty stomach and later had stomach pain,NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+N216,R011,"Without eating, I took diclofenac and felt discomfort in my stomach",NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+,,,,,,,,,,,,
+N217,R012,I took my diabetes medicine without food and later felt dizzy,antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+N218,R012,Skipping meals and taking my tablet made me feel weak,antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+,,,,,,,,,,,,
+N219,R013,"After using antibiotics, I experienced nausea",antibiotic,,,nausea,took_drug,felt_symptom,,drug_then_symptom,side_effect_variation,1
+N220,R013,I started feeling nauseous after my antibiotic dose,antibiotic,,,nausea,took_drug,felt_symptom,,drug_then_symptom,side_effect_variation,1
+,,,,,,,,,,,,
+N221,R014,I took iron tablets and then ate food,iron,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+N222,R014,I ate a meal immediately after taking iron supplements,iron,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+,,,,,,,,,,,,
+N223,R015,I took vitamins during my meal,vitamin,,food,,took_drug,ate_food,,drug_with_food,absorption_improve,1
+N224,R015,I consumed vitamin tablets while eating,vitamin,,food,,took_drug,ate_food,,drug_with_food,absorption_improve,1
+,,,,,,,,,,,,
+N225,R019,I had coffee soon after taking anxiety medication,anxiety,,coffee,,took_drug,drank_food,,drug_before_food,caffeine_effect,1
+N226,R019,I drink coffee alongside my anxiety medicine,anxiety,,coffee,,took_drug,drank_food,,drug_with_food,caffeine_effect,1
+,,,,,,,,,,,,
+N227,R020,I combined alcohol with sedatives and felt sleepy,sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+N228,R020,"After drinking alcohol with sleeping pills, I felt very drowsy",sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+,,,,,,,,,,,,
+N229,R021,I consumed sugary snacks while on diabetes treatment,diabetes,,sugar,,ate_food,,,food_only,glycemic_control,1
+N230,R021,"After taking diabetes medication, I ate sweets",diabetes,,sugar,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+,,,,,,,,,,,,
+N231,R022,I regularly eat salty foods during hypertension treatment,hypertension,,salt,,ate_food,,,food_only,sodium_effect,1
+N232,R022,"While taking hypertension medicine, I consumed salt-rich meals",hypertension,,salt,,ate_food,,,food_only,sodium_effect,1
+,,,,,,,,,,,,
+N233,R023,I drank grapefruit juice while using statins,statin,,grapefruit,,drank_food,,,food_only,enzyme_inhibition,1
+N234,R023,I included grapefruit in my meals during statin therapy,statin,,grapefruit,,ate_food,,,food_only,enzyme_inhibition,1
+,,,,,,,,,,,,
+N235,R024,I drank alcohol after taking antidepressants,antidepressant,,alcohol,,took_drug,drank_food,,drug_before_food,cns_alcohol,1
+N236,R024,I used antidepressant medication and later had alcohol,antidepressant,,alcohol,,took_drug,drank_food,,drug_before_food,cns_alcohol,1
+,,,,,,,,,,,,
+N237,R025,I smoke even while receiving asthma treatment,asthma,,smoking,,habit,,,habit,trigger_effect,1
+N238,R025,I continued smoking despite having asthma,asthma,,smoking,,habit,,,habit,trigger_effect,1
+,,,,,,,,,,,,
+N239,R026,I took antibiotics with milk and then felt nauseous,antibiotic,,milk,nausea,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,possible_interaction,1
+N240,R026,"After combining antibiotics and milk, I felt discomfort",antibiotic,,milk,nausea,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,possible_interaction,1
+,,,,,,,,,,,,
+N241,R027,I took painkillers without eating and later had stomach pain,NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+N242,R028,Skipping meals before taking diabetes medicine made me dizzy,antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+,,,,,,,,,,,,
+N243,R029,I drank alcohol along with sedatives and became drowsy,sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+N244,R030,I ate leafy greens regularly during warfarin therapy,warfarin,,leafy greens,,ate_food,,,food_only,vitk_warfarin,1
+,,,,,,,,,,,,
+N245,R031,I drink alcohol while using medications,unknown,,alcohol,,habit,,,habit,general_interaction,1
+N246,R032,I ate fatty food along with my medicine,unknown,,high_fat,,ate_food,,,food_only,absorption_delay,1
+N247,R033,I consumed fiber-rich food with my tablets,unknown,,high_fiber,,ate_food,,,food_only,absorption_delay,1
+,,,,,,,,,,,,
+N248,R034,I forgot to take my medication yesterday,unknown,,,none,missed_dose,,,missed_dose,missed_dose,1
+N249,R035,I accidentally took more medicine than prescribed,unknown,,,none,double_dose,,,double_dose,overdose,1
+,,,,,,,,,,,,
+N250,R004,I ate breakfast right after taking levothyroxine tablet,levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+,,,,,,,,,,,,
+N251,R002,I took amoxicillin earlier and later had milk,amoxicillin,,milk,,took_drug,drank_food,,drug_before_food,calcium_antibiotic,1
+N252,R002,"After finishing my antibiotic dose, I drank milk",antibiotic,,milk,,took_drug,drank_food,,drug_before_food,calcium_antibiotic,1
+N253,R001,I ate yogurt some time after taking my antibiotic tablet,antibiotic,,yogurt,,took_drug,ate_food,,drug_before_food,calcium_antibiotic,1
+N254,R001,I had curd later in the day after my antibiotic,antibiotic,,curd,,took_drug,ate_food,,drug_before_food,calcium_antibiotic,1
+,,,,,,,,,,,,
+N255,R003,I took levothyroxine and later ate iron-rich vegetables,levothyroxine,,iron,,took_drug,ate_food,,drug_before_food,iron_levothyroxine,1
+N256,R003,"After my thyroid medicine, I consumed foods containing iron",levothyroxine,,iron,,took_drug,ate_food,,drug_before_food,iron_levothyroxine,1
+N257,R004,I had food immediately after taking levothyroxine,levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+N258,R004,I didn’t wait after taking my thyroid tablet before eating,levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+,,,,,,,,,,,,
+N259,R005,I kept eating spinach regularly while using warfarin,warfarin,,spinach,,ate_food,,,food_only,vitk_warfarin,1
+N260,R005,"During my warfarin therapy, I included leafy greens often",warfarin,,leafy greens,,ate_food,,,food_only,vitk_warfarin,1
+,,,,,,,,,,,,
+N261,R007,I took a sedative and later consumed alcohol,sedative,,alcohol,,took_drug,drank_food,,drug_before_food,cns_alcohol,2
+N262,R007,"After my sleeping medication, I drank alcohol",sedative,,alcohol,,took_drug,drank_food,,drug_before_food,cns_alcohol,2
+,,,,,,,,,,,,
+N263,R010,I ate high-carb food after taking metformin,metformin,,high_carb,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+N264,R010,"After my diabetes tablet, I had a carb-heavy meal",antidiabetic,,high_carb,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+,,,,,,,,,,,,
+N265,R011,I took an NSAID without eating and later felt stomach pain,NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+N266,R011,Skipping food before taking diclofenac caused stomach discomfort,NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+,,,,,,,,,,,,
+N267,R012,I felt dizzy after taking my diabetes medicine without food,antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+N268,R012,Taking my diabetes tablet on an empty stomach made me weak,antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+,,,,,,,,,,,,
+N269,R013,I experienced nausea after taking antibiotics,antibiotic,,,nausea,took_drug,felt_symptom,,drug_then_symptom,side_effect_variation,1
+N270,R013,My antibiotic dose made me feel nauseous later,antibiotic,,,nausea,took_drug,felt_symptom,,drug_then_symptom,side_effect_variation,1
+,,,,,,,,,,,,
+N271,R014,I ate food right after taking iron tablets,iron,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+N272,R014,I didn’t wait before eating after taking iron supplements,iron,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+,,,,,,,,,,,,
+N273,R015,I took my vitamins along with my meal,vitamin,,food,,took_drug,ate_food,,drug_with_food,absorption_improve,1
+N274,R015,I consumed vitamins while having food,vitamin,,food,,took_drug,ate_food,,drug_with_food,absorption_improve,1
+,,,,,,,,,,,,
+N275,R019,I drank coffee soon after taking anxiety medicine,anxiety,,coffee,,took_drug,drank_food,,drug_before_food,caffeine_effect,1
+N276,R019,I combine coffee with my anxiety medication,anxiety,,coffee,,took_drug,drank_food,,drug_with_food,caffeine_effect,1
+,,,,,,,,,,,,
+N277,R020,I took sedatives with alcohol and became drowsy,sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+N278,R020,Alcohol after sleeping pills made me very sleepy,sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+,,,,,,,,,,,,
+N279,R021,I ate sweets while undergoing diabetes treatment,diabetes,,sugar,,ate_food,,,food_only,glycemic_control,1
+N280,R021,"After my diabetes medication, I consumed sugary food",diabetes,,sugar,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+,,,,,,,,,,,,
+N281,R022,I consumed salty meals while on hypertension treatment,hypertension,,salt,,ate_food,,,food_only,sodium_effect,1
+N282,R022,I ate high-salt food while taking blood pressure medicine,hypertension,,salt,,ate_food,,,food_only,sodium_effect,1
+,,,,,,,,,,,,
+N283,R023,I drank grapefruit juice during my statin treatment,statin,,grapefruit,,drank_food,,,food_only,enzyme_inhibition,1
+N284,R023,I had grapefruit while taking cholesterol medicine,statin,,grapefruit,,ate_food,,,food_only,enzyme_inhibition,1
+,,,,,,,,,,,,
+N285,R024,I had alcohol after taking antidepressants,antidepressant,,alcohol,,took_drug,drank_food,,drug_before_food,cns_alcohol,1
+N286,R024,I drank alcohol while using antidepressant medication,antidepressant,,alcohol,,took_drug,drank_food,,drug_with_food,cns_alcohol,1
+,,,,,,,,,,,,
+N287,R025,I kept smoking during my asthma treatment,asthma,,smoking,,habit,,,habit,trigger_effect,1
+N288,R025,"Even with asthma, I continued my smoking habit",asthma,,smoking,,habit,,,habit,trigger_effect,1
+,,,,,,,,,,,,
+N289,R026,I took antibiotics with milk and later felt uneasy,antibiotic,,milk,nausea,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,possible_interaction,1
+N290,R026,"After combining milk with antibiotics, I felt discomfort",antibiotic,,milk,nausea,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,possible_interaction,1
+,,,,,,,,,,,,
+N291,R027,Taking painkillers without eating caused stomach pain,NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+N292,R028,I felt dizzy after skipping meals and taking diabetes medicine,antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+,,,,,,,,,,,,
+N293,R029,I drank alcohol with sedatives and felt sleepy afterward,sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+N294,R030,I included leafy greens regularly while on warfarin,warfarin,,leafy greens,,ate_food,,,food_only,vitk_warfarin,1
+,,,,,,,,,,,,
+N295,R031,I drink alcohol regularly while taking medication,unknown,,alcohol,,habit,,,habit,general_interaction,1
+N296,R032,I ate fatty meals together with my medicine,unknown,,high_fat,,ate_food,,,food_only,absorption_delay,1
+N297,R033,I consumed fiber-rich meals with my tablets,unknown,,high_fiber,,ate_food,,,food_only,absorption_delay,1
+,,,,,,,,,,,,
+N298,R034,I missed my medication dose yesterday,unknown,,,none,missed_dose,,,missed_dose,missed_dose,1
+N299,R035,I took an extra dose of my medicine by mistake,unknown,,,none,double_dose,,,double_dose,overdose,1
+,,,,,,,,,,,,
+N300,R004,I ate immediately after taking levothyroxine,levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+N301,R002,Is it okay if I drink milk after taking amoxicillin?,amoxicillin,,milk,,took_drug,drank_food,,drug_before_food,calcium_antibiotic,1
+N302,R002,"Took my antibiotic... then had milk, is that fine?",antibiotic,,milk,,took_drug,drank_food,,drug_before_food,calcium_antibiotic,1
+N303,R001,"I just took antibiotics and ate yogurt, should I worry?",antibiotic,,yogurt,,took_drug,ate_food,,drug_before_food,calcium_antibiotic,1
+N304,R001,"Had curd right after my antibiotic dose, is that bad?",antibiotic,,curd,,took_drug,ate_food,,drug_before_food,calcium_antibiotic,1
+,,,,,,,,,,,,
+N305,R003,"Took my thyroid pill then later ate iron-rich food, okay?",levothyroxine,,iron,,took_drug,ate_food,,drug_before_food,iron_levothyroxine,1
+N306,R003,I didn’t know… ate iron food after thyroid tablet,levothyroxine,,iron,,took_drug,ate_food,,drug_before_food,iron_levothyroxine,1
+N307,R004,Oops I ate immediately after taking levothyroxine,levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+N308,R004,Didn’t wait… took thyroid med and ate breakfast,levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+,,,,,,,,,,,,
+N309,R005,"Eating spinach daily while on warfarin, problem?",warfarin,,spinach,,ate_food,,,food_only,vitk_warfarin,1
+N310,R005,"I love greens, but I’m on warfarin… risky?",warfarin,,leafy greens,,ate_food,,,food_only,vitk_warfarin,1
+,,,,,,,,,,,,
+N311,R007,Can I drink alcohol after taking a sedative?,sedative,,alcohol,,took_drug,drank_food,,drug_before_food,cns_alcohol,2
+N312,R007,Had beer after my sleeping pill… felt weird,sedative,,alcohol,,took_drug,drank_food,,drug_before_food,cns_alcohol,2
+,,,,,,,,,,,,
+N313,R010,Took metformin then ate sweets… is that bad?,metformin,,high_carb,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+N314,R010,"After diabetes meds, I still eat rice and sweets",antidiabetic,,high_carb,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+,,,,,,,,,,,,
+N315,R011,I didn’t eat and took painkillers… stomach hurts now,NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+N316,R011,Empty stomach + NSAID = pain later,NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+,,,,,,,,,,,,
+N317,R012,Skipped food and took diabetes tablet… felt dizzy,antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+N318,R012,No meal + diabetes meds = weakness?,antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+,,,,,,,,,,,,
+N319,R013,Why do I feel nauseous after antibiotics?,antibiotic,,,nausea,took_drug,felt_symptom,,drug_then_symptom,side_effect_variation,1
+N320,R013,Antibiotics making me sick… normal?,antibiotic,,,nausea,took_drug,felt_symptom,,drug_then_symptom,side_effect_variation,1
+,,,,,,,,,,,,
+N321,R014,Took iron then ate immediately… okay?,iron,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+N322,R014,Should I wait after iron tablets before eating?,iron,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+,,,,,,,,,,,,
+N323,R015,I take vitamins with meals daily,vitamin,,food,,took_drug,ate_food,,drug_with_food,absorption_improve,1
+N324,R015,Vitamins during lunch… that’s correct right?,vitamin,,food,,took_drug,ate_food,,drug_with_food,absorption_improve,1
+,,,,,,,,,,,,
+N325,R019,Coffee after anxiety meds… not sure if okay,anxiety,,coffee,,took_drug,drank_food,,drug_before_food,caffeine_effect,1
+N326,R019,I mix coffee with my anxiety pills every morning,anxiety,,coffee,,took_drug,drank_food,,drug_with_food,caffeine_effect,1
+,,,,,,,,,,,,
+N327,R020,Alcohol + sedatives made me super sleepy,sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+N328,R020,Why so drowsy after mixing alcohol and pills?,sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+,,,,,,,,,,,,
+N329,R021,Still eating sweets even with diabetes meds,diabetes,,sugar,,ate_food,,,food_only,glycemic_control,1
+N330,R021,Sugar cravings after meds… I keep eating sweets,diabetes,,sugar,,ate_food,,,food_only,glycemic_control,1
+,,,,,,,,,,,,
+N331,R022,High salt diet while on BP medicine… bad?,hypertension,,salt,,ate_food,,,food_only,sodium_effect,1
+N332,R022,I eat salty snacks during hypertension treatment,hypertension,,salt,,ate_food,,,food_only,sodium_effect,1
+,,,,,,,,,,,,
+N333,R023,Is grapefruit dangerous with statins?,statin,,grapefruit,,ate_food,,,food_only,enzyme_inhibition,1
+N334,R023,I drink grapefruit juice while on cholesterol meds,statin,,grapefruit,,drank_food,,,food_only,enzyme_inhibition,1
+,,,,,,,,,,,,
+N335,R024,Alcohol with antidepressants… is that safe?,antidepressant,,alcohol,,took_drug,drank_food,,drug_with_food,cns_alcohol,1
+N336,R024,I still drink alcohol while on antidepressants,antidepressant,,alcohol,,took_drug,drank_food,,drug_with_food,cns_alcohol,1
+,,,,,,,,,,,,
+N337,R025,I smoke even though I have asthma,asthma,,smoking,,habit,,,habit,trigger_effect,1
+N338,R025,Asthma patient but still smoking… bad habit,asthma,,smoking,,habit,,,habit,trigger_effect,1
+,,,,,,,,,,,,
+N339,R026,Milk + antibiotics made me feel uneasy,antibiotic,,milk,nausea,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,possible_interaction,1
+N340,R026,"After antibiotics with milk, I felt weird",antibiotic,,milk,nausea,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,possible_interaction,1
+,,,,,,,,,,,,
+N341,R027,Painkillers without food = stomach pain,NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+N342,R028,Skipping meals and taking meds made me dizzy,antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+,,,,,,,,,,,,
+N343,R029,Alcohol + sedatives = heavy drowsiness,sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+N344,R030,Warfarin + leafy greens regularly… concern?,warfarin,,leafy greens,,ate_food,,,food_only,vitk_warfarin,1
+,,,,,,,,,,,,
+N345,R031,I drink alcohol often while on meds,unknown,,alcohol,,habit,,,habit,general_interaction,1
+N346,R032,High fat meals with medication daily,unknown,,high_fat,,ate_food,,,food_only,absorption_delay,1
+N347,R033,Fiber-rich food always with tablets,unknown,,high_fiber,,ate_food,,,food_only,absorption_delay,1
+,,,,,,,,,,,,
+N348,R034,Missed my medicine yesterday… what now?,unknown,,,none,missed_dose,,,missed_dose,missed_dose,1
+N349,R035,Oops I took double dose accidentally,unknown,,,none,double_dose,,,double_dose,overdose,1
+,,,,,,,,,,,,
+N350,R004,Ate immediately after thyroid pill… mistake?,levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+N351,R002,I forgot and drank milk right after my antibiotic dose,antibiotic,,milk,,took_drug,drank_food,,drug_before_food,calcium_antibiotic,1
+N352,R002,Took amoxicillin in the morning and had milk tea soon after,amoxicillin,,milk,,took_drug,drank_food,,drug_before_food,calcium_antibiotic,1
+N353,R001,I had yogurt not long after taking antibiotics,antibiotic,,yogurt,,took_drug,ate_food,,drug_before_food,calcium_antibiotic,1
+N354,R001,"After my antibiotic, I casually ate some curd",antibiotic,,curd,,took_drug,ate_food,,drug_before_food,calcium_antibiotic,1
+,,,,,,,,,,,,
+N355,R003,I took my thyroid tablet and later ate iron-rich vegetables,levothyroxine,,iron,,took_drug,ate_food,,drug_before_food,iron_levothyroxine,1
+N356,R003,Didn’t realize… I ate iron food after thyroid medicine,levothyroxine,,iron,,took_drug,ate_food,,drug_before_food,iron_levothyroxine,1
+N357,R004,I took levothyroxine and didn’t wait before eating,levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+N358,R004,Immediately ate breakfast after my thyroid pill,levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+,,,,,,,,,,,,
+N359,R005,I keep eating greens daily while on warfarin therapy,warfarin,,leafy greens,,ate_food,,,food_only,vitk_warfarin,1
+N360,R005,Spinach is part of my diet even during warfarin use,warfarin,,spinach,,ate_food,,,food_only,vitk_warfarin,1
+,,,,,,,,,,,,
+N361,R007,I mixed alcohol with my sedative and felt extremely sleepy,sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+N362,R007,"After taking sleeping pills, I drank alcohol unknowingly",sedative,,alcohol,,took_drug,drank_food,,drug_before_food,cns_alcohol,2
+,,,,,,,,,,,,
+N363,R010,"Even after taking metformin, I ate a sugary snack",metformin,,high_carb,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+N364,R010,I took my diabetes medicine but still had dessert,antidiabetic,,high_carb,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+,,,,,,,,,,,,
+N365,R011,Took a painkiller without food and got stomach pain later,NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+N366,R011,I didn’t eat before taking NSAIDs and felt discomfort,NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+,,,,,,,,,,,,
+N367,R012,Skipped meals and took diabetes meds… I felt weak,antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+N368,R012,I felt dizzy after taking my tablet without food,antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+,,,,,,,,,,,,
+N369,R013,I started feeling nausea after taking antibiotics,antibiotic,,,nausea,took_drug,felt_symptom,,drug_then_symptom,side_effect_variation,1
+N370,R013,Antibiotics seem to upset my stomach every time,antibiotic,,,nausea,took_drug,felt_symptom,,drug_then_symptom,side_effect_variation,1
+,,,,,,,,,,,,
+N371,R014,I took iron supplements and ate right after,iron,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+N372,R014,Should I avoid eating immediately after iron tablets?,iron,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1
+,,,,,,,,,,,,
+N373,R015,I always take my vitamins together with meals,vitamin,,food,,took_drug,ate_food,,drug_with_food,absorption_improve,1
+N374,R015,Taking vitamins while eating feels normal for me,vitamin,,food,,took_drug,ate_food,,drug_with_food,absorption_improve,1
+,,,,,,,,,,,,
+N375,R019,Coffee right after anxiety meds… is that okay?,anxiety,,coffee,,took_drug,drank_food,,drug_before_food,caffeine_effect,1
+N376,R019,I usually drink coffee with my anxiety medication,anxiety,,coffee,,took_drug,drank_food,,drug_with_food,caffeine_effect,1
+,,,,,,,,,,,,
+N377,R020,Alcohol combined with sedatives made me very sleepy,sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+N378,R020,I felt heavy drowsiness after mixing pills and alcohol,sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+,,,,,,,,,,,,
+N379,R021,"Even on diabetes treatment, I eat sugary snacks",diabetes,,sugar,,ate_food,,,food_only,glycemic_control,1
+N380,R021,"After my medication, I couldn’t resist sweets",diabetes,,sugar,,took_drug,ate_food,,drug_before_food,glycemic_control,1
+,,,,,,,,,,,,
+N381,R022,I still consume salty foods while on BP meds,hypertension,,salt,,ate_food,,,food_only,sodium_effect,1
+N382,R022,High salt intake during hypertension treatment worries me,hypertension,,salt,,ate_food,,,food_only,sodium_effect,1
+,,,,,,,,,,,,
+N383,R023,I accidentally had grapefruit while on statins,statin,,grapefruit,,ate_food,,,food_only,enzyme_inhibition,1
+N384,R023,Drinking grapefruit juice during cholesterol treatment,statin,,grapefruit,,drank_food,,,food_only,enzyme_inhibition,1
+,,,,,,,,,,,,
+N385,R024,I drank alcohol after taking antidepressants,antidepressant,,alcohol,,took_drug,drank_food,,drug_before_food,cns_alcohol,1
+N386,R024,Mixing alcohol with antidepressants regularly,antidepressant,,alcohol,,took_drug,drank_food,,drug_with_food,cns_alcohol,1
+,,,,,,,,,,,,
+N387,R025,I still haven’t stopped smoking even with asthma,asthma,,smoking,,habit,,,habit,trigger_effect,1
+N388,R025,Asthma doesn’t stop me from smoking daily,asthma,,smoking,,habit,,,habit,trigger_effect,1
+,,,,,,,,,,,,
+N389,R026,Milk and antibiotics together made me feel sick,antibiotic,,milk,nausea,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,possible_interaction,1
+N390,R026,"After combining milk with antibiotics, I felt uneasy",antibiotic,,milk,nausea,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,possible_interaction,1
+,,,,,,,,,,,,
+N391,R027,Taking painkillers on an empty stomach caused pain,NSAID,,,stomach pain,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,empty_stomach_irritation,1
+N392,R028,Skipping meals before meds made me feel dizzy,antidiabetic,,,dizziness,skipped_meal,took_drug,felt_symptom,meal_before_drug_then_symptom,low_sugar,1
+,,,,,,,,,,,,
+N393,R029,Alcohol and sedatives together made me very sleepy,sedative,,alcohol,drowsiness,took_drug,drank_food,felt_symptom,drug_before_food_then_symptom,cns_alcohol,2
+N394,R030,Eating greens daily while on warfarin treatment,warfarin,,leafy greens,,ate_food,,,food_only,vitk_warfarin,1
+,,,,,,,,,,,,
+N395,R031,I regularly drink alcohol while on medication,unknown,,alcohol,,habit,,,habit,general_interaction,1
+N396,R032,I eat fatty meals along with my tablets often,unknown,,high_fat,,ate_food,,,food_only,absorption_delay,1
+N397,R033,I consume fiber-rich food together with medicine,unknown,,high_fiber,,ate_food,,,food_only,absorption_delay,1
+,,,,,,,,,,,,
+N398,R034,I missed my dose and didn’t realize until later,unknown,,,none,missed_dose,,,missed_dose,missed_dose,1
+N399,R035,I accidentally took more than the prescribed dose,unknown,,,none,double_dose,,,double_dose,overdose,1
+,,,,,,,,,,,,
+N400,R004,I ate food right after taking my thyroid medicine,levothyroxine,,food,,took_drug,ate_food,,drug_before_food,absorption_issue,1

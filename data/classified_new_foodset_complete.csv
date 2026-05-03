@@ -1,0 +1,198 @@
+Food,food_type,consumption_type,energy,protein,carbs,fat,fiber,sugars,sodium,is_leafy_green,is_alcohol,quantity
+Yellow Rice,main,meal,200,6,30,5,3,2,150,0,0,1
+Fried Halmesso,protein,meal,180,20,2,10,0,0,120,0,0,1
+Fried Karawala,protein,meal,180,20,2,10,0,0,120,0,0,1
+Kola Mallum,vegetable,meal,80,3,12,2,4,3,50,1,0,1
+Kiri Hodi (Fish),protein,meal,180,20,2,10,0,0,120,0,0,1
+Soya meat curry,protein,meal,180,20,2,10,0,0,120,0,0,1
+Boiled Potatoes,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Chicken Curry,protein,meal,180,20,2,10,0,0,120,0,0,1
+Chicken Gravy,protein,meal,180,20,2,10,0,0,120,0,0,1
+Egg Yolk,protein,meal,180,20,2,10,0,0,120,0,0,1
+Mango Chutney,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Boiled Jackfruit Seed,protein,meal,180,20,2,10,0,0,120,0,0,1
+Boiled Chickpeas,protein,meal,180,20,2,10,0,0,120,0,0,1
+Boiled Mung,protein,meal,180,20,2,10,0,0,120,0,0,1
+Boiled Sweet Potato,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Cucumber Flesh,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Roast Peanut,snack,snack,250,5,35,10,2,10,200,0,0,1
+Roast Green Pea,snack,snack,250,5,35,10,2,10,200,0,0,1
+Roasted Gram,snack,snack,250,5,35,10,2,10,200,0,0,1
+Orange,snack,snack,250,5,35,10,2,10,200,0,0,1
+Guava,snack,snack,250,5,35,10,2,10,200,0,0,1
+Ambun Kesel,snack,snack,250,5,35,10,2,10,200,0,0,1
+Ambul Kesel,snack,snack,250,5,35,10,2,10,200,0,0,1
+Cavendish Banana,snack,snack,250,5,35,10,2,10,200,0,0,1
+Dried Grapes,snack,snack,250,5,35,10,2,10,200,0,0,1
+Jackfruit,snack,snack,250,5,35,10,2,10,200,0,0,1
+Avocado,snack,snack,250,5,35,10,2,10,200,0,0,1
+Watermelon Juice,drink,beverage,200,6,30,5,3,2,150,0,0,1
+Helapa,dessert,dessert,300,4,45,12,1,25,100,0,0,1
+Wandu,dessert,dessert,300,4,45,12,1,25,100,0,0,1
+Aggala,dessert,dessert,300,4,45,12,1,25,100,0,0,1
+Lavariya,dessert,dessert,300,4,45,12,1,25,100,0,0,1
+Yogurt,protein,meal,180,20,2,10,0,0,120,0,0,1
+Oats,main,meal,200,6,30,5,3,2,150,0,0,1
+Fried Tilapia,protein,meal,180,20,2,10,0,0,120,0,0,1
+Salmon,protein,meal,180,20,2,10,0,0,120,0,0,1
+Tuna,protein,meal,180,20,2,10,0,0,120,0,0,1
+Greek Yogurt,protein,meal,180,20,2,10,0,0,120,0,0,1
+Whole Milk,drink,beverage,200,6,30,5,3,2,150,0,0,1
+Skim Milk,drink,beverage,200,6,30,5,3,2,150,0,0,1
+Apple,snack,snack,250,5,35,10,2,10,200,0,0,1
+Almonds,snack,snack,250,5,35,10,2,10,200,0,0,1
+Walnuts,snack,snack,250,5,35,10,2,10,200,0,0,1
+Kiribath (Milk Rice),main,meal,200,6,30,5,3,2,150,0,0,1
+String Hoppers (Idiyappam),main,meal,200,6,30,5,3,2,150,0,0,1
+Hoppers (Appa),main,meal,200,6,30,5,3,2,150,0,0,1
+Egg Hopper (Biththara Appa),protein,meal,180,20,2,10,0,0,120,0,0,1
+Pol Roti,main,meal,200,6,30,5,3,2,150,0,0,1
+Pittu (Coconut),main,meal,200,6,30,5,3,2,150,0,0,1
+Kola Kenda (Herbal Porridge),drink,beverage,200,6,30,5,3,2,150,1,0,1
+Dhal Curry (Parippu),protein,meal,180,20,2,10,0,0,120,0,0,1
+Lunu Miris,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Pol Sambol,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Kiri Hodi (Tomato),vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Seeni Sambol,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Ceylon Tea,drink,beverage,200,6,30,5,3,2,150,0,0,1
+Ginger Tea,drink,beverage,200,6,30,5,3,2,150,0,0,1
+King Coconut Water,drink,beverage,200,6,30,5,3,2,150,0,0,1
+Red Rice,main,meal,200,6,30,5,3,2,150,0,0,1
+White Rice,main,meal,200,6,30,5,3,2,150,0,0,1
+Fried Rice (Chicken),protein,meal,180,20,2,10,0,0,120,0,0,1
+Fried Rice (Vegetable),vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Fish Curry (Tuna),protein,meal,180,20,2,10,0,0,120,0,0,1
+Ambul Thiyal (Sour Fish),protein,meal,180,20,2,10,0,0,120,0,0,1
+Black Pork Curry,protein,meal,180,20,2,10,0,0,120,0,0,1
+Prawn Curry,protein,meal,180,20,2,10,0,0,120,0,0,1
+Egg Curry,protein,meal,180,20,2,10,0,0,120,0,0,1
+Potato Curry,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Brinjal Moju,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Pumpkin Curry,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Jackfruit Curry (Polos),vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Young Jackfruit Curry (Kos),vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Cuttlefish Curry,protein,meal,180,20,2,10,0,0,120,0,0,1
+Beef Curry,protein,meal,180,20,2,10,0,0,120,0,0,1
+Gotukola Sambol,vegetable,meal,80,3,12,2,4,3,50,1,0,1
+Kankun Mallung,vegetable,meal,80,3,12,2,4,3,50,1,0,1
+Mukunuwenna Mallum,vegetable,meal,80,3,12,2,4,3,50,1,0,1
+Beetroot Curry,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Okra (Bandakka) Curry,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Fried Beans Sambol,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Carrot Curry,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Cucumber Salad,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Papadam,side,meal,200,6,30,5,3,2,150,0,0,1
+Mixed Greens Mallum,vegetable,meal,80,3,12,2,4,3,50,1,0,1
+Parippu Wade,protein,meal,180,20,2,10,0,0,120,0,0,1
+Isso Wade,protein,meal,180,20,2,10,0,0,120,0,0,1
+Manioc Chips,snack,snack,250,5,35,10,2,10,200,0,0,1
+Boiled Manioc (Cassava),main,meal,200,6,30,5,3,2,150,0,0,1
+Roasted Peanuts,snack,snack,250,5,35,10,2,10,200,0,0,1
+Curd (Buffalo) + Treacle,dessert,dessert,300,4,45,12,1,25,100,0,0,1
+Vegetable Soup,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Beet Root Salad,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Carrot Salad,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Lotus Root Curry,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Leeks Sambola,vegetable,meal,80,3,12,2,4,3,50,1,0,1
+Mushroom Curry,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Anguna Kola Mallum,vegetable,meal,80,3,12,2,4,3,50,1,0,1
+Kathurumurunga Mallum,vegetable,meal,80,3,12,2,4,3,50,1,0,1
+Cassava Leaves,vegetable,meal,80,3,12,2,4,3,50,1,0,1
+Whole Wheat Toast,main,meal,200,6,30,5,3,2,150,0,0,1
+Black Coffee,drink,beverage,200,6,30,5,3,2,150,0,0,1
+Grilled Chicken Salad,protein,meal,180,20,2,10,0,0,120,0,0,1
+Quinoa,main,meal,200,6,30,5,3,2,150,0,0,1
+Steamed Broccoli,vegetable,meal,80,3,12,2,4,3,50,1,0,1
+Oatmeal,main,meal,200,6,30,5,3,2,150,0,0,1
+Blueberries,snack,snack,250,5,35,10,2,10,200,0,0,1
+Turkey Sandwich,protein,meal,180,20,2,10,0,0,120,0,0,1
+Carrot Sticks,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Spaghetti Bolognese,protein,meal,180,20,2,10,0,0,120,0,0,1
+Frosted Flakes,main,meal,200,6,30,5,3,2,150,0,0,1
+Lentil Soup,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Beef Steak,protein,meal,180,20,2,10,0,0,120,0,0,1
+Avocado Toast,main,meal,200,6,30,5,3,2,150,0,0,1
+Hard-Boiled Egg,protein,meal,180,20,2,10,0,0,120,0,0,1
+Chicken Wrap,protein,meal,180,20,2,10,0,0,120,0,0,1
+Baked Potato,main,meal,200,6,30,5,3,2,150,0,0,1
+Black Beans,protein,meal,180,20,2,10,0,0,120,0,0,1
+Chicken Noodle Soup,protein,meal,180,20,2,10,0,0,120,0,0,1
+Celery Sticks,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Green Beans,vegetable,meal,80,3,12,2,4,3,50,1,0,1
+Green Tea,drink,beverage,200,6,30,5,3,2,150,0,0,1
+Pancakes,dessert,dessert,300,4,45,12,1,25,100,0,0,1
+Fruit & Yogurt Smoothie,drink,beverage,200,6,30,5,3,2,150,0,0,1
+Brown Rice,main,meal,200,6,30,5,3,2,150,0,0,1
+Bell Pepper Salad,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Pita Bread,main,meal,200,6,30,5,3,2,150,0,0,1
+Fried Pork Chop,protein,meal,180,20,2,10,0,0,120,0,0,1
+Mashed Potatoes,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Chicken Caesar Salad,protein,meal,180,20,2,10,0,0,120,0,0,1
+Orange Juice,drink,beverage,200,6,30,5,3,2,150,0,0,1
+Bacon,protein,meal,180,20,2,10,0,0,120,0,0,1
+Mixed Nuts,snack,snack,250,5,35,10,2,10,200,0,0,1
+Asparagus,vegetable,meal,80,3,12,2,4,3,50,1,0,1
+Raisins,snack,snack,250,5,35,10,2,10,200,0,0,1
+Vegetable Macaroni,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Chicken Macaroni,protein,meal,180,20,2,10,0,0,120,0,0,1
+Tomato Soup,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Grilled Cheese Sandwich,main,meal,200,6,30,5,3,2,150,0,0,1
+Beef Tacos,protein,meal,180,20,2,10,0,0,120,0,0,1
+Refried Beans,protein,meal,180,20,2,10,0,0,120,0,0,1
+Guacamole,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Clam Chowder,protein,meal,180,20,2,10,0,0,120,0,0,1
+Iced Tea,drink,beverage,200,6,30,5,3,2,150,0,0,1
+Garlic Bread,main,meal,200,6,30,5,3,2,150,0,0,1
+Chocolate Milk,drink,beverage,200,6,30,5,3,2,150,0,0,1
+Potato Chips,snack,snack,250,5,35,10,2,10,200,0,0,1
+Caprese Salad,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Cherries,snack,snack,250,5,35,10,2,10,200,0,0,1
+Turkey Bacon,protein,meal,180,20,2,10,0,0,120,0,0,1
+Grits,main,meal,200,6,30,5,3,2,150,0,0,1
+Beef Jerky,protein,meal,180,20,2,10,0,0,120,0,0,1
+Figs,snack,snack,250,5,35,10,2,10,200,0,0,1
+Lobster,protein,meal,180,20,2,10,0,0,120,0,0,1
+Corn on the Cob,snack,snack,250,5,35,10,2,10,200,0,0,1
+French Onion Soup,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Seaweed Salad,vegetable,meal,80,3,12,2,4,3,50,1,0,1
+Croutons,snack,snack,250,5,35,10,2,10,200,0,0,1
+Shepherd's Pie,protein,meal,180,20,2,10,0,0,120,0,0,1
+Fried Halibut,protein,meal,180,20,2,10,0,0,120,0,0,1
+Lemonade,drink,beverage,200,6,30,5,3,2,150,0,0,1
+Pistachios,snack,snack,250,5,35,10,2,10,200,0,0,1
+Oat Milk,drink,beverage,200,6,30,5,3,2,150,0,0,1
+Biscuits and Gravy,main,meal,200,6,30,5,3,2,150,0,0,1
+Corn Flakes,main,meal,200,6,30,5,3,2,150,0,0,1
+T-Bone Steak,protein,meal,180,20,2,10,0,0,120,0,0,1
+Creamed Spinach,vegetable,meal,80,3,12,2,4,3,50,1,0,1
+Pecans,snack,snack,250,5,35,10,2,10,200,0,0,1
+Cucumber Slices,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Olives,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Chicken Alfredo,protein,meal,180,20,2,10,0,0,120,0,0,1
+Breadstick,main,meal,200,6,30,5,3,2,150,0,0,1
+Cobb Salad,protein,meal,180,20,2,10,0,0,120,0,0,1
+Mandarin Orange,snack,snack,250,5,35,10,2,10,200,0,0,1
+Cashews,snack,snack,250,5,35,10,2,10,200,0,0,1
+Eggo Waffle (2 waffles),main,meal,200,6,30,5,3,2,150,0,0,1
+Pulled Pork Sandwich,protein,meal,180,20,2,10,0,0,120,0,0,1
+Macadamia Nuts,snack,snack,250,5,35,10,2,10,200,0,0,1
+Kiwifruit,snack,snack,250,5,35,10,2,10,200,0,0,1
+Halibut,protein,meal,180,20,2,10,0,0,120,0,0,1
+Eggo Waffle,main,meal,200,6,30,5,3,2,150,0,0,1
+Almond Milk (Unsweetened),drink,beverage,200,6,30,5,3,2,150,0,0,1
+Lemon Bar,dessert,dessert,300,4,45,12,1,25,100,0,0,1
+Rice Krispies,main,meal,200,6,30,5,3,2,150,0,0,1
+Pickle,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Lobster Bisque,protein,meal,180,20,2,10,0,0,120,0,0,1
+Sauerkraut,main,meal,200,6,30,5,3,2,150,0,0,1
+Soy Milk,drink,beverage,200,6,30,5,3,2,150,0,0,1
+Chicken Tikka Masala,protein,meal,180,20,2,10,0,0,120,0,0,1
+Naan Roti,main,meal,200,6,30,5,3,2,150,0,0,1
+Sweet & Sour Chicken,protein,meal,180,20,2,10,0,0,120,0,0,1
+Egg Drop Soup,protein,meal,180,20,2,10,0,0,120,0,0,1
+Potato Salad,vegetable,meal,80,3,12,2,4,3,50,0,0,1
+Cranberry Juice,drink,beverage,200,6,30,5,3,2,150,0,0,1
+Chicken Piccata,protein,meal,180,20,2,10,0,0,120,0,0,1
+Angel Hair Pasta,main,meal,200,6,30,5,3,2,150,0,0,1
+Salami,protein,meal,180,20,2,10,0,0,120,0,0,1
+Shrimp Scampi,protein,meal,180,20,2,10,0,0,120,0,0,1

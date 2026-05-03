@@ -1,0 +1,50 @@
+canonical_drug,alias,drug_class
+amoxicillin,amoxicillin,antibiotic
+amoxicillin,amoxil,antibiotic
+antibiotic,antibiotic,antibiotic
+antibiotic,antibiotics,antibiotic
+levothyroxine,levothyroxine,thyroid
+levothyroxine,thyroid tablet,thyroid
+levothyroxine,thyroid pill,thyroid
+levothyroxine,thyroid medicine,thyroid
+levothyroxine,thyroid med,thyroid
+metformin,metformin,antidiabetic
+metformin,glucophage,antidiabetic
+antidiabetic,antidiabetic,antidiabetic
+antidiabetic,diabetes medicine,antidiabetic
+antidiabetic,diabetes tablet,antidiabetic
+antidiabetic,diabetes meds,antidiabetic
+warfarin,warfarin,anticoagulant
+warfarin,blood thinner,anticoagulant
+iron,iron,iron_supplement
+iron,iron tablet,iron_supplement
+iron,iron tablets,iron_supplement
+iron,iron supplement,iron_supplement
+vitamin,vitamin,vitamin
+vitamin,vitamins,vitamin
+vitamin,vitamin tablet,vitamin
+vitamin,vitamin tablets,vitamin
+NSAID,nsaid,nsaid
+NSAID,nsaids,nsaid
+NSAID,diclofenac,nsaid
+NSAID,painkiller,nsaid
+NSAID,painkillers,nsaid
+sedative,sedative,sedative
+sedative,sedatives,sedative
+sedative,sleeping pill,sedative
+sedative,sleeping pills,sedative
+sedative,sleeping tablet,sedative
+sedative,sleeping medication,sedative
+anxiety,anxiety medication,anxiety_med
+anxiety,anxiety medicine,anxiety_med
+anxiety,anxiety tablet,anxiety_med
+diabetes,diabetes medication,antidiabetic_context
+hypertension,hypertension medicine,antihypertensive_context
+hypertension,blood pressure medicine,antihypertensive_context
+statin,statin,statin
+statin,statins,statin
+statin,cholesterol medicine,statin
+antidepressant,antidepressant,antidepressant
+antidepressant,antidepressants,antidepressant
+antidepressant,antidepressant medication,antidepressant
+asthma,asthma treatment,respiratory_context
