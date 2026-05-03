@@ -11,8 +11,11 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PRESCRIPTION_PORT || 3004;
 
-// ML Service URL (Python FastAPI)
-const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://localhost:8000';
+// ML Service URL (Python FastAPI) - 4-Stage Pipeline v3
+// Port 8003: New YOLOv8 + TrOCR + GPT-4o pipeline
+// Port 8000: Legacy EasyOCR pipeline (fallback)
+const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://localhost:8003';
+const LEGACY_ML_SERVICE_URL = process.env.LEGACY_ML_SERVICE_URL || 'http://localhost:8000';
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -263,47 +266,60 @@ app.post('/summarize', async (req, res) => {
         });
     }
 });
-
-// ================================================================
 // ML Service Integration
 // ================================================================
 
 /**
- * Forward a prescription image to the ML Service for OCR + NER processing.
- * Uses /prescription/interpret (full pipeline) with fallback to /prescription/ocr.
+ * Forward a prescription image to the ML Service for 4-Stage processing.
+ * 
+ * New Pipeline v3 (Port 8003):
+ *   Stage 1: YOLOv8-nano ROI Detection
+ *   Stage 2: TrOCR-small Handwriting Recognition  
+ *   Stage 3: GPT-4o LLM Refinement
+ *   Stage 4: Drug Interaction Validation
+ * 
+ * Uses /interpret (new) with fallback to legacy /prescription/interpret
  */
 async function forwardToMLService(filePath, originalName, mimeType, engine, enhanceMode) {
     const fileStream = fs.createReadStream(filePath);
     const form = new FormData();
     form.append('file', fileStream, { filename: originalName, contentType: mimeType });
-    form.append('engine', engine);
-    form.append('enhance_mode', enhanceMode);
+    form.append('check_interactions', 'true');
+    
+    // Add patient context if available (can be extended)
+    // form.append('patient_age', '65');
+    // form.append('patient_conditions', 'diabetes,hypertension');
 
     try {
-        // Primary: full interpret pipeline
+        // Primary: New 4-Stage Pipeline v3 (Port 8003)
+        console.log('Using 4-Stage Pipeline v3 (YOLOv8 + TrOCR + GPT-4o)');
         const response = await axios.post(
-            `${ML_SERVICE_URL}/prescription/interpret`,
+            `${ML_SERVICE_URL}/interpret`,  // New endpoint
             form,
             {
                 headers: form.getHeaders(),
-                timeout: 120000, // 2 min (model loading may take time on first call)
+                timeout: 60000, // 60 seconds (faster than legacy)
                 maxContentLength: 50 * 1024 * 1024,
             }
         );
-        return response.data;
+        
+        // Transform new response format to legacy format for frontend compatibility
+        return transformToLegacyFormat(response.data);
+        
     } catch (primaryErr) {
-        console.warn('Interpret endpoint failed, falling back to /prescription/ocr:', primaryErr.message);
-
-        // Fallback: basic OCR endpoint
-        const fileStream2 = fs.createReadStream(filePath);
-        const form2 = new FormData();
-        form2.append('file', fileStream2, { filename: originalName, contentType: mimeType });
-        form2.append('engine', engine);
-        form2.append('enhance_mode', enhanceMode);
-
+        console.warn('4-Stage Pipeline failed:', primaryErr.message);
+        
+        // Fallback 1: Legacy pipeline v2 (Port 8000)
         try {
-            const fallbackRes = await axios.post(
-                `${ML_SERVICE_URL}/prescription/ocr`,
+            console.log('Falling back to Legacy Pipeline v2 (EasyOCR)');
+            const fileStream2 = fs.createReadStream(filePath);
+            const form2 = new FormData();
+            form2.append('file', fileStream2, { filename: originalName, contentType: mimeType });
+            form2.append('engine', engine);
+            form2.append('enhance_mode', enhanceMode);
+            
+            const legacyRes = await axios.post(
+                `${LEGACY_ML_SERVICE_URL}/prescription/interpret`,
                 form2,
                 {
                     headers: form2.getHeaders(),
@@ -311,19 +327,107 @@ async function forwardToMLService(filePath, originalName, mimeType, engine, enha
                     maxContentLength: 50 * 1024 * 1024,
                 }
             );
-            return fallbackRes.data;
-        } catch (fallbackErr) {
-            console.error('ML Service unavailable:', fallbackErr.message);
-            // Return mock data so the frontend still works during development
+            return legacyRes.data;
+            
+        } catch (legacyErr) {
+            console.error('Legacy Pipeline also failed:', legacyErr.message);
+            
+            // Fallback 2: Mock data for development
+            console.warn('All pipelines failed - returning mock data');
             return getMockInterpretation();
         }
     }
 }
 
 /**
- * Analyze manually-entered prescription text (no image).
- * Calls ML Service NER endpoint if available.
+ * Transform new 4-Stage pipeline response to legacy format
+ * for backward compatibility with existing frontend
  */
+function transformToLegacyFormat(newResponse) {
+    // New format has: success, medications[], interactions[], warnings[], etc.
+    // Legacy format expects: interpretation: { medications[], rawText, confidence, etc. }
+    
+    if (!newResponse.success) {
+        return {
+            success: false,
+            interpretation: {
+                rawText: newResponse.raw_ocr_text || '',
+                medications: [],
+                confidence: 0,
+                warnings: newResponse.warnings || ['Processing failed']
+            },
+            metadata: {
+                engine: '4-stage-pipeline-v3',
+                error: 'Processing failed'
+            }
+        };
+    }
+    
+    // Map medications to legacy format
+    const legacyMeds = (newResponse.medications || []).map(med => ({
+        name: med.name,
+        dosage: med.dosage,
+        frequency: med.frequency,
+        duration: med.duration,
+        confidence: Math.round(med.confidence * 100),
+        instructions: med.instructions || ''
+    }));
+    
+    // Build frequencies and dosages arrays
+    const frequencies = legacyMeds.map(m => m.frequency).filter(f => f);
+    const dosages = legacyMeds.map(m => m.dosage).filter(d => d);
+    const durations = legacyMeds.map(m => m.duration).filter(d => d);
+    
+    // Build interactions list
+    const interactions = (newResponse.interactions || []).map(i => ({
+        drug1: i.drug1,
+        drug2: i.drug2,
+        severity: i.severity,
+        description: i.description
+    }));
+    
+    // Add interaction warnings to warnings list
+    const allWarnings = [...(newResponse.warnings || [])];
+    interactions.forEach(i => {
+        if (i.severity === 'high') {
+            allWarnings.push(`⚠️ HIGH RISK: ${i.drug1} + ${i.drug2} - ${i.description}`);
+        }
+    });
+    
+    return {
+        success: true,
+        interpretation: {
+            rawText: newResponse.raw_ocr_text || '',
+            cleanedText: newResponse.refined_text || '',
+            medications: legacyMeds,
+            dosages: dosages,
+            frequencies: frequencies,
+            durations: durations,
+            instructions: [],
+            warnings: allWarnings,
+            interactions: interactions,
+            confidence: Math.round(newResponse.confidence_score * 100),
+            imageQuality: 85,
+            textQuality: Math.round(newResponse.confidence_score * 100),
+            requiresManualReview: newResponse.requires_manual_review,
+            reviewReasons: newResponse.review_reasons || []
+        },
+        pipeline_info: {
+            version: '3.0.0',
+            stages_completed: newResponse.stage_timings?.map(s => s.stage) || [],
+            stage_timings: newResponse.stage_timings || [],
+            vram_usage_gb: newResponse.vram_usage_gb || 0,
+            processing_time_ms: newResponse.processing_time_ms || 0
+        },
+        metadata: {
+            engine: '4-stage-pipeline-v3',
+            pipeline: 'YOLOv8 + TrOCR + GPT-4o + Validation',
+            timestamp: newResponse.timestamp || new Date().toISOString(),
+            disclaimer: newResponse.disclaimer || 'Educational use only'
+        }
+    };
+}
+
 async function analyzePrescriptionText(prescriptionText, patientInfo) {
     // Attempt to parse via regex locally (fast path)
     const medications = extractMedicationsFromText(prescriptionText);

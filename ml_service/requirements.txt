@@ -14,11 +14,21 @@ opencv-python-headless>=4.8.0
 # OCR Engines (Pre-trained models)
 easyocr>=1.7.0
 
+# YOLOv8 for ROI Detection (lightweight, 3.2M params)
+ultralytics>=8.0.200
+
 # Hugging Face Transformers - OCR & NER models
 transformers>=4.36.0
 torch>=2.1.0
 torchvision>=0.16.0
 sentencepiece>=0.1.99
+accelerate>=0.25.0  # For model loading optimizations
+
+# LLM Refinement (API mode)
+openai>=1.6.0
+
+# Optional: Local LLM fallback (4-bit quantization)
+# bitsandbytes>=0.41.0  # Uncomment for local Phi-3 model (~1GB VRAM)
 
 # Medical NER (ONNX Runtime for optimized inference)
 onnxruntime>=1.16.0
