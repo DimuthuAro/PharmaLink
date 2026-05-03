@@ -1,27 +1,76 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { View, Text, StyleSheet, Pressable, ScrollView, Image } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getUser, clearUser, User } from "../utils/auth";
-import { useRouter } from "expo-router";
-import BrandHeader from "@/components/BrandHeader";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  StatusBar,
+  ActivityIndicator,
+  Alert,
+  Modal,
+  Pressable,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
-const PROFILE_LOG_KEY = "pharmlink_profile_log_v1";
+import BrandLogo from "../components/BrandLogo";
+import { useAuth } from "../context/AuthContext";
+import { authRequest } from "../utils/api";
 
-const demoAvatars: Record<string, any> = {
-  "doctor@pharmalink.com": require("../assets/images/doctor.jpg"),
-  "pharmacist@pharmalink.com": require("../assets/images/pharmacist.jpg"),
-  "admin@pharmalink.com": require("../assets/images/admin.jpg"),
+// ─────────────────────────── Types ───────────────────────────
+type User = {
+  id?: string;
+  name?: string;
+  email?: string;
+  role?: string;
+  avatar?: string | null;
+  lastLogin?: string;
+  allergies?: string[];
+  dietaryPreferences?: {
+    vegetarian?: boolean;
+    diabeticFriendly?: boolean;
+    lowSodium?: boolean;
+  };
+  activeMedicationNames?: string[];
 };
 
-type ProfileLogEntry = {
-  id: string;
-  timestamp: string;
-  drugs: { name: string; index: number }[];
-  allergies: string[];
+type AuthContextType = {
+  user: User | null;
+  token: string;
+  isAuthenticated: boolean;
+  logout: () => Promise<void>;
+  loading: boolean;
 };
 
-const allergyLabel = (k: string) => {
+type MedItem = {
+  name: string;
+  index?: number | null;
+  lastIso?: string;
+};
+
+// ─────────────────────────── Drawer items ───────────────────────────
+const MENU_ITEMS = [
+  { label: "Dashboard", icon: "home-outline" as const, path: "/dashboard", replace: true },
+  { label: "Food Drug Interaction", icon: "shield-checkmark-outline" as const, path: "/advisory/FoodDrugInteraction", replace: true },
+  { label: "Meal Plan Advisor", icon: "clipboard-outline" as const, path: "/advisory/PersonalizedMealPlan", replace: true },
+  { label: "Drug Image Analyzer", icon: "image-outline" as const, path: "/advisory/drug-image", replace: false },
+  { label: "Drug Recommender", icon: "sparkles-outline" as const, path: "/advisory/symptom-drug", replace: false },
+  { label: "History", icon: "time-outline" as const, path: "/advisory/History", replace: false },
+];
+
+// ─────────────────────────── Helpers ───────────────────────────
+function prettyTime(iso?: string) {
+  if (!iso) return "—";
+  try {
+    return new Date(iso).toLocaleString();
+  } catch {
+    return iso;
+  }
+}
+
+function normalizeAllergyLabel(key: string) {
   const map: Record<string, string> = {
     peanut: "Peanut",
     tree_nut: "Tree nuts",
@@ -33,394 +82,952 @@ const allergyLabel = (k: string) => {
     wheat: "Wheat / Gluten",
     sesame: "Sesame",
   };
-  return map[k] || k;
-};
+  return map[key] || key;
+}
 
-export default function Profile() {
-  const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-  const [log, setLog] = useState<ProfileLogEntry[]>([]);
+function getRoleLabel(role?: string) {
+  const r = String(role || "").toLowerCase();
+  if (!r) return "Healthcare Professional";
+  return r.charAt(0).toUpperCase() + r.slice(1);
+}
+
+function getInitials(name?: string) {
+  const value = String(name || "User")
+    .trim()
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((x) => x[0]?.toUpperCase())
+    .join("");
+  return value || "U";
+}
+
+// ─────────────────────────── Small UI Components ───────────────────────────
+function StatCard({
+  icon,
+  label,
+  value,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  label: string;
+  value: string;
+}) {
+  return (
+    <View style={styles.statCard}>
+      <View style={styles.statIcon}>
+        <Ionicons name={icon} size={18} color="#fff" />
+      </View>
+      <View style={{ flex: 1 }}>
+        <Text style={styles.statLabel}>{label}</Text>
+        <Text style={styles.statValue}>{value}</Text>
+      </View>
+    </View>
+  );
+}
+
+function Chip({
+  label,
+  tone = "slate",
+}: {
+  label: string;
+  tone?: "slate" | "red" | "emerald" | "blue" | "purple";
+}) {
+  const toneStyle =
+    tone === "red"
+      ? { bg: "#FEF2F2", border: "#FECACA", text: "#B91C1C" }
+      : tone === "emerald"
+      ? { bg: "#ECFDF5", border: "#A7F3D0", text: "#047857" }
+      : tone === "blue"
+      ? { bg: "#EFF6FF", border: "#BFDBFE", text: "#1D4ED8" }
+      : tone === "purple"
+      ? { bg: "#F3E8FF", border: "#D8B4FE", text: "#7E22CE" }
+      : { bg: "#F8FAFC", border: "#E2E8F0", text: "#475569" };
+
+  return (
+    <View
+      style={[
+        styles.chip,
+        {
+          backgroundColor: toneStyle.bg,
+          borderColor: toneStyle.border,
+        },
+      ]}
+    >
+      <Text style={[styles.chipText, { color: toneStyle.text }]}>{label}</Text>
+    </View>
+  );
+}
+
+function SectionCard({
+  title,
+  icon,
+  children,
+}: {
+  title: string;
+  icon: keyof typeof Ionicons.glyphMap;
+  children: React.ReactNode;
+}) {
+  return (
+    <View style={styles.sectionCard}>
+      <View style={styles.sectionHeader}>
+        <View style={styles.sectionIcon}>
+          <Ionicons name={icon} size={18} color="#fff" />
+        </View>
+        <Text style={styles.sectionTitle}>{title}</Text>
+      </View>
+      {children}
+    </View>
+  );
+}
+
+function InfoRow({
+  icon,
+  label,
+  value,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  label: string;
+  value: string;
+}) {
+  return (
+    <View style={styles.infoRow}>
+      <Ionicons name={icon} size={18} color="#64748B" style={{ marginTop: 2 }} />
+      <View style={{ flex: 1 }}>
+        <Text style={styles.infoLabel}>{label}</Text>
+        <Text style={styles.infoValue}>{value || "—"}</Text>
+      </View>
+    </View>
+  );
+}
+
+// ─────────────────────────── Main Screen ───────────────────────────
+export default function ProfileScreen() {
+  const { user: authUser, logout, isAuthenticated, loading, token } = useAuth() as AuthContextType;
+  const [user, setUser] = useState<any>(authUser || null);
 
   useEffect(() => {
-    (async () => {
-      const u = await getUser();
-      setUser(u);
-      await loadLog();
-    })();
-  }, []);
+  if (authUser) {
+    setUser(authUser);
+  }
+}, [authUser]);
 
-  const loadLog = async () => {
+useEffect(() => {
+  const loadProfile = async () => {
+    if (!token) return;
+
     try {
-      const raw = await AsyncStorage.getItem(PROFILE_LOG_KEY);
-      const parsed = raw ? JSON.parse(raw) : [];
-      setLog(Array.isArray(parsed) ? parsed : []);
-    } catch {
-      setLog([]);
+      setProfileLoading(true);
+
+      const data = await authRequest("/api/users/me", { token });
+      console.log("USER DATA:", data);
+
+      const u = data?.user || {};
+
+      setUser((prev: any) => ({
+        ...(prev || {}),
+        id: u.id || u._id || prev?.id,
+        name: u.fullName || prev?.name || "User",
+        email: u.email || prev?.email || "",
+        age: u.age ?? prev?.age,
+        phone: u.phone ?? prev?.phone,
+        allergies: Array.isArray(u.allergies) ? u.allergies : prev?.allergies || [],
+        dietaryPreferences: u.dietaryPreferences || prev?.dietaryPreferences || {
+          vegetarian: false,
+          diabeticFriendly: false,
+          lowSodium: false,
+        },
+        activeMedicationNames: Array.isArray(u.activeMedicationNames)
+          ? u.activeMedicationNames
+          : prev?.activeMedicationNames || [],
+        role: prev?.role || "user",
+        lastLogin: u.updatedAt || prev?.lastLogin || "",
+        avatar: prev?.avatar || null,
+      }));
+    } catch (err) {
+      console.log("PROFILE ERROR:", err);
+    } finally {
+      setProfileLoading(false);
     }
   };
 
-  const demoAvatar = useMemo(() => {
-    const e = (user?.email || "").toLowerCase();
-    return e ? demoAvatars[e] : null;
-  }, [user?.email]);
+  loadProfile();
+}, [token]);
 
-  const initials = useMemo(() => {
-    const n = (user?.name || "User").trim();
-    const parts = n.split(" ").filter(Boolean);
-    return parts
-      .slice(0, 2)
-      .map((p) => p[0].toUpperCase())
-      .join("");
-  }, [user?.name]);
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(false);
 
-  // 1) Unique Active Medications (from all checks)
-  const activeMedications = useMemo(() => {
-    const map = new Map<number, { name: string; index: number; lastSeen: string }>();
-    for (const entry of log) {
-      for (const d of entry.drugs || []) {
-        const existing = map.get(d.index);
-        if (!existing || new Date(entry.timestamp) > new Date(existing.lastSeen)) {
-          map.set(d.index, { name: d.name, index: d.index, lastSeen: entry.timestamp });
-        }
-      }
+  useEffect(() => {
+    if (!loading && isAuthenticated === false) {
+      router.replace("/login");
     }
-    return Array.from(map.values()).sort(
-      (a, b) => new Date(b.lastSeen).getTime() - new Date(a.lastSeen).getTime()
-    );
-  }, [log]);
+  }, [loading, isAuthenticated]);
 
-  // 2) Unique Allergies (from all checks)
-  const allAllergies = useMemo(() => {
-    const set = new Set<string>();
-    for (const entry of log) for (const a of entry.allergies || []) set.add(a);
-    return Array.from(set.values()).sort((a, b) => a.localeCompare(b));
-  }, [log]);
+  const initials = useMemo(() => getInitials(user?.name), [user?.name]);
+  const roleLabel = useMemo(() => getRoleLabel(user?.role), [user?.role]);
+  const allergies = Array.isArray(user?.allergies) ? user!.allergies! : [];
+ const meds: MedItem[] = Array.isArray(user?.activeMedicationNames)
+  ? user!.activeMedicationNames!.map((name: string) => ({
+      name,
+      lastIso: user?.lastLogin,
+    }))
+  : [];
 
-  const prettyTime = (iso: string) => {
-    try {
-      return new Date(iso).toLocaleString();
-    } catch {
-      return iso;
-    }
+  const handleLogout = async () => {
+    await logout?.();
+    router.replace("/login");
   };
 
-  const roleLabel = useMemo(() => {
-    const r = (user?.role || "").toLowerCase();
-    if (!r) return "Healthcare Professional";
-    return r.charAt(0).toUpperCase() + r.slice(1);
-  }, [user?.role]);
+  const goSettings = () => {
+    Alert.alert("Settings", "Settings page can be connected next.");
+  };
+
+  const goHealthAdvisory = () => router.push("/dashboard");
+  const goInteraction = () => router.push("/advisory/FoodDrugInteraction");
+  const goMealPlan = () => router.push("/advisory/PersonalizedMealPlan");
+  const goDrugImage = () => router.push("/advisory/DrugImagePredict");
 
   return (
-    <View style={styles.screen}>
-      <BrandHeader user={user} />
+    <SafeAreaView style={styles.safe} edges={["top"]}>
+      <StatusBar barStyle="light-content" />
 
-      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-        {/* Profile hero card */}
-        <View style={styles.heroCard}>
-            <Pressable
-    onPress={() => router.back()}
-    style={styles.heroBackBtn}
-    hitSlop={12}
-  >
-    <Ionicons name="chevron-back" size={24} color="#2563eb" />
-  </Pressable>
-          <View style={styles.heroRow}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <BrandLogo withText size={34} />
+          <TouchableOpacity
+            style={styles.menuBtn}
+            onPress={() => setShowSidebar(true)}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="menu-outline" size={20} color="#fff" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Hero */}
+        <View style={styles.pageHero}>
+          <View style={styles.heroBadge}>
+            <View style={styles.heroBadgeDot} />
+            <Text style={styles.heroBadgeText}>PROFILE & ACCOUNT</Text>
+          </View>
+          <Text style={styles.pageTitle}>My Profile</Text>
+          <Text style={styles.pageDesc}>
+            View your account details, medication summary, allergies, and quick actions.
+          </Text>
+        </View>
+
+        {/* Main Profile Card */}
+        <View style={styles.profileCard}>
+          <View style={styles.profileCover} />
+
+          <View style={styles.profileBody}>
             <View style={styles.avatarWrap}>
-              {user?.avatarUri ? (
-                <Image source={{ uri: user.avatarUri }} style={styles.avatarImg} />
-              ) : demoAvatar ? (
-                <Image source={demoAvatar} style={styles.avatarImg} />
-              ) : (
-                <View style={styles.avatarFallback}>
-                  <Text style={styles.avatarInitials}>{initials}</Text>
-                </View>
-              )}
-            </View>
-
-            <View style={{ flex: 1, minWidth: 0 }}>
-              <Text style={styles.heroName} numberOfLines={1}>
-                {user?.name || "User"}
-              </Text>
-
-              <View style={styles.heroSubRow}>
-                <Ionicons name="mail-outline" size={14} color="#64748b" />
-                <Text style={styles.heroSub} numberOfLines={1}>
-                  {user?.email || "user@example.com"}
-                </Text>
-              </View>
-
-              <View style={styles.heroSubRow}>
-                <Ionicons name="shield-checkmark-outline" size={14} color="#64748b" />
-                <Text style={styles.heroSub} numberOfLines={1}>
-                  {roleLabel}
-                </Text>
-              </View>
-
-              <View style={styles.heroSubRow}>
-                <Ionicons name="call-outline" size={14} color="#64748b" />
-                <Text style={styles.heroSub} numberOfLines={1}>
-                  {user?.phone || "—"}
-                </Text>
+              <View style={styles.avatar}>
+                {user?.avatar ? (
+                  <Text style={styles.avatarText}>IMG</Text>
+                ) : (
+                  <Text style={styles.avatarText}>{initials}</Text>
+                )}
               </View>
             </View>
 
-            <View style={styles.securePill}>
-              <Ionicons name="lock-closed" size={14} color="#047857" />
-              <Text style={styles.secureText}>Secure</Text>
+            <Text style={styles.profileName}>{user?.name || "User"}</Text>
+            <Text style={styles.profileEmail}>{user?.email || "user@example.com"}</Text>
+
+            <View style={styles.badgeRow}>
+              <Chip label="Verified Account" tone="emerald" />
+              {profileLoading ? <Chip label="Loading..." tone="purple" /> : null}
+            </View>
+
+            <View style={styles.profileActionRow}>
+              <TouchableOpacity style={styles.secondaryBtn} onPress={goSettings} activeOpacity={0.85}>
+                <Ionicons name="settings-outline" size={16} color="#2f2971" />
+                <Text style={styles.secondaryBtnText}>Settings</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.primaryBtn} onPress={handleLogout} activeOpacity={0.85}>
+                <Ionicons name="log-out-outline" size={16} color="#fff" />
+                <Text style={styles.primaryBtnText}>Sign Out</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.statsGrid}>
+              <StatCard icon="person-outline" label="Role" value={roleLabel} />
+              <StatCard icon="shield-checkmark-outline" label="Module Access" value="All Features" />
+              <StatCard icon="time-outline" label="Last Login" value={prettyTime(user?.lastLogin).split(",")[0] || "Recent"} />
             </View>
           </View>
         </View>
 
-        {/* Active meds */}
-        <View style={styles.card}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Active medications</Text>
+        {/* Account Information */}
+        <SectionCard title="Account Information" icon="person-circle-outline">
+          <InfoRow icon="mail-outline" label="Email" value={user?.email || ""} />
+          <InfoRow icon="person-outline" label="Full Name" value={user?.name || ""} />
+          <InfoRow icon="id-card-outline" label="Role" value={roleLabel} />
+        </SectionCard>
+
+        {/* Platform Access */}
+        <SectionCard title="Platform Access" icon="briefcase-outline">
+          <Text style={styles.paragraph}>
+            Your workspace supports food–drug interaction checks, intelligent meal plan generation,
+            and image-based drug prediction tools.
+          </Text>
+
+          <View style={styles.chipRow}>
+            {user?.dietaryPreferences?.vegetarian ? <Chip label="Vegetarian" tone="purple" /> : null}
+            {user?.dietaryPreferences?.diabeticFriendly ? <Chip label="Diabetic-friendly" tone="purple" /> : null}
+            {user?.dietaryPreferences?.lowSodium ? <Chip label="Low Sodium" tone="purple" /> : null}
+
+            {!user?.dietaryPreferences?.vegetarian &&
+            !user?.dietaryPreferences?.diabeticFriendly &&
+            !user?.dietaryPreferences?.lowSodium ? (
+              <Chip label="No dietary preferences set" tone="slate" />
+            ) : null}
           </View>
 
-          {activeMedications.length === 0 ? (
-            <Text style={styles.empty}>
-              No active medications saved yet. Generate a meal plan (or run a check) to save them.
+          <View style={styles.noticeBox}>
+            <Ionicons name="warning-outline" size={16} color="#92400E" />
+            <Text style={styles.noticeText}>
+              Always validate clinical decisions with a licensed healthcare professional.
             </Text>
+          </View>
+        </SectionCard>
+
+        {/* Active Medications */}
+        <SectionCard title="Active Medications" icon="flask-outline">
+          {meds.length === 0 ? (
+            <View style={styles.emptyMini}>
+              <Ionicons name="warning-outline" size={18} color="#94A3B8" />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.emptyMiniTitle}>No medications recorded</Text>
+                <Text style={styles.emptyMiniSub}>Generate a meal plan to add medications.</Text>
+              </View>
+            </View>
           ) : (
-            <ScrollView
-              style={styles.medsScroll}
-              contentContainerStyle={styles.medsScrollContent}
-              showsVerticalScrollIndicator={true}
-              nestedScrollEnabled
-            >
-              {activeMedications.map((d) => (
-                <View key={d.index} style={styles.miniCardBlue}>
-                  <View style={styles.miniIconBlue}>
-                    <Ionicons name="medkit" size={16} color="#1d4ed8" />
+            <View style={{ gap: 10 }}>
+              {meds.map((m, i) => (
+                <View key={`${m.name}-${i}`} style={styles.medCard}>
+                  <View style={styles.medIcon}>
+                    <Ionicons name="flask-outline" size={18} color="#fff" />
                   </View>
-                  <View style={{ flex: 1, minWidth: 0 }}>
-                    <Text style={styles.miniTitle} numberOfLines={1}>
-                      {d.name}
-                    </Text>
-                    <Text style={styles.miniSub}>Last: {prettyTime(d.lastSeen)}</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.medName}>{m.name}</Text>
+                    <Text style={styles.medDate}>{prettyTime(m.lastIso)}</Text>
                   </View>
+                  <Ionicons name="checkmark-circle" size={18} color="#10B981" />
                 </View>
               ))}
-            </ScrollView>
+            </View>
           )}
-        </View>
+        </SectionCard>
 
         {/* Allergies */}
-        <View style={styles.card}>
-          <Text style={styles.sectionTitle}>Allergies</Text>
-
-          {allAllergies.length === 0 ? (
-            <Text style={styles.empty}>No allergies saved yet.</Text>
+        <SectionCard title="Allergies" icon="warning-outline">
+          {allergies.length === 0 ? (
+            <View style={styles.emptyMini}>
+              <Ionicons name="alert-circle-outline" size={18} color="#94A3B8" />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.emptyMiniTitle}>No allergies recorded</Text>
+                <Text style={styles.emptyMiniSub}>Select allergies on the Meal Plan page.</Text>
+              </View>
+            </View>
           ) : (
-            <View style={styles.pillWrap}>
-              {allAllergies.map((a, i) => (
-                <View key={`${a}-${i}`} style={styles.pillRed}>
-                  <Ionicons name="warning" size={14} color="#991b1b" />
-                  <Text style={styles.pillRedText}>{allergyLabel(a)}</Text>
-                </View>
+            <View style={styles.chipRow}>
+              {allergies.map((a: string, idx: number) => (
+                <Chip key={`${a}-${idx}`} label={normalizeAllergyLabel(a)} tone="red" />
               ))}
             </View>
           )}
+        </SectionCard>
+
+        {/* Quick Actions */}
+        <SectionCard title="Quick Actions" icon="flash-outline">
+          <View style={{ gap: 10 }}>
+            <TouchableOpacity style={styles.quickBtn} onPress={goInteraction} activeOpacity={0.9}>
+              <Text style={styles.quickBtnText}>Drug Interaction Check</Text>
+              <Ionicons name="shield-checkmark-outline" size={18} color="#fff" />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.quickBtn} onPress={goHealthAdvisory} activeOpacity={0.9}>
+              <Text style={styles.quickBtnText}>Health Advisory Center</Text>
+              <Ionicons name="medkit-outline" size={18} color="#fff" />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.quickBtn} onPress={goMealPlan} activeOpacity={0.9}>
+              <Text style={styles.quickBtnText}>Meal Plan Advisor</Text>
+              <Ionicons name="clipboard-outline" size={18} color="#fff" />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.quickBtn} onPress={goDrugImage} activeOpacity={0.9}>
+              <Text style={styles.quickBtnText}>Drug Image Analyzer</Text>
+              <Ionicons name="image-outline" size={18} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        </SectionCard>
+
+        {/* Security Notice */}
+        <View style={styles.securityCard}>
+          <View style={styles.securityIcon}>
+            <Ionicons name="shield-checkmark-outline" size={18} color="#059669" />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.securityTitle}>Secure & Private</Text>
+            <Text style={styles.securityText}>
+              Your health data is handled securely. Always verify important outcomes with a healthcare professional.
+            </Text>
+          </View>
         </View>
 
-        {/* Logout */}
-        <Pressable
-          style={({ pressed }) => [styles.logout, pressed && { opacity: 0.92 }]}
-          onPress={async () => {
-            await clearUser();
-            router.replace("/welcome");
-          }}
-        >
-          <Ionicons name="log-out-outline" size={18} color="#fff" />
-          <Text style={styles.logoutText}>Logout</Text>
-        </Pressable>
-
-        <View style={{ height: 24 }} />
+        <Text style={styles.footer}>
+          © {new Date().getFullYear()} PharmaLink. For academic purposes only.
+        </Text>
       </ScrollView>
-    </View>
+
+      {/* Sidebar */}
+      <Modal
+        visible={showSidebar}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setShowSidebar(false)}
+      >
+        <View style={styles.drawerOverlay}>
+          <Pressable style={styles.drawerBackdrop} onPress={() => setShowSidebar(false)} />
+          <View style={styles.drawer}>
+            <View style={styles.drawerHeader}>
+              <BrandLogo withText size={32} />
+              <TouchableOpacity
+                onPress={() => setShowSidebar(false)}
+                style={styles.drawerCloseBtn}
+              >
+                <Ionicons name="close-outline" size={22} color="#fff" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.drawerDivider} />
+
+            <ScrollView style={styles.drawerMenu} showsVerticalScrollIndicator={false}>
+              {MENU_ITEMS.map((item) => {
+                const active = item.path === "/Profile";
+                return (
+                  <TouchableOpacity
+                    key={item.path}
+                    style={[styles.drawerItem, active && styles.drawerItemActive]}
+                    activeOpacity={0.8}
+                    onPress={() => {
+                      setShowSidebar(false);
+                      if (item.replace) router.replace(item.path as any);
+                      else router.push(item.path as any);
+                    }}
+                  >
+                    <Ionicons
+                      name={item.icon}
+                      size={22}
+                      color={active ? "#2f2971" : "#FFFFFF"}
+                    />
+                    <Text style={[styles.drawerItemText, active && styles.drawerItemTextActive]}>
+                      {item.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+
+            <View style={styles.drawerDivider} />
+
+            <View style={styles.drawerBottom}>
+              <TouchableOpacity
+                style={[styles.drawerItem, styles.drawerItemActive]}
+                onPress={() => {
+                  setShowSidebar(false);
+                  router.push("/Profile" as any);
+                }}
+              >
+                <Ionicons name="person-circle-outline" size={22} color="#2f2971" />
+                <Text style={[styles.drawerItemText, styles.drawerItemTextActive]}>My Profile</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.drawerItem}
+                onPress={async () => {
+                  setShowSidebar(false);
+                  await handleLogout();
+                }}
+              >
+                <Ionicons name="log-out-outline" size={22} color="#fff" />
+                <Text style={styles.drawerItemText}>Sign Out</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    </SafeAreaView>
   );
 }
 
-function Stat({ label, value, icon }: { label: string; value: string; icon: any }) {
-  return (
-    <View style={styles.statBox}>
-      <View style={styles.statIcon}>
-        <Ionicons name={icon} size={18} color="#2563eb" />
-      </View>
-      <View>
-        <Text style={styles.statValue}>{value}</Text>
-        <Text style={styles.statLabel}>{label}</Text>
-      </View>
-    </View>
-  );
-}
-
+// ─────────────────────────── Styles ───────────────────────────
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: "#eff6ff" },
-  container: { padding: 14, paddingBottom: 18, gap: 12 },
+  safe: { flex: 1, backgroundColor: "#F8F9FB" },
+  container: { flex: 1 },
+  content: { paddingBottom: 48 },
 
-  topBar: {
+  header: {
+    backgroundColor: "#2f2971",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+  },
+  menuBtn: {
+    width: 36,
+    height: 36,
+    backgroundColor: "rgba(255,255,255,0.15)",
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  pageHero: {
+    backgroundColor: "#2f2971",
+    paddingHorizontal: 18,
+    paddingTop: 4,
+    paddingBottom: 28,
+  },
+  heroBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    backgroundColor: "rgba(255,255,255,0.12)",
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 100,
+    marginBottom: 14,
+    gap: 6,
+  },
+  heroBadgeDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 3,
+    backgroundColor: "rgba(255,255,255,0.8)",
+  },
+  heroBadgeText: {
+    color: "rgba(255,255,255,0.85)",
+    fontSize: 9,
+    fontWeight: "700",
+    letterSpacing: 1,
+  },
+  pageTitle: {
+    fontSize: 30,
+    fontWeight: "800",
+    color: "#FFFFFF",
+    lineHeight: 38,
+    letterSpacing: -0.5,
+    marginBottom: 10,
+  },
+  pageDesc: {
+    fontSize: 13,
+    color: "rgba(255,255,255,0.7)",
+    lineHeight: 20,
+  },
+
+  profileCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: "#EBEBEB",
+    margin: 16,
+    marginTop: -14,
+    overflow: "hidden",
+  },
+  profileCover: {
+    height: 100,
+    backgroundColor: "#2f2971",
+  },
+  profileBody: {
+    padding: 18,
+    alignItems: "center",
+  },
+  avatarWrap: {
+    marginTop: -50,
+    marginBottom: 10,
+  },
+  avatar: {
+    width: 92,
+    height: 92,
+    borderRadius: 24,
+    backgroundColor: "#2f2971",
+    borderWidth: 4,
+    borderColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  avatarText: {
+    color: "#fff",
+    fontSize: 28,
+    fontWeight: "800",
+  },
+  profileName: {
+    fontSize: 24,
+    fontWeight: "800",
+    color: "#0F172A",
+    textAlign: "center",
+  },
+  profileEmail: {
+    marginTop: 5,
+    fontSize: 13,
+    color: "#64748B",
+    textAlign: "center",
+  },
+
+  badgeRow: {
+    flexDirection: "row",
+    gap: 8,
+    flexWrap: "wrap",
+    justifyContent: "center",
+    marginTop: 12,
+  },
+  chip: {
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+  },
+  chipText: {
+    fontSize: 11,
+    fontWeight: "700",
+  },
+
+  profileActionRow: {
+    flexDirection: "row",
+    gap: 10,
+    marginTop: 16,
+    width: "100%",
+  },
+  secondaryBtn: {
+    flex: 1,
+    backgroundColor: "#EEEDFE",
+    borderRadius: 14,
+    paddingVertical: 13,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    gap: 7,
+  },
+  secondaryBtnText: {
+    color: "#2f2971",
+    fontSize: 13,
+    fontWeight: "700",
+  },
+  primaryBtn: {
+    flex: 1,
+    backgroundColor: "#2f2971",
+    borderRadius: 14,
+    paddingVertical: 13,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    gap: 7,
+  },
+  primaryBtnText: {
+    color: "#FFFFFF",
+    fontSize: 13,
+    fontWeight: "700",
+  },
+
+  statsGrid: {
+    marginTop: 18,
+    width: "100%",
+    gap: 10,
+  },
+  statCard: {
+    backgroundColor: "#F8F9FB",
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#EBEBEB",
+    padding: 14,
+    flexDirection: "row",
+    gap: 12,
+    alignItems: "center",
+  },
+  statIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: 14,
+    backgroundColor: "#2f2971",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  statLabel: {
+    fontSize: 10,
+    color: "#94A3B8",
+    fontWeight: "700",
+    textTransform: "uppercase",
+    letterSpacing: 0.7,
+    marginBottom: 3,
+  },
+  statValue: {
+    fontSize: 14,
+    color: "#0F172A",
+    fontWeight: "700",
+  },
+
+  sectionCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: "#EBEBEB",
+    padding: 18,
+    marginHorizontal: 16,
+    marginBottom: 16,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 16,
+  },
+  sectionIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: "#2f2971",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "800",
+    color: "#0F172A",
+  },
+
+  infoRow: {
+    backgroundColor: "#F8F9FB",
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    padding: 13,
+    flexDirection: "row",
+    gap: 10,
+    alignItems: "flex-start",
+    marginBottom: 10,
+  },
+  infoLabel: {
+    fontSize: 10,
+    color: "#94A3B8",
+    fontWeight: "700",
+    textTransform: "uppercase",
+    letterSpacing: 0.8,
+    marginBottom: 4,
+  },
+  infoValue: {
+    fontSize: 14,
+    color: "#0F172A",
+    fontWeight: "600",
+    lineHeight: 20,
+  },
+
+  paragraph: {
+    fontSize: 13,
+    color: "#475569",
+    lineHeight: 20,
+  },
+  chipRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginTop: 14,
+  },
+
+  noticeBox: {
+    marginTop: 14,
+    backgroundColor: "#FFFBEB",
+    borderWidth: 1,
+    borderColor: "#FCD34D",
+    borderRadius: 12,
+    padding: 10,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 7,
+  },
+  noticeText: {
+    flex: 1,
+    fontSize: 11,
+    color: "#92400E",
+    lineHeight: 16,
+  },
+
+  emptyMini: {
+    backgroundColor: "#F8F9FB",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    borderRadius: 14,
+    padding: 14,
+    flexDirection: "row",
+    gap: 10,
+    alignItems: "flex-start",
+  },
+  emptyMiniTitle: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#334155",
+    marginBottom: 3,
+  },
+  emptyMiniSub: {
+    fontSize: 12,
+    color: "#64748B",
+    lineHeight: 18,
+  },
+
+  medCard: {
+    backgroundColor: "#F8F9FB",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    borderRadius: 16,
+    padding: 14,
+    flexDirection: "row",
+    gap: 12,
+    alignItems: "center",
+  },
+  medIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: 14,
+    backgroundColor: "#2f2971",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  medName: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#0F172A",
+  },
+  medDate: {
+    marginTop: 3,
+    fontSize: 11,
+    color: "#64748B",
+  },
+
+  quickBtn: {
+    backgroundColor: "#2f2971",
+    borderRadius: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 14,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    backgroundColor: "#ffffff",
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(15,23,42,0.08)",
   },
-  backBtn: {
+  quickBtnText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "700",
+  },
+
+  securityCard: {
+    marginHorizontal: 16,
+    marginBottom: 16,
+    backgroundColor: "#ECFDF5",
+    borderWidth: 1,
+    borderColor: "#A7F3D0",
+    borderRadius: 18,
+    padding: 16,
+    flexDirection: "row",
+    gap: 12,
+    alignItems: "flex-start",
+  },
+  securityIcon: {
     width: 40,
     height: 40,
-    borderRadius: 14,
+    borderRadius: 12,
+    backgroundColor: "#D1FAE5",
     alignItems: "center",
     justifyContent: "center",
   },
-  topTitle: { fontSize: 16, fontWeight: "900", color: "#0f172a" },
-
-  card: {
-    backgroundColor: "white",
-    borderWidth: 1,
-    borderColor: "rgba(15,23,42,0.10)",
-    borderRadius: 18,
-    padding: 14,
+  securityTitle: {
+    fontSize: 14,
+    fontWeight: "800",
+    color: "#065F46",
+    marginBottom: 4,
+  },
+  securityText: {
+    fontSize: 12,
+    color: "#047857",
+    lineHeight: 18,
+    flex: 1,
   },
 
-heroCard: {
-  backgroundColor: "white",
-  borderWidth: 1,
-  borderColor: "rgba(15,23,42,0.10)",
-  borderRadius: 22,
-  padding: 20,
-  position: "relative", 
-},
-heroBackBtn: {
-  position: "absolute",
-  top: -2,
-  left: 10,
-  width: 40,
-  height: 40,
-  borderRadius: 14,
-  alignItems: "center",
-  justifyContent: "center",
-  zIndex: 10,
-},
-  heroRow: { flexDirection: "row", alignItems: "center", gap: 12 },
-  avatarWrap: {
-    width: 72,
-    height: 72,
-    borderRadius: 22,
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "rgba(15,23,42,0.10)",
-    backgroundColor: "rgba(37,99,235,0.10)",
-    alignItems: "center",
-    justifyContent: "center",
+  footer: {
+    textAlign: "center",
+    color: "#94A3B8",
+    fontSize: 10,
+    lineHeight: 16,
+    paddingHorizontal: 16,
+    paddingBottom: 8,
   },
-  avatarImg: { width: "100%", height: "100%" },
-  avatarFallback: { width: "100%", height: "100%", alignItems: "center", justifyContent: "center" },
-  avatarInitials: { fontWeight: "900", fontSize: 20, color: "#1d4ed8" },
 
-  heroName: { fontSize: 18, fontWeight: "900", color: "#0f172a" },
-  heroSubRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 6 },
-  heroSub: { color: "#64748b", fontWeight: "800", fontSize: 12.5, flex: 1 },
-
-  securePill: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: "rgba(16,185,129,0.25)",
-    backgroundColor: "rgba(16,185,129,0.10)",
-  },
-  secureText: { color: "#047857", fontWeight: "900", fontSize: 11.5 },
-
-  statsRow: { flexDirection: "row", gap: 10, marginTop: 14 },
-  statBox: {
+  drawerOverlay: {
     flex: 1,
     flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    borderWidth: 1,
-    borderColor: "rgba(148,163,184,0.28)",
-    backgroundColor: "rgba(2,6,23,0.02)",
-    borderRadius: 18,
-    padding: 12,
   },
-  statIcon: {
+  drawerBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(15,23,42,0.45)",
+  },
+  drawer: {
+    width: "82%",
+    backgroundColor: "#2f2971",
+    paddingBottom: 28,
+  },
+  drawerHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingTop: 24,
+    paddingBottom: 20,
+  },
+  drawerCloseBtn: {
     width: 36,
     height: 36,
-    borderRadius: 14,
-    backgroundColor: "rgba(37,99,235,0.10)",
+    borderRadius: 18,
+    backgroundColor: "rgba(255,255,255,0.15)",
     alignItems: "center",
     justifyContent: "center",
   },
-  statValue: { fontSize: 16, fontWeight: "900", color: "#0f172a" },
-  statLabel: { marginTop: 2, fontSize: 11.5, fontWeight: "800", color: "#64748b" },
-
-  sectionHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-  sectionTitle: { fontWeight: "900", color: "#0f172a", fontSize: 13 },
-
-  empty: { marginTop: 8, color: "#64748b", fontWeight: "700", lineHeight: 18 },
-
-  miniCardBlue: {
+  drawerDivider: {
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.12)",
+    marginHorizontal: 20,
+  },
+  drawerMenu: {
+    paddingHorizontal: 14,
+    paddingTop: 12,
+  },
+  drawerItem: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
-    borderWidth: 1,
-    borderColor: "rgba(37,99,235,0.18)",
-    backgroundColor: "rgba(37,99,235,0.06)",
-    borderRadius: 18,
-    padding: 12,
-    marginTop: 10,
-  },
-  miniIconBlue: {
-    width: 36,
-    height: 36,
-    borderRadius: 14,
-    backgroundColor: "rgba(255,255,255,0.75)",
-    borderWidth: 1,
-    borderColor: "rgba(148,163,184,0.25)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  miniTitle: { fontWeight: "900", color: "#0f172a" },
-  miniSub: { marginTop: 4, fontWeight: "800", color: "#64748b", fontSize: 11.5 },
-
-  medsScroll: {
-    marginTop: 8,
-    maxHeight: 220, 
-  },
-  medsScrollContent: {
-    paddingRight: 6, 
-    paddingBottom: 6,
-  },
-
-  pillWrap: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 10 },
-  pillRed: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    borderWidth: 1,
-    borderColor: "rgba(239,68,68,0.25)",
-    backgroundColor: "rgba(239,68,68,0.10)",
-    paddingHorizontal: 10,
-    paddingVertical: 8,
+    gap: 16,
+    paddingVertical: 17,
+    paddingHorizontal: 18,
     borderRadius: 999,
+    marginBottom: 4,
   },
-  pillRedText: { color: "#991b1b", fontWeight: "900", fontSize: 12 },
-
-  logout: {
-    flexDirection: "row",
-    gap: 8,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#dc2626",
-    padding: 14,
-    borderRadius: 16,
+  drawerItemActive: {
+    backgroundColor: "#FFFFFF",
   },
-  logoutText: { color: "white", fontWeight: "900" },
+  drawerItemText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "700",
+    flex: 1,
+  },
+  drawerItemTextActive: {
+    color: "#2f2971",
+  },
+  drawerBottom: {
+    paddingHorizontal: 14,
+    paddingTop: 12,
+  },
 });
