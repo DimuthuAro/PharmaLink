@@ -42,8 +42,24 @@ export default function RootLayout() {
           <Stack.Screen name="meal-plan"/>
           <Stack.Screen name="meal-plan-result"/>
         </>
-      ): (
+      ) : (
+        <>
           <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="dashboard" />
+          <Stack.Screen name="interaction-check" />
+          <Stack.Screen name="comparator" />
+          <Stack.Screen name="prescription" />
+          <Stack.Screen name="treatment-identifier" />
+          <Stack.Screen name="drug-recommender" />
+          <Stack.Screen name="advisory/FoodDrugInteraction" />
+          <Stack.Screen name="advisory/PersonalizedMealPlan" />
+          <Stack.Screen name="advisory/DrugImagePredict" />
+          <Stack.Screen name="advisory/PatientStoryAnalyzer" />
+          <Stack.Screen name="advisory/History" />
+          <Stack.Screen name="profile" />
+          <Stack.Screen name="Profile" />
+          <Stack.Screen name="settings" />
+        </>
       )}
     </Stack>
   );
